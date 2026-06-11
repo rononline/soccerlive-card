@@ -571,14 +571,14 @@ class CalcioLiveTeamNextCard extends LitElement {
                 ${m.date ? m.date.split(' ')[1] || '' : ''}
                 <span class="upcoming-date-day">${this._relativeDate(m.date)}</span>
               </span>
-              <span class="upcoming-team ${homeTracked ? 'tracked' : ''}">
+              <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
                 <img src="${m.home_logo}" alt="" />
                 ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
               </span>
               <span class="upcoming-vs">-</span>
-              <span class="upcoming-team ${awayTracked ? 'tracked' : ''}">
-                <img src="${m.away_logo}" alt="" />
+              <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
                 ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
+                <img src="${m.away_logo}" alt="" />
               </span>
             </div>
           `;
@@ -1297,9 +1297,10 @@ class CalcioLiveTeamNextCard extends LitElement {
         margin-bottom: 8px;
       }
       .upcoming-row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 52px 1fr 16px 1fr;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         padding: 6px 0;
         border-bottom: 1px solid rgba(255,255,255,0.04);
         font-size: 12px;
@@ -1309,11 +1310,11 @@ class CalcioLiveTeamNextCard extends LitElement {
         font-size: 11px;
         font-weight: 700;
         color: var(--cl-accent);
-        min-width: 42px;
         font-variant-numeric: tabular-nums;
         display: flex;
         flex-direction: column;
-        line-height: 1.2;
+        line-height: 1.3;
+        flex-shrink: 0;
       }
       .upcoming-date-day {
         font-size: 9px;
@@ -1322,22 +1323,27 @@ class CalcioLiveTeamNextCard extends LitElement {
       }
       .upcoming-team {
         display: flex; align-items: center; gap: 5px;
-        flex: 1;
         font-weight: 600;
         color: var(--cl-text);
         min-width: 0;
-        white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+      }
+      /* Thuisploeg: rechts uitgelijnd richting het streepje */
+      .upcoming-team.home-side {
+        justify-content: flex-end;
+        flex-direction: row-reverse;
+      }
+      /* Uitploeg: links uitgelijnd vanuit het streepje */
+      .upcoming-team.away-side {
+        justify-content: flex-start;
       }
       .upcoming-team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-      .upcoming-team.tracked { font-weight: 800; }
-      .upcoming-team.tracked .abbrev-badge { box-shadow: 0 0 8px currentColor; }
+      .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-vs {
         font-size: 11px;
         font-weight: 700;
         color: var(--cl-text-2);
-        flex-shrink: 0;
+        text-align: center;
       }
       .abbrev-badge {
         display: inline-flex; align-items: center; justify-content: center;
