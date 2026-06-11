@@ -419,6 +419,8 @@ class CalcioLiveTeamNextCard extends LitElement {
     }
 
     const match = stateObj.attributes.matches[0];
+    const leagueInfo = stateObj.attributes.league_info ? stateObj.attributes.league_info[0] : null;
+    const leagueLogo = leagueInfo && leagueInfo.logo_href && leagueInfo.logo_href !== 'N/A' ? leagueInfo.logo_href : null;
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
     const showScore = isLive || isFinished;
@@ -448,7 +450,9 @@ class CalcioLiveTeamNextCard extends LitElement {
 
         <div class="top-bar">
           <div class="competition">
-            <span class="comp-icon">⚽</span>
+            <span class="comp-icon">
+              ${leagueLogo ? html`<img src="${leagueLogo}" alt="" />` : '⚽'}
+            </span>
             <span class="comp-name">${competitionLabel || ' '}</span>
           </div>
           ${this._renderStatusBadge(match)}
@@ -787,6 +791,11 @@ class CalcioLiveTeamNextCard extends LitElement {
         display: flex; align-items: center; justify-content: center;
         font-size: 12px;
         box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+        overflow: hidden;
+      }
+      .comp-icon img {
+        width: 100%; height: 100%;
+        object-fit: contain;
       }
       .comp-name {
         white-space: nowrap;

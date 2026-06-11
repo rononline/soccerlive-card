@@ -127,11 +127,14 @@
             `}))}
         </tbody>
       </table>
-    `}_renderHeader(e,t,i,a,n){const s=this._getZoneConfig(),o=this._isCupGroupStage(),r=s&&s.hero?s.hero:null,l=n?this._t("phase.group_stage"):this._shouldShowPhase(i&&i.name)?this._translatePhase(i.name):"",c=[];t&&"n/a"!==t.toLowerCase()&&c.push(t),l&&c.push(l);let d=0;if(n)for(const e of a)d+=(e.standings||[]).filter((e=>null!=e.rank)).length;return F`
+    `}_renderHeader(e,t,i,a,n){const s=this._getZoneConfig(),o=this._isCupGroupStage(),r=s&&s.hero?s.hero:null,l=n?this._t("phase.group_stage"):this._shouldShowPhase(i&&i.name)?this._translatePhase(i.name):"",c=[];t&&"n/a"!==t.toLowerCase()&&c.push(t),l&&c.push(l);let d=0;if(n)for(const e of a)d+=(e.standings||[]).filter((e=>null!=e.rank)).length;const p=e.attributes.league_logo&&"N/A"!==e.attributes.league_logo?e.attributes.league_logo:null;return F`
       <div class="top-bar ${o?"top-bar-cup":""} ${r?`accent-${r.accent}`:""}">
+        ${p&&!r?F`<img class="league-logo" src="${p}" alt="" />`:""}
         ${r&&r.icon?F`<div class="hero-icon">${r.icon}</div>`:""}
-        <h2>${e.state}</h2>
-        <div class="sub">${c.join(" · ")}</div>
+        <div class="league-title">
+          <h2>${e.state}</h2>
+          <div class="sub">${c.join(" · ")}</div>
+        </div>
         ${n&&o?F`
           <div class="hero-badges">
             <span class="badge">${a.length} ${this._t("hero.groups")}</span>
@@ -252,6 +255,14 @@
         color: var(--cl-text);
         backdrop-filter: blur(8px);
       }
+      .top-bar .league-logo {
+        width: 42px; height: 42px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 8px rgba(99,102,241,0.3));
+        margin-bottom: 8px;
+        display: block;
+      }
+      .league-title { display: inline; }
       .top-bar h2 {
         margin: 0;
         font-size: 20px;
@@ -1219,8 +1230,8 @@
           <div style="font-size:40px; opacity:0.25; margin-bottom:10px;">⚽</div>
           <div style="font-weight:700; margin-bottom:4px;">${this._t("team.no_match")}</div>
           <div style="font-size:12px; opacity:0.6;">${this._t("team.off_season")}</div>
-        </ha-card>`;const i=t.attributes.matches[0],a="in"===i.state,n="post"===i.state,s=a||n,o=i.league_name&&"N/A"!==i.league_name?i.league_name:i.season_info&&"N/A"!==i.season_info&&this._shouldShowPhase(i.season_info)?this._translatePhase(i.season_info):"",r=i.venue&&"N/A"!==i.venue?i.venue:"",l=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",c=r?l?`${r}, ${l}`:r:"—",d=i.broadcast&&""!==i.broadcast&&"N/A"!==i.broadcast?i.broadcast:"",p=parseInt(i.attendance,10),h=!isNaN(p)&&p>0;return F`
-      <ha-card class="${a?"live":""}">
+        </ha-card>`;const i=t.attributes.matches[0],a=t.attributes.league_info?t.attributes.league_info[0]:null,n=a&&a.logo_href&&"N/A"!==a.logo_href?a.logo_href:null,s="in"===i.state,o="post"===i.state,r=s||o,l=i.league_name&&"N/A"!==i.league_name?i.league_name:i.season_info&&"N/A"!==i.season_info&&this._shouldShowPhase(i.season_info)?this._translatePhase(i.season_info):"",c=i.venue&&"N/A"!==i.venue?i.venue:"",d=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",p=c?d?`${c}, ${d}`:c:"—",h=i.broadcast&&""!==i.broadcast&&"N/A"!==i.broadcast?i.broadcast:"",g=parseInt(i.attendance,10),u=!isNaN(g)&&g>0;return F`
+      <ha-card class="${s?"live":""}">
         <div class="bg-logos">
           <div class="bg-logo home"><img src="${i.home_logo}" alt="" loading="lazy"></div>
           <div class="bg-logo away"><img src="${i.away_logo}" alt="" loading="lazy"></div>
@@ -1233,8 +1244,10 @@
 
         <div class="top-bar">
           <div class="competition">
-            <span class="comp-icon">⚽</span>
-            <span class="comp-name">${o||" "}</span>
+            <span class="comp-icon">
+              ${n?F`<img src="${n}" alt="" />`:"⚽"}
+            </span>
+            <span class="comp-name">${l||" "}</span>
           </div>
           ${this._renderStatusBadge(i)}
         </div>
@@ -1247,11 +1260,11 @@
             <div class="team-name-big">${i.home_team}</div>
             ${this._renderRecord(i.home_record)}
             ${this._renderForm(i.home_form)}
-            ${a?"":this._renderTopScorer(i.home_top_scorer)}
+            ${s?"":this._renderTopScorer(i.home_top_scorer)}
           </div>
 
           <div class="score-center">
-            ${s?F`<div class="score-numbers">${i.home_score} <span class="dash">-</span> ${i.away_score}</div>`:F`<div class="score-vs">tegen</div>`}
+            ${r?F`<div class="score-numbers">${i.home_score} <span class="dash">-</span> ${i.away_score}</div>`:F`<div class="score-vs">tegen</div>`}
             ${this._renderClock(i)}
           </div>
 
@@ -1262,18 +1275,18 @@
             <div class="team-name-big">${i.away_team}</div>
             ${this._renderRecord(i.away_record)}
             ${this._renderForm(i.away_form)}
-            ${a?"":this._renderTopScorer(i.away_top_scorer)}
+            ${s?"":this._renderTopScorer(i.away_top_scorer)}
           </div>
         </div>
 
-        ${a?this._renderStatsRow(i):""}
+        ${s?this._renderStatsRow(i):""}
 
         <div class="meta-row">
           <div class="meta-item venue-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>${c}</span>
+            <span>${p}</span>
           </div>
-          ${s?F`<button class="info-btn" @click="${()=>this.showDetails(i)}">${this._t("team.details")} ›</button>`:F`
+          ${r?F`<button class="info-btn" @click="${()=>this.showDetails(i)}">${this._t("team.details")} ›</button>`:F`
               <div class="meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <span>${i.date||""}</span>
@@ -1281,18 +1294,18 @@
             `}
         </div>
 
-        ${d||h?F`
+        ${h||u?F`
           <div class="extras-row">
-            ${d?F`
+            ${h?F`
               <div class="extra-chip broadcast">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-                <span>${d}</span>
+                <span>${h}</span>
               </div>
             `:""}
-            ${h?F`
+            ${u?F`
               <div class="extra-chip attendance">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <span>${p.toLocaleString(de(this.hass,this._config))} ${this._t("team.spectators")}</span>
+                <span>${g.toLocaleString(de(this.hass,this._config))} ${this._t("team.spectators")}</span>
               </div>
             `:""}
           </div>
@@ -1407,6 +1420,11 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 12px;
         box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+        overflow: hidden;
+      }
+      .comp-icon img {
+        width: 100%; height: 100%;
+        object-fit: contain;
       }
       .comp-name {
         white-space: nowrap;
