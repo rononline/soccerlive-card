@@ -205,15 +205,44 @@ class CalcioLiveClassificaCardEditor extends LitElement {
 
         <div>
           <label class="field-label">Max Teams Visible</label>
-          <input
-            type="number"
-            min="1"
-            max="50"
+          <input type="number" min="1" max="50"
             .value=${this._config.max_teams_visible || 10}
-            data-config-value="max_teams_visible"
-            @change=${this._numberChanged}
-          />
+            data-config-value="max_teams_visible" @change=${this._numberChanged} />
         </div>
+
+        <div>
+          <label class="field-label">Uitgelicht team (my_team)</label>
+          <input type="text" placeholder="bijv. Feyenoord Rotterdam"
+            .value=${this._config.highlight_team || this._config.my_team || ''}
+            @change=${(e) => this._fireConfigChanged({...this._config, highlight_team: e.target.value, my_team: e.target.value})} />
+        </div>
+
+        <div class="option">
+          <label>Seizoenstotalen tonen</label>
+          <ha-switch .checked=${this._config.show_stats !== false}
+            data-config-value="show_stats" @change=${this._switchChanged}></ha-switch>
+        </div>
+
+        <div class="option">
+          <label>Compact modus</label>
+          <ha-switch .checked=${this._config.compact_mode === true}
+            data-config-value="compact_mode" @change=${this._switchChanged}></ha-switch>
+        </div>
+
+        ${this._config.compact_mode ? html`
+          <div>
+            <label class="field-label">Top N teams</label>
+            <input type="number" min="1" max="20"
+              .value=${this._config.compact_top || 5}
+              data-config-value="compact_top" @change=${this._numberChanged} />
+          </div>
+          <div>
+            <label class="field-label">Bottom N teams</label>
+            <input type="number" min="1" max="10"
+              .value=${this._config.compact_bottom || 3}
+              data-config-value="compact_bottom" @change=${this._numberChanged} />
+          </div>
+        ` : ''}
         <div>
           <label class="field-label">Skin</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

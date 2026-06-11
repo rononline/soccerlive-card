@@ -139,6 +139,10 @@ class CalcioLiveStandingsCard extends LitElement {
     this.selectedGroup = config.selected_group || '';
     this.showEventToasts = config.show_event_toasts === true;
     this.highlightTeam = (config.highlight_team || config.my_team || '').toLowerCase();
+    this.showStats = config.show_stats !== false;
+    this.compactMode = config.compact_mode === true;
+    this.compactTop = parseInt(config.compact_top) || 5;
+    this.compactBottom = parseInt(config.compact_bottom) || 3;
     this._toastMessage = '';
     this._toastVisible = false;
     this._toastVariant = 'goal';
@@ -401,6 +405,17 @@ class CalcioLiveStandingsCard extends LitElement {
     const maxVisible = Math.min(this.maxTeamsVisible, total);
     const tableHeight = maxVisible * 48 + 50;
 
+    // Positie van het uitgelichte team
+    const highlightPos = this.highlightTeam
+      ? (filteredStandings.find(t => t.team_name && t.team_name.toLowerCase().includes(this.highlightTeam)) || {}).rank
+      : null;
+
+    // Seizoenstotalen
+    const totalGames = Math.round(
+      filteredStandings.reduce((s, t) => s + (parseInt(t.games_played) || 0), 0) / 2
+    );
+    const totalGoals = filteredStandings.reduce((s, t) => s + (parseInt(t.goals_for) || 0), 0);
+
     const isPreSeason = total > 0 && filteredStandings.every(
       t => parseInt(t.wins ?? '0') === 0 &&
            parseInt(t.draws ?? '0') === 0 &&
@@ -413,7 +428,7 @@ class CalcioLiveStandingsCard extends LitElement {
           <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
         ` : ''}
 
-        ${this.hideHeader ? '' : this._renderHeader(stateObj, seasonName, standingsGroup, standingsGroups, showAllGroups)}
+        ${this.hideHeader ? '' : this._renderHeader(stateObj, seasonName, standingsGroup, standingsGroups, showAllGroups, highlightPos)}
 
         ${isPreSeason ? html`
           <div class="preseason-banner">
@@ -430,12 +445,36 @@ class CalcioLiveStandingsCard extends LitElement {
             </div>
           `}
 
+        ${this.showStats && totalGames > 0 ? html`
+          <div class="season-stats">
+            <span>${totalGames} ${this._t('standings.stats').split('·')[0].trim()}</span>
+            <span class="stats-dot">·</span>
+            <span>${totalGoals} ${this._t('standings.stats').split('·')[1]?.trim() || 'doelpunten'}</span>
+          </div>
+        ` : ''}
+
         ${this._renderLegend()}
       </ha-card>
     `;
   }
 
   _renderFullTable(standings, total) {
+    // Compact mode: toon alleen top N + bottom N met separator
+    let rows = standings;
+    let separatorAfter = null;
+    if (this.compactMode && total > this.compactTop + this.compactBottom) {
+      const top = standings.slice(0, this.compactTop);
+      const bottom = standings.slice(total - this.compactBottom);
+      const hiddenCount = total - this.compactTop - this.compactBottom;
+      // Voeg uitgelicht team toe als het in de verborgen zone zit
+      const hiddenHighlight = this.highlightTeam
+        ? standings.slice(this.compactTop, total - this.compactBottom)
+            .find(t => t.team_name && t.team_name.toLowerCase().includes(this.highlightTeam))
+        : null;
+      rows = [...top, ...(hiddenHighlight ? [hiddenHighlight] : []), { _separator: true, hiddenCount }, ...bottom];
+      separatorAfter = true;
+    }
+
     return html`
       <table class="standings-table">
         <thead>
@@ -451,7 +490,13 @@ class CalcioLiveStandingsCard extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${standings.map(team => {
+          ${rows.map(team => {
+            if (team._separator) return html`
+              <tr class="separator-row">
+                <td colspan="8">
+                  <span class="separator-dots">· · · ${team.hiddenCount} ${this._t('standings.compact_hidden')} · · ·</span>
+                </td>
+              </tr>`;
             const isHighlighted = this.highlightTeam && team.team_name &&
               team.team_name.toLowerCase().includes(this.highlightTeam);
             const num = (v) => {
@@ -525,7 +570,7 @@ class CalcioLiveStandingsCard extends LitElement {
     `;
   }
 
-  _renderHeader(stateObj, seasonName, standingsGroup, standingsGroups, showAllGroups) {
+  _renderHeader(stateObj, seasonName, standingsGroup, standingsGroups, showAllGroups, highlightPos) {
     const zones = this._getZoneConfig();
     const isCupGroup = this._isCupGroupStage();
     const hero = zones && zones.hero ? zones.hero : null;
@@ -565,6 +610,7 @@ class CalcioLiveStandingsCard extends LitElement {
           <h2>${leagueAbbr || stateObj.state}</h2>
           <div class="sub">${subParts.join(' · ')}</div>
         </div>
+        ${highlightPos ? html`<span class="highlight-pos-badge">${highlightPos}e</span>` : ''}
         ${showAllGroups && isCupGroup ? html`
           <div class="hero-badges">
             <span class="badge">${standingsGroups.length} ${this._t('hero.groups')}</span>
@@ -787,7 +833,32 @@ class CalcioLiveStandingsCard extends LitElement {
       .preseason-icon { font-size: 16px; }
 
       .standings-table tbody td:first-child { padding-left: 14px; text-align: left; }
-      .highlighted-team { background: rgba(99,102,241,0.07); }
+      .highlight-pos-badge {
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--cl-accent), var(--cl-accent-2));
+        color: white;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 999px;
+        box-shadow: 0 2px 10px rgba(var(--cl-accent-rgb),0.4);
+        letter-spacing: -0.01em;
+      }
+      .season-stats {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 16px;
+        font-size: 11px; font-weight: 600;
+        color: var(--cl-text-2);
+        border-top: 1px solid var(--cl-divider);
+        justify-content: center;
+      }
+      .stats-dot { opacity: 0.5; }
+      .separator-row td { padding: 6px 0; text-align: center; border: none; }
+      .separator-dots {
+        font-size: 10px; font-weight: 700;
+        color: var(--cl-text-2); letter-spacing: 0.1em; opacity: 0.6;
+      }
+      .highlighted-team { background: rgba(var(--cl-accent-rgb),0.07); }
       .highlighted-team .tname { font-weight: 800; color: var(--cl-text); }
       .highlighted-team .points-cell { color: var(--cl-accent); font-weight: 900; }
       .zone-cl td:first-child  { border-left: 3px solid var(--cl-cl);   padding-left: 11px; }

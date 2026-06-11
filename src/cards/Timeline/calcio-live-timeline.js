@@ -155,7 +155,7 @@ class CalcioLiveTimelineCard extends LitElement {
       .hero-bg {
         position: absolute; inset: 0; z-index: 0;
         background:
-          radial-gradient(ellipse at 0% 0%, rgba(99,102,241,0.10), transparent 50%),
+          radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.10), transparent 50%),
           radial-gradient(ellipse at 100% 100%, rgba(251,191,36,0.10), transparent 50%);
         pointer-events: none;
       }

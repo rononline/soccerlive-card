@@ -153,6 +153,19 @@ class CalcioLiveTodayMatchesEditor extends LitElement {
 
         <h3>Settings</h3>
 
+        <div>
+          <label class="field-label">Mijn team (accentueren)</label>
+          <input type="text" placeholder="bijv. Feyenoord Rotterdam"
+            .value=${this._config.my_team || ''}
+            @change=${(e) => this._fireConfigChanged({...this._config, my_team: e.target.value})} />
+        </div>
+
+        <div class="option">
+          <label>Live ticker tonen (bij live wedstrijden)</label>
+          <ha-switch .checked=${this._config.show_live_ticker !== false}
+            data-config-value="show_live_ticker" @change=${this._switchChanged}></ha-switch>
+        </div>
+
         <div class="option">
           <label>Show Finished Matches</label>
           <ha-switch

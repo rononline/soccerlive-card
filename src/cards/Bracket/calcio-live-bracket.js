@@ -382,7 +382,7 @@ class CalcioLiveBracketCard extends LitElement {
       .hero-bg {
         position: absolute; inset: 0; z-index: 0;
         background:
-          radial-gradient(ellipse at 0% 0%, rgba(99,102,241,0.10), transparent 50%),
+          radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.10), transparent 50%),
           radial-gradient(ellipse at 100% 100%, rgba(251,191,36,0.10), transparent 50%);
         pointer-events: none;
       }
@@ -435,7 +435,7 @@ class CalcioLiveBracketCard extends LitElement {
         text-align: center;
         padding: 6px 12px;
         border-radius: 12px;
-        background: rgba(99,102,241,0.12);
+        background: rgba(var(--cl-accent-rgb),0.12);
         align-self: center;
         margin-bottom: 4px;
       }
@@ -639,7 +639,7 @@ class CalcioLiveBracketCard extends LitElement {
       .tree-col-label {
         text-align: center;
         padding: 4px 8px;
-        background: rgba(99,102,241,0.12);
+        background: rgba(var(--cl-accent-rgb),0.12);
         border-radius: 8px;
         margin-bottom: 10px;
         display: flex;
@@ -698,7 +698,7 @@ class CalcioLiveBracketCard extends LitElement {
         gap: 2px;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
-        box-shadow: 0 2px 8px rgba(99,102,241,0.15);
+        box-shadow: 0 2px 8px rgba(var(--cl-accent-rgb),0.15);
       }
       .mini-tie:hover {
         border-color: var(--cl-accent);

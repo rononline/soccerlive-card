@@ -136,6 +136,17 @@ class CalcioLiveTeamNextCardEditor extends LitElement {
         </div>
 
         <h3>Settings</h3>
+        <div>
+          <label class="field-label">Mijn team (accentueren)</label>
+          <input type="text" placeholder="bijv. Feyenoord Rotterdam"
+            .value=${this._config.my_team || ''}
+            @change=${(e) => this._fireConfigChanged({...this._config, my_team: e.target.value})} />
+        </div>
+        <div class="option">
+          <label>Vorige wedstrijden tonen</label>
+          <ha-switch .checked=${this._config.show_previous_matches === true}
+            data-config-value="show_previous_matches" @change=${this._switchChanged}></ha-switch>
+        </div>
         <div class="option">
           <label>Show Event Toasts (in-card)</label>
           <ha-switch

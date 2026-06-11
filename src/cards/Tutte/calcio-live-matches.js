@@ -41,6 +41,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
     this.reverseOrder = config.reverse_order === true;
     this.showEventToasts = config.show_event_toasts === true;
     this.myTeam = (config.my_team || '').toLowerCase();
+    this.showLiveTicker = config.show_live_ticker !== false;
     this.activeMatch = null;
     this.showPopup = false;
   }
@@ -345,12 +346,28 @@ class CalcioLiveTodayMatchesCard extends LitElement {
 
     const scrollHeight = Math.max(this.maxEventsVisible * 80, 240);
 
+    // Live ticker content
+    const liveMatches = limited.filter(m => m.state === 'in');
+    const tickerText = liveMatches.map(m =>
+      `${m.home_abbrev || m.home_team}  ${m.home_score ?? '-'} - ${m.away_score ?? '-'}  ${m.away_abbrev || m.away_team}`
+    ).join('     ·     ');
+
     return html`
       <ha-card>
         <div class="hero-bg"></div>
 
         ${this.showEventToasts && this._toastVisible ? html`
           <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
+        ` : ''}
+
+        ${this.showLiveTicker && liveMatches.length > 0 ? html`
+          <div class="live-ticker">
+            <span class="ticker-badge">LIVE</span>
+            <div class="ticker-track">
+              <span class="ticker-content">${tickerText}</span>
+              <span class="ticker-content" aria-hidden="true">${tickerText}</span>
+            </div>
+          </div>
         ` : ''}
 
         ${!this.hideHeader ? html`
@@ -533,6 +550,38 @@ class CalcioLiveTodayMatchesCard extends LitElement {
           radial-gradient(ellipse at 100% 100%, rgba(var(--cl-accent-2-rgb),0.10), transparent 50%);
         pointer-events: none;
         z-index: 0;
+      }
+      .live-ticker {
+        display: flex; align-items: center; gap: 10px;
+        background: rgba(239,68,68,0.08);
+        border-bottom: 1px solid rgba(239,68,68,0.15);
+        padding: 6px 14px;
+        overflow: hidden;
+        position: relative; z-index: 1;
+      }
+      .ticker-badge {
+        flex-shrink: 0;
+        background: var(--cl-live);
+        color: white;
+        font-size: 9px; font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 4px;
+        letter-spacing: 0.08em;
+        box-shadow: 0 0 8px var(--cl-live-glow);
+      }
+      .ticker-track {
+        flex: 1; overflow: hidden;
+        display: flex; gap: 60px;
+      }
+      .ticker-content {
+        white-space: nowrap; flex-shrink: 0;
+        font-size: 11px; font-weight: 700;
+        color: var(--cl-text);
+        animation: ticker-scroll 18s linear infinite;
+      }
+      @keyframes ticker-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(calc(-100% - 60px)); }
       }
       .matches-header {
         position: relative;

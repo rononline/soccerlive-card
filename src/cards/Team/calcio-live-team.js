@@ -28,6 +28,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     this.activeMatch = null;
     this.showEventToasts = config.show_event_toasts === true;
     this.myTeam = (config.my_team || '').toLowerCase();
+    this.showPreviousMatches = config.show_previous_matches === true;
     this._toastMessage = '';
     this._toastVisible = false;
     this._toastVariant = 'goal';
@@ -543,6 +544,7 @@ class CalcioLiveTeamNextCard extends LitElement {
           </div>
         ` : ''}
 
+        ${this.showPreviousMatches ? this._renderPreviousMatches(stateObj.attributes.previous_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name) : ""}
         ${this._renderH2H(match.head_to_head)}
         ${this._renderUpcomingList(stateObj.attributes.upcoming_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name)}
       </ha-card>
@@ -567,6 +569,45 @@ class CalcioLiveTeamNextCard extends LitElement {
   _teamBadge(abbrev, color) {
     const bg = color && color !== 'N/A' ? `#${color.replace('#', '')}` : 'rgba(var(--cl-accent-rgb),0.25)';
     return html`<span class="abbrev-badge" style="background:${bg}">${abbrev}</span>`;
+  }
+
+  _renderPreviousMatches(previousMatches, fallbackMatches, trackedTeam) {
+    const prev = previousMatches && previousMatches.length > 0
+      ? previousMatches
+      : (fallbackMatches ? fallbackMatches.filter(m => m.state === 'post').slice(-3).reverse() : []);
+    if (prev.length === 0) return '';
+    const tracked = (trackedTeam || '').toLowerCase();
+    return html`
+      <div class="upcoming-list">
+        <div class="upcoming-list-title">${this._t('team.previous_matches')}</div>
+        ${prev.map(m => {
+          const homeTracked = tracked && m.home_team && m.home_team.toLowerCase().includes(tracked);
+          const awayTracked = tracked && m.away_team && m.away_team.toLowerCase().includes(tracked);
+          const hs = parseInt(m.home_score), as_ = parseInt(m.away_score);
+          const homeWon = !isNaN(hs) && !isNaN(as_) && hs > as_;
+          const awayWon = !isNaN(hs) && !isNaN(as_) && as_ > hs;
+          return html`
+            <div class="upcoming-row">
+              <span class="upcoming-date">
+                ${m.date ? m.date.split(' ')[0] : ''}
+                <span class="upcoming-date-day">&nbsp;</span>
+              </span>
+              <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
+                <img src="${m.home_logo}" alt="" />
+                ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
+              </span>
+              <span class="prev-score ${homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw'}">
+                ${m.home_score ?? '-'}-${m.away_score ?? '-'}
+              </span>
+              <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
+                ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
+                <img src="${m.away_logo}" alt="" />
+              </span>
+            </div>
+          `;
+        })}
+      </div>
+    `;
   }
 
   _renderUpcomingList(upcomingMatches, fallbackMatches, trackedTeam) {
@@ -1361,6 +1402,15 @@ class CalcioLiveTeamNextCard extends LitElement {
       .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
+      .prev-score {
+        font-size: 12px; font-weight: 900;
+        color: var(--cl-text-2);
+        text-align: center; min-width: 32px;
+        font-variant-numeric: tabular-nums;
+      }
+      .prev-score.home-win { color: var(--cl-green); }
+      .prev-score.away-win { color: var(--cl-live); }
+      .prev-score.draw { color: var(--cl-text-2); }
       .upcoming-live-score {
         font-size: 12px; font-weight: 900;
         color: var(--cl-live);

@@ -175,7 +175,7 @@ class CalcioLiveLineupCard extends LitElement {
       .hero-bg {
         position: absolute; inset: 0; z-index: 0;
         background:
-          radial-gradient(ellipse at 0% 0%, rgba(99,102,241,0.10), transparent 50%),
+          radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.10), transparent 50%),
           radial-gradient(ellipse at 100% 100%, rgba(16,185,129,0.10), transparent 50%);
         pointer-events: none;
       }
@@ -192,7 +192,7 @@ class CalcioLiveLineupCard extends LitElement {
         background: linear-gradient(135deg, var(--cl-accent), #10b981);
         display: flex; align-items: center; justify-content: center;
         font-size: 20px;
-        box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+        box-shadow: 0 4px 16px rgba(var(--cl-accent-rgb),0.4);
       }
       .header-text .title {
         font-size: 18px; font-weight: 900;
