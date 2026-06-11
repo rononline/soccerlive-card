@@ -92,7 +92,7 @@ class CalcioLiveLineupCard extends LitElement {
             <div class="header-icon">👥</div>
             <div class="header-text">
               <div class="title">${this._t('card.lineup')}</div>
-              <div class="subtitle">${m.home_team} vs ${m.away_team}</div>
+              <div class="subtitle">${m.home_team} tegen ${m.away_team}</div>
             </div>
           </div>
         ` : ''}

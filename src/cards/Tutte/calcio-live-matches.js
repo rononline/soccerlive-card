@@ -318,6 +318,8 @@ class CalcioLiveTodayMatchesCard extends LitElement {
     }
 
     const liveCount = limited.filter(m => m.state === 'in').length;
+    const uniqueLeagues = new Set(limited.map(m => m.league_name).filter(l => l && l !== 'N/A'));
+    const isMultiLeague = uniqueLeagues.size > 1;
 
     const grouped = [];
     let currentKey = null;
@@ -391,12 +393,17 @@ class CalcioLiveTodayMatchesCard extends LitElement {
                       <span class="name ${awayWinner === true ? 'winner' : (awayWinner === false ? 'loser' : '')}">${match.away_team}</span>
                       <span class="score ${awayWinner === true ? 'winner' : (awayWinner === false ? 'loser' : '')}">${this._matchScore(match, 'away')}</span>
                     </div>
-                    ${broadcast && isUpcoming ? html`
+                    ${(broadcast && isUpcoming) || (isMultiLeague && match.league_name && match.league_name !== 'N/A') ? html`
                       <div class="row-extras">
-                        <span class="tv-chip" title="Diretta TV">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-                          ${broadcast}
-                        </span>
+                        ${isMultiLeague && match.league_name && match.league_name !== 'N/A' ? html`
+                          <span class="league-chip">${match.league_name}</span>
+                        ` : ''}
+                        ${broadcast && isUpcoming ? html`
+                          <span class="tv-chip" title="Diretta TV">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+                            ${broadcast}
+                          </span>
+                        ` : ''}
                       </div>
                     ` : ''}
                   </div>
@@ -729,6 +736,22 @@ class CalcioLiveTodayMatchesCard extends LitElement {
         letter-spacing: 0.04em;
       }
       .tv-chip svg { width: 10px; height: 10px; }
+      .league-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 7px;
+        background: rgba(236,72,153,0.10);
+        border: 1px solid rgba(236,72,153,0.22);
+        border-radius: 999px;
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--cl-accent-2);
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 140px;
+      }
       .match-status-icon {
         color: var(--cl-text-2);
         font-size: 18px;
