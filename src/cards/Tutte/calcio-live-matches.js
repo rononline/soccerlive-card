@@ -469,8 +469,8 @@ class CalcioLiveTodayMatchesCard extends LitElement {
         <div style="display:flex; justify-content:center; align-items:center; gap:18px; margin-bottom:24px;">
           <img style="width:64px; height:64px; object-fit:contain;" src="${m.home_logo}" alt="${m.home_team}" />
           <div style="text-align:center;">
-            <div style="font-size:38px; font-weight:900; letter-spacing:-0.04em; line-height:1;">${m.home_score ?? '-'} <span style="opacity:0.4;">-</span> ${m.away_score ?? '-'}</div>
-            <div style="font-size:12px; color:#94a3b8; margin-top:8px; font-weight:600;">${m.clock ?? m.status ?? ''}</div>
+            <div style="font-size:38px; font-weight:900; letter-spacing:-0.04em; line-height:1;">${(!m.home_score || m.home_score === 'N/A') ? '-' : m.home_score} <span style="opacity:0.4;">-</span> ${(!m.away_score || m.away_score === 'N/A') ? '-' : m.away_score}</div>
+            <div style="font-size:12px; color:#94a3b8; margin-top:8px; font-weight:600;">${(m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : '')}</div>
           </div>
           <img style="width:64px; height:64px; object-fit:contain;" src="${m.away_logo}" alt="${m.away_team}" />
         </div>
