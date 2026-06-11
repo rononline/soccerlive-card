@@ -524,7 +524,36 @@ class CalcioLiveTeamNextCard extends LitElement {
             ` : ''}
           </div>
         ` : ''}
+
+        ${this._renderUpcomingList(stateObj.attributes.matches)}
       </ha-card>
+    `;
+  }
+
+  _renderUpcomingList(matches) {
+    if (!matches || matches.length <= 1) return '';
+    const upcoming = matches.slice(1).filter(m => m.state === 'pre').slice(0, 4);
+    if (upcoming.length === 0) return '';
+    return html`
+      <div class="upcoming-list">
+        <div class="upcoming-list-title">${this._t('team.next_match')}</div>
+        ${upcoming.map(m => html`
+          <div class="upcoming-row">
+            <span class="upcoming-date">${m.date ? m.date.split(' ')[1] || m.date.split(' ')[0] : ''}
+              <span class="upcoming-date-day">${m.date ? m.date.split(' ')[0] : ''}</span>
+            </span>
+            <span class="upcoming-team">
+              <img src="${m.home_logo}" alt="" />
+              ${m.home_abbrev || m.home_team}
+            </span>
+            <span class="upcoming-vs">-</span>
+            <span class="upcoming-team">
+              <img src="${m.away_logo}" alt="" />
+              ${m.away_abbrev || m.away_team}
+            </span>
+          </div>
+        `)}
+      </div>
     `;
   }
 
@@ -1199,6 +1228,60 @@ class CalcioLiveTeamNextCard extends LitElement {
         14%  { transform: translate(-50%, 0) scale(1); }
         90%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
         100% { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+      }
+
+      .upcoming-list {
+        border-top: 1px solid var(--cl-divider);
+        padding: 10px 16px 14px;
+      }
+      .upcoming-list-title {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--cl-text-2);
+        margin-bottom: 8px;
+      }
+      .upcoming-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 12px;
+      }
+      .upcoming-row:last-child { border-bottom: none; }
+      .upcoming-date {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--cl-accent);
+        min-width: 42px;
+        font-variant-numeric: tabular-nums;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+      }
+      .upcoming-date-day {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--cl-text-2);
+      }
+      .upcoming-team {
+        display: flex; align-items: center; gap: 5px;
+        flex: 1;
+        font-weight: 600;
+        color: var(--cl-text);
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .upcoming-team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+      .upcoming-vs {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--cl-text-2);
+        flex-shrink: 0;
       }
 
       /* Goal celebration */

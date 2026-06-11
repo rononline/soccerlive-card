@@ -400,6 +400,14 @@ class CalcioLiveStandingsCard extends LitElement {
     const maxVisible = Math.min(this.maxTeamsVisible, total);
     const tableHeight = maxVisible * 48 + 50;
 
+    const isPreSeason = total > 0 && filteredStandings.every(
+      t => parseInt(t.games_played ?? t.wins ?? '0') === 0 &&
+           parseInt(t.wins ?? '0') === 0 &&
+           parseInt(t.draws ?? '0') === 0 &&
+           parseInt(t.losses ?? '0') === 0
+    );
+    const seasonStart = stateObj.attributes.season_start || null;
+
     return html`
       <ha-card>
         ${this.showEventToasts && this._toastVisible ? html`
@@ -407,6 +415,13 @@ class CalcioLiveStandingsCard extends LitElement {
         ` : ''}
 
         ${this.hideHeader ? '' : this._renderHeader(stateObj, seasonName, standingsGroup, standingsGroups, showAllGroups)}
+
+        ${isPreSeason ? html`
+          <div class="preseason-banner">
+            <span class="preseason-icon">🗓️</span>
+            <span>Seizoen begint${seasonStart ? ` op ${seasonStart}` : ' binnenkort'}</span>
+          </div>
+        ` : ''}
 
         ${showAllGroups
           ? this._renderGroupsGrid(standingsGroups, seasonName)
@@ -757,7 +772,24 @@ class CalcioLiveStandingsCard extends LitElement {
         color: var(--cl-text);
       }
       .standings-table tbody tr:last-child td { border-bottom: none; }
+      .preseason-banner {
+        display: flex; align-items: center; gap: 10px;
+        margin: 0 14px 4px;
+        padding: 10px 14px;
+        background: rgba(99,102,241,0.08);
+        border: 1px solid rgba(99,102,241,0.18);
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--cl-text-2);
+      }
+      .preseason-icon { font-size: 16px; }
+
       .standings-table tbody td:first-child { padding-left: 14px; text-align: left; }
+      .zone-cl td:first-child  { border-left: 3px solid var(--cl-cl);   padding-left: 11px; }
+      .zone-el td:first-child  { border-left: 3px solid var(--cl-el);   padding-left: 11px; }
+      .zone-conf td:first-child{ border-left: 3px solid var(--cl-conf); padding-left: 11px; }
+      .zone-rel td:first-child { border-left: 3px solid var(--cl-rel);  padding-left: 11px; }
       .standings-table tbody td:last-child { padding-right: 14px; }
 
       .rank-cell {
