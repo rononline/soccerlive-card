@@ -580,6 +580,7 @@ class CalcioLiveTeamNextCard extends LitElement {
                 ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
                 <img src="${m.away_logo}" alt="" />
               </span>
+
             </div>
           `;
         })}
@@ -1328,15 +1329,10 @@ class CalcioLiveTeamNextCard extends LitElement {
         min-width: 0;
         overflow: hidden;
       }
-      /* Thuisploeg: rechts uitgelijnd richting het streepje */
-      .upcoming-team.home-side {
-        justify-content: flex-end;
-        flex-direction: row-reverse;
-      }
-      /* Uitploeg: links uitgelijnd vanuit het streepje */
-      .upcoming-team.away-side {
-        justify-content: flex-start;
-      }
+      /* Thuisploeg: rechts uitgelijnd — logo links, badge rechts richting het streepje */
+      .upcoming-team.home-side { justify-content: flex-end; }
+      /* Uitploeg: links uitgelijnd — badge links richting het streepje, logo rechts */
+      .upcoming-team.away-side { justify-content: flex-start; }
       .upcoming-team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
       .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-vs {
