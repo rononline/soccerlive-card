@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 
 const SKINS = ['dark', 'light', 'feyenoord', 'classic', 'neon', 'gold'];
-const LANGS  = ['auto', 'en', 'nl', 'de', 'fr', 'es', 'it'];
+const LANGS  = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
 
 class CalcioLiveCannonieriCardEditor extends LitElement {
   static get properties() {

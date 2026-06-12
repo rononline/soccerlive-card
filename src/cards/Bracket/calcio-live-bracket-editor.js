@@ -150,6 +150,8 @@ class CalcioLiveBracketEditor extends LitElement {
             <option value="fr" ?selected=${this._config.language === 'fr'}>Français</option>
             <option value="es" ?selected=${this._config.language === 'es'}>Español</option>
             <option value="nl" ?selected=${this._config.language === 'nl'}>Nederlands</option>
+            <option value="de" ?selected=${this._config.language === 'de'}>Deutsch</option>
+            <option value="pt" ?selected=${this._config.language === 'pt'}>Português</option>
           </select>
         </div>
       </div>
