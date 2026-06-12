@@ -163,5 +163,5 @@ All UI text is translated via `src/i18n.js` with **90+ keys** in seven languages
 
 ## 📜 License
 
-ISC — see [LICENSE](LICENSE).  
+GPL-3.0 — see [LICENSE](LICENSE).  
 Data via ESPN public APIs.
