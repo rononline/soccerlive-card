@@ -3,7 +3,7 @@
 Beautiful, animated football cards for Home Assistant.  
 Companion for the [Football Live integration](https://github.com/rononline/voetbal-live).
 
-Fork of [Calcio Live Card](https://github.com/Bobsilvio/calcio-live-card) by @Bobsilvio — extended with multi-language support, new cards, themes and various improvements.
+Originally based on [Calcio Live Card](https://github.com/Bobsilvio/calcio-live-card) by @Bobsilvio — extended with multi-language support, new cards, themes and various improvements.
 
 ---
 
