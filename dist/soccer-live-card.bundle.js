@@ -5152,18 +5152,18 @@
       .event-desc { font-size: 11px; color: var(--cl-text-2); }
       .no-commentary { text-align: center; padding: 24px 16px; color: var(--cl-text-2); }
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); }
-    `]}_getEventIcon(e){if(!e)return"📋";const t=e.toLowerCase();return t.includes("goal")?"⚽":t.includes("yellow")?"🟨":t.includes("red")?"🟥":t.includes("substitut")||t.includes("sub")?"🔄":t.includes("penaalty")||t.includes("pen")?"⚽":t.includes("own goal")?"🔴":"📋"}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.commentary||[],a=e.attributes.home_team||"?",i=e.attributes.away_team||"?",s=e.attributes.home_score??0,n=e.attributes.away_score??0,o=e.attributes.match_status||"",r=(e.attributes.league_info||[{}])[0].abbreviation||"",l=(e.attributes.matches||[]).find((e=>"in"===e.state)),c="in"===o||l&&"in"===l.state,d=l?l.clock:"",p=l?l.home_logo:"",h=l?l.away_logo:"";return U`
+    `]}_getEventIcon(e){if(!e)return"📋";const t=e.toLowerCase();return t.includes("goal")?"⚽":t.includes("yellow")?"🟨":t.includes("red")?"🟥":t.includes("substitut")||t.includes("sub")?"🔄":t.includes("penaalty")||t.includes("pen")?"⚽":t.includes("own goal")?"🔴":"📋"}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.commentary||[],a=(e.attributes.matches||[]).find((e=>"in"===e.state)),i=a?.home_team||e.attributes.home_team||"?",s=a?.away_team||e.attributes.away_team||"?",n=a?.home_score??e.attributes.home_score??0,o=a?.away_score??e.attributes.away_score??0,r=e.attributes.match_status||"",l=(e.attributes.league_info||[{}])[0].abbreviation||"",c="in"===r||a&&"in"===a.state,d=a?a.clock:"",p=a?a.home_logo:"",h=a?a.away_logo:"";return U`
       <ha-card>
         <div class="header">
-          ${r?U`<div class="comp-name">${r}</div>`:""}
+          ${l?U`<div class="comp-name">${l}</div>`:""}
           <div class="match-header">
             <div class="team-block">
               ${p?U`<img class="team-logo" src="${p}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
-              <span class="team-name">${a}</span>
+              <span class="team-name">${i}</span>
             </div>
 
             <div class="score-block">
-              <div class="score">${s} - ${n}</div>
+              <div class="score">${n} - ${o}</div>
               <div class="clock">
                 ${c?U`<span class="live-badge"></span>`:""}
                 ${d||"—"}
@@ -5171,7 +5171,7 @@
             </div>
 
             <div class="team-block right">
-              <span class="team-name">${i}</span>
+              <span class="team-name">${s}</span>
               ${h?U`<img class="team-logo" src="${h}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
             </div>
           </div>

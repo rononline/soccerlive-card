@@ -122,14 +122,15 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
     if (!stateObj) return html`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;
 
     const commentary = stateObj.attributes.commentary || [];
-    const homeTeam = stateObj.attributes.home_team || '?';
-    const awayTeam = stateObj.attributes.away_team || '?';
-    const homeScore = stateObj.attributes.home_score ?? 0;
-    const awayScore = stateObj.attributes.away_score ?? 0;
-    const matchStatus = stateObj.attributes.match_status || '';
-    const leagueName = (stateObj.attributes.league_info || [{}])[0].abbreviation || '';
     const liveMatches = stateObj.attributes.matches || [];
     const liveMatch = liveMatches.find(m => m.state === 'in');
+
+    const homeTeam = liveMatch?.home_team || stateObj.attributes.home_team || '?';
+    const awayTeam = liveMatch?.away_team || stateObj.attributes.away_team || '?';
+    const homeScore = liveMatch?.home_score ?? stateObj.attributes.home_score ?? 0;
+    const awayScore = liveMatch?.away_score ?? stateObj.attributes.away_score ?? 0;
+    const matchStatus = stateObj.attributes.match_status || '';
+    const leagueName = (stateObj.attributes.league_info || [{}])[0].abbreviation || '';
 
     const isLive = matchStatus === 'in' || (liveMatch && liveMatch.state === 'in');
     const clock = liveMatch ? liveMatch.clock : '';
