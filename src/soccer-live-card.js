@@ -24,3 +24,5 @@ import "./cards/MultiTeam/soccer-live-multi-team.js";
 import "./cards/MultiTeam/soccer-live-multi-team-editor.js";
 import "./cards/TeamCompetitions/soccer-live-team-competitions.js";
 import "./cards/TeamCompetitions/soccer-live-team-competitions-editor.js";
+import "./cards/LiveCommentary/soccer-live-live-commentary.js";
+import "./cards/LiveCommentary/soccer-live-live-commentary-editor.js";
