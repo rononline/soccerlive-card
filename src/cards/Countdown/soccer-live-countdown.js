@@ -1,9 +1,10 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 
 class SoccerLiveCountdownCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {}, _now: {} }; }
+  static get properties() { return { hass: {}, _config: {}, _now: {}, _weatherBadge: {} }; }
 
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
@@ -15,6 +16,28 @@ class SoccerLiveCountdownCard extends LitElement {
     super.connectedCallback();
     this._now = new Date();
     this._timer = setInterval(() => { this._now = new Date(); this.requestUpdate(); }, 1000);
+    this._loadWeather();
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has('hass') || changedProperties.has('_config')) {
+      this._loadWeather();
+    }
+  }
+
+  async _loadWeather() {
+    if (!this.hass || !this._config) return;
+    const stateObj = this.hass.states[this._config.entity];
+    if (!stateObj || !stateObj.attributes.matches) return;
+    const match = stateObj.attributes.matches[0];
+    if (match && match.venue) {
+      try {
+        this._weatherBadge = await renderWeatherBadge(match.venue);
+        this.requestUpdate();
+      } catch (e) {
+        console.warn('Weather load failed:', e);
+      }
+    }
   }
 
   disconnectedCallback() {
@@ -63,7 +86,7 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, weatherBadgeStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -164,7 +187,11 @@ class SoccerLiveCountdownCard extends LitElement {
         </div>
 
         ${venue ? html`
-          <div class="meta">🏟 <span>${venue}${venueCity ? `, ${venueCity}` : ''}</span>
+          <div class="meta">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>🏟 ${venue}${venueCity ? `, ${venueCity}` : ''}</span>
+              ${this._weatherBadge ? this._weatherBadge : ''}
+            </div>
           </div>
         ` : ''}
       </ha-card>
