@@ -2,14 +2,17 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
+import { renderLoading, spinnerStyles } from "../loading-spinner.js";
+import { renderCardError } from "../card-error.js";
 
 class SoccerLiveCountdownCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {}, _now: {}, _weatherBadge: {} }; }
+  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _now: {}, _weatherBadge: {} }; }
 
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
     this._config = config;
     applySkin(this, config);
+    this._isLoading = true;
   }
 
   connectedCallback() {
@@ -20,6 +23,12 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   updated(changedProperties) {
+    if (changedProperties.has('hass')) {
+      const stateObj = this.hass?.states[this._config?.entity];
+      if (stateObj && stateObj.state !== 'unavailable') {
+        this._isLoading = false;
+      }
+    }
     if (changedProperties.has('hass') || changedProperties.has('_config')) {
       this._loadWeather();
     }
@@ -86,7 +95,7 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, weatherBadgeStyles, css`
+    return [skinStyles, spinnerStyles, weatherBadgeStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -118,12 +127,14 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   render() {
-    if (!this.hass || !this._config) return html``;
+    if (!this.hass || !this._config) return renderLoading('Loading...');
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return html`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;
+    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
+    if (stateObj.state === 'unavailable') return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
+    if (this._isLoading) return renderLoading('Fetching match data...');
 
     const match = this._getNextMatch(stateObj);
-    if (!match) return html`<ha-card><div class="empty">No match data</div></ha-card>`;
+    if (!match) return renderCardError('⚽', 'No match data', 'Unable to find match information', 'Check if the sensor has data');
 
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
