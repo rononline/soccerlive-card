@@ -64,8 +64,8 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
           <input type="text" .value=${this._config.team_name || ''} data-config-value="team_name" @input=${this._textChanged} placeholder="e.g. Feyenoord Rotterdam">
         </div>
         <div>
-          <label class="field-label">Max competitions (default all)</label>
-          <input type="number" min="1" max="20" .value=${this._config.max_competitions ?? 10} data-config-value="max_competitions" @change=${this._numberChanged}>
+          <label class="field-label">Default competition (optional)</label>
+          <input type="text" .value=${this._config.default_comp || ''} data-config-value="default_comp" @input=${this._textChanged} placeholder="e.g. Eredivisie">
         </div>
         <div class="option">
           <label>Hide header</label>

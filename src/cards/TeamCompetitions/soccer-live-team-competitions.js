@@ -3,49 +3,53 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 
 class SoccerLiveTeamCompetitionsCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {} }; }
+  static get properties() { return { hass: {}, _config: {}, _selectedComp: { type: String } }; }
 
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
     this._config = config;
+    this._selectedComp = config.default_comp || null;
     applySkin(this, config);
   }
 
   getCardSize() { return 4; }
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-team-competitions-editor"); }
-  static getStubConfig() { return { entity: "sensor.soccerlive_all_mixed_" }; }
+  static getStubConfig() { return { entity: "sensor.soccer_live_all_mixed_" }; }
 
-  // Group matches by competition, pick next/live match per competition
+  _selectComp(key) {
+    this._selectedComp = key;
+    this.requestUpdate();
+  }
+
+  // Group matches by league_name
   _groupByCompetition(matches) {
     const groups = {};
     for (const m of matches) {
-      const key = m.competition_code || m.league_name || 'unknown';
+      const key = m.league_name || m.competition_name || 'Other';
       if (!groups[key]) {
         groups[key] = {
-          name: m.league_name || m.competition_name || key,
+          key,
+          name: key,
           logo: m.league_logo || m.competition_logo || '',
-          code: key,
           matches: [],
         };
       }
       groups[key].matches.push(m);
     }
 
-    // Per group: pick live > next scheduled > last finished
+    // Per group: pick live > next > last finished
     return Object.values(groups).map(g => {
       const live = g.matches.find(m => m.state === 'in');
       const next = g.matches.find(m => m.state === 'pre');
       const last = [...g.matches].reverse().find(m => m.state === 'post');
       return { ...g, featured: live || next || last || g.matches[0] };
-    }).filter(g => g.featured);
-  }
-
-  _stateLabel(match) {
-    if (!match) return '';
-    if (match.state === 'in') return 'LIVE';
-    if (match.state === 'post') return 'FT';
-    return match.date || '';
+    }).filter(g => g.featured).sort((a, b) => {
+      // Live first, then scheduled, then finished
+      const aScore = a.featured.state === 'in' ? 0 : a.featured.state === 'pre' ? 1 : 2;
+      const bScore = b.featured.state === 'in' ? 0 : b.featured.state === 'pre' ? 1 : 2;
+      return aScore - bScore;
+    });
   }
 
   static get styles() {
@@ -66,31 +70,40 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
       }
       .team-logo { width: 32px; height: 32px; object-fit: contain; }
       .team-name { font-size: 15px; font-weight: 700; color: var(--cl-text); }
-      .comp-row {
+      .comp-tabs {
+        display: flex;
+        gap: 2px;
+        padding: 0 16px 8px;
+        overflow-x: auto;
+        border-bottom: 1px solid var(--cl-divider);
+      }
+      .comp-tab {
+        font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 99px;
+        cursor: pointer; white-space: nowrap;
+        border: 1px solid var(--cl-divider); background: var(--cl-surface);
+        color: var(--cl-text-2);
+      }
+      .comp-tab.active {
+        background: var(--cl-accent); border-color: var(--cl-accent); color: #fff;
+      }
+      .match-display {
         display: flex;
         align-items: center;
-        padding: 10px 16px;
-        border-bottom: 1px solid var(--cl-divider);
+        padding: 12px 16px;
         gap: 10px;
-        cursor: default;
       }
-      .comp-row:last-child { border-bottom: none; }
-      .comp-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
-      .comp-logo-placeholder { width: 22px; height: 22px; flex-shrink: 0; }
-      .comp-name { font-size: 12px; font-weight: 600; color: var(--cl-text-2); flex: 1; text-transform: uppercase; letter-spacing: 0.04em; }
-      .match-info { display: flex; align-items: center; gap: 8px; }
-      .team-block { display: flex; align-items: center; gap: 5px; max-width: 100px; }
+      .comp-logo { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; }
+      .match-block { display: flex; align-items: center; gap: 8px; flex: 1; }
+      .team-block { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
       .team-block.right { flex-direction: row-reverse; }
-      .match-team-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-      .match-team-name { font-size: 11px; font-weight: 600; color: var(--cl-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
-      .score-block { text-align: center; min-width: 52px; }
-      .score { font-size: 14px; font-weight: 900; color: var(--cl-text); letter-spacing: 1px; }
-      .live-badge { display: inline-block; background: var(--cl-live, #ef4444); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 99px; }
-      .state-label { font-size: 10px; color: var(--cl-text-2); }
+      .team-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+      .team-name { font-size: 11px; font-weight: 600; color: var(--cl-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .score-block { text-align: center; min-width: 50px; flex-shrink: 0; }
+      .score { font-size: 15px; font-weight: 900; color: var(--cl-text); letter-spacing: 1px; }
+      .state { font-size: 10px; color: var(--cl-text-2); }
       .live-dot { display: inline-block; width: 5px; height: 5px; background: var(--cl-live, #ef4444); border-radius: 50%; margin-right: 2px; animation: pulse 1s infinite; }
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); font-size: 13px; }
-      .no-match { font-size: 11px; color: var(--cl-text-2); }
     `];
   }
 
@@ -103,9 +116,10 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     if (!matches.length) return html`<ha-card><div class="empty">No match data</div></ha-card>`;
 
     const groups = this._groupByCompetition(matches);
+    const activeGroup = groups.find(g => g.key === this._selectedComp) || groups[0];
     const teamName = this._config.team_name || stateObj.attributes.team_name || '';
     const teamLogo = stateObj.attributes.team_logo || '';
-    const maxComps = this._config.max_competitions || 10;
+    const m = activeGroup.featured;
 
     return html`
       <ha-card>
@@ -116,47 +130,47 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
           </div>
         ` : ''}
 
-        ${groups.slice(0, maxComps).map(g => {
-          const m = g.featured;
-          const isLive = m && m.state === 'in';
-          const isFinished = m && m.state === 'post';
-          const showScore = isLive || isFinished;
+        ${groups.length > 1 ? html`
+          <div class="comp-tabs">
+            ${groups.map(g => html`
+              <span
+                class="comp-tab ${g.key === activeGroup.key ? 'active' : ''}"
+                @click=${() => this._selectComp(g.key)}>
+                ${g.name}
+              </span>
+            `)}
+          </div>
+        ` : ''}
 
-          return html`
-            <div class="comp-row">
-              ${g.logo
-                ? html`<img class="comp-logo" src="${g.logo}" alt="" @error=${e => e.target.style.display='none'}>`
-                : html`<div class="comp-logo-placeholder"></div>`}
-              <span class="comp-name">${g.name}</span>
+        ${activeGroup && m ? html`
+          <div class="match-display">
+            ${activeGroup.logo ? html`<img class="comp-logo" src="${activeGroup.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
 
-              ${m ? html`
-                <div class="match-info">
-                  <div class="team-block">
-                    ${m.home_logo ? html`<img class="match-team-logo" src="${m.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-                    <span class="match-team-name">${m.home_team || '?'}</span>
-                  </div>
+            <div class="match-block">
+              <div class="team-block">
+                ${m.home_logo ? html`<img class="team-logo" src="${m.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
+                <span class="team-name">${m.home_team || '?'}</span>
+              </div>
 
-                  <div class="score-block">
-                    ${isLive ? html`
-                      <div><span class="live-dot"></span><span class="state-label">${m.clock || 'LIVE'}</span></div>
-                      <div class="score">${m.home_score ?? 0} - ${m.away_score ?? 0}</div>
-                    ` : showScore ? html`
-                      <div class="state-label">FT</div>
-                      <div class="score">${m.home_score ?? 0} - ${m.away_score ?? 0}</div>
-                    ` : html`
-                      <div class="state-label">${m.date || 'vs'}</div>
-                    `}
-                  </div>
+              <div class="score-block">
+                ${m.state === 'in' ? html`
+                  <div class="state"><span class="live-dot"></span>${m.clock || 'LIVE'}</div>
+                  <div class="score">${m.home_score ?? 0}-${m.away_score ?? 0}</div>
+                ` : m.state === 'post' ? html`
+                  <div class="state">FT</div>
+                  <div class="score">${m.home_score ?? 0}-${m.away_score ?? 0}</div>
+                ` : html`
+                  <div class="state">${m.date || 'vs'}</div>
+                `}
+              </div>
 
-                  <div class="team-block right">
-                    <span class="match-team-name">${m.away_team || '?'}</span>
-                    ${m.away_logo ? html`<img class="match-team-logo" src="${m.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-                  </div>
-                </div>
-              ` : html`<span class="no-match">No matches</span>`}
+              <div class="team-block right">
+                <span class="team-name">${m.away_team || '?'}</span>
+                ${m.away_logo ? html`<img class="team-logo" src="${m.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
+              </div>
             </div>
-          `;
-        })}
+          </div>
+        ` : ''}
       </ha-card>
     `;
   }
@@ -167,5 +181,5 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: "soccer-live-team-competitions",
   name: "Soccer Live Team Competitions",
-  description: "Shows all competitions for one team in a single card"
+  description: "All team competitions with tab selector"
 });

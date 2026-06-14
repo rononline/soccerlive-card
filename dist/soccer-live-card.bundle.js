@@ -4918,7 +4918,7 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-team-competitions",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e)}getCardSize(){return 4}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-team-competitions-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_all_mixed_"}}_groupByCompetition(e){const t={};for(const a of e){const e=a.competition_code||a.league_name||"unknown";t[e]||(t[e]={name:a.league_name||a.competition_name||e,logo:a.league_logo||a.competition_logo||"",code:e,matches:[]}),t[e].matches.push(a)}return Object.values(t).map((e=>{const t=e.matches.find((e=>"in"===e.state)),a=e.matches.find((e=>"pre"===e.state)),i=[...e.matches].reverse().find((e=>"post"===e.state));return{...e,featured:t||a||i||e.matches[0]}})).filter((e=>e.featured))}_stateLabel(e){return e?"in"===e.state?"LIVE":"post"===e.state?"FT":e.date||"":""}static get styles(){return[he,n`
+    `}}),customElements.define("soccer-live-team-competitions",class extends oe{static get properties(){return{hass:{},_config:{},_selectedComp:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,this._selectedComp=e.default_comp||null,ue(this,e)}getCardSize(){return 4}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-team-competitions-editor")}static getStubConfig(){return{entity:"sensor.soccer_live_all_mixed_"}}_selectComp(e){this._selectedComp=e,this.requestUpdate()}_groupByCompetition(e){const t={};for(const a of e){const e=a.league_name||a.competition_name||"Other";t[e]||(t[e]={key:e,name:e,logo:a.league_logo||a.competition_logo||"",matches:[]}),t[e].matches.push(a)}return Object.values(t).map((e=>{const t=e.matches.find((e=>"in"===e.state)),a=e.matches.find((e=>"pre"===e.state)),i=[...e.matches].reverse().find((e=>"post"===e.state));return{...e,featured:t||a||i||e.matches[0]}})).filter((e=>e.featured)).sort(((e,t)=>("in"===e.featured.state?0:"pre"===e.featured.state?1:2)-("in"===t.featured.state?0:"pre"===t.featured.state?1:2)))}static get styles(){return[he,n`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -4935,74 +4935,92 @@
       }
       .team-logo { width: 32px; height: 32px; object-fit: contain; }
       .team-name { font-size: 15px; font-weight: 700; color: var(--cl-text); }
-      .comp-row {
+      .comp-tabs {
+        display: flex;
+        gap: 2px;
+        padding: 0 16px 8px;
+        overflow-x: auto;
+        border-bottom: 1px solid var(--cl-divider);
+      }
+      .comp-tab {
+        font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 99px;
+        cursor: pointer; white-space: nowrap;
+        border: 1px solid var(--cl-divider); background: var(--cl-surface);
+        color: var(--cl-text-2);
+      }
+      .comp-tab.active {
+        background: var(--cl-accent); border-color: var(--cl-accent); color: #fff;
+      }
+      .match-display {
         display: flex;
         align-items: center;
-        padding: 10px 16px;
-        border-bottom: 1px solid var(--cl-divider);
+        padding: 12px 16px;
         gap: 10px;
-        cursor: default;
       }
-      .comp-row:last-child { border-bottom: none; }
-      .comp-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
-      .comp-logo-placeholder { width: 22px; height: 22px; flex-shrink: 0; }
-      .comp-name { font-size: 12px; font-weight: 600; color: var(--cl-text-2); flex: 1; text-transform: uppercase; letter-spacing: 0.04em; }
-      .match-info { display: flex; align-items: center; gap: 8px; }
-      .team-block { display: flex; align-items: center; gap: 5px; max-width: 100px; }
+      .comp-logo { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; }
+      .match-block { display: flex; align-items: center; gap: 8px; flex: 1; }
+      .team-block { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
       .team-block.right { flex-direction: row-reverse; }
-      .match-team-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-      .match-team-name { font-size: 11px; font-weight: 600; color: var(--cl-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
-      .score-block { text-align: center; min-width: 52px; }
-      .score { font-size: 14px; font-weight: 900; color: var(--cl-text); letter-spacing: 1px; }
-      .live-badge { display: inline-block; background: var(--cl-live, #ef4444); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 99px; }
-      .state-label { font-size: 10px; color: var(--cl-text-2); }
+      .team-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+      .team-name { font-size: 11px; font-weight: 600; color: var(--cl-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .score-block { text-align: center; min-width: 50px; flex-shrink: 0; }
+      .score { font-size: 15px; font-weight: 900; color: var(--cl-text); letter-spacing: 1px; }
+      .state { font-size: 10px; color: var(--cl-text-2); }
       .live-dot { display: inline-block; width: 5px; height: 5px; background: var(--cl-live, #ef4444); border-radius: 50%; margin-right: 2px; animation: pulse 1s infinite; }
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); font-size: 13px; }
-      .no-match { font-size: 11px; color: var(--cl-text-2); }
-    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.matches||[];if(!t.length)return U`<ha-card><div class="empty">No match data</div></ha-card>`;const a=this._groupByCompetition(t),i=this._config.team_name||e.attributes.team_name||"",s=e.attributes.team_logo||"",n=this._config.max_competitions||10;return U`
+    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.matches||[];if(!t.length)return U`<ha-card><div class="empty">No match data</div></ha-card>`;const a=this._groupByCompetition(t),i=a.find((e=>e.key===this._selectedComp))||a[0],s=this._config.team_name||e.attributes.team_name||"",n=e.attributes.team_logo||"",o=i.featured;return U`
       <ha-card>
         ${this._config.hide_header?"":U`
           <div class="card-header">
-            ${s?U`<img class="team-logo" src="${s}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
-            <span class="team-name">${i||"Team"}</span>
+            ${n?U`<img class="team-logo" src="${n}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+            <span class="team-name">${s||"Team"}</span>
           </div>
         `}
 
-        ${a.slice(0,n).map((e=>{const t=e.featured,a=t&&"in"===t.state,i=t&&"post"===t.state,s=a||i;return U`
-            <div class="comp-row">
-              ${e.logo?U`<img class="comp-logo" src="${e.logo}" alt="" @error=${e=>e.target.style.display="none"}>`:U`<div class="comp-logo-placeholder"></div>`}
-              <span class="comp-name">${e.name}</span>
+        ${a.length>1?U`
+          <div class="comp-tabs">
+            ${a.map((e=>U`
+              <span
+                class="comp-tab ${e.key===i.key?"active":""}"
+                @click=${()=>this._selectComp(e.key)}>
+                ${e.name}
+              </span>
+            `))}
+          </div>
+        `:""}
 
-              ${t?U`
-                <div class="match-info">
-                  <div class="team-block">
-                    ${t.home_logo?U`<img class="match-team-logo" src="${t.home_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
-                    <span class="match-team-name">${t.home_team||"?"}</span>
-                  </div>
+        ${i&&o?U`
+          <div class="match-display">
+            ${i.logo?U`<img class="comp-logo" src="${i.logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
 
-                  <div class="score-block">
-                    ${a?U`
-                      <div><span class="live-dot"></span><span class="state-label">${t.clock||"LIVE"}</span></div>
-                      <div class="score">${t.home_score??0} - ${t.away_score??0}</div>
-                    `:s?U`
-                      <div class="state-label">FT</div>
-                      <div class="score">${t.home_score??0} - ${t.away_score??0}</div>
-                    `:U`
-                      <div class="state-label">${t.date||"vs"}</div>
-                    `}
-                  </div>
+            <div class="match-block">
+              <div class="team-block">
+                ${o.home_logo?U`<img class="team-logo" src="${o.home_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+                <span class="team-name">${o.home_team||"?"}</span>
+              </div>
 
-                  <div class="team-block right">
-                    <span class="match-team-name">${t.away_team||"?"}</span>
-                    ${t.away_logo?U`<img class="match-team-logo" src="${t.away_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
-                  </div>
-                </div>
-              `:U`<span class="no-match">No matches</span>`}
+              <div class="score-block">
+                ${"in"===o.state?U`
+                  <div class="state"><span class="live-dot"></span>${o.clock||"LIVE"}</div>
+                  <div class="score">${o.home_score??0}-${o.away_score??0}</div>
+                `:"post"===o.state?U`
+                  <div class="state">FT</div>
+                  <div class="score">${o.home_score??0}-${o.away_score??0}</div>
+                `:U`
+                  <div class="state">${o.date||"vs"}</div>
+                `}
+              </div>
+
+              <div class="team-block right">
+                <span class="team-name">${o.away_team||"?"}</span>
+                ${o.away_logo?U`<img class="team-logo" src="${o.away_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+              </div>
             </div>
-          `}))}
+          </div>
+        `:""}
       </ha-card>
-    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-team-competitions",name:"Soccer Live Team Competitions",description:"Shows all competitions for one team in a single card"});const Ee=["dark","light","red-white","classic","neon","gold"],Se=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-team-competitions-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-team-competitions",name:"Soccer Live Team Competitions",description:"All team competitions with tab selector"});const Ee=["dark","light","red-white","classic","neon","gold"],Se=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-team-competitions-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
@@ -5028,8 +5046,8 @@
           <input type="text" .value=${this._config.team_name||""} data-config-value="team_name" @input=${this._textChanged} placeholder="e.g. Feyenoord Rotterdam">
         </div>
         <div>
-          <label class="field-label">Max competitions (default all)</label>
-          <input type="number" min="1" max="20" .value=${this._config.max_competitions??10} data-config-value="max_competitions" @change=${this._numberChanged}>
+          <label class="field-label">Default competition (optional)</label>
+          <input type="text" .value=${this._config.default_comp||""} data-config-value="default_comp" @input=${this._textChanged} placeholder="e.g. Eredivisie">
         </div>
         <div class="option">
           <label>Hide header</label>
