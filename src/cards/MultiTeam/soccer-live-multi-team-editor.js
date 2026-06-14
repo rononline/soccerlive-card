@@ -30,7 +30,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this._allEntities = Object.keys(this.hass.states)
-      .filter(id => id.includes('soccerlive_next') || id.includes('soccerlive_all_mixed'))
+      .filter(id => id.includes('soccerlive_next') || id.includes('all_mixed'))
       .sort();
   }
 
