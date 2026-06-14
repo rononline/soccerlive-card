@@ -2534,6 +2534,30 @@
           opacity: 0;
         }
       }
+
+      @media (max-width: 600px) {
+        ha-card { padding: 12px !important; }
+        .hero { padding: 14px 10px 12px !important; }
+        .team-logo { width: 40px !important; height: 40px !important; }
+        .team-name { font-size: 12px !important; }
+        .score { font-size: 32px !important; letter-spacing: 4px !important; }
+        .vs-text { font-size: 18px !important; }
+        .stat-val { font-size: 11px !important; min-width: 24px !important; }
+        .stat-label { font-size: 9px !important; }
+        .comp-logo { width: 14px !important; height: 14px !important; }
+        .comp-name { font-size: 10px !important; }
+        .meta { font-size: 10px !important; padding: 8px 12px !important; }
+        .events { max-height: 180px !important; }
+        .event-row { padding: 4px 0 !important; font-size: 11px !important; }
+        .event-min { font-size: 10px !important; }
+        .form-indicator { width: 18px !important; height: 18px !important; font-size: 10px !important; }
+      }
+
+      @media (max-width: 400px) {
+        .score { font-size: 28px !important; letter-spacing: 2px !important; }
+        .team-name { font-size: 11px !important; max-width: 70px !important; }
+        .event-icon { font-size: 12px !important; }
+      }
     `]}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-team",name:"Soccer Live Team Card",description:"Shows the next or current match for your team"}),customElements.define("soccer-live-team-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return[ve,n`
       .card-config {
         display: flex;
@@ -4676,6 +4700,27 @@
       .vs-text { font-size: 20px; font-weight: 900; color: var(--cl-text-2); }
       .meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--cl-text-2); }
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
+
+      @media (max-width: 600px) {
+        ha-card { padding: 12px !important; }
+        .team-logo { width: 40px !important; height: 40px !important; }
+        .team-name { font-size: 12px !important; }
+        .score { font-size: 32px !important; letter-spacing: 4px !important; }
+        .vs-text { font-size: 16px !important; }
+        .cd-num { font-size: 24px !important; }
+        .cd-label { font-size: 8px !important; }
+        .cd-sep { font-size: 20px !important; }
+        .sched-date { font-size: 10px !important; }
+        .meta { font-size: 10px !important; padding: 10px 12px !important; gap: 4px !important; }
+        .comp-name { font-size: 10px !important; }
+      }
+
+      @media (max-width: 400px) {
+        .score { font-size: 28px !important; letter-spacing: 2px !important; }
+        .countdown { gap: 4px !important; }
+        .cd-num { font-size: 20px !important; min-width: 32px !important; }
+        .team-name { font-size: 11px !important; }
+      }
     `]}render(){if(!this.hass||!this._config)return Ce("Loading...");const e=this.hass.states[this._config.entity];if(!e)return Se.get(this._config.entity)?ze("⏱","Offline - showing cached data","Last update: "+(new Date).toLocaleTimeString(),"Waiting for integration to come online"):ze("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");if("unavailable"===e.state){const e=Se.get(this._config.entity);if(!e)return ze("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=e.data}if(this._isLoading)return Ce("Fetching match data...");const t=e?e.attributes:this._cachedData,a=this._getNextMatch({attributes:t});if(!a)return ze("⚽","No match data","Unable to find match information","Check if the sensor has data");const i="in"===a.state,s="post"===a.state,n=i||s?null:this._countdown(a.date),o=a.competition_name||e.attributes.league_name||"",r=a.competition_logo||e.attributes.league_logo||"",l=a.venue&&"N/A"!==a.venue?a.venue:"",c=a.venue_city&&"N/A"!==a.venue_city?a.venue_city:"",d=this._t("cd.days")||"days",p=this._t("cd.hrs")||"hrs",h=this._t("cd.min")||"min",g=this._t("cd.sec")||"sec";return U`
       <ha-card>
         ${!this._config.hide_header&&o?U`
@@ -4804,6 +4849,26 @@
       .stat-bars { flex: 1; display: flex; gap: 2px; align-items: center; height: 4px; }
       .stat-bar { height: 4px; border-radius: 2px; background: var(--cl-accent); }
       .stat-label { flex: 1; text-align: center; color: var(--cl-text-2); font-size: 10px; }
+
+      @media (max-width: 600px) {
+        .hero { padding: 14px 10px 12px !important; }
+        .team-logo { width: 40px !important; height: 40px !important; }
+        .team-name { font-size: 12px !important; }
+        .score { font-size: 32px !important; letter-spacing: 4px !important; }
+        .vs-text { font-size: 18px !important; }
+        .minute { font-size: 11px !important; }
+        .event-row { padding: 4px 0 !important; font-size: 11px !important; }
+        .event-min { font-size: 10px !important; }
+        .event-icon { font-size: 12px !important; }
+        .stat-val { font-size: 10px !important; min-width: 22px !important; }
+        .stat-label { font-size: 9px !important; }
+        .meta { font-size: 10px !important; padding: 8px 12px !important; }
+      }
+
+      @media (max-width: 400px) {
+        .score { font-size: 28px !important; letter-spacing: 2px !important; }
+        .team-name { font-size: 11px !important; max-width: 65px !important; }
+      }
     `]}updated(e){if(e.has("hass")){const e=this.hass?.states[this._config?.entity];e&&"unavailable"!==e.state&&(this._isLoading=!1,Se.set(this._config.entity,e.attributes))}}render(){if(!this.hass||!this._config)return Ce("Loading...");const e=this.hass.states[this._config.entity];if(!e)return Se.get(this._config.entity)?ze("⏱","Offline - showing cached data","Last update: "+(new Date).toLocaleTimeString(),"Waiting for integration"):ze("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");if("unavailable"===e.state){const e=Se.get(this._config.entity);if(!e||!e.data.matches)return ze("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=e.data}if(this._isLoading)return Ce("Fetching match data...");const t=e?e.attributes:this._cachedData,a=this._getMatch({attributes:t});if(!a)return ze("⚽","No match data","Unable to find match information","Check if the sensor has data");const i="in"===a.state||"live"===a.status,s="post"===a.state,n=("pre"===a.state||a.status,a.key_events||a.events||a.match_events||[]),o=a.competition_name||e.attributes.league_name||"",r=a.competition_logo||e.attributes.league_logo||"",l=a.venue&&"N/A"!==a.venue?a.venue:"",c=a.venue_city&&"N/A"!==a.venue_city?a.venue_city:"",d=a.stats||a.statistics||[];return U`
       <ha-card>
         <div class="hero">

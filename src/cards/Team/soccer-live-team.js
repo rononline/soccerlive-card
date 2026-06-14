@@ -1702,6 +1702,30 @@ class CalcioLiveTeamNextCard extends LitElement {
           opacity: 0;
         }
       }
+
+      @media (max-width: 600px) {
+        ha-card { padding: 12px !important; }
+        .hero { padding: 14px 10px 12px !important; }
+        .team-logo { width: 40px !important; height: 40px !important; }
+        .team-name { font-size: 12px !important; }
+        .score { font-size: 32px !important; letter-spacing: 4px !important; }
+        .vs-text { font-size: 18px !important; }
+        .stat-val { font-size: 11px !important; min-width: 24px !important; }
+        .stat-label { font-size: 9px !important; }
+        .comp-logo { width: 14px !important; height: 14px !important; }
+        .comp-name { font-size: 10px !important; }
+        .meta { font-size: 10px !important; padding: 8px 12px !important; }
+        .events { max-height: 180px !important; }
+        .event-row { padding: 4px 0 !important; font-size: 11px !important; }
+        .event-min { font-size: 10px !important; }
+        .form-indicator { width: 18px !important; height: 18px !important; font-size: 10px !important; }
+      }
+
+      @media (max-width: 400px) {
+        .score { font-size: 28px !important; letter-spacing: 2px !important; }
+        .team-name { font-size: 11px !important; max-width: 70px !important; }
+        .event-icon { font-size: 12px !important; }
+      }
     `];
   }
 }

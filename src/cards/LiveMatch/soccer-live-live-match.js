@@ -85,6 +85,26 @@ class SoccerLiveLiveMatchCard extends LitElement {
       .stat-bars { flex: 1; display: flex; gap: 2px; align-items: center; height: 4px; }
       .stat-bar { height: 4px; border-radius: 2px; background: var(--cl-accent); }
       .stat-label { flex: 1; text-align: center; color: var(--cl-text-2); font-size: 10px; }
+
+      @media (max-width: 600px) {
+        .hero { padding: 14px 10px 12px !important; }
+        .team-logo { width: 40px !important; height: 40px !important; }
+        .team-name { font-size: 12px !important; }
+        .score { font-size: 32px !important; letter-spacing: 4px !important; }
+        .vs-text { font-size: 18px !important; }
+        .minute { font-size: 11px !important; }
+        .event-row { padding: 4px 0 !important; font-size: 11px !important; }
+        .event-min { font-size: 10px !important; }
+        .event-icon { font-size: 12px !important; }
+        .stat-val { font-size: 10px !important; min-width: 22px !important; }
+        .stat-label { font-size: 9px !important; }
+        .meta { font-size: 10px !important; padding: 8px 12px !important; }
+      }
+
+      @media (max-width: 400px) {
+        .score { font-size: 28px !important; letter-spacing: 2px !important; }
+        .team-name { font-size: 11px !important; max-width: 65px !important; }
+      }
     `];
   }
 
