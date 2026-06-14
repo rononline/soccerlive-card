@@ -112,10 +112,10 @@ class SoccerLiveLiveMatchCard extends LitElement {
             </div>
 
             <div class="score-center">
-              ${isLive ? html`<div class="live-badge">LIVE</div>` : isFinished ? html`<div class="sched-info">FT</div>` : html`<div class="sched-info">${match.date || 'vs'}</div>`}
+              ${isLive ? html`<div class="live-badge">LIVE</div>` : isFinished ? html`<div class="sched-info">FT</div>` : html`<div class="sched-info">${match.date || this._t('match.vs')}</div>`}
               ${isLive || isFinished
                 ? html`<div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>`
-                : html`<div class="vs-text">vs</div>`}
+                : html`<div class="vs-text">${this._t('match.vs')}</div>`}
               ${isLive && match.clock ? html`<div class="minute">${match.clock}</div>` : ''}
             </div>
 

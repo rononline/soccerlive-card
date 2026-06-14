@@ -160,7 +160,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
                   <div class="state">FT</div>
                   <div class="score">${m.home_score ?? 0}-${m.away_score ?? 0}</div>
                 ` : html`
-                  <div class="state">${m.date || 'vs'}</div>
+                  <div class="state">${m.date || this._t('match.vs')}</div>
                 `}
               </div>
 

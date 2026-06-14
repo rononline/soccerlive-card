@@ -174,6 +174,9 @@ const TRANSLATIONS = {
 
     // Multi Team card
     'card.my_teams': 'My Teams',
+
+    // Match display
+    'match.vs': 'vs',
   },
   nl: {
     'card.bracket': 'Schema',
@@ -325,6 +328,8 @@ const TRANSLATIONS = {
     'ui.entity_required': 'Entiteit vereist',
 
     'card.my_teams': 'Mijn Teams',
+
+    'match.vs': 'tegen',
   },
   it: {
     'card.bracket': 'Tabellone',
@@ -476,6 +481,8 @@ const TRANSLATIONS = {
     'ui.entity_required': 'Entità obbligatoria',
 
     'card.my_teams': 'I Miei Team',
+
+    'match.vs': 'contro',
   },
   fr: {
     'card.bracket': 'Tableau',
@@ -627,6 +634,8 @@ const TRANSLATIONS = {
     'ui.entity_required': 'Entité requise',
 
     'card.my_teams': 'Mes Équipes',
+
+    'match.vs': 'contre',
   },
   es: {
     'card.bracket': 'Cuadro',
@@ -778,6 +787,8 @@ const TRANSLATIONS = {
     'ui.entity_required': 'Entidad requerida',
 
     'card.my_teams': 'Mis Equipos',
+
+    'match.vs': 'vs',
   },
   de: {
     'card.bracket': 'K.o.-Runde',
@@ -929,6 +940,8 @@ const TRANSLATIONS = {
     'ui.entity_required': 'Entität erforderlich',
 
     'card.my_teams': 'Meine Teams',
+
+    'match.vs': 'gegen',
   },
   pt: {
     'card.bracket': 'Chave',
@@ -1080,6 +1093,8 @@ const TRANSLATIONS = {
     'ui.entity_required': 'Entidade obrigatória',
 
     'card.my_teams': 'Meus Times',
+
+    'match.vs': 'contra',
   },
 };
 
