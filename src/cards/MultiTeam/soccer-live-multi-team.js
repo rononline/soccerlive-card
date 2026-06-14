@@ -87,7 +87,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
 
     return html`
       <ha-card>
-        ${!this._config.hide_header ? html`<div class="title">${this._config.title || 'My Teams'}</div>` : ''}
+        ${!this._config.hide_header ? html`<div class="title">${this._config.title || this._t('card.my_teams')}</div>` : ''}
         ${entities.map(e => this._renderMatch(e))}
       </ha-card>
     `;

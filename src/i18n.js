@@ -171,6 +171,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor unavailable',
     'ui.invalid_config': 'Invalid configuration',
     'ui.entity_required': 'Entity required',
+
+    // Multi Team card
+    'card.my_teams': 'My Teams',
   },
   nl: {
     'card.bracket': 'Schema',
@@ -320,6 +323,8 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor niet beschikbaar',
     'ui.invalid_config': 'Ongeldige configuratie',
     'ui.entity_required': 'Entiteit vereist',
+
+    'card.my_teams': 'Mijn Teams',
   },
   it: {
     'card.bracket': 'Tabellone',
@@ -469,6 +474,8 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensore non disponibile',
     'ui.invalid_config': 'Configurazione non valida',
     'ui.entity_required': 'Entità obbligatoria',
+
+    'card.my_teams': 'I Miei Team',
   },
   fr: {
     'card.bracket': 'Tableau',
@@ -618,6 +625,8 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Capteur indisponible',
     'ui.invalid_config': 'Configuration invalide',
     'ui.entity_required': 'Entité requise',
+
+    'card.my_teams': 'Mes Équipes',
   },
   es: {
     'card.bracket': 'Cuadro',
@@ -767,6 +776,8 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor no disponible',
     'ui.invalid_config': 'Configuración inválida',
     'ui.entity_required': 'Entidad requerida',
+
+    'card.my_teams': 'Mis Equipos',
   },
   de: {
     'card.bracket': 'K.o.-Runde',
@@ -916,6 +927,8 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor nicht verfügbar',
     'ui.invalid_config': 'Ungültige Konfiguration',
     'ui.entity_required': 'Entität erforderlich',
+
+    'card.my_teams': 'Meine Teams',
   },
   pt: {
     'card.bracket': 'Chave',
@@ -1065,6 +1078,8 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor indisponível',
     'ui.invalid_config': 'Configuração inválida',
     'ui.entity_required': 'Entidade obrigatória',
+
+    'card.my_teams': 'Meus Times',
   },
 };
 
