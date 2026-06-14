@@ -63,35 +63,35 @@ export const skinStyles = css`
   }
 
   /* ---------- FEYENOORD (rood/zwart) ---------- */
-  :host([data-skin="feyenoord"]) {
-    --cl-accent: #cc0000;
-    --cl-accent-2: #ff2200;
-    --cl-accent-rgb: 204,0,0;
-    --cl-accent-2-rgb: 255,34,0;
-    --cl-live: #ff4444;
-    --cl-live-glow: rgba(204,0,0,0.6);
-    --cl-cl: #cc0000;
-    --cl-el: #ff6600;
-    --cl-rel: #990000;
-    --cl-conf: #cc3300;
+  :host([data-skin="red-white"]) {
+    --cl-accent: #e50000;
+    --cl-accent-2: #ff2222;
+    --cl-accent-rgb: 229,0,0;
+    --cl-accent-2-rgb: 255,34,34;
+    --cl-live: #ff3333;
+    --cl-live-glow: rgba(229,0,0,0.65);
+    --cl-cl: #e50000;
+    --cl-el: #ff5500;
+    --cl-rel: #aa0000;
+    --cl-conf: #cc2200;
     --cl-gold: #ffd700;
     --cl-gold-glow: rgba(255,215,0,0.4);
     --cl-gold-text: #ffe55c;
-    --cl-bg: #130303;
-    --cl-surface: rgba(204,0,0,0.07);
-    --cl-surface-2: rgba(204,0,0,0.12);
-    --cl-card-2: rgba(204,0,0,0.07);
-    --cl-divider: rgba(204,0,0,0.18);
-    --cl-glass-border: rgba(204,0,0,0.20);
-    --cl-text: #f4f0f0;
-    --cl-text-2: #c09090;
-    --cl-shadow: rgba(0,0,0,0.40);
-    --cl-overlay-strong: rgba(0,0,0,0.60);
-    --cl-overlay-soft: rgba(0,0,0,0.30);
-    --cl-chip-bg: rgba(204,0,0,0.12);
-    --cl-chip-border: rgba(204,0,0,0.22);
-    --cl-toast-bg: #0d0101;
-    --cl-num-bg: #0d0101;
+    --cl-bg: #0a0000;
+    --cl-surface: rgba(229,0,0,0.10);
+    --cl-surface-2: rgba(229,0,0,0.18);
+    --cl-card-2: rgba(60,0,0,0.85);
+    --cl-divider: rgba(229,0,0,0.22);
+    --cl-glass-border: rgba(229,0,0,0.25);
+    --cl-text: #ffffff;
+    --cl-text-2: #c8a0a0;
+    --cl-shadow: rgba(0,0,0,0.50);
+    --cl-overlay-strong: rgba(0,0,0,0.65);
+    --cl-overlay-soft: rgba(0,0,0,0.35);
+    --cl-chip-bg: rgba(229,0,0,0.22);
+    --cl-chip-border: rgba(229,0,0,0.35);
+    --cl-toast-bg: #0a0000;
+    --cl-num-bg: #0a0000;
   }
 
   /* ---------- CLASSIC (groen/goud — voetbalveld) ---------- */
@@ -188,7 +188,7 @@ export const skinStyles = css`
   }
 `;
 
-const VALID_SKINS = ['dark', 'light', 'feyenoord', 'classic', 'neon', 'gold'];
+const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
 
 export function resolveSkin(config) {
   const s = config && typeof config.skin === 'string' ? config.skin.toLowerCase() : 'dark';

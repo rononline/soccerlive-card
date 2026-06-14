@@ -59,35 +59,35 @@
   }
 
   /* ---------- FEYENOORD (rood/zwart) ---------- */
-  :host([data-skin="feyenoord"]) {
-    --cl-accent: #cc0000;
-    --cl-accent-2: #ff2200;
-    --cl-accent-rgb: 204,0,0;
-    --cl-accent-2-rgb: 255,34,0;
-    --cl-live: #ff4444;
-    --cl-live-glow: rgba(204,0,0,0.6);
-    --cl-cl: #cc0000;
-    --cl-el: #ff6600;
-    --cl-rel: #990000;
-    --cl-conf: #cc3300;
+  :host([data-skin="red-white"]) {
+    --cl-accent: #e50000;
+    --cl-accent-2: #ff2222;
+    --cl-accent-rgb: 229,0,0;
+    --cl-accent-2-rgb: 255,34,34;
+    --cl-live: #ff3333;
+    --cl-live-glow: rgba(229,0,0,0.65);
+    --cl-cl: #e50000;
+    --cl-el: #ff5500;
+    --cl-rel: #aa0000;
+    --cl-conf: #cc2200;
     --cl-gold: #ffd700;
     --cl-gold-glow: rgba(255,215,0,0.4);
     --cl-gold-text: #ffe55c;
-    --cl-bg: #130303;
-    --cl-surface: rgba(204,0,0,0.07);
-    --cl-surface-2: rgba(204,0,0,0.12);
-    --cl-card-2: rgba(204,0,0,0.07);
-    --cl-divider: rgba(204,0,0,0.18);
-    --cl-glass-border: rgba(204,0,0,0.20);
-    --cl-text: #f4f0f0;
-    --cl-text-2: #c09090;
-    --cl-shadow: rgba(0,0,0,0.40);
-    --cl-overlay-strong: rgba(0,0,0,0.60);
-    --cl-overlay-soft: rgba(0,0,0,0.30);
-    --cl-chip-bg: rgba(204,0,0,0.12);
-    --cl-chip-border: rgba(204,0,0,0.22);
-    --cl-toast-bg: #0d0101;
-    --cl-num-bg: #0d0101;
+    --cl-bg: #0a0000;
+    --cl-surface: rgba(229,0,0,0.10);
+    --cl-surface-2: rgba(229,0,0,0.18);
+    --cl-card-2: rgba(60,0,0,0.85);
+    --cl-divider: rgba(229,0,0,0.22);
+    --cl-glass-border: rgba(229,0,0,0.25);
+    --cl-text: #ffffff;
+    --cl-text-2: #c8a0a0;
+    --cl-shadow: rgba(0,0,0,0.50);
+    --cl-overlay-strong: rgba(0,0,0,0.65);
+    --cl-overlay-soft: rgba(0,0,0,0.35);
+    --cl-chip-bg: rgba(229,0,0,0.22);
+    --cl-chip-border: rgba(229,0,0,0.35);
+    --cl-toast-bg: #0a0000;
+    --cl-num-bg: #0a0000;
   }
 
   /* ---------- CLASSIC (groen/goud — voetbalveld) ---------- */
@@ -182,7 +182,7 @@
     --cl-toast-bg: #090600;
     --cl-num-bg: #090600;
   }
-`,ge=["dark","light","feyenoord","classic","neon","gold"];function ue(e,t){const a=function(e){const t=e&&"string"==typeof e.skin?e.skin.toLowerCase():"dark";return ge.includes(t)?t:"dark"}(t);return e&&e.setAttribute&&e.setAttribute("data-skin",a),a}const me=(e,t)=>Array.from({length:t-e+1},((t,a)=>e+a)),fe={serie_a:{match:(e,t)=>"ita.1"===e||t.includes("italian_serie_a"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},premier_league:{match:(e,t)=>"eng.1"===e||t.includes("english_premier"),champions:[1,2,3,4,5],europa:[6],conference:[7],relegation:"bottom3"},laliga:{match:(e,t)=>"esp.1"===e||t.includes("spanish_la_liga")||t.includes("spanish_laliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},bundesliga:{match:(e,t)=>"ger.1"===e||t.includes("german_bundesliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:[17,18]},ligue_1:{match:(e,t)=>"fra.1"===e||t.includes("french_ligue_1"),champions:[1,2,3],europa:[4],conference:[5],relegation:[17,18]},eredivisie:{match:(e,t)=>"ned.1"===e||t.includes("dutch_eredivisie"),champions:[1,2],europa:[3],conference:[4,5],relegation:[17,18]},primeira_liga:{match:(e,t)=>"por.1"===e||t.includes("portuguese_primeira"),champions:[1,2],europa:[3],conference:[4],relegation:[17,18]},ucl_league_phase:{match:(e,t)=>"uefa.champions"===e||t.includes("uefa_champions_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uel_league_phase:{match:(e,t)=>"uefa.europa"===e||t.includes("uefa_europa_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uecl_league_phase:{match:(e,t)=>"uefa.europa.conf"===e||t.includes("uefa_conference"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},world_cup:{match:(e,t)=>"fifa.world"===e||t.includes("fifa_world_cup")||t.includes("world_cup"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"🏆",accent:"world_cup"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},uefa_euro:{match:(e,t)=>"uefa.euro"===e||t.includes("uefa_euro")||t.includes("european_championship"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"⭐",accent:"uefa_euro"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},copa_america:{match:(e,t)=>"conmebol.america"===e||t.includes("copa_america")||t.includes("conmebol_america"),champions:[1,2],europa:[],conference:[],relegation:"bottom2",kind:"cup_group",hero:{icon:"🏆",accent:"copa_america"},labels:{champions:"zone.qualified",europa:null,conference:null,relegation:"zone.eliminated"}}};customElements.define("soccer-live-classifica",class extends oe{static get properties(){return{hass:{},_config:{},maxTeamsVisible:{type:Number},hideHeader:{type:Boolean},selectedGroup:{type:String},_eventSubscriptions:{type:Array},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxTeamsVisible=e.max_teams_visible?e.max_teams_visible:10,this.hideHeader=e.hide_header||!1,this.selectedGroup=e.selected_group||"",this.showEventToasts=!0===e.show_event_toasts,this.highlightTeam=(e.highlight_team||e.my_team||"").toLowerCase(),this.showStats=!1!==e.show_stats,this.showGoalsFor=!0===e.show_goals_for,this.compactMode=!0===e.compact_mode,this.compactTop=parseInt(e.compact_top)||5,this.compactBottom=parseInt(e.compact_bottom)||3,this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}_t(e,t){return pe(e,de(this.hass,this._config),t)}connectedCallback(){super.connectedCallback(),this._subscribeToEvents()}disconnectedCallback(){super.disconnectedCallback(),this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this._config.entity||"",a=e.competition_code;if(!a)return!1;const i=a.replace(/\./g,"_").toLowerCase();return t.toLowerCase().includes(i)}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;this._eventBelongsToThisCard(a)&&this.showEventToasts&&this._showEventToast(t,a)}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e?(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"):"soccer_live_match_finished"===e&&(a=`<strong>${this._t("status.finished")}!</strong> ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="finished"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}getCardSize(){return 5}static getConfigElement(){return document.createElement("soccer-live-classifica-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",max_teams_visible:10,hide_header:!1,selected_group:"",show_event_toasts:!1}}_getZoneConfig(){if(this._config.zone_config)return this._config.zone_config;if(this._config.zone_preset&&fe[this._config.zone_preset])return fe[this._config.zone_preset];return this._inferPresetFromEntity()||{champions:[],europa:[],conference:[],relegation:null}}_getZoneLabels(){const e=this._getZoneConfig().labels||{};return{champions:void 0!==e.champions?e.champions:"zone.champions",europa:void 0!==e.europa?e.europa:"zone.europa",conference:void 0!==e.conference?e.conference:"zone.conference",relegation:void 0!==e.relegation?e.relegation:"zone.relegation"}}_hasZonePositions(e){return!!e&&(Array.isArray(e)?e.length>0:"string"==typeof e&&/^bottom\d+$/.test(e))}_inferPresetFromEntity(){const e=(this._config.entity||"").toLowerCase(),t=this.hass&&this._config.entity?this.hass.states[this._config.entity]:null,a=t&&t.attributes?String(t.attributes.competition_code||"").toLowerCase():"";for(const[,t]of Object.entries(fe))if(t.match&&t.match(a,e))return t;return null}_positionInZone(e,t,a){if(!a)return!1;const i=String(a).match(/^bottom(\d+)$/);if(i){const a=parseInt(i[1],10);return t&&e>t-a}return!!Array.isArray(a)&&a.includes(Number(e))}_translatePhase(e){return e?{"regular-season":this._t("phase.regular_season"),"regular season":this._t("phase.regular_season"),"group-stage":this._t("phase.group_stage"),"group stage":this._t("phase.group_stage"),playoffs:this._t("phase.playoffs")}[String(e).toLowerCase()]||e:""}_shouldShowPhase(e){return!!e&&("regular-season"!==String(e).toLowerCase()&&!/\d{4}/.test(e))}_isCupGroupStage(){const e=this._getZoneConfig();return e&&"cup_group"===e.kind}_groupHasNoMatches(e){if(!e||!e.length)return!1;const t=e=>{if(null==e||""===e)return 0;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?0:t};return e.every((e=>t(e.wins)+t(e.draws)+t(e.losses)===0))}_zoneClass(e,t){const a=this._getZoneConfig();return this._positionInZone(e,t,a.champions)?1!==e||this._isCupGroupStage()?"zone-cl":"zone-cl rank-first":this._positionInZone(e,t,a.europa)?"zone-el":this._positionInZone(e,t,a.conference)?"zone-conf":this._positionInZone(e,t,a.relegation)?"zone-rel":"zone-default"}_sortStandings(e,t){let a=(e||[]).filter((e=>null!=e.rank));return t.includes("MLS")?(a=a.slice().sort(((e,t)=>t.points!==e.points?t.points-e.points:t.goal_difference!==e.goal_difference?t.goal_difference-e.goal_difference:t.goals_for-e.goals_for)),a.forEach(((e,t)=>{e.rank=t+1}))):a=a.slice().sort(((e,t)=>e.rank-t.rank)),a}_currentGroup(e){return e.find((e=>e.name===this.selectedGroup))||e[0]}render(){if(!this.hass||!this._config)return U``;const e=this._config.entity,t=this.hass.states[e];if(!t)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;const a=t.attributes.season||"",i=t.attributes.league_abbreviation&&"N/A"!==t.attributes.league_abbreviation?t.attributes.league_abbreviation:null,s=i&&t.attributes.league_name?a.replace(t.attributes.league_name,i).trim():a,n=t.attributes.standings_groups||[],o=!this.selectedGroup&&n.length>1,r=this._currentGroup(n),l=this._sortStandings(r?r.standings:[],s),c=l.length,d=48*Math.min(this.maxTeamsVisible,c)+50,p=this.highlightTeam?(l.find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam)))||{}).rank:null,h=Math.round(l.reduce(((e,t)=>e+(parseInt(t.games_played)||0)),0)/2),g=l.reduce(((e,t)=>e+(parseInt(t.goals_for)||0)),0),u=(t.attributes.standings_groups||[]).some((e=>(e.standings||[]).some((e=>(parseInt(e.games_played)||0)>0)))),m=!u&&c>0&&l.every((e=>0===parseInt(e.wins??"0")&&0===parseInt(e.draws??"0")&&0===parseInt(e.losses??"0")));return U`
+`,ge=["dark","light","red-white","classic","neon","gold"];function ue(e,t){const a=function(e){const t=e&&"string"==typeof e.skin?e.skin.toLowerCase():"dark";return ge.includes(t)?t:"dark"}(t);return e&&e.setAttribute&&e.setAttribute("data-skin",a),a}const me=(e,t)=>Array.from({length:t-e+1},((t,a)=>e+a)),fe={serie_a:{match:(e,t)=>"ita.1"===e||t.includes("italian_serie_a"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},premier_league:{match:(e,t)=>"eng.1"===e||t.includes("english_premier"),champions:[1,2,3,4,5],europa:[6],conference:[7],relegation:"bottom3"},laliga:{match:(e,t)=>"esp.1"===e||t.includes("spanish_la_liga")||t.includes("spanish_laliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},bundesliga:{match:(e,t)=>"ger.1"===e||t.includes("german_bundesliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:[17,18]},ligue_1:{match:(e,t)=>"fra.1"===e||t.includes("french_ligue_1"),champions:[1,2,3],europa:[4],conference:[5],relegation:[17,18]},eredivisie:{match:(e,t)=>"ned.1"===e||t.includes("dutch_eredivisie"),champions:[1,2],europa:[3],conference:[4,5],relegation:[17,18]},primeira_liga:{match:(e,t)=>"por.1"===e||t.includes("portuguese_primeira"),champions:[1,2],europa:[3],conference:[4],relegation:[17,18]},ucl_league_phase:{match:(e,t)=>"uefa.champions"===e||t.includes("uefa_champions_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uel_league_phase:{match:(e,t)=>"uefa.europa"===e||t.includes("uefa_europa_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uecl_league_phase:{match:(e,t)=>"uefa.europa.conf"===e||t.includes("uefa_conference"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},world_cup:{match:(e,t)=>"fifa.world"===e||t.includes("fifa_world_cup")||t.includes("world_cup"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"🏆",accent:"world_cup"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},uefa_euro:{match:(e,t)=>"uefa.euro"===e||t.includes("uefa_euro")||t.includes("european_championship"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"⭐",accent:"uefa_euro"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},copa_america:{match:(e,t)=>"conmebol.america"===e||t.includes("copa_america")||t.includes("conmebol_america"),champions:[1,2],europa:[],conference:[],relegation:"bottom2",kind:"cup_group",hero:{icon:"🏆",accent:"copa_america"},labels:{champions:"zone.qualified",europa:null,conference:null,relegation:"zone.eliminated"}}};customElements.define("soccer-live-classifica",class extends oe{static get properties(){return{hass:{},_config:{},maxTeamsVisible:{type:Number},hideHeader:{type:Boolean},selectedGroup:{type:String},_eventSubscriptions:{type:Array},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxTeamsVisible=e.max_teams_visible?e.max_teams_visible:10,this.hideHeader=e.hide_header||!1,this.selectedGroup=e.selected_group||"",this.showEventToasts=!0===e.show_event_toasts,this.highlightTeam=(e.highlight_team||e.my_team||"").toLowerCase(),this.showStats=!1!==e.show_stats,this.showGoalsFor=!0===e.show_goals_for,this.compactMode=!0===e.compact_mode,this.compactTop=parseInt(e.compact_top)||5,this.compactBottom=parseInt(e.compact_bottom)||3,this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}_t(e,t){return pe(e,de(this.hass,this._config),t)}connectedCallback(){super.connectedCallback(),this._subscribeToEvents()}disconnectedCallback(){super.disconnectedCallback(),this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this._config.entity||"",a=e.competition_code;if(!a)return!1;const i=a.replace(/\./g,"_").toLowerCase();return t.toLowerCase().includes(i)}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;this._eventBelongsToThisCard(a)&&this.showEventToasts&&this._showEventToast(t,a)}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e?(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"):"soccer_live_match_finished"===e&&(a=`<strong>${this._t("status.finished")}!</strong> ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="finished"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}getCardSize(){return 5}static getConfigElement(){return document.createElement("soccer-live-classifica-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",max_teams_visible:10,hide_header:!1,selected_group:"",show_event_toasts:!1}}_getZoneConfig(){if(this._config.zone_config)return this._config.zone_config;if(this._config.zone_preset&&fe[this._config.zone_preset])return fe[this._config.zone_preset];return this._inferPresetFromEntity()||{champions:[],europa:[],conference:[],relegation:null}}_getZoneLabels(){const e=this._getZoneConfig().labels||{};return{champions:void 0!==e.champions?e.champions:"zone.champions",europa:void 0!==e.europa?e.europa:"zone.europa",conference:void 0!==e.conference?e.conference:"zone.conference",relegation:void 0!==e.relegation?e.relegation:"zone.relegation"}}_hasZonePositions(e){return!!e&&(Array.isArray(e)?e.length>0:"string"==typeof e&&/^bottom\d+$/.test(e))}_inferPresetFromEntity(){const e=(this._config.entity||"").toLowerCase(),t=this.hass&&this._config.entity?this.hass.states[this._config.entity]:null,a=t&&t.attributes?String(t.attributes.competition_code||"").toLowerCase():"";for(const[,t]of Object.entries(fe))if(t.match&&t.match(a,e))return t;return null}_positionInZone(e,t,a){if(!a)return!1;const i=String(a).match(/^bottom(\d+)$/);if(i){const a=parseInt(i[1],10);return t&&e>t-a}return!!Array.isArray(a)&&a.includes(Number(e))}_translatePhase(e){return e?{"regular-season":this._t("phase.regular_season"),"regular season":this._t("phase.regular_season"),"group-stage":this._t("phase.group_stage"),"group stage":this._t("phase.group_stage"),playoffs:this._t("phase.playoffs")}[String(e).toLowerCase()]||e:""}_shouldShowPhase(e){return!!e&&("regular-season"!==String(e).toLowerCase()&&!/\d{4}/.test(e))}_isCupGroupStage(){const e=this._getZoneConfig();return e&&"cup_group"===e.kind}_groupHasNoMatches(e){if(!e||!e.length)return!1;const t=e=>{if(null==e||""===e)return 0;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?0:t};return e.every((e=>t(e.wins)+t(e.draws)+t(e.losses)===0))}_zoneClass(e,t){const a=this._getZoneConfig();return this._positionInZone(e,t,a.champions)?1!==e||this._isCupGroupStage()?"zone-cl":"zone-cl rank-first":this._positionInZone(e,t,a.europa)?"zone-el":this._positionInZone(e,t,a.conference)?"zone-conf":this._positionInZone(e,t,a.relegation)?"zone-rel":"zone-default"}_sortStandings(e,t){let a=(e||[]).filter((e=>null!=e.rank));return t.includes("MLS")?(a=a.slice().sort(((e,t)=>t.points!==e.points?t.points-e.points:t.goal_difference!==e.goal_difference?t.goal_difference-e.goal_difference:t.goals_for-e.goals_for)),a.forEach(((e,t)=>{e.rank=t+1}))):a=a.slice().sort(((e,t)=>e.rank-t.rank)),a}_currentGroup(e){return e.find((e=>e.name===this.selectedGroup))||e[0]}render(){if(!this.hass||!this._config)return U``;const e=this._config.entity,t=this.hass.states[e];if(!t)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;const a=t.attributes.season||"",i=t.attributes.league_abbreviation&&"N/A"!==t.attributes.league_abbreviation?t.attributes.league_abbreviation:null,s=i&&t.attributes.league_name?a.replace(t.attributes.league_name,i).trim():a,n=t.attributes.standings_groups||[],o=!this.selectedGroup&&n.length>1,r=this._currentGroup(n),l=this._sortStandings(r?r.standings:[],s),c=l.length,d=48*Math.min(this.maxTeamsVisible,c)+50,p=this.highlightTeam?(l.find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam)))||{}).rank:null,h=Math.round(l.reduce(((e,t)=>e+(parseInt(t.games_played)||0)),0)/2),g=l.reduce(((e,t)=>e+(parseInt(t.goals_for)||0)),0),u=(t.attributes.standings_groups||[]).some((e=>(e.standings||[]).some((e=>(parseInt(e.games_played)||0)>0)))),m=!u&&c>0&&l.every((e=>0===parseInt(e.wins??"0")&&0===parseInt(e.draws??"0")&&0===parseInt(e.losses??"0")));return U`
       <ha-card>
         ${this.showEventToasts&&this._toastVisible?U`
           <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
@@ -866,7 +866,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -1477,7 +1477,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -2537,7 +2537,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -2790,7 +2790,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -3105,7 +3105,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -3411,7 +3411,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -4164,7 +4164,7 @@
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${"dark"===(this._config.skin||"dark")}>Dark (standaard)</option>
             <option value="light"      ?selected=${"light"===this._config.skin}>Light</option>
-            <option value="feyenoord"  ?selected=${"feyenoord"===this._config.skin}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${"red-white"===this._config.skin}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${"classic"===this._config.skin}>Classic (groen)</option>
             <option value="neon"       ?selected=${"neon"===this._config.skin}>Neon</option>
             <option value="gold"       ?selected=${"gold"===this._config.skin}>Gold</option>
@@ -4347,7 +4347,7 @@
         color: var(--cl-text-2);
         font-size: 0.9em;
       }
-    `]}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-cannonieri",name:"Calcio Live · Top Scorers",description:"Top scorers for a league",preview:!1});const ve=["dark","light","feyenoord","classic","neon","gold"],be=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-cannonieri-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+    `]}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-cannonieri",name:"Calcio Live · Top Scorers",description:"Top scorers for a league",preview:!1});const ve=["dark","light","red-white","classic","neon","gold"],be=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-cannonieri-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
       .card-config {
         display: flex;
         flex-direction: column;
@@ -4497,7 +4497,7 @@
             `}))}
         </table>
       </ha-card>
-    `:U`<ha-card><div class="empty">No standings data</div></ha-card>`}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-mini-standings",name:"Soccer Live Mini Standings",description:"Compact standings table"});const xe=["dark","light","feyenoord","classic","neon","gold"],_e=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-mini-standings-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+    `:U`<ha-card><div class="empty">No standings data</div></ha-card>`}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-mini-standings",name:"Soccer Live Mini Standings",description:"Compact standings table"});const xe=["dark","light","red-white","classic","neon","gold"],_e=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-mini-standings-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
@@ -4626,7 +4626,7 @@
           </div>
         `:""}
       </ha-card>
-    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-countdown",name:"Soccer Live Match Countdown",description:"Countdown to next match with live score"});const ye=["dark","light","feyenoord","classic","neon","gold"],we=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-countdown-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-countdown",name:"Soccer Live Match Countdown",description:"Countdown to next match with live score"});const ye=["dark","light","red-white","classic","neon","gold"],we=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-countdown-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
@@ -4764,7 +4764,7 @@
           <div class="meta">🏟 ${r}${l?`, ${l}`:""}</div>
         `:""}
       </ha-card>
-    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-live-match",name:"Soccer Live Match Card",description:"Live match details with events and stats"});const $e=["dark","light","feyenoord","classic","neon","gold"],ke=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-live-match-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-live-match",name:"Soccer Live Match Card",description:"Live match details with events and stats"});const $e=["dark","light","red-white","classic","neon","gold"],ke=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-live-match-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
@@ -4839,7 +4839,7 @@
         ${this._config.hide_header?"":U`<div class="title">${this._config.title||"My Teams"}</div>`}
         ${e.map((e=>this._renderMatch(e)))}
       </ha-card>
-    `:U`<ha-card><div class="empty">No entities configured</div></ha-card>`}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-multi-team",name:"Soccer Live Multi Team",description:"Shows multiple teams' matches in one card"});const Ce=["dark","light","feyenoord","classic","neon","gold"],ze=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-multi-team-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},_allEntities:{type:Array}}}constructor(){super(),this._allEntities=[]}static get styles(){return n`
+    `:U`<ha-card><div class="empty">No entities configured</div></ha-card>`}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-multi-team",name:"Soccer Live Multi Team",description:"Shows multiple teams' matches in one card"});const Ce=["dark","light","red-white","classic","neon","gold"],ze=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-multi-team-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},_allEntities:{type:Array}}}constructor(){super(),this._allEntities=[]}static get styles(){return n`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
@@ -4976,7 +4976,7 @@
             </div>
           `}))}
       </ha-card>
-    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-team-competitions",name:"Soccer Live Team Competitions",description:"Shows all competitions for one team in a single card"});const Ee=["dark","light","feyenoord","classic","neon","gold"],Se=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-team-competitions-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-team-competitions",name:"Soccer Live Team Competitions",description:"Shows all competitions for one team in a single card"});const Ee=["dark","light","red-white","classic","neon","gold"],Se=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-team-competitions-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }

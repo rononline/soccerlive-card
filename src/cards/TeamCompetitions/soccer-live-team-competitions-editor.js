@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-const SKINS = ['dark', 'light', 'feyenoord', 'classic', 'neon', 'gold'];
+const SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
 const LANGS = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
 
 class SoccerLiveTeamCompetitionsEditor extends LitElement {

@@ -112,7 +112,7 @@ class CalcioLiveLineupEditor extends LitElement {
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
-            <option value="feyenoord"  ?selected=${this._config.skin === 'feyenoord'}>Feyenoord (rood)</option>
+            <option value="red-white"  ?selected=${this._config.skin === 'red-white'}>Feyenoord (rood)</option>
             <option value="classic"    ?selected=${this._config.skin === 'classic'}>Classic (groen)</option>
             <option value="neon"       ?selected=${this._config.skin === 'neon'}>Neon</option>
             <option value="gold"       ?selected=${this._config.skin === 'gold'}>Gold</option>
