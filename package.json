@@ -1,6 +1,6 @@
 {
   "name": "soccer-live-card",
-  "version": "2.26.22",
+  "version": "2.26.23",
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack"
