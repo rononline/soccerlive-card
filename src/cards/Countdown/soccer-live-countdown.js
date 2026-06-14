@@ -146,6 +146,27 @@ class SoccerLiveCountdownCard extends LitElement {
       .vs-text { font-size: 20px; font-weight: 900; color: var(--cl-text-2); }
       .meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--cl-text-2); }
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
+
+      @media (max-width: 600px) {
+        ha-card { padding: 12px !important; }
+        .team-logo { width: 40px !important; height: 40px !important; }
+        .team-name { font-size: 12px !important; }
+        .score { font-size: 32px !important; letter-spacing: 4px !important; }
+        .vs-text { font-size: 16px !important; }
+        .cd-num { font-size: 24px !important; }
+        .cd-label { font-size: 8px !important; }
+        .cd-sep { font-size: 20px !important; }
+        .sched-date { font-size: 10px !important; }
+        .meta { font-size: 10px !important; padding: 10px 12px !important; gap: 4px !important; }
+        .comp-name { font-size: 10px !important; }
+      }
+
+      @media (max-width: 400px) {
+        .score { font-size: 28px !important; letter-spacing: 2px !important; }
+        .countdown { gap: 4px !important; }
+        .cd-num { font-size: 20px !important; min-width: 32px !important; }
+        .team-name { font-size: 11px !important; }
+      }
     `];
   }
 
