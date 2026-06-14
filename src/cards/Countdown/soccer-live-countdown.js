@@ -176,7 +176,7 @@ class SoccerLiveCountdownCard extends LitElement {
               </div>
             ` : html`
               ${match.date ? html`<div class="sched-date">${match.date}</div>` : ''}
-              <div class="vs-text">vs</div>
+              <div class="vs-text">${this._t('match.vs')}</div>
             `}
           </div>
 
