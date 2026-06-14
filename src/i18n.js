@@ -160,6 +160,9 @@ const TRANSLATIONS = {
     'scorers.matches': 'Matches',
     'scorers.empty': 'No top scorers available',
     'scorers.rank': '#',
+
+    // Commentary card
+    'commentary.empty': 'No live commentary available',
   },
   nl: {
     'card.bracket': 'Schema',
@@ -300,6 +303,8 @@ const TRANSLATIONS = {
     'scorers.matches': 'Wedstrijden',
     'scorers.empty': 'Geen topschutters beschikbaar',
     'scorers.rank': '#',
+
+    'commentary.empty': 'Geen live commentaar beschikbaar',
   },
   it: {
     'card.bracket': 'Tabellone',
@@ -440,6 +445,8 @@ const TRANSLATIONS = {
     'scorers.matches': 'Partite',
     'scorers.empty': 'Nessun capocannoniere disponibile',
     'scorers.rank': '#',
+
+    'commentary.empty': 'Nessun commento in diretta disponibile',
   },
   fr: {
     'card.bracket': 'Tableau',
@@ -580,6 +587,8 @@ const TRANSLATIONS = {
     'scorers.matches': 'Matchs',
     'scorers.empty': 'Aucun buteur disponible',
     'scorers.rank': '#',
+
+    'commentary.empty': 'Aucun commentaire en direct disponible',
   },
   es: {
     'card.bracket': 'Cuadro',
@@ -720,6 +729,8 @@ const TRANSLATIONS = {
     'scorers.matches': 'Partidos',
     'scorers.empty': 'No hay goleadores disponibles',
     'scorers.rank': '#',
+
+    'commentary.empty': 'No hay comentario en vivo disponible',
   },
   de: {
     'card.bracket': 'K.o.-Runde',
@@ -860,6 +871,8 @@ const TRANSLATIONS = {
     'scorers.matches': 'Spiele',
     'scorers.empty': 'Keine Torschützen verfügbar',
     'scorers.rank': '#',
+
+    'commentary.empty': 'Kein Live-Kommentar verfügbar',
   },
   pt: {
     'card.bracket': 'Chave',
@@ -1000,6 +1013,8 @@ const TRANSLATIONS = {
     'scorers.matches': 'Jogos',
     'scorers.empty': 'Nenhum artilheiro disponível',
     'scorers.rank': '#',
+
+    'commentary.empty': 'Nenhum comentário ao vivo disponível',
   },
 };
 

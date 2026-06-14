@@ -178,7 +178,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
             `)}
           </div>
         ` : html`
-          <div class="no-commentary">No live commentary available</div>
+          <div class="no-commentary">${this._t('commentary.empty')}</div>
         `}
       </ha-card>
     `;
