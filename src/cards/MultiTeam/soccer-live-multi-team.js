@@ -26,21 +26,21 @@ class SoccerLiveMultiTeamCard extends LitElement {
 
   static get styles() {
     return [skinStyles, css`
-      ha-card { padding: 12px; }
-      .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); margin-bottom: 10px; }
+      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 12px; border-radius: 12px; }
+      .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cl-text-2); margin-bottom: 10px; }
       .match-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.07)); gap: 8px; }
       .match-row:last-child { border-bottom: none; }
       .team-block { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
       .team-block.right { flex-direction: row-reverse; }
       .team-logo { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
-      .team-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--primary-text-color); }
+      .team-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--cl-text); }
       .score-block { text-align: center; min-width: 60px; }
-      .score { font-size: 15px; font-weight: 900; color: var(--primary-text-color); letter-spacing: 2px; }
+      .score { font-size: 15px; font-weight: 900; color: var(--cl-text); letter-spacing: 2px; }
       .live-dot { display: inline-block; width: 6px; height: 6px; background: #e53935; border-radius: 50%; margin-right: 3px; animation: pulse 1s infinite; }
-      .status { font-size: 10px; color: var(--secondary-text-color); }
+      .status { font-size: 10px; color: var(--cl-text-2); }
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-      .no-match { font-size: 11px; color: var(--secondary-text-color); text-align: center; padding: 4px; }
-      .empty { padding: 16px; text-align: center; color: var(--secondary-text-color); }
+      .no-match { font-size: 11px; color: var(--cl-text-2); text-align: center; padding: 4px; }
+      .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
     `];
   }
 

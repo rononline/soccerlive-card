@@ -18,22 +18,27 @@ class SoccerLiveMiniStandingsCard extends LitElement {
 
   static get styles() {
     return [skinStyles, css`
-      ha-card { padding: 12px; }
+      ha-card {
+        background: var(--cl-bg);
+        color: var(--cl-text);
+        padding: 12px;
+        border-radius: 12px;
+      }
       .header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
       .league-logo { width: 22px; height: 22px; object-fit: contain; }
-      .title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary-text-color); }
+      .title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cl-text); }
       table { width: 100%; border-collapse: collapse; font-size: 12px; }
-      th { color: var(--secondary-text-color); font-weight: 600; padding: 2px 4px; text-align: center; font-size: 11px; }
+      th { color: var(--cl-text-2); font-weight: 600; padding: 2px 4px; text-align: center; font-size: 11px; }
       th.left { text-align: left; }
-      td { padding: 5px 4px; text-align: center; color: var(--primary-text-color); border-top: 1px solid var(--divider-color, rgba(255,255,255,0.07)); }
+      td { padding: 5px 4px; text-align: center; color: var(--cl-text); border-top: 1px solid var(--cl-divider); }
       td.left { text-align: left; }
       .team-row { display: flex; align-items: center; gap: 6px; }
       .team-logo { width: 16px; height: 16px; object-fit: contain; }
       .team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
-      .hl td { background: var(--primary-color, #03a9f4) !important; color: #fff !important; border-radius: 4px; }
-      .pos { width: 22px; font-weight: 700; color: var(--secondary-text-color); }
-      .pts { font-weight: 700; }
-      .empty { padding: 16px; text-align: center; color: var(--secondary-text-color); font-size: 13px; }
+      .hl td { background: rgba(var(--cl-accent-rgb), 0.2) !important; color: var(--cl-text) !important; }
+      .pos { width: 22px; font-weight: 700; color: var(--cl-text-2); }
+      .pts { font-weight: 700; color: var(--cl-accent); }
+      .empty { padding: 16px; text-align: center; color: var(--cl-text-2); font-size: 13px; }
     `];
   }
 
@@ -66,7 +71,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
             <th class="left">Team</th>
             <th>P</th>
             ${!this._config.hide_stats ? html`<th>W</th><th>D</th><th>L</th><th>GD</th>` : ''}
-            <th class="pts">Pts</th>
+            <th>Pts</th>
           </tr>
           ${rows.map(row => {
             const isHl = myTeam && row.team_name && row.team_name.toLowerCase().includes(myTeam);
@@ -82,9 +87,9 @@ class SoccerLiveMiniStandingsCard extends LitElement {
                     <span class="team-name">${row.team_name || ''}</span>
                   </div>
                 </td>
-                <td>${played || ''}</td>
-                ${!this._config.hide_stats ? html`<td>${row.wins ?? ''}</td><td>${row.draws ?? ''}</td><td>${row.losses ?? ''}</td><td>${row.goal_difference != null ? gdLabel : ''}</td>` : ''}
-                <td class="pts">${row.points ?? ''}</td>
+                <td>${played || 0}</td>
+                ${!this._config.hide_stats ? html`<td>${row.wins ?? 0}</td><td>${row.draws ?? 0}</td><td>${row.losses ?? 0}</td><td>${row.goal_difference != null ? gdLabel : 0}</td>` : ''}
+                <td class="pts">${row.points ?? 0}</td>
               </tr>
             `;
           })}

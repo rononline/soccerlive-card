@@ -37,40 +37,40 @@ class SoccerLiveLiveMatchCard extends LitElement {
 
   static get styles() {
     return [skinStyles, css`
-      ha-card { padding: 0; overflow: hidden; }
+      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; overflow: hidden; border-radius: 12px; }
       .hero { position: relative; padding: 20px 16px 16px; }
       .bg-logo { position: absolute; opacity: 0.06; width: 110px; height: 110px; object-fit: contain; top: 0; }
       .bg-logo.home { left: -10px; }
       .bg-logo.away { right: -10px; }
       .comp-row { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 14px; }
       .comp-logo { width: 16px; height: 16px; object-fit: contain; }
-      .comp-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary-text-color); font-weight: 600; }
+      .comp-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cl-text-2); font-weight: 600; }
       .teams-row { display: flex; align-items: center; justify-content: space-between; }
       .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
       .team-logo { width: 54px; height: 54px; object-fit: contain; }
-      .team-name { font-size: 13px; font-weight: 700; text-align: center; max-width: 100px; color: var(--primary-text-color); }
+      .team-name { font-size: 13px; font-weight: 700; text-align: center; max-width: 100px; color: var(--cl-text); }
       .score-center { text-align: center; flex: 0 0 auto; padding: 0 8px; }
       .live-badge { display: inline-block; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 99px; margin-bottom: 4px; }
-      .sched-info { font-size: 11px; color: var(--secondary-text-color); margin-bottom: 4px; }
-      .score { font-size: 44px; font-weight: 900; letter-spacing: 6px; color: var(--primary-text-color); line-height: 1; }
-      .vs-text { font-size: 24px; font-weight: 900; color: var(--secondary-text-color); padding: 8px 0; }
-      .minute { font-size: 12px; color: var(--secondary-text-color); margin-top: 4px; }
-      .divider { height: 1px; background: var(--divider-color, rgba(255,255,255,0.08)); margin: 0 16px; }
+      .sched-info { font-size: 11px; color: var(--cl-text-2); margin-bottom: 4px; }
+      .score { font-size: 44px; font-weight: 900; letter-spacing: 6px; color: var(--cl-text); line-height: 1; }
+      .vs-text { font-size: 24px; font-weight: 900; color: var(--cl-text-2); padding: 8px 0; }
+      .minute { font-size: 12px; color: var(--cl-text-2); margin-top: 4px; }
+      .divider { height: 1px; background: var(--divider-color, var(--cl-divider)); margin: 0 16px; }
       .events { padding: 12px 16px; max-height: 220px; overflow-y: auto; }
-      .event-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.05)); }
+      .event-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--divider-color, var(--cl-divider)); }
       .event-row:last-child { border-bottom: none; }
-      .event-min { font-weight: 700; color: var(--secondary-text-color); min-width: 32px; font-size: 11px; }
+      .event-min { font-weight: 700; color: var(--cl-text-2); min-width: 32px; font-size: 11px; }
       .event-icon { font-size: 14px; min-width: 20px; text-align: center; }
-      .event-text { flex: 1; color: var(--primary-text-color); }
-      .event-team { font-size: 10px; color: var(--secondary-text-color); }
-      .no-events { text-align: center; color: var(--secondary-text-color); font-size: 12px; padding: 10px 0; }
-      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; font-size: 11px; color: var(--secondary-text-color); }
-      .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); }
+      .event-text { flex: 1; color: var(--cl-text); }
+      .event-team { font-size: 10px; color: var(--cl-text-2); }
+      .no-events { text-align: center; color: var(--cl-text-2); font-size: 12px; padding: 10px 0; }
+      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; font-size: 11px; color: var(--cl-text-2); }
+      .empty { padding: 20px; text-align: center; color: var(--cl-text-2); }
       .stats-row { display: flex; align-items: center; padding: 5px 16px; font-size: 11px; gap: 6px; }
-      .stat-val { font-weight: 700; min-width: 28px; text-align: center; color: var(--primary-text-color); }
+      .stat-val { font-weight: 700; min-width: 28px; text-align: center; color: var(--cl-text); }
       .stat-bars { flex: 1; display: flex; gap: 2px; align-items: center; height: 4px; }
-      .stat-bar { height: 4px; border-radius: 2px; background: var(--primary-color, #03a9f4); }
-      .stat-label { flex: 1; text-align: center; color: var(--secondary-text-color); font-size: 10px; }
+      .stat-bar { height: 4px; border-radius: 2px; background: var(--cl-accent); }
+      .stat-label { flex: 1; text-align: center; color: var(--cl-text-2); font-size: 10px; }
     `];
   }
 
