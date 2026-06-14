@@ -1,9 +1,16 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderLoading, spinnerStyles } from "../loading-spinner.js";
+import { renderCardError, validateEntity } from "../card-error.js";
 
 class SoccerLiveLiveMatchCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {} }; }
+  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean } }; }
+
+  constructor() {
+    super();
+    this._isLoading = true;
+  }
 
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
@@ -36,7 +43,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, spinnerStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; overflow: hidden; border-radius: 12px; }
       .hero { position: relative; padding: 20px 16px 16px; }
       .bg-logo { position: absolute; opacity: 0.06; width: 110px; height: 110px; object-fit: contain; top: 0; }
@@ -74,13 +81,25 @@ class SoccerLiveLiveMatchCard extends LitElement {
     `];
   }
 
+  updated(changedProperties) {
+    if (changedProperties.has('hass')) {
+      const stateObj = this.hass?.states[this._config?.entity];
+      if (stateObj && stateObj.state !== 'unavailable') {
+        this._isLoading = false;
+      }
+    }
+  }
+
   render() {
-    if (!this.hass || !this._config) return html``;
+    if (!this.hass || !this._config) return renderLoading('Loading...');
+
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return html`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;
+    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
+    if (stateObj.state === 'unavailable') return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
+    if (this._isLoading) return renderLoading('Fetching match data...');
 
     const match = this._getMatch(stateObj);
-    if (!match) return html`<ha-card><div class="empty">No match data</div></ha-card>`;
+    if (!match) return renderCardError('⚽', 'No match data', 'Unable to find match information', 'Check if the sensor has data');
 
     const isLive = match.state === 'in' || match.status === 'live';
     const isFinished = match.state === 'post';
