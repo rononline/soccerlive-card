@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { editorStyles } from '../editor-helper.js';
 
 class CalcioLiveLineupEditor extends LitElement {
   static get properties() {
@@ -12,7 +13,7 @@ class CalcioLiveLineupEditor extends LitElement {
   constructor() { super(); this.entities = []; }
 
   static get styles() {
-    return css`
+    return [editorStyles, css`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
@@ -27,7 +28,7 @@ class CalcioLiveLineupEditor extends LitElement {
       }
       h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
       .hint { font-size: 12px; color: var(--secondary-text-color); }
-    `;
+    `];
   }
 
   setConfig(config) {
