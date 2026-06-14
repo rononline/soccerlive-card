@@ -3,9 +3,10 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
+import { OfflineCache } from "../offline-cache.js";
 
 class SoccerLiveMultiTeamCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean } }; }
+  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _cachedData: {} }; }
 
   setConfig(config) {
     if (!config.entities || !config.entities.length) throw new Error("At least one entity required");
@@ -23,6 +24,10 @@ class SoccerLiveMultiTeamCard extends LitElement {
       });
       if (allAvailable) {
         this._isLoading = false;
+        entities.forEach(e => {
+          const stateObj = this.hass?.states[e];
+          if (stateObj) OfflineCache.set(e, stateObj.attributes);
+        });
       }
     }
   }
@@ -103,7 +108,12 @@ class SoccerLiveMultiTeamCard extends LitElement {
     if (this._isLoading) return renderLoading('Fetching team data...');
 
     const missingEntities = entities.filter(e => !this.hass.states[e]);
-    if (missingEntities.length > 0) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${missingEntities[0]}`, 'Check your entity configuration');
+    const hasAnyUnavailable = entities.some(e => this.hass.states[e]?.state === 'unavailable');
+    if (missingEntities.length > 0 && !hasAnyUnavailable) {
+      const cached = OfflineCache.get(entities[0]);
+      if (cached) return renderCardError('⏱', 'Offline - showing cached data', 'Last update: ' + new Date().toLocaleTimeString(), 'Waiting for integration');
+      return renderCardError('⚠️', 'Entity not found', `Unable to find: ${missingEntities[0]}`, 'Check your entity configuration');
+    }
 
     return html`
       <ha-card>
