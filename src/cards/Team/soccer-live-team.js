@@ -83,15 +83,6 @@ class CalcioLiveTeamNextCard extends LitElement {
     this._countdownInterval = setInterval(() => this.requestUpdate(), 30000);
   }
 
-  updated(changedProperties) {
-    if (changedProperties.has('hass')) {
-      const stateObj = this.hass?.states[this._config?.entity];
-      if (stateObj && stateObj.state !== 'unavailable') {
-        this._isLoading = false;
-        OfflineCache.set(this._config.entity, stateObj.attributes);
-      }
-    }
-  }
 
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -473,8 +464,8 @@ class CalcioLiveTeamNextCard extends LitElement {
         </ha-card>`;
     }
 
-    const match = stateObj.attributes.matches[0];
-    const leagueInfo = stateObj.attributes.league_info ? stateObj.attributes.league_info[0] : null;
+    const match = attributes.matches[0];
+    const leagueInfo = attributes.league_info ? attributes.league_info[0] : null;
     const leagueLogo = leagueInfo && leagueInfo.logo_href && leagueInfo.logo_href !== 'N/A' ? leagueInfo.logo_href : null;
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
@@ -497,7 +488,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     const heroBgStyle = (homeRgb || awayRgb) ? `background:
       radial-gradient(ellipse at 0% 0%, rgba(${homeRgb || '99,102,241'},0.18), transparent 55%),
       radial-gradient(ellipse at 100% 100%, rgba(${awayRgb || '236,72,153'},0.18), transparent 55%)` : '';
-    const myTeam = this.myTeam || (stateObj.attributes.team_name || '').toLowerCase();
+    const myTeam = this.myTeam || (attributes.team_name || '').toLowerCase();
     const homeIsMyTeam = myTeam && match.home_team && match.home_team.toLowerCase().includes(myTeam);
     const awayIsMyTeam = myTeam && match.away_team && match.away_team.toLowerCase().includes(myTeam);
 
@@ -763,9 +754,13 @@ class CalcioLiveTeamNextCard extends LitElement {
     if (changedProperties.has('activeMatch') && this.activeMatch) {
       this._loadWeather(this.activeMatch.venue);
     }
-    // Load weather for main match when hass updates
+    // Load weather for main match when hass updates + handle loading state
     if (changedProperties.has('hass') && this.hass && this._config) {
       const stateObj = this.hass.states[this._config.entity];
+      if (stateObj && stateObj.state !== 'unavailable') {
+        this._isLoading = false;
+        OfflineCache.set(this._config.entity, stateObj.attributes);
+      }
       if (stateObj && stateObj.attributes.matches && stateObj.attributes.matches[0]) {
         this._loadWeather(stateObj.attributes.matches[0].venue);
       }
