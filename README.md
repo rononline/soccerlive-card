@@ -19,6 +19,12 @@ Originally based on [Calcio Live Card](https://github.com/Bobsilvio/calcio-live-
 | ⏱ **Timeline** | `soccer-live-timeline` | Minute-by-minute log (goals, cards, substitutions) |
 | 🏆 **Bracket** | `soccer-live-bracket` | Knockout bracket: list view or tournament tree with trophy |
 | 🥇 **Top Scorers** | `soccer-live-cannonieri` | Top scorers list with photo, team logo and goal tally |
+| ⏳ **Countdown** | `soccer-live-countdown` | Countdown timer to next match with live score display |
+| 🏆 **Mini Standings** | `soccer-live-mini-standings` | Compact standings table with configurable rows and groups |
+| ⚽ **Live Match** | `soccer-live-live-match` | Current match with key events, possession, and shot stats |
+| 🔄 **Multi Team** | `soccer-live-multi-team` | Multiple teams' matches in one card |
+| 🗂️ **Team Competitions** | `soccer-live-team-competitions` | All team competitions with tab selector |
+| 💬 **Live Commentary** | `soccer-live-live-commentary` | Real-time play-by-play commentary with event icons |
 
 ### Features
 - 🌍 **Multi-language** — EN / NL / DE / PT / FR / ES / IT, auto-detected via HA locale
@@ -145,6 +151,67 @@ The top scorers sensor (`soccerlive_cannonieri_*`) is created automatically for 
 Shows: rank, player photo, name, team logo and goal tally.
 
 > Not all competitions provide top scorer data via ESPN. If the sensor shows `Not available`, the competition does not support this endpoint.
+
+### ⏳ Countdown
+
+```yaml
+type: custom:soccer-live-countdown
+entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+```
+
+Shows a countdown timer to the next match, or live score if match is active.
+
+### 🏆 Mini Standings
+
+```yaml
+type: custom:soccer-live-mini-standings
+entity: sensor.soccerlive_classifica_ned_1
+max_rows: 5
+group: null          # optional: filter standings group (e.g. "WK A", "WK B")
+highlight_team: null # optional: highlight team name
+```
+
+Compact standings table with configurable max rows and optional team highlighting.
+
+### ⚽ Live Match
+
+```yaml
+type: custom:soccer-live-live-match
+entity: sensor.soccerlive_all_ned_1
+```
+
+Displays the current/best match with key events, possession stats, and shots on target.
+
+### 🔄 Multi Team
+
+```yaml
+type: custom:soccer-live-multi-team
+entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
+```
+
+Shows all teams' matches in one card, auto-grouped by team.
+
+### 🗂️ Team Competitions
+
+```yaml
+type: custom:soccer-live-team-competitions
+entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
+team_name: "Team Name"          # optional: override team name
+default_comp: "Eredivisie"      # optional: default competition tab
+```
+
+All team competitions with tab selector for easy switching between leagues/cups.
+
+### 💬 Live Commentary
+
+```yaml
+type: custom:soccer-live-live-commentary
+entity: sensor.soccerlive_commentary_competition_team
+```
+
+Real-time play-by-play commentary with event icons and score progression.
+
+> Requires `soccerlive_commentary_*` sensor from the integration. Commentary availability depends on ESPN API support for the specific competition.
 
 ---
 
