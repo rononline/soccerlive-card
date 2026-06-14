@@ -22,3 +22,5 @@ import "./cards/LiveMatch/soccer-live-live-match.js";
 import "./cards/LiveMatch/soccer-live-live-match-editor.js";
 import "./cards/MultiTeam/soccer-live-multi-team.js";
 import "./cards/MultiTeam/soccer-live-multi-team-editor.js";
+import "./cards/TeamCompetitions/soccer-live-team-competitions.js";
+import "./cards/TeamCompetitions/soccer-live-team-competitions-editor.js";
