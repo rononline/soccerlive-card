@@ -4,9 +4,10 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
+import { OfflineCache } from "../offline-cache.js";
 
 class SoccerLiveCountdownCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _now: {}, _weatherBadge: {} }; }
+  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _now: {}, _weatherBadge: {}, _cachedData: {} }; }
 
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
@@ -27,6 +28,7 @@ class SoccerLiveCountdownCard extends LitElement {
       const stateObj = this.hass?.states[this._config?.entity];
       if (stateObj && stateObj.state !== 'unavailable') {
         this._isLoading = false;
+        OfflineCache.set(this._config.entity, stateObj.attributes);
       }
     }
     if (changedProperties.has('hass') || changedProperties.has('_config')) {
@@ -129,11 +131,23 @@ class SoccerLiveCountdownCard extends LitElement {
   render() {
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
-    if (stateObj.state === 'unavailable') return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
+    if (!stateObj) {
+      const cached = OfflineCache.get(this._config.entity);
+      if (cached) return renderCardError('⏱', 'Offline - showing cached data', 'Last update: ' + new Date().toLocaleTimeString(), 'Waiting for integration to come online');
+      return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
+    }
+    if (stateObj.state === 'unavailable') {
+      const cached = OfflineCache.get(this._config.entity);
+      if (cached) {
+        this._cachedData = cached.data;
+      } else {
+        return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
+      }
+    }
     if (this._isLoading) return renderLoading('Fetching match data...');
 
-    const match = this._getNextMatch(stateObj);
+    const attributes = stateObj ? stateObj.attributes : this._cachedData;
+    const match = this._getNextMatch({ attributes: attributes });
     if (!match) return renderCardError('⚽', 'No match data', 'Unable to find match information', 'Check if the sensor has data');
 
     const isLive = match.state === 'in';
