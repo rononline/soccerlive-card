@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { editorStyles } from '../editor-helper.js';
 
 class CalcioLiveTodayMatchesEditor extends LitElement {
   static get properties() {
@@ -15,7 +16,7 @@ class CalcioLiveTodayMatchesEditor extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [editorStyles, css`
       .card-config {
         display: flex;
         flex-direction: column;
@@ -64,7 +65,7 @@ class CalcioLiveTodayMatchesEditor extends LitElement {
         color: var(--secondary-text-color);
         margin-top: -4px;
       }
-    `;
+    `];
   }
 
   setConfig(config) {

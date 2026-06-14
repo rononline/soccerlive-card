@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { editorStyles } from '../editor-helper.js';
 
 class CalcioLiveClassificaCardEditor extends LitElement {
   static get properties() {
@@ -17,7 +18,7 @@ class CalcioLiveClassificaCardEditor extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [editorStyles, css`
       .card-config {
         display: flex;
         flex-direction: column;
@@ -61,7 +62,7 @@ class CalcioLiveClassificaCardEditor extends LitElement {
         letter-spacing: 0.05em;
         color: var(--secondary-text-color);
       }
-    `;
+    `];
   }
 
   setConfig(config) {

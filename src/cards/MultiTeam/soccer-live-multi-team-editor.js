@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { editorStyles } from '../editor-helper.js';
 
 const SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
 const LANGS = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
@@ -8,20 +9,14 @@ class SoccerLiveMultiTeamEditor extends LitElement {
   constructor() { super(); this._allEntities = []; }
 
   static get styles() {
-    return css`
-      .card-config { display: flex; flex-direction: column; gap: 16px; }
-      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-      label { font-size: 14px; color: var(--primary-text-color); }
-      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
-      select, input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color, #000); box-sizing: border-box; }
-      h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+    return [editorStyles, css`
       .entity-list { display: flex; flex-direction: column; gap: 8px; }
       .entity-row { display: flex; gap: 8px; align-items: center; }
       .entity-row select { flex: 1; }
       .remove-btn { background: none; border: 1px solid var(--error-color, #e53935); color: var(--error-color, #e53935); border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 13px; }
       .add-btn { background: var(--primary-color, #03a9f4); color: #fff; border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%; }
       .hint { font-size: 11px; color: var(--secondary-text-color); }
-    `;
+    `];
   }
 
   setConfig(config) { this._config = { ...config, entities: [...(config.entities || [])] }; }
