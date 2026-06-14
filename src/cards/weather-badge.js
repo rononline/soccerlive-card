@@ -38,7 +38,7 @@ export async function renderWeatherBadge(venue) {
       <div class="weather-badge" title="${venue}: ${weather.description}">
         <span class="weather-icon">${weather.icon}</span>
         <span class="weather-temp">${weather.temp}°</span>
-        <span class="weather-wind" title="Wind speed">${weather.wind} km/h</span>
+        <span class="weather-wind" title="Wind speed (Beaufort)">${weather.wind} ${weather.wind_unit || 'BFT'}</span>
       </div>
     `;
   } catch (e) {
