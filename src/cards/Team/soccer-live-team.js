@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 
 class CalcioLiveTeamNextCard extends LitElement {
   static get properties() {
@@ -13,6 +14,7 @@ class CalcioLiveTeamNextCard extends LitElement {
       _toastMessage: { type: String },
       _toastVisible: { type: Boolean },
       _toastVariant: { type: String },
+      _weatherBadge: { type: Object },
     };
   }
 
@@ -513,9 +515,12 @@ class CalcioLiveTeamNextCard extends LitElement {
         ${isLive ? this._renderStatsRow(match) : ''}
 
         <div class="meta-row">
-          <div class="meta-item venue-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>${venueLabel}</span>
+          <div class="meta-item venue-item" style="flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>${venueLabel}</span>
+            </div>
+            ${this._weatherBadge ? this._weatherBadge : ''}
           </div>
           ${showScore
             ? html`<button class="info-btn" @click="${() => this.showDetails(match)}">${this._t('team.details')} ›</button>`
@@ -714,6 +719,18 @@ class CalcioLiveTeamNextCard extends LitElement {
     if (changedProperties.has('showPopup') || changedProperties.has('activeMatch')) {
       this.renderPopupToBody();
     }
+    if (changedProperties.has('activeMatch') && this.activeMatch) {
+      this._loadWeather(this.activeMatch.venue);
+    }
+  }
+
+  async _loadWeather(venue) {
+    try {
+      this._weatherBadge = await renderWeatherBadge(venue);
+      this.requestUpdate();
+    } catch (e) {
+      console.warn('Weather load failed:', e);
+    }
   }
 
   renderPopupToBody() {
@@ -874,7 +891,7 @@ class CalcioLiveTeamNextCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, weatherBadgeStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;
