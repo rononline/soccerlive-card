@@ -13,7 +13,8 @@ class SoccerLiveCountdownCard extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._timer = setInterval(() => { this._now = new Date(); }, 1000);
+    this._now = new Date();
+    this._timer = setInterval(() => { this._now = new Date(); this.requestUpdate(); }, 1000);
   }
 
   disconnectedCallback() {
@@ -26,20 +27,33 @@ class SoccerLiveCountdownCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-countdown-editor"); }
   static getStubConfig() { return { entity: "sensor.soccerlive_next_" }; }
 
-  _getNextMatch(stateObj) {
-    const attrs = stateObj.attributes;
-    // Look for next scheduled match
-    const all = attrs.matches || attrs.all_matches || [];
-    const next = all.find(m => m.status === 'scheduled' || m.status === 'pre') || all[0];
-    if (next) return next;
-    // Fallback: single match in attributes
-    if (attrs.home_team) return attrs;
+  // Sensor date format: "DD/MM/YYYY HH:MM" or "DD-MM-YYYY HH:MM"
+  _parseDate(dateStr) {
+    if (!dateStr || dateStr === 'N/A') return null;
+    try {
+      const [datePart, timePart] = dateStr.split(' ');
+      const parts = datePart.split(/[-\/]/).map(Number);
+      const [hours, minutes] = (timePart || '00:00').split(':').map(Number);
+      // day/month/year format
+      if (parts.length === 3) {
+        const [day, month, year] = parts;
+        return new Date(year, month - 1, day, hours, minutes);
+      }
+    } catch (e) {}
     return null;
   }
 
+  _getNextMatch(stateObj) {
+    const attrs = stateObj.attributes;
+    const matches = attrs.matches || [];
+    return matches.find(m => m.state === 'pre' || m.status === 'scheduled') ||
+           matches.find(m => m.state === 'in' || m.status === 'live') ||
+           matches[0] || null;
+  }
+
   _countdown(dateStr) {
-    if (!dateStr) return null;
-    const target = new Date(dateStr);
+    const target = this._parseDate(dateStr);
+    if (!target) return null;
     const now = this._now || new Date();
     const diff = target - now;
     if (diff <= 0) return null;
@@ -47,50 +61,51 @@ class SoccerLiveCountdownCard extends LitElement {
     const hours = Math.floor((diff % 86400000) / 3600000);
     const mins = Math.floor((diff % 3600000) / 60000);
     const secs = Math.floor((diff % 60000) / 1000);
-    return { days, hours, mins, secs, diff };
+    return { days, hours, mins, secs };
   }
 
   static get styles() {
     return [skinStyles, css`
       ha-card { padding: 16px; }
-      .header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-      .comp-logo { width: 20px; height: 20px; object-fit: contain; }
-      .comp-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+      .header { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 14px; }
+      .comp-logo { width: 18px; height: 18px; object-fit: contain; }
+      .comp-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary-text-color); }
       .teams { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
       .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
       .team-logo { width: 52px; height: 52px; object-fit: contain; }
       .team-name { font-size: 13px; font-weight: 700; text-align: center; color: var(--primary-text-color); }
-      .vs { font-size: 18px; font-weight: 900; color: var(--secondary-text-color); padding: 0 12px; }
-      .live-score { text-align: center; }
-      .live-badge { display: inline-block; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; margin-bottom: 6px; }
-      .score-big { font-size: 42px; font-weight: 900; color: var(--primary-text-color); letter-spacing: 4px; }
-      .minute { font-size: 13px; color: var(--secondary-text-color); }
-      .countdown { display: flex; justify-content: center; gap: 12px; margin-top: 4px; }
-      .countdown-block { display: flex; flex-direction: column; align-items: center; }
-      .countdown-num { font-size: 32px; font-weight: 900; color: var(--primary-color, #03a9f4); line-height: 1; }
-      .countdown-label { font-size: 10px; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: 0.05em; }
-      .countdown-sep { font-size: 28px; font-weight: 900; color: var(--secondary-text-color); align-self: flex-start; padding-top: 4px; }
-      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 14px; font-size: 11px; color: var(--secondary-text-color); }
-      .meta-icon { font-size: 13px; }
-      .finished-badge { text-align: center; font-size: 13px; color: var(--secondary-text-color); padding: 8px 0; }
+      .center { text-align: center; flex: 0 0 auto; padding: 0 8px; }
+      .live-badge { display: inline-block; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 99px; margin-bottom: 4px; }
+      .ft-badge { font-size: 11px; color: var(--secondary-text-color); margin-bottom: 4px; }
+      .score { font-size: 42px; font-weight: 900; letter-spacing: 6px; color: var(--primary-text-color); line-height: 1; }
+      .minute { font-size: 12px; color: var(--secondary-text-color); margin-top: 2px; }
+      .countdown { display: flex; justify-content: center; gap: 8px; margin: 4px 0; }
+      .cd-block { display: flex; flex-direction: column; align-items: center; min-width: 36px; }
+      .cd-num { font-size: 30px; font-weight: 900; color: var(--primary-color, #03a9f4); line-height: 1; }
+      .cd-label { font-size: 9px; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: 0.05em; }
+      .cd-sep { font-size: 26px; font-weight: 900; color: var(--secondary-text-color); align-self: flex-start; padding-top: 2px; }
+      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--secondary-text-color); }
       .empty { padding: 16px; text-align: center; color: var(--secondary-text-color); }
+      .vs-text { font-size: 20px; font-weight: 900; color: var(--secondary-text-color); }
+      .sched-date { font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; }
     `];
   }
 
   render() {
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return html`<ha-card><div class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</div></ha-card>`;
+    if (!stateObj) return html`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;
 
     const match = this._getNextMatch(stateObj);
-    if (!match) return html`<ha-card><div class="empty">No match data available</div></ha-card>`;
+    if (!match) return html`<ha-card><div class="empty">No match data</div></ha-card>`;
 
-    const isLive = match.status === 'live' || match.status === 'in';
-    const isFinished = match.status === 'post' || match.status === 'finished' || match.status === 'final';
-    const countdown = !isLive && !isFinished ? this._countdown(match.date || match.match_date) : null;
-    const compName = match.competition_name || match.league || stateObj.attributes.league_name || '';
-    const compLogo = match.competition_logo || match.league_logo || stateObj.attributes.league_logo || '';
+    const isLive = match.state === 'in' || match.status === 'live';
+    const isFinished = match.state === 'post' || match.status === 'finished' || match.status === 'final';
+    const countdown = (!isLive && !isFinished) ? this._countdown(match.date) : null;
+    const compName = match.competition_name || stateObj.attributes.league_name || '';
+    const compLogo = match.competition_logo || stateObj.attributes.league_logo || '';
     const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
+    const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
 
     return html`
       <ha-card>
@@ -107,30 +122,32 @@ class SoccerLiveCountdownCard extends LitElement {
             <span class="team-name">${match.home_team || '?'}</span>
           </div>
 
-          ${isLive ? html`
-            <div class="live-score">
+          <div class="center">
+            ${isLive ? html`
               <div class="live-badge">LIVE</div>
-              <div class="score-big">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
-              ${match.clock || match.status_detail ? html`<div class="minute">${match.clock || match.status_detail}</div>` : ''}
-            </div>
-          ` : isFinished ? html`
-            <div class="live-score">
-              <div class="finished-badge">FT</div>
-              <div class="score-big">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
-            </div>
-          ` : countdown ? html`
-            <div class="countdown">
-              ${countdown.days > 0 ? html`
-                <div class="countdown-block"><span class="countdown-num">${countdown.days}</span><span class="countdown-label">days</span></div>
-                <span class="countdown-sep">:</span>
-              ` : ''}
-              <div class="countdown-block"><span class="countdown-num">${String(countdown.hours).padStart(2,'0')}</span><span class="countdown-label">hrs</span></div>
-              <span class="countdown-sep">:</span>
-              <div class="countdown-block"><span class="countdown-num">${String(countdown.mins).padStart(2,'0')}</span><span class="countdown-label">min</span></div>
-              <span class="countdown-sep">:</span>
-              <div class="countdown-block"><span class="countdown-num">${String(countdown.secs).padStart(2,'0')}</span><span class="countdown-label">sec</span></div>
-            </div>
-          ` : html`<span class="vs">vs</span>`}
+              <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
+              ${match.clock ? html`<div class="minute">${match.clock}</div>` : ''}
+            ` : isFinished ? html`
+              <div class="ft-badge">FT</div>
+              <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
+            ` : countdown ? html`
+              ${match.date ? html`<div class="sched-date">${match.date}</div>` : ''}
+              <div class="countdown">
+                ${countdown.days > 0 ? html`
+                  <div class="cd-block"><span class="cd-num">${countdown.days}</span><span class="cd-label">days</span></div>
+                  <span class="cd-sep">:</span>
+                ` : ''}
+                <div class="cd-block"><span class="cd-num">${String(countdown.hours).padStart(2,'0')}</span><span class="cd-label">hrs</span></div>
+                <span class="cd-sep">:</span>
+                <div class="cd-block"><span class="cd-num">${String(countdown.mins).padStart(2,'0')}</span><span class="cd-label">min</span></div>
+                <span class="cd-sep">:</span>
+                <div class="cd-block"><span class="cd-num">${String(countdown.secs).padStart(2,'0')}</span><span class="cd-label">sec</span></div>
+              </div>
+            ` : html`
+              ${match.date ? html`<div class="sched-date">${match.date}</div>` : ''}
+              <div class="vs-text">vs</div>
+            `}
+          </div>
 
           <div class="team">
             ${match.away_logo ? html`<img class="team-logo" src="${match.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
@@ -140,8 +157,7 @@ class SoccerLiveCountdownCard extends LitElement {
 
         ${venue ? html`
           <div class="meta">
-            <span class="meta-icon">🏟</span>
-            <span>${venue}${match.venue_city && match.venue_city !== 'N/A' ? `, ${match.venue_city}` : ''}</span>
+            🏟 <span>${venue}${venueCity ? `, ${venueCity}` : ''}</span>
           </div>
         ` : ''}
       </ha-card>

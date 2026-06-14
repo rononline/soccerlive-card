@@ -17,9 +17,11 @@ class SoccerLiveMultiTeamCard extends LitElement {
   static getStubConfig() { return { entities: [] }; }
 
   _getMatch(stateObj) {
-    const attrs = stateObj.attributes;
-    const all = attrs.matches || attrs.all_matches || [];
-    return all.find(m => m.status === 'live' || m.status === 'in') || all.find(m => m.status === 'scheduled' || m.status === 'pre') || all[0] || (attrs.home_team ? attrs : null);
+    const matches = stateObj.attributes.matches || [];
+    return matches.find(m => m.state === 'in') ||
+           matches.find(m => m.state === 'pre') ||
+           matches.find(m => m.state === 'post') ||
+           matches[0] || null;
   }
 
   static get styles() {
@@ -49,11 +51,10 @@ class SoccerLiveMultiTeamCard extends LitElement {
     const match = this._getMatch(stateObj);
     if (!match) return html`<div class="match-row"><div class="no-match">No data for ${entityId}</div></div>`;
 
-    const isLive = match.status === 'live' || match.status === 'in';
-    const isFinished = match.status === 'post' || match.status === 'finished' || match.status === 'final';
+    const isLive = match.state === 'in';
+    const isFinished = match.state === 'post';
     const showScore = isLive || isFinished;
-    const dateStr = match.date ? new Date(match.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '';
-    const timeStr = match.date ? new Date(match.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+    const dateStr = match.date || '';
 
     return html`
       <div class="match-row">
@@ -66,7 +67,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
           ${isLive ? html`<div><span class="live-dot"></span><span class="status">${match.clock || 'LIVE'}</span></div>` : ''}
           ${showScore
             ? html`<div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>`
-            : html`<div class="status">${timeStr || dateStr || 'vs'}</div>`
+            : html`<div class="status">${dateStr || 'vs'}</div>`
           }
           ${isFinished ? html`<div class="status">FT</div>` : ''}
         </div>
