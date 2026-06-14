@@ -1,5 +1,5 @@
 /*! For license information please see soccer-live-card.bundle.js.LICENSE.txt */
-(()=>{"use strict";const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,a=Symbol(),i=new WeakMap;class s{constructor(e,t,i){if(this._$cssResult$=!0,i!==a)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const a=this.t;if(t&&void 0===e){const t=void 0!==a&&1===a.length;t&&(e=i.get(a)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),t&&i.set(a,e))}return e}toString(){return this.cssText}}const n=(e,...t)=>{const i=1===e.length?e[0]:t.reduce(((t,a,i)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(a)+e[i+1]),e[0]);return new s(i,e,a)},o=(a,i)=>{if(t)a.adoptedStyleSheets=i.map((e=>e instanceof CSSStyleSheet?e:e.styleSheet));else for(const t of i){const i=document.createElement("style"),s=e.litNonce;void 0!==s&&i.setAttribute("nonce",s),i.textContent=t.cssText,a.appendChild(i)}},r=t?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const a of e.cssRules)t+=a.cssText;return(e=>new s("string"==typeof e?e:e+"",void 0,a))(t)})(e):e,{is:l,defineProperty:c,getOwnPropertyDescriptor:d,getOwnPropertyNames:p,getOwnPropertySymbols:h,getPrototypeOf:g}=Object,u=globalThis,m=u.trustedTypes,f=m?m.emptyScript:"",v=u.reactiveElementPolyfillSupport,b=(e,t)=>e,_={toAttribute(e,t){switch(t){case Boolean:e=e?f:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let a=e;switch(t){case Boolean:a=null!==e;break;case Number:a=null===e?null:Number(e);break;case Object:case Array:try{a=JSON.parse(e)}catch(e){a=null}}return a}},x=(e,t)=>!l(e,t),y={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:x};Symbol.metadata??=Symbol("metadata"),u.litPropertyMetadata??=new WeakMap;class w extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=y){if(t.state&&(t.attribute=!1),this._$Ei(),this.elementProperties.set(e,t),!t.noAccessor){const a=Symbol(),i=this.getPropertyDescriptor(e,a,t);void 0!==i&&c(this.prototype,e,i)}}static getPropertyDescriptor(e,t,a){const{get:i,set:s}=d(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get(){return i?.call(this)},set(t){const n=i?.call(this);s.call(this,t),this.requestUpdate(e,n,a)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??y}static _$Ei(){if(this.hasOwnProperty(b("elementProperties")))return;const e=g(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(b("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(b("properties"))){const e=this.properties,t=[...p(e),...h(e)];for(const a of t)this.createProperty(a,e[a])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,a]of t)this.elementProperties.set(e,a)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const a=this._$Eu(e,t);void 0!==a&&this._$Eh.set(a,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const a=new Set(e.flat(1/0).reverse());for(const e of a)t.unshift(r(e))}else void 0!==e&&t.push(r(e));return t}static _$Eu(e,t){const a=t.attribute;return!1===a?void 0:"string"==typeof a?a:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise((e=>this.enableUpdating=e)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((e=>e(this)))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const a of t.keys())this.hasOwnProperty(a)&&(e.set(a,this[a]),delete this[a]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return o(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach((e=>e.hostConnected?.()))}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach((e=>e.hostDisconnected?.()))}attributeChangedCallback(e,t,a){this._$AK(e,a)}_$EC(e,t){const a=this.constructor.elementProperties.get(e),i=this.constructor._$Eu(e,a);if(void 0!==i&&!0===a.reflect){const s=(void 0!==a.converter?.toAttribute?a.converter:_).toAttribute(t,a.type);this._$Em=e,null==s?this.removeAttribute(i):this.setAttribute(i,s),this._$Em=null}}_$AK(e,t){const a=this.constructor,i=a._$Eh.get(e);if(void 0!==i&&this._$Em!==i){const e=a.getPropertyOptions(i),s="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:_;this._$Em=i,this[i]=s.fromAttribute(t,e.type),this._$Em=null}}requestUpdate(e,t,a){if(void 0!==e){if(a??=this.constructor.getPropertyOptions(e),!(a.hasChanged??x)(this[e],t))return;this.P(e,t,a)}!1===this.isUpdatePending&&(this._$ES=this._$ET())}P(e,t,a){this._$AL.has(e)||this._$AL.set(e,t),!0===a.reflect&&this._$Em!==e&&(this._$Ej??=new Set).add(e)}async _$ET(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,a]of e)!0!==a.wrapped||this._$AL.has(t)||void 0===this[t]||this.P(t,this[t],a)}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach((e=>e.hostUpdate?.())),this.update(t)):this._$EU()}catch(t){throw e=!1,this._$EU(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach((e=>e.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EU(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Ej&&=this._$Ej.forEach((e=>this._$EC(e,this[e]))),this._$EU()}updated(e){}firstUpdated(e){}}w.elementStyles=[],w.shadowRootOptions={mode:"open"},w[b("elementProperties")]=new Map,w[b("finalized")]=new Map,v?.({ReactiveElement:w}),(u.reactiveElementVersions??=[]).push("2.0.4");const $=globalThis,k=$.trustedTypes,C=k?k.createPolicy("lit-html",{createHTML:e=>e}):void 0,z="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,S="?"+E,A=`<${S}>`,T=document,P=()=>T.createComment(""),N=e=>null===e||"object"!=typeof e&&"function"!=typeof e,M=Array.isArray,L="[ \t\n\f\r]",j=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,D=/-->/g,V=/>/g,H=RegExp(`>|${L}(?:([^\\s"'>=/]+)(${L}*=${L}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),O=/'/g,F=/"/g,R=/^(?:script|style|textarea|title)$/i,I=e=>(t,...a)=>({_$litType$:e,strings:t,values:a}),B=I(1),U=I(2),G=(I(3),Symbol.for("lit-noChange")),q=Symbol.for("lit-nothing"),W=new WeakMap,K=T.createTreeWalker(T,129);function J(e,t){if(!M(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==C?C.createHTML(t):t}class Z{constructor({strings:e,_$litType$:t},a){let i;this.parts=[];let s=0,n=0;const o=e.length-1,r=this.parts,[l,c]=((e,t)=>{const a=e.length-1,i=[];let s,n=2===t?"<svg>":3===t?"<math>":"",o=j;for(let t=0;t<a;t++){const a=e[t];let r,l,c=-1,d=0;for(;d<a.length&&(o.lastIndex=d,l=o.exec(a),null!==l);)d=o.lastIndex,o===j?"!--"===l[1]?o=D:void 0!==l[1]?o=V:void 0!==l[2]?(R.test(l[2])&&(s=RegExp("</"+l[2],"g")),o=H):void 0!==l[3]&&(o=H):o===H?">"===l[0]?(o=s??j,c=-1):void 0===l[1]?c=-2:(c=o.lastIndex-l[2].length,r=l[1],o=void 0===l[3]?H:'"'===l[3]?F:O):o===F||o===O?o=H:o===D||o===V?o=j:(o=H,s=void 0);const p=o===H&&e[t+1].startsWith("/>")?" ":"";n+=o===j?a+A:c>=0?(i.push(r),a.slice(0,c)+z+a.slice(c)+E+p):a+E+(-2===c?t:p)}return[J(e,n+(e[a]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),i]})(e,t);if(this.el=Z.createElement(l,a),K.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(i=K.nextNode())&&r.length<o;){if(1===i.nodeType){if(i.hasAttributes())for(const e of i.getAttributeNames())if(e.endsWith(z)){const t=c[n++],a=i.getAttribute(e).split(E),o=/([.?@])?(.*)/.exec(t);r.push({type:1,index:s,name:o[2],strings:a,ctor:"."===o[1]?te:"?"===o[1]?ae:"@"===o[1]?ie:ee}),i.removeAttribute(e)}else e.startsWith(E)&&(r.push({type:6,index:s}),i.removeAttribute(e));if(R.test(i.tagName)){const e=i.textContent.split(E),t=e.length-1;if(t>0){i.textContent=k?k.emptyScript:"";for(let a=0;a<t;a++)i.append(e[a],P()),K.nextNode(),r.push({type:2,index:++s});i.append(e[t],P())}}}else if(8===i.nodeType)if(i.data===S)r.push({type:2,index:s});else{let e=-1;for(;-1!==(e=i.data.indexOf(E,e+1));)r.push({type:7,index:s}),e+=E.length-1}s++}}static createElement(e,t){const a=T.createElement("template");return a.innerHTML=e,a}}function Q(e,t,a=e,i){if(t===G)return t;let s=void 0!==i?a.o?.[i]:a.l;const n=N(t)?void 0:t._$litDirective$;return s?.constructor!==n&&(s?._$AO?.(!1),void 0===n?s=void 0:(s=new n(e),s._$AT(e,a,i)),void 0!==i?(a.o??=[])[i]=s:a.l=s),void 0!==s&&(t=Q(e,s._$AS(e,t.values),s,i)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:a}=this._$AD,i=(e?.creationScope??T).importNode(t,!0);K.currentNode=i;let s=K.nextNode(),n=0,o=0,r=a[0];for(;void 0!==r;){if(n===r.index){let t;2===r.type?t=new Y(s,s.nextSibling,this,e):1===r.type?t=new r.ctor(s,r.name,r.strings,this,e):6===r.type&&(t=new se(s,this,e)),this._$AV.push(t),r=a[++o]}n!==r?.index&&(s=K.nextNode(),n++)}return K.currentNode=T,i}p(e){let t=0;for(const a of this._$AV)void 0!==a&&(void 0!==a.strings?(a._$AI(e,a,t),t+=a.strings.length-2):a._$AI(e[t])),t++}}class Y{get _$AU(){return this._$AM?._$AU??this.v}constructor(e,t,a,i){this.type=2,this._$AH=q,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=a,this.options=i,this.v=i?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Q(this,e,t),N(e)?e===q||null==e||""===e?(this._$AH!==q&&this._$AR(),this._$AH=q):e!==this._$AH&&e!==G&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>M(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==q&&N(this._$AH)?this._$AA.nextSibling.data=e:this.T(T.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:a}=e,i="number"==typeof a?this._$AC(e):(void 0===a.el&&(a.el=Z.createElement(J(a.h,a.h[0]),this.options)),a);if(this._$AH?._$AD===i)this._$AH.p(t);else{const e=new X(i,this),a=e.u(this.options);e.p(t),this.T(a),this._$AH=e}}_$AC(e){let t=W.get(e.strings);return void 0===t&&W.set(e.strings,t=new Z(e)),t}k(e){M(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let a,i=0;for(const s of e)i===t.length?t.push(a=new Y(this.O(P()),this.O(P()),this,this.options)):a=t[i],a._$AI(s),i++;i<t.length&&(this._$AR(a&&a._$AB.nextSibling,i),t.length=i)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this.v=e,this._$AP?.(e))}}class ee{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,a,i,s){this.type=1,this._$AH=q,this._$AN=void 0,this.element=e,this.name=t,this._$AM=i,this.options=s,a.length>2||""!==a[0]||""!==a[1]?(this._$AH=Array(a.length-1).fill(new String),this.strings=a):this._$AH=q}_$AI(e,t=this,a,i){const s=this.strings;let n=!1;if(void 0===s)e=Q(this,e,t,0),n=!N(e)||e!==this._$AH&&e!==G,n&&(this._$AH=e);else{const i=e;let o,r;for(e=s[0],o=0;o<s.length-1;o++)r=Q(this,i[a+o],t,o),r===G&&(r=this._$AH[o]),n||=!N(r)||r!==this._$AH[o],r===q?e=q:e!==q&&(e+=(r??"")+s[o+1]),this._$AH[o]=r}n&&!i&&this.j(e)}j(e){e===q?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class te extends ee{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===q?void 0:e}}class ae extends ee{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==q)}}class ie extends ee{constructor(e,t,a,i,s){super(e,t,a,i,s),this.type=5}_$AI(e,t=this){if((e=Q(this,e,t,0)??q)===G)return;const a=this._$AH,i=e===q&&a!==q||e.capture!==a.capture||e.once!==a.once||e.passive!==a.passive,s=e!==q&&(a===q||i);i&&this.element.removeEventListener(this.name,this,a),s&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class se{constructor(e,t,a){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=a}get _$AU(){return this._$AM._$AU}_$AI(e){Q(this,e)}}const ne=$.litHtmlPolyfillSupport;ne?.(Z,Y),($.litHtmlVersions??=[]).push("3.2.0");class oe extends w{constructor(){super(...arguments),this.renderOptions={host:this},this.o=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this.o=((e,t,a)=>{const i=a?.renderBefore??t;let s=i._$litPart$;if(void 0===s){const e=a?.renderBefore??null;i._$litPart$=s=new Y(t.insertBefore(P(),e),e,void 0,a??{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this.o?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this.o?.setConnected(!1)}render(){return G}}oe._$litElement$=!0,oe.finalized=!0,globalThis.litElementHydrateSupport?.({LitElement:oe});const re=globalThis.litElementPolyfillSupport;re?.({LitElement:oe}),(globalThis.litElementVersions??=[]).push("4.1.0");const le={en:{"card.bracket":"Bracket","card.lineup":"Lineups","card.timeline":"Timeline","card.news":"News","card.standings":"Standings","card.scorers":"Top Scorers","round.final":"Final","round.semifinals":"Semifinals","round.quarterfinals":"Quarterfinals","round.r16":"Round of 16","round.r32":"Round of 32","round.knockout_playoffs":"Knockout Playoffs","round.preliminary":"Preliminary Round","round.short.semifinals":"Semis","round.short.quarterfinals":"Quarters","round.short.r16":"R16","bracket.empty.title":"Bracket not available","bracket.empty.sub":"Knockout stage starts soon","bracket.tbd":"TBD","bracket.tied_agg":"Tied agg.","bracket.agg":"Agg.","status.live":"Live","status.finished":"Finished","status.scheduled":"Scheduled","status.full_time":"Full Time","status.halftime":"Halftime","status.first_half":"1st Half","status.second_half":"2nd Half","status.kickoff":"Kickoff","status.end":"End","event.goal":"Goal","event.yellow_card":"Yellow Card","event.red_card":"Red Card","event.substitution":"Substitution","event.var":"VAR","event.header":"Header","event.shot":"Shot","event.penalty":"Penalty","event.free_kick":"Free kick","form.W":"W","form.D":"D","form.L":"L","team.details":"Details","team.possession":"Possession","team.shots":"Shots","team.on_target":"On target","team.fouls":"Fouls","team.spectators":"spectators","team.top_scorer":"Top scorer","team.next_match":"Next match","team.upcoming_matches":"Upcoming matches","team.previous_matches":"Previous matches","team.form_trend":"Season form","team.h2h":"Head to head","standings.stats":"matches played · goals","standings.pos_label":"Position","standings.compact_hidden":"teams hidden","team.in":"In","team.no_match":"No match available","team.off_season":"New season starts soon","team.unknown_entity":"Unknown entity","time.today":"Today","time.yesterday":"Yesterday","time.tomorrow":"Tomorrow","time.now":"now","time.in_n_min":"in {n} min","time.in_n_h":"in {n} h","time.in_n_d":"in {n} d","time.n_min_ago":"{n} min ago","time.n_h_ago":"{n} h ago","time.n_d_ago":"{n} d ago","lineup.bench":"Bench","lineup.empty.title":"Lineups not available","lineup.empty.sub":"Lineups are published shortly before kick-off","timeline.empty.title":"No events yet","timeline.empty.sub":"Events appear during the match","timeline.event":"Event","timeline.penalty":"Penalty","news.empty":"No news available","news.articles":"{n} articles","zone.champions":"Champions","zone.europa":"Europa","zone.relegation":"Relegation","zone.conference":"Conference League","zone.qualified":"Qualified","zone.third_place_playoff":"Best 3rd","zone.eliminated":"Eliminated","hero.groups":"groups","hero.teams":"teams","hero.not_started":"Not started","phase.regular_season":"Regular season","phase.group_stage":"Group stage","phase.playoffs":"Playoffs","col.pos":"#","col.team":"Team","col.played":"P","col.wins":"W","col.draws":"D","col.losses":"L","col.gd":"+/-","col.points":"Pts","generic.no_match":"No match available","generic.matches_count":"{n} matches","generic.unknown_entity":"Unknown entity","generic.close":"Close","generic.unknown":"Unknown","popup.match_details":"Match details","popup.lineups":"Lineups","popup.timeline":"Timeline","popup.h2h":"Head-to-head","popup.no_events":"No events available","month.1":"Jan","month.2":"Feb","month.3":"Mar","month.4":"Apr","month.5":"May","month.6":"Jun","month.7":"Jul","month.8":"Aug","month.9":"Sep","month.10":"Oct","month.11":"Nov","month.12":"Dec","scorers.goals":"Goals","scorers.matches":"Matches","scorers.empty":"No top scorers available","scorers.rank":"#"},nl:{"card.bracket":"Schema","card.lineup":"Opstellingen","card.timeline":"Tijdlijn","card.news":"Nieuws","card.standings":"Stand","card.scorers":"Topschutters","round.final":"Finale","round.semifinals":"Halve finales","round.quarterfinals":"Kwartfinales","round.r16":"Achtste finales","round.r32":"Zestiende finales","round.knockout_playoffs":"Knock-out play-offs","round.preliminary":"Voorronde","round.short.semifinals":"Halve finales","round.short.quarterfinals":"Kwart","round.short.r16":"8e finale","bracket.empty.title":"Schema niet beschikbaar","bracket.empty.sub":"De knock-outfase begint binnenkort","bracket.tbd":"N.t.b.","bracket.tied_agg":"Gelijk totaal","bracket.agg":"Totaal","status.live":"Live","status.finished":"Afgelopen","status.scheduled":"Gepland","status.full_time":"Einde wedstrijd","status.halftime":"Rust","status.first_half":"1e helft","status.second_half":"2e helft","status.kickoff":"Aftrap","status.end":"Einde","event.goal":"Doelpunt","event.yellow_card":"Gele kaart","event.red_card":"Rode kaart","event.substitution":"Wissel","event.var":"VAR","event.header":"Kopbal","event.shot":"Schot","event.penalty":"Penalty","event.free_kick":"Vrije trap","form.W":"W","form.D":"G","form.L":"V","team.details":"Details","team.possession":"Balbezit","team.shots":"Schoten","team.on_target":"Op doel","team.fouls":"Overtredingen","team.spectators":"toeschouwers","team.top_scorer":"Topscorer","team.next_match":"Volgende wedstrijd","team.upcoming_matches":"Volgende wedstrijden","team.previous_matches":"Vorige wedstrijden","team.form_trend":"Seizoenvorm","team.h2h":"Onderlinge duels","standings.stats":"wedstrijden gespeeld · doelpunten","standings.pos_label":"Positie","standings.compact_hidden":"ploegen","team.in":"Over","team.no_match":"Geen wedstrijd beschikbaar","team.off_season":"Nieuw seizoen begint binnenkort","team.unknown_entity":"Onbekende entiteit","time.today":"Vandaag","time.yesterday":"Gisteren","time.tomorrow":"Morgen","time.now":"nu","time.in_n_min":"over {n} min","time.in_n_h":"over {n} uur","time.in_n_d":"over {n} dagen","time.n_min_ago":"{n} min geleden","time.n_h_ago":"{n} uur geleden","time.n_d_ago":"{n} dagen geleden","lineup.bench":"Bank","lineup.empty.title":"Opstellingen niet beschikbaar","lineup.empty.sub":"Opstellingen worden kort voor de aftrap gepubliceerd","timeline.empty.title":"Nog geen gebeurtenissen","timeline.empty.sub":"Gebeurtenissen verschijnen tijdens de wedstrijd","timeline.event":"Gebeurtenis","timeline.penalty":"Penalty","news.empty":"Geen nieuws beschikbaar","news.articles":"{n} artikelen","phase.regular_season":"Competitie","phase.group_stage":"Groepsfase","phase.playoffs":"Play-offs","zone.champions":"Champions League","zone.europa":"Europa League","zone.conference":"Conference League","zone.relegation":"Degradatie","zone.qualified":"Gekwalificeerd","zone.third_place_playoff":"Beste 3e","zone.eliminated":"Uitgeschakeld","hero.groups":"groepen","hero.teams":"teams","hero.not_started":"Niet gestart","col.pos":"#","col.team":"Team","col.played":"G","col.wins":"W","col.draws":"GL","col.losses":"V","col.gd":"+/-","col.points":"Pnt","generic.no_match":"Geen wedstrijd beschikbaar","generic.matches_count":"{n} wedstrijden","generic.unknown_entity":"Onbekende entiteit","generic.close":"Sluiten","generic.unknown":"Onbekend","popup.match_details":"Wedstrijddetails","popup.lineups":"Opstellingen","popup.timeline":"Tijdlijn","popup.h2h":"Onderlinge duels","popup.no_events":"Geen gebeurtenissen beschikbaar","month.1":"Jan","month.2":"Feb","month.3":"Mrt","month.4":"Apr","month.5":"Mei","month.6":"Jun","month.7":"Jul","month.8":"Aug","month.9":"Sep","month.10":"Okt","month.11":"Nov","month.12":"Dec","scorers.goals":"Doelpunten","scorers.matches":"Wedstrijden","scorers.empty":"Geen topschutters beschikbaar","scorers.rank":"#"},it:{"card.bracket":"Tabellone","card.lineup":"Formazioni","card.timeline":"Cronologia","card.news":"Notizie","card.standings":"Classifica","card.scorers":"Capocannonieri","round.final":"Finale","round.semifinals":"Semifinali","round.quarterfinals":"Quarti di finale","round.r16":"Ottavi di finale","round.r32":"Sedicesimi","round.knockout_playoffs":"Spareggi KO","round.preliminary":"Turno preliminare","round.short.semifinals":"Semi","round.short.quarterfinals":"Quarti","round.short.r16":"Ottavi","bracket.empty.title":"Tabellone non disponibile","bracket.empty.sub":"La fase a eliminazione diretta inizierà presto","bracket.tbd":"Da def.","bracket.tied_agg":"Pari aggreg.","bracket.agg":"Aggreg.","status.live":"Diretta","status.finished":"Finita","status.scheduled":"Programmata","status.full_time":"Termine","status.halftime":"Intervallo","status.first_half":"Primo Tempo","status.second_half":"Secondo Tempo","status.kickoff":"Inizio","status.end":"Fine","event.goal":"Goal","event.yellow_card":"Cartellino giallo","event.red_card":"Cartellino rosso","event.substitution":"Sostituzione","event.var":"VAR","event.header":"Colpo di testa","event.shot":"Tiro","event.penalty":"Rigore","event.free_kick":"Calcio di punizione","form.W":"V","form.D":"N","form.L":"P","team.details":"Dettagli","team.possession":"Possesso","team.shots":"Tiri","team.on_target":"In porta","team.fouls":"Falli","team.spectators":"spettatori","team.top_scorer":"Capocannoniere","team.next_match":"Prossima partita","team.in":"A","team.no_match":"Nessuna partita disponibile","team.off_season":"Nuova stagione in arrivo","team.unknown_entity":"Entità sconosciuta","team.upcoming_matches":"Prossime partite","team.previous_matches":"Partite precedenti","team.form_trend":"Forma stagionale","team.h2h":"Testa a testa","standings.stats":"partite giocate · gol","standings.pos_label":"Posizione","standings.compact_hidden":"squadre nascoste","time.today":"Oggi","time.yesterday":"Ieri","time.tomorrow":"Domani","time.now":"ora","time.in_n_min":"tra {n} min","time.in_n_h":"tra {n} h","time.in_n_d":"tra {n} g","time.n_min_ago":"{n} min fa","time.n_h_ago":"{n} h fa","time.n_d_ago":"{n} g fa","lineup.bench":"Panchina","lineup.empty.title":"Formazioni non disponibili","lineup.empty.sub":"Le formazioni vengono pubblicate poco prima del fischio d'inizio","timeline.empty.title":"Nessun evento ancora","timeline.empty.sub":"Gli eventi compaiono durante la partita","timeline.event":"Evento","timeline.penalty":"Rigore","news.empty":"Nessuna notizia disponibile","news.articles":"{n} articoli","zone.champions":"Champions","zone.europa":"Europa","zone.conference":"Conference League","zone.relegation":"Retrocessione","zone.qualified":"Qualificate","zone.third_place_playoff":"Migliori 3°","zone.eliminated":"Eliminate","hero.groups":"gironi","hero.teams":"squadre","hero.not_started":"Non iniziato","phase.regular_season":"Campionato","phase.group_stage":"Fase a gironi","phase.playoffs":"Play-off","col.pos":"#","col.team":"Squadra","col.played":"P","col.wins":"V","col.draws":"N","col.losses":"S","col.gd":"+/-","col.points":"Pt","generic.no_match":"Nessuna partita disponibile","generic.matches_count":"{n} partite","generic.unknown_entity":"Entità sconosciuta","generic.close":"Chiudi","generic.unknown":"Sconosciuto","popup.match_details":"Dettagli partita","popup.lineups":"Formazioni","popup.timeline":"Cronologia","popup.h2h":"Precedenti","popup.no_events":"Nessun evento disponibile","month.1":"Gen","month.2":"Feb","month.3":"Mar","month.4":"Apr","month.5":"Mag","month.6":"Giu","month.7":"Lug","month.8":"Ago","month.9":"Set","month.10":"Ott","month.11":"Nov","month.12":"Dic","scorers.goals":"Gol","scorers.matches":"Partite","scorers.empty":"Nessun capocannoniere disponibile","scorers.rank":"#"},fr:{"card.bracket":"Tableau","card.lineup":"Compositions","card.timeline":"Chronologie","card.news":"Actualités","card.standings":"Classement","card.scorers":"Buteurs","round.final":"Finale","round.semifinals":"Demi-finales","round.quarterfinals":"Quarts de finale","round.r16":"Huitièmes de finale","round.r32":"Seizièmes","round.knockout_playoffs":"Barrages","round.preliminary":"Tour préliminaire","round.short.semifinals":"Demis","round.short.quarterfinals":"Quarts","round.short.r16":"8èmes","bracket.empty.title":"Tableau non disponible","bracket.empty.sub":"La phase à élimination directe commencera bientôt","bracket.tbd":"À déf.","bracket.tied_agg":"Score cumulé égal","bracket.agg":"Cumul","status.live":"En direct","status.finished":"Terminé","status.scheduled":"Programmé","status.full_time":"Temps régl.","status.halftime":"Mi-temps","status.first_half":"1ère mi-temps","status.second_half":"2ème mi-temps","status.kickoff":"Coup d'envoi","status.end":"Fin","event.goal":"But","event.yellow_card":"Carton jaune","event.red_card":"Carton rouge","event.substitution":"Remplacement","event.var":"VAR","event.header":"Coup de tête","event.shot":"Tir","event.penalty":"Penalty","event.free_kick":"Coup franc","form.W":"V","form.D":"N","form.L":"D","team.details":"Détails","team.possession":"Possession","team.shots":"Tirs","team.on_target":"Cadrés","team.fouls":"Fautes","team.spectators":"spectateurs","team.top_scorer":"Meilleur buteur","team.next_match":"Prochain match","team.in":"À","team.no_match":"Aucun match disponible","team.off_season":"Nouvelle saison bientôt","team.unknown_entity":"Entité inconnue","team.upcoming_matches":"Prochains matchs","team.previous_matches":"Matchs précédents","team.form_trend":"Forme de la saison","team.h2h":"Face à face","standings.stats":"matchs joués · buts","standings.pos_label":"Position","standings.compact_hidden":"équipes masquées","time.today":"Aujourd'hui","time.yesterday":"Hier","time.tomorrow":"Demain","time.now":"maintenant","time.in_n_min":"dans {n} min","time.in_n_h":"dans {n} h","time.in_n_d":"dans {n} j","time.n_min_ago":"il y a {n} min","time.n_h_ago":"il y a {n} h","time.n_d_ago":"il y a {n} j","lineup.bench":"Banc","lineup.empty.title":"Compositions non disponibles","lineup.empty.sub":"Les compositions sont publiées peu avant le coup d'envoi","timeline.empty.title":"Aucun événement","timeline.empty.sub":"Les événements apparaissent pendant le match","timeline.event":"Événement","timeline.penalty":"Penalty","news.empty":"Aucune actualité disponible","news.articles":"{n} articles","zone.champions":"Champions","zone.europa":"Europa","zone.conference":"Conference League","zone.relegation":"Relégation","zone.qualified":"Qualifiées","zone.third_place_playoff":"Meilleurs 3es","zone.eliminated":"Éliminées","hero.groups":"groupes","hero.teams":"équipes","hero.not_started":"Pas commencé","phase.regular_season":"Saison régulière","phase.group_stage":"Phase de groupes","phase.playoffs":"Barrages","col.pos":"#","col.team":"Équipe","col.played":"J","col.wins":"G","col.draws":"N","col.losses":"P","col.gd":"+/-","col.points":"Pts","generic.no_match":"Aucun match disponible","generic.matches_count":"{n} matchs","generic.unknown_entity":"Entité inconnue","generic.close":"Fermer","generic.unknown":"Inconnu","popup.match_details":"Détails du match","popup.lineups":"Compositions","popup.timeline":"Chronologie","popup.h2h":"Confrontations","popup.no_events":"Aucun événement disponible","month.1":"Janv","month.2":"Févr","month.3":"Mars","month.4":"Avr","month.5":"Mai","month.6":"Juin","month.7":"Juil","month.8":"Août","month.9":"Sept","month.10":"Oct","month.11":"Nov","month.12":"Déc","scorers.goals":"Buts","scorers.matches":"Matchs","scorers.empty":"Aucun buteur disponible","scorers.rank":"#"},es:{"card.bracket":"Cuadro","card.lineup":"Alineaciones","card.timeline":"Cronología","card.news":"Noticias","card.standings":"Clasificación","card.scorers":"Goleadores","round.final":"Final","round.semifinals":"Semifinales","round.quarterfinals":"Cuartos de final","round.r16":"Octavos de final","round.r32":"Dieciseisavos","round.knockout_playoffs":"Eliminatorias previas","round.preliminary":"Ronda preliminar","round.short.semifinals":"Semis","round.short.quarterfinals":"Cuartos","round.short.r16":"Octavos","bracket.empty.title":"Cuadro no disponible","bracket.empty.sub":"La fase eliminatoria comenzará pronto","bracket.tbd":"Por def.","bracket.tied_agg":"Empate global","bracket.agg":"Global","status.live":"En vivo","status.finished":"Finalizado","status.scheduled":"Programado","status.full_time":"Final","status.halftime":"Descanso","status.first_half":"Primer tiempo","status.second_half":"Segundo tiempo","status.kickoff":"Saque inicial","status.end":"Fin","event.goal":"Gol","event.yellow_card":"Tarjeta amarilla","event.red_card":"Tarjeta roja","event.substitution":"Sustitución","event.var":"VAR","event.header":"Cabezazo","event.shot":"Disparo","event.penalty":"Penalti","event.free_kick":"Falta directa","form.W":"V","form.D":"E","form.L":"D","team.details":"Detalles","team.possession":"Posesión","team.shots":"Tiros","team.on_target":"Al arco","team.fouls":"Faltas","team.spectators":"espectadores","team.top_scorer":"Goleador","team.next_match":"Próximo partido","team.in":"En","team.no_match":"Ningún partido disponible","team.off_season":"Nueva temporada próximamente","team.unknown_entity":"Entidad desconocida","team.upcoming_matches":"Próximos partidos","team.previous_matches":"Partidos anteriores","team.form_trend":"Forma de la temporada","team.h2h":"Cara a cara","standings.stats":"partidos jugados · goles","standings.pos_label":"Posición","standings.compact_hidden":"equipos ocultos","time.today":"Hoy","time.yesterday":"Ayer","time.tomorrow":"Mañana","time.now":"ahora","time.in_n_min":"en {n} min","time.in_n_h":"en {n} h","time.in_n_d":"en {n} d","time.n_min_ago":"hace {n} min","time.n_h_ago":"hace {n} h","time.n_d_ago":"hace {n} d","lineup.bench":"Banquillo","lineup.empty.title":"Alineaciones no disponibles","lineup.empty.sub":"Las alineaciones se publican poco antes del saque inicial","timeline.empty.title":"Aún no hay eventos","timeline.empty.sub":"Los eventos aparecen durante el partido","timeline.event":"Evento","timeline.penalty":"Penalti","news.empty":"No hay noticias disponibles","news.articles":"{n} artículos","zone.champions":"Champions","zone.europa":"Europa","zone.conference":"Conference League","zone.relegation":"Descenso","zone.qualified":"Clasificadas","zone.third_place_playoff":"Mejores 3°","zone.eliminated":"Eliminadas","hero.groups":"grupos","hero.teams":"equipos","hero.not_started":"No iniciado","phase.regular_season":"Temporada regular","phase.group_stage":"Fase de grupos","phase.playoffs":"Eliminatorias","col.pos":"#","col.team":"Equipo","col.played":"PJ","col.wins":"G","col.draws":"E","col.losses":"P","col.gd":"+/-","col.points":"Pts","generic.no_match":"Ningún partido disponible","generic.matches_count":"{n} partidos","generic.unknown_entity":"Entidad desconocida","generic.close":"Cerrar","generic.unknown":"Desconocido","popup.match_details":"Detalles del partido","popup.lineups":"Alineaciones","popup.timeline":"Cronología","popup.h2h":"Enfrentamientos","popup.no_events":"Sin eventos disponibles","month.1":"Ene","month.2":"Feb","month.3":"Mar","month.4":"Abr","month.5":"May","month.6":"Jun","month.7":"Jul","month.8":"Ago","month.9":"Sep","month.10":"Oct","month.11":"Nov","month.12":"Dic","scorers.goals":"Goles","scorers.matches":"Partidos","scorers.empty":"No hay goleadores disponibles","scorers.rank":"#"},de:{"card.bracket":"K.o.-Runde","card.lineup":"Aufstellungen","card.timeline":"Spielverlauf","card.news":"Nachrichten","card.standings":"Tabelle","card.scorers":"Torschützen","round.final":"Finale","round.semifinals":"Halbfinale","round.quarterfinals":"Viertelfinale","round.r16":"Achtelfinale","round.r32":"Sechzehntelfinale","round.knockout_playoffs":"K.o.-Playoffs","round.preliminary":"Vorrunde","round.short.semifinals":"HF","round.short.quarterfinals":"VF","round.short.r16":"AF","bracket.empty.title":"K.o.-Runde nicht verfügbar","bracket.empty.sub":"Die K.o.-Phase beginnt bald","bracket.tbd":"N.N.","bracket.tied_agg":"Gleichstand gesamt","bracket.agg":"Gesamt","status.live":"Live","status.finished":"Beendet","status.scheduled":"Geplant","status.full_time":"Endstand","status.halftime":"Halbzeit","status.first_half":"1. Halbzeit","status.second_half":"2. Halbzeit","status.kickoff":"Anstoß","status.end":"Ende","event.goal":"Tor","event.yellow_card":"Gelbe Karte","event.red_card":"Rote Karte","event.substitution":"Auswechslung","event.var":"VAR","event.header":"Kopfball","event.shot":"Schuss","event.penalty":"Elfmeter","event.free_kick":"Freistoß","form.W":"S","form.D":"U","form.L":"N","team.details":"Details","team.possession":"Ballbesitz","team.shots":"Schüsse","team.on_target":"Aufs Tor","team.fouls":"Fouls","team.spectators":"Zuschauer","team.top_scorer":"Torschützenkönig","team.next_match":"Nächstes Spiel","team.upcoming_matches":"Nächste Spiele","team.previous_matches":"Vorherige Spiele","team.form_trend":"Saisonform","team.h2h":"Direktvergleich","team.in":"in","team.no_match":"Kein Spiel verfügbar","team.off_season":"Neue Saison beginnt bald","team.unknown_entity":"Unbekannte Entität","standings.stats":"Spiele · Tore","standings.pos_label":"Position","standings.compact_hidden":"Teams ausgeblendet","time.today":"Heute","time.yesterday":"Gestern","time.tomorrow":"Morgen","time.now":"jetzt","time.in_n_min":"in {n} Min.","time.in_n_h":"in {n} Std.","time.in_n_d":"in {n} T.","time.n_min_ago":"vor {n} Min.","time.n_h_ago":"vor {n} Std.","time.n_d_ago":"vor {n} T.","lineup.bench":"Bank","lineup.empty.title":"Aufstellungen nicht verfügbar","lineup.empty.sub":"Aufstellungen werden kurz vor Anstoß veröffentlicht","timeline.empty.title":"Noch keine Ereignisse","timeline.empty.sub":"Ereignisse erscheinen während des Spiels","timeline.event":"Ereignis","timeline.penalty":"Elfmeter","news.empty":"Keine Nachrichten verfügbar","news.articles":"{n} Artikel","zone.champions":"Champions League","zone.europa":"Europa League","zone.conference":"Conference League","zone.relegation":"Abstieg","zone.qualified":"Qualifiziert","zone.third_place_playoff":"Bester 3.","zone.eliminated":"Ausgeschieden","hero.groups":"Gruppen","hero.teams":"Teams","hero.not_started":"Nicht gestartet","phase.regular_season":"Reguläre Saison","phase.group_stage":"Gruppenphase","phase.playoffs":"Playoffs","col.pos":"#","col.team":"Verein","col.played":"Sp","col.wins":"S","col.draws":"U","col.losses":"N","col.gd":"+/-","col.points":"Pkt","generic.no_match":"Kein Spiel verfügbar","generic.matches_count":"{n} Spiele","generic.unknown_entity":"Unbekannte Entität","generic.close":"Schließen","generic.unknown":"Unbekannt","popup.match_details":"Spieldetails","popup.lineups":"Aufstellungen","popup.timeline":"Spielverlauf","popup.h2h":"Direktvergleich","popup.no_events":"Keine Ereignisse verfügbar","month.1":"Jan","month.2":"Feb","month.3":"Mär","month.4":"Apr","month.5":"Mai","month.6":"Jun","month.7":"Jul","month.8":"Aug","month.9":"Sep","month.10":"Okt","month.11":"Nov","month.12":"Dez","scorers.goals":"Tore","scorers.matches":"Spiele","scorers.empty":"Keine Torschützen verfügbar","scorers.rank":"#"},pt:{"card.bracket":"Chave","card.lineup":"Escalações","card.timeline":"Cronologia","card.news":"Notícias","card.standings":"Classificação","card.scorers":"Artilheiros","round.final":"Final","round.semifinals":"Meias-finais","round.quarterfinals":"Quartas de final","round.r16":"Oitavas de final","round.r32":"Avos de final","round.knockout_playoffs":"Pré-eliminatórias","round.preliminary":"Fase preliminar","round.short.semifinals":"Semis","round.short.quarterfinals":"Quartas","round.short.r16":"Oitavas","bracket.empty.title":"Chave não disponível","bracket.empty.sub":"A fase eliminatória começa em breve","bracket.tbd":"A def.","bracket.tied_agg":"Empate no agregado","bracket.agg":"Agregado","status.live":"Ao vivo","status.finished":"Encerrado","status.scheduled":"Programado","status.full_time":"Tempo normal","status.halftime":"Intervalo","status.first_half":"1º tempo","status.second_half":"2º tempo","status.kickoff":"Pontapé inicial","status.end":"Fim","event.goal":"Gol","event.yellow_card":"Cartão amarelo","event.red_card":"Cartão vermelho","event.substitution":"Substituição","event.var":"VAR","event.header":"Cabeçada","event.shot":"Chute","event.penalty":"Pênalti","event.free_kick":"Falta","form.W":"V","form.D":"E","form.L":"D","team.details":"Detalhes","team.possession":"Posse","team.shots":"Chutes","team.on_target":"No gol","team.fouls":"Faltas","team.spectators":"espectadores","team.top_scorer":"Artilheiro","team.next_match":"Próximo jogo","team.upcoming_matches":"Próximos jogos","team.previous_matches":"Jogos anteriores","team.form_trend":"Forma na temporada","team.h2h":"Confronto direto","team.in":"em","team.no_match":"Nenhum jogo disponível","team.off_season":"Nova temporada em breve","team.unknown_entity":"Entidade desconhecida","standings.stats":"jogos disputados · gols","standings.pos_label":"Posição","standings.compact_hidden":"times ocultos","time.today":"Hoje","time.yesterday":"Ontem","time.tomorrow":"Amanhã","time.now":"agora","time.in_n_min":"em {n} min","time.in_n_h":"em {n} h","time.in_n_d":"em {n} d","time.n_min_ago":"há {n} min","time.n_h_ago":"há {n} h","time.n_d_ago":"há {n} d","lineup.bench":"Banco","lineup.empty.title":"Escalações não disponíveis","lineup.empty.sub":"As escalações são publicadas pouco antes do início","timeline.empty.title":"Ainda sem eventos","timeline.empty.sub":"Os eventos aparecem durante o jogo","timeline.event":"Evento","timeline.penalty":"Pênalti","news.empty":"Sem notícias disponíveis","news.articles":"{n} artigos","zone.champions":"Champions League","zone.europa":"Europa League","zone.conference":"Conference League","zone.relegation":"Rebaixamento","zone.qualified":"Classificado","zone.third_place_playoff":"Melhores 3°","zone.eliminated":"Eliminado","hero.groups":"grupos","hero.teams":"times","hero.not_started":"Não iniciado","phase.regular_season":"Temporada regular","phase.group_stage":"Fase de grupos","phase.playoffs":"Eliminatórias","col.pos":"#","col.team":"Time","col.played":"J","col.wins":"V","col.draws":"E","col.losses":"D","col.gd":"+/-","col.points":"Pts","generic.no_match":"Nenhum jogo disponível","generic.matches_count":"{n} jogos","generic.unknown_entity":"Entidade desconhecida","generic.close":"Fechar","generic.unknown":"Desconhecido","popup.match_details":"Detalhes do jogo","popup.lineups":"Escalações","popup.timeline":"Cronologia","popup.h2h":"Confronto direto","popup.no_events":"Sem eventos disponíveis","month.1":"Jan","month.2":"Fev","month.3":"Mar","month.4":"Abr","month.5":"Mai","month.6":"Jun","month.7":"Jul","month.8":"Ago","month.9":"Set","month.10":"Out","month.11":"Nov","month.12":"Dez","scorers.goals":"Gols","scorers.matches":"Jogos","scorers.empty":"Nenhum artilheiro disponível","scorers.rank":"#"}},ce=["en","it","fr","es","nl","de","pt"];function de(e,t){const a=[];t&&"string"==typeof t.language&&a.push(t.language),e&&e.locale&&e.locale.language&&a.push(e.locale.language),e&&e.language&&a.push(e.language);for(const e of a){if(!e)continue;const t=String(e).toLowerCase().split("-")[0];if(ce.includes(t))return t}return"en"}function pe(e,t,a){let i=(le[t]||le.en)[e];return void 0===i&&(i=le.en[e]),void 0===i?e:(a&&Object.keys(a).forEach((e=>{i=i.replace(new RegExp("\\{"+e+"\\}","g"),a[e])})),i)}const he=n`
+(()=>{"use strict";const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,a=Symbol(),i=new WeakMap;class s{constructor(e,t,i){if(this._$cssResult$=!0,i!==a)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const a=this.t;if(t&&void 0===e){const t=void 0!==a&&1===a.length;t&&(e=i.get(a)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),t&&i.set(a,e))}return e}toString(){return this.cssText}}const n=(e,...t)=>{const i=1===e.length?e[0]:t.reduce(((t,a,i)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(a)+e[i+1]),e[0]);return new s(i,e,a)},o=(a,i)=>{if(t)a.adoptedStyleSheets=i.map((e=>e instanceof CSSStyleSheet?e:e.styleSheet));else for(const t of i){const i=document.createElement("style"),s=e.litNonce;void 0!==s&&i.setAttribute("nonce",s),i.textContent=t.cssText,a.appendChild(i)}},r=t?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const a of e.cssRules)t+=a.cssText;return(e=>new s("string"==typeof e?e:e+"",void 0,a))(t)})(e):e,{is:l,defineProperty:c,getOwnPropertyDescriptor:d,getOwnPropertyNames:p,getOwnPropertySymbols:h,getPrototypeOf:g}=Object,u=globalThis,m=u.trustedTypes,f=m?m.emptyScript:"",v=u.reactiveElementPolyfillSupport,b=(e,t)=>e,_={toAttribute(e,t){switch(t){case Boolean:e=e?f:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let a=e;switch(t){case Boolean:a=null!==e;break;case Number:a=null===e?null:Number(e);break;case Object:case Array:try{a=JSON.parse(e)}catch(e){a=null}}return a}},x=(e,t)=>!l(e,t),y={attribute:!0,type:String,converter:_,reflect:!1,hasChanged:x};Symbol.metadata??=Symbol("metadata"),u.litPropertyMetadata??=new WeakMap;class w extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=y){if(t.state&&(t.attribute=!1),this._$Ei(),this.elementProperties.set(e,t),!t.noAccessor){const a=Symbol(),i=this.getPropertyDescriptor(e,a,t);void 0!==i&&c(this.prototype,e,i)}}static getPropertyDescriptor(e,t,a){const{get:i,set:s}=d(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get(){return i?.call(this)},set(t){const n=i?.call(this);s.call(this,t),this.requestUpdate(e,n,a)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??y}static _$Ei(){if(this.hasOwnProperty(b("elementProperties")))return;const e=g(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(b("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(b("properties"))){const e=this.properties,t=[...p(e),...h(e)];for(const a of t)this.createProperty(a,e[a])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,a]of t)this.elementProperties.set(e,a)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const a=this._$Eu(e,t);void 0!==a&&this._$Eh.set(a,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const a=new Set(e.flat(1/0).reverse());for(const e of a)t.unshift(r(e))}else void 0!==e&&t.push(r(e));return t}static _$Eu(e,t){const a=t.attribute;return!1===a?void 0:"string"==typeof a?a:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise((e=>this.enableUpdating=e)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((e=>e(this)))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const a of t.keys())this.hasOwnProperty(a)&&(e.set(a,this[a]),delete this[a]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return o(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach((e=>e.hostConnected?.()))}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach((e=>e.hostDisconnected?.()))}attributeChangedCallback(e,t,a){this._$AK(e,a)}_$EC(e,t){const a=this.constructor.elementProperties.get(e),i=this.constructor._$Eu(e,a);if(void 0!==i&&!0===a.reflect){const s=(void 0!==a.converter?.toAttribute?a.converter:_).toAttribute(t,a.type);this._$Em=e,null==s?this.removeAttribute(i):this.setAttribute(i,s),this._$Em=null}}_$AK(e,t){const a=this.constructor,i=a._$Eh.get(e);if(void 0!==i&&this._$Em!==i){const e=a.getPropertyOptions(i),s="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:_;this._$Em=i,this[i]=s.fromAttribute(t,e.type),this._$Em=null}}requestUpdate(e,t,a){if(void 0!==e){if(a??=this.constructor.getPropertyOptions(e),!(a.hasChanged??x)(this[e],t))return;this.P(e,t,a)}!1===this.isUpdatePending&&(this._$ES=this._$ET())}P(e,t,a){this._$AL.has(e)||this._$AL.set(e,t),!0===a.reflect&&this._$Em!==e&&(this._$Ej??=new Set).add(e)}async _$ET(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,a]of e)!0!==a.wrapped||this._$AL.has(t)||void 0===this[t]||this.P(t,this[t],a)}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach((e=>e.hostUpdate?.())),this.update(t)):this._$EU()}catch(t){throw e=!1,this._$EU(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach((e=>e.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EU(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Ej&&=this._$Ej.forEach((e=>this._$EC(e,this[e]))),this._$EU()}updated(e){}firstUpdated(e){}}w.elementStyles=[],w.shadowRootOptions={mode:"open"},w[b("elementProperties")]=new Map,w[b("finalized")]=new Map,v?.({ReactiveElement:w}),(u.reactiveElementVersions??=[]).push("2.0.4");const $=globalThis,k=$.trustedTypes,C=k?k.createPolicy("lit-html",{createHTML:e=>e}):void 0,z="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,S="?"+E,A=`<${S}>`,T=document,N=()=>T.createComment(""),P=e=>null===e||"object"!=typeof e&&"function"!=typeof e,M=Array.isArray,j="[ \t\n\f\r]",L=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,D=/-->/g,V=/>/g,H=RegExp(`>|${j}(?:([^\\s"'>=/]+)(${j}*=${j}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),O=/'/g,F=/"/g,R=/^(?:script|style|textarea|title)$/i,I=e=>(t,...a)=>({_$litType$:e,strings:t,values:a}),U=I(1),q=I(2),B=(I(3),Symbol.for("lit-noChange")),G=Symbol.for("lit-nothing"),W=new WeakMap,K=T.createTreeWalker(T,129);function J(e,t){if(!M(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==C?C.createHTML(t):t}class Z{constructor({strings:e,_$litType$:t},a){let i;this.parts=[];let s=0,n=0;const o=e.length-1,r=this.parts,[l,c]=((e,t)=>{const a=e.length-1,i=[];let s,n=2===t?"<svg>":3===t?"<math>":"",o=L;for(let t=0;t<a;t++){const a=e[t];let r,l,c=-1,d=0;for(;d<a.length&&(o.lastIndex=d,l=o.exec(a),null!==l);)d=o.lastIndex,o===L?"!--"===l[1]?o=D:void 0!==l[1]?o=V:void 0!==l[2]?(R.test(l[2])&&(s=RegExp("</"+l[2],"g")),o=H):void 0!==l[3]&&(o=H):o===H?">"===l[0]?(o=s??L,c=-1):void 0===l[1]?c=-2:(c=o.lastIndex-l[2].length,r=l[1],o=void 0===l[3]?H:'"'===l[3]?F:O):o===F||o===O?o=H:o===D||o===V?o=L:(o=H,s=void 0);const p=o===H&&e[t+1].startsWith("/>")?" ":"";n+=o===L?a+A:c>=0?(i.push(r),a.slice(0,c)+z+a.slice(c)+E+p):a+E+(-2===c?t:p)}return[J(e,n+(e[a]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),i]})(e,t);if(this.el=Z.createElement(l,a),K.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(i=K.nextNode())&&r.length<o;){if(1===i.nodeType){if(i.hasAttributes())for(const e of i.getAttributeNames())if(e.endsWith(z)){const t=c[n++],a=i.getAttribute(e).split(E),o=/([.?@])?(.*)/.exec(t);r.push({type:1,index:s,name:o[2],strings:a,ctor:"."===o[1]?te:"?"===o[1]?ae:"@"===o[1]?ie:ee}),i.removeAttribute(e)}else e.startsWith(E)&&(r.push({type:6,index:s}),i.removeAttribute(e));if(R.test(i.tagName)){const e=i.textContent.split(E),t=e.length-1;if(t>0){i.textContent=k?k.emptyScript:"";for(let a=0;a<t;a++)i.append(e[a],N()),K.nextNode(),r.push({type:2,index:++s});i.append(e[t],N())}}}else if(8===i.nodeType)if(i.data===S)r.push({type:2,index:s});else{let e=-1;for(;-1!==(e=i.data.indexOf(E,e+1));)r.push({type:7,index:s}),e+=E.length-1}s++}}static createElement(e,t){const a=T.createElement("template");return a.innerHTML=e,a}}function Q(e,t,a=e,i){if(t===B)return t;let s=void 0!==i?a.o?.[i]:a.l;const n=P(t)?void 0:t._$litDirective$;return s?.constructor!==n&&(s?._$AO?.(!1),void 0===n?s=void 0:(s=new n(e),s._$AT(e,a,i)),void 0!==i?(a.o??=[])[i]=s:a.l=s),void 0!==s&&(t=Q(e,s._$AS(e,t.values),s,i)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:a}=this._$AD,i=(e?.creationScope??T).importNode(t,!0);K.currentNode=i;let s=K.nextNode(),n=0,o=0,r=a[0];for(;void 0!==r;){if(n===r.index){let t;2===r.type?t=new Y(s,s.nextSibling,this,e):1===r.type?t=new r.ctor(s,r.name,r.strings,this,e):6===r.type&&(t=new se(s,this,e)),this._$AV.push(t),r=a[++o]}n!==r?.index&&(s=K.nextNode(),n++)}return K.currentNode=T,i}p(e){let t=0;for(const a of this._$AV)void 0!==a&&(void 0!==a.strings?(a._$AI(e,a,t),t+=a.strings.length-2):a._$AI(e[t])),t++}}class Y{get _$AU(){return this._$AM?._$AU??this.v}constructor(e,t,a,i){this.type=2,this._$AH=G,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=a,this.options=i,this.v=i?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Q(this,e,t),P(e)?e===G||null==e||""===e?(this._$AH!==G&&this._$AR(),this._$AH=G):e!==this._$AH&&e!==B&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>M(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==G&&P(this._$AH)?this._$AA.nextSibling.data=e:this.T(T.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:a}=e,i="number"==typeof a?this._$AC(e):(void 0===a.el&&(a.el=Z.createElement(J(a.h,a.h[0]),this.options)),a);if(this._$AH?._$AD===i)this._$AH.p(t);else{const e=new X(i,this),a=e.u(this.options);e.p(t),this.T(a),this._$AH=e}}_$AC(e){let t=W.get(e.strings);return void 0===t&&W.set(e.strings,t=new Z(e)),t}k(e){M(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let a,i=0;for(const s of e)i===t.length?t.push(a=new Y(this.O(N()),this.O(N()),this,this.options)):a=t[i],a._$AI(s),i++;i<t.length&&(this._$AR(a&&a._$AB.nextSibling,i),t.length=i)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this.v=e,this._$AP?.(e))}}class ee{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,a,i,s){this.type=1,this._$AH=G,this._$AN=void 0,this.element=e,this.name=t,this._$AM=i,this.options=s,a.length>2||""!==a[0]||""!==a[1]?(this._$AH=Array(a.length-1).fill(new String),this.strings=a):this._$AH=G}_$AI(e,t=this,a,i){const s=this.strings;let n=!1;if(void 0===s)e=Q(this,e,t,0),n=!P(e)||e!==this._$AH&&e!==B,n&&(this._$AH=e);else{const i=e;let o,r;for(e=s[0],o=0;o<s.length-1;o++)r=Q(this,i[a+o],t,o),r===B&&(r=this._$AH[o]),n||=!P(r)||r!==this._$AH[o],r===G?e=G:e!==G&&(e+=(r??"")+s[o+1]),this._$AH[o]=r}n&&!i&&this.j(e)}j(e){e===G?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class te extends ee{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===G?void 0:e}}class ae extends ee{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==G)}}class ie extends ee{constructor(e,t,a,i,s){super(e,t,a,i,s),this.type=5}_$AI(e,t=this){if((e=Q(this,e,t,0)??G)===B)return;const a=this._$AH,i=e===G&&a!==G||e.capture!==a.capture||e.once!==a.once||e.passive!==a.passive,s=e!==G&&(a===G||i);i&&this.element.removeEventListener(this.name,this,a),s&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class se{constructor(e,t,a){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=a}get _$AU(){return this._$AM._$AU}_$AI(e){Q(this,e)}}const ne=$.litHtmlPolyfillSupport;ne?.(Z,Y),($.litHtmlVersions??=[]).push("3.2.0");class oe extends w{constructor(){super(...arguments),this.renderOptions={host:this},this.o=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this.o=((e,t,a)=>{const i=a?.renderBefore??t;let s=i._$litPart$;if(void 0===s){const e=a?.renderBefore??null;i._$litPart$=s=new Y(t.insertBefore(N(),e),e,void 0,a??{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this.o?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this.o?.setConnected(!1)}render(){return B}}oe._$litElement$=!0,oe.finalized=!0,globalThis.litElementHydrateSupport?.({LitElement:oe});const re=globalThis.litElementPolyfillSupport;re?.({LitElement:oe}),(globalThis.litElementVersions??=[]).push("4.1.0");const le={en:{"card.bracket":"Bracket","card.lineup":"Lineups","card.timeline":"Timeline","card.news":"News","card.standings":"Standings","card.scorers":"Top Scorers","round.final":"Final","round.semifinals":"Semifinals","round.quarterfinals":"Quarterfinals","round.r16":"Round of 16","round.r32":"Round of 32","round.knockout_playoffs":"Knockout Playoffs","round.preliminary":"Preliminary Round","round.short.semifinals":"Semis","round.short.quarterfinals":"Quarters","round.short.r16":"R16","bracket.empty.title":"Bracket not available","bracket.empty.sub":"Knockout stage starts soon","bracket.tbd":"TBD","bracket.tied_agg":"Tied agg.","bracket.agg":"Agg.","status.live":"Live","status.finished":"Finished","status.scheduled":"Scheduled","status.full_time":"Full Time","status.halftime":"Halftime","status.first_half":"1st Half","status.second_half":"2nd Half","status.kickoff":"Kickoff","status.end":"End","event.goal":"Goal","event.yellow_card":"Yellow Card","event.red_card":"Red Card","event.substitution":"Substitution","event.var":"VAR","event.header":"Header","event.shot":"Shot","event.penalty":"Penalty","event.free_kick":"Free kick","form.W":"W","form.D":"D","form.L":"L","team.details":"Details","team.possession":"Possession","team.shots":"Shots","team.on_target":"On target","team.fouls":"Fouls","team.spectators":"spectators","team.top_scorer":"Top scorer","team.next_match":"Next match","team.upcoming_matches":"Upcoming matches","team.previous_matches":"Previous matches","team.form_trend":"Season form","team.h2h":"Head to head","standings.stats":"matches played · goals","standings.pos_label":"Position","standings.compact_hidden":"teams hidden","team.in":"In","team.no_match":"No match available","team.off_season":"New season starts soon","team.unknown_entity":"Unknown entity","time.today":"Today","time.yesterday":"Yesterday","time.tomorrow":"Tomorrow","time.now":"now","time.in_n_min":"in {n} min","time.in_n_h":"in {n} h","time.in_n_d":"in {n} d","time.n_min_ago":"{n} min ago","time.n_h_ago":"{n} h ago","time.n_d_ago":"{n} d ago","lineup.bench":"Bench","lineup.empty.title":"Lineups not available","lineup.empty.sub":"Lineups are published shortly before kick-off","timeline.empty.title":"No events yet","timeline.empty.sub":"Events appear during the match","timeline.event":"Event","timeline.penalty":"Penalty","news.empty":"No news available","news.articles":"{n} articles","zone.champions":"Champions","zone.europa":"Europa","zone.relegation":"Relegation","zone.conference":"Conference League","zone.qualified":"Qualified","zone.third_place_playoff":"Best 3rd","zone.eliminated":"Eliminated","hero.groups":"groups","hero.teams":"teams","hero.not_started":"Not started","phase.regular_season":"Regular season","phase.group_stage":"Group stage","phase.playoffs":"Playoffs","col.pos":"#","col.team":"Team","col.played":"P","col.wins":"W","col.draws":"D","col.losses":"L","col.gd":"+/-","col.points":"Pts","generic.no_match":"No match available","generic.matches_count":"{n} matches","generic.unknown_entity":"Unknown entity","generic.close":"Close","generic.unknown":"Unknown","popup.match_details":"Match details","popup.lineups":"Lineups","popup.timeline":"Timeline","popup.h2h":"Head-to-head","popup.no_events":"No events available","month.1":"Jan","month.2":"Feb","month.3":"Mar","month.4":"Apr","month.5":"May","month.6":"Jun","month.7":"Jul","month.8":"Aug","month.9":"Sep","month.10":"Oct","month.11":"Nov","month.12":"Dec","scorers.goals":"Goals","scorers.matches":"Matches","scorers.empty":"No top scorers available","scorers.rank":"#"},nl:{"card.bracket":"Schema","card.lineup":"Opstellingen","card.timeline":"Tijdlijn","card.news":"Nieuws","card.standings":"Stand","card.scorers":"Topschutters","round.final":"Finale","round.semifinals":"Halve finales","round.quarterfinals":"Kwartfinales","round.r16":"Achtste finales","round.r32":"Zestiende finales","round.knockout_playoffs":"Knock-out play-offs","round.preliminary":"Voorronde","round.short.semifinals":"Halve finales","round.short.quarterfinals":"Kwart","round.short.r16":"8e finale","bracket.empty.title":"Schema niet beschikbaar","bracket.empty.sub":"De knock-outfase begint binnenkort","bracket.tbd":"N.t.b.","bracket.tied_agg":"Gelijk totaal","bracket.agg":"Totaal","status.live":"Live","status.finished":"Afgelopen","status.scheduled":"Gepland","status.full_time":"Einde wedstrijd","status.halftime":"Rust","status.first_half":"1e helft","status.second_half":"2e helft","status.kickoff":"Aftrap","status.end":"Einde","event.goal":"Doelpunt","event.yellow_card":"Gele kaart","event.red_card":"Rode kaart","event.substitution":"Wissel","event.var":"VAR","event.header":"Kopbal","event.shot":"Schot","event.penalty":"Penalty","event.free_kick":"Vrije trap","form.W":"W","form.D":"G","form.L":"V","team.details":"Details","team.possession":"Balbezit","team.shots":"Schoten","team.on_target":"Op doel","team.fouls":"Overtredingen","team.spectators":"toeschouwers","team.top_scorer":"Topscorer","team.next_match":"Volgende wedstrijd","team.upcoming_matches":"Volgende wedstrijden","team.previous_matches":"Vorige wedstrijden","team.form_trend":"Seizoenvorm","team.h2h":"Onderlinge duels","standings.stats":"wedstrijden gespeeld · doelpunten","standings.pos_label":"Positie","standings.compact_hidden":"ploegen","team.in":"Over","team.no_match":"Geen wedstrijd beschikbaar","team.off_season":"Nieuw seizoen begint binnenkort","team.unknown_entity":"Onbekende entiteit","time.today":"Vandaag","time.yesterday":"Gisteren","time.tomorrow":"Morgen","time.now":"nu","time.in_n_min":"over {n} min","time.in_n_h":"over {n} uur","time.in_n_d":"over {n} dagen","time.n_min_ago":"{n} min geleden","time.n_h_ago":"{n} uur geleden","time.n_d_ago":"{n} dagen geleden","lineup.bench":"Bank","lineup.empty.title":"Opstellingen niet beschikbaar","lineup.empty.sub":"Opstellingen worden kort voor de aftrap gepubliceerd","timeline.empty.title":"Nog geen gebeurtenissen","timeline.empty.sub":"Gebeurtenissen verschijnen tijdens de wedstrijd","timeline.event":"Gebeurtenis","timeline.penalty":"Penalty","news.empty":"Geen nieuws beschikbaar","news.articles":"{n} artikelen","phase.regular_season":"Competitie","phase.group_stage":"Groepsfase","phase.playoffs":"Play-offs","zone.champions":"Champions League","zone.europa":"Europa League","zone.conference":"Conference League","zone.relegation":"Degradatie","zone.qualified":"Gekwalificeerd","zone.third_place_playoff":"Beste 3e","zone.eliminated":"Uitgeschakeld","hero.groups":"groepen","hero.teams":"teams","hero.not_started":"Niet gestart","col.pos":"#","col.team":"Team","col.played":"G","col.wins":"W","col.draws":"GL","col.losses":"V","col.gd":"+/-","col.points":"Pnt","generic.no_match":"Geen wedstrijd beschikbaar","generic.matches_count":"{n} wedstrijden","generic.unknown_entity":"Onbekende entiteit","generic.close":"Sluiten","generic.unknown":"Onbekend","popup.match_details":"Wedstrijddetails","popup.lineups":"Opstellingen","popup.timeline":"Tijdlijn","popup.h2h":"Onderlinge duels","popup.no_events":"Geen gebeurtenissen beschikbaar","month.1":"Jan","month.2":"Feb","month.3":"Mrt","month.4":"Apr","month.5":"Mei","month.6":"Jun","month.7":"Jul","month.8":"Aug","month.9":"Sep","month.10":"Okt","month.11":"Nov","month.12":"Dec","scorers.goals":"Doelpunten","scorers.matches":"Wedstrijden","scorers.empty":"Geen topschutters beschikbaar","scorers.rank":"#"},it:{"card.bracket":"Tabellone","card.lineup":"Formazioni","card.timeline":"Cronologia","card.news":"Notizie","card.standings":"Classifica","card.scorers":"Capocannonieri","round.final":"Finale","round.semifinals":"Semifinali","round.quarterfinals":"Quarti di finale","round.r16":"Ottavi di finale","round.r32":"Sedicesimi","round.knockout_playoffs":"Spareggi KO","round.preliminary":"Turno preliminare","round.short.semifinals":"Semi","round.short.quarterfinals":"Quarti","round.short.r16":"Ottavi","bracket.empty.title":"Tabellone non disponibile","bracket.empty.sub":"La fase a eliminazione diretta inizierà presto","bracket.tbd":"Da def.","bracket.tied_agg":"Pari aggreg.","bracket.agg":"Aggreg.","status.live":"Diretta","status.finished":"Finita","status.scheduled":"Programmata","status.full_time":"Termine","status.halftime":"Intervallo","status.first_half":"Primo Tempo","status.second_half":"Secondo Tempo","status.kickoff":"Inizio","status.end":"Fine","event.goal":"Goal","event.yellow_card":"Cartellino giallo","event.red_card":"Cartellino rosso","event.substitution":"Sostituzione","event.var":"VAR","event.header":"Colpo di testa","event.shot":"Tiro","event.penalty":"Rigore","event.free_kick":"Calcio di punizione","form.W":"V","form.D":"N","form.L":"P","team.details":"Dettagli","team.possession":"Possesso","team.shots":"Tiri","team.on_target":"In porta","team.fouls":"Falli","team.spectators":"spettatori","team.top_scorer":"Capocannoniere","team.next_match":"Prossima partita","team.in":"A","team.no_match":"Nessuna partita disponibile","team.off_season":"Nuova stagione in arrivo","team.unknown_entity":"Entità sconosciuta","team.upcoming_matches":"Prossime partite","team.previous_matches":"Partite precedenti","team.form_trend":"Forma stagionale","team.h2h":"Testa a testa","standings.stats":"partite giocate · gol","standings.pos_label":"Posizione","standings.compact_hidden":"squadre nascoste","time.today":"Oggi","time.yesterday":"Ieri","time.tomorrow":"Domani","time.now":"ora","time.in_n_min":"tra {n} min","time.in_n_h":"tra {n} h","time.in_n_d":"tra {n} g","time.n_min_ago":"{n} min fa","time.n_h_ago":"{n} h fa","time.n_d_ago":"{n} g fa","lineup.bench":"Panchina","lineup.empty.title":"Formazioni non disponibili","lineup.empty.sub":"Le formazioni vengono pubblicate poco prima del fischio d'inizio","timeline.empty.title":"Nessun evento ancora","timeline.empty.sub":"Gli eventi compaiono durante la partita","timeline.event":"Evento","timeline.penalty":"Rigore","news.empty":"Nessuna notizia disponibile","news.articles":"{n} articoli","zone.champions":"Champions","zone.europa":"Europa","zone.conference":"Conference League","zone.relegation":"Retrocessione","zone.qualified":"Qualificate","zone.third_place_playoff":"Migliori 3°","zone.eliminated":"Eliminate","hero.groups":"gironi","hero.teams":"squadre","hero.not_started":"Non iniziato","phase.regular_season":"Campionato","phase.group_stage":"Fase a gironi","phase.playoffs":"Play-off","col.pos":"#","col.team":"Squadra","col.played":"P","col.wins":"V","col.draws":"N","col.losses":"S","col.gd":"+/-","col.points":"Pt","generic.no_match":"Nessuna partita disponibile","generic.matches_count":"{n} partite","generic.unknown_entity":"Entità sconosciuta","generic.close":"Chiudi","generic.unknown":"Sconosciuto","popup.match_details":"Dettagli partita","popup.lineups":"Formazioni","popup.timeline":"Cronologia","popup.h2h":"Precedenti","popup.no_events":"Nessun evento disponibile","month.1":"Gen","month.2":"Feb","month.3":"Mar","month.4":"Apr","month.5":"Mag","month.6":"Giu","month.7":"Lug","month.8":"Ago","month.9":"Set","month.10":"Ott","month.11":"Nov","month.12":"Dic","scorers.goals":"Gol","scorers.matches":"Partite","scorers.empty":"Nessun capocannoniere disponibile","scorers.rank":"#"},fr:{"card.bracket":"Tableau","card.lineup":"Compositions","card.timeline":"Chronologie","card.news":"Actualités","card.standings":"Classement","card.scorers":"Buteurs","round.final":"Finale","round.semifinals":"Demi-finales","round.quarterfinals":"Quarts de finale","round.r16":"Huitièmes de finale","round.r32":"Seizièmes","round.knockout_playoffs":"Barrages","round.preliminary":"Tour préliminaire","round.short.semifinals":"Demis","round.short.quarterfinals":"Quarts","round.short.r16":"8èmes","bracket.empty.title":"Tableau non disponible","bracket.empty.sub":"La phase à élimination directe commencera bientôt","bracket.tbd":"À déf.","bracket.tied_agg":"Score cumulé égal","bracket.agg":"Cumul","status.live":"En direct","status.finished":"Terminé","status.scheduled":"Programmé","status.full_time":"Temps régl.","status.halftime":"Mi-temps","status.first_half":"1ère mi-temps","status.second_half":"2ème mi-temps","status.kickoff":"Coup d'envoi","status.end":"Fin","event.goal":"But","event.yellow_card":"Carton jaune","event.red_card":"Carton rouge","event.substitution":"Remplacement","event.var":"VAR","event.header":"Coup de tête","event.shot":"Tir","event.penalty":"Penalty","event.free_kick":"Coup franc","form.W":"V","form.D":"N","form.L":"D","team.details":"Détails","team.possession":"Possession","team.shots":"Tirs","team.on_target":"Cadrés","team.fouls":"Fautes","team.spectators":"spectateurs","team.top_scorer":"Meilleur buteur","team.next_match":"Prochain match","team.in":"À","team.no_match":"Aucun match disponible","team.off_season":"Nouvelle saison bientôt","team.unknown_entity":"Entité inconnue","team.upcoming_matches":"Prochains matchs","team.previous_matches":"Matchs précédents","team.form_trend":"Forme de la saison","team.h2h":"Face à face","standings.stats":"matchs joués · buts","standings.pos_label":"Position","standings.compact_hidden":"équipes masquées","time.today":"Aujourd'hui","time.yesterday":"Hier","time.tomorrow":"Demain","time.now":"maintenant","time.in_n_min":"dans {n} min","time.in_n_h":"dans {n} h","time.in_n_d":"dans {n} j","time.n_min_ago":"il y a {n} min","time.n_h_ago":"il y a {n} h","time.n_d_ago":"il y a {n} j","lineup.bench":"Banc","lineup.empty.title":"Compositions non disponibles","lineup.empty.sub":"Les compositions sont publiées peu avant le coup d'envoi","timeline.empty.title":"Aucun événement","timeline.empty.sub":"Les événements apparaissent pendant le match","timeline.event":"Événement","timeline.penalty":"Penalty","news.empty":"Aucune actualité disponible","news.articles":"{n} articles","zone.champions":"Champions","zone.europa":"Europa","zone.conference":"Conference League","zone.relegation":"Relégation","zone.qualified":"Qualifiées","zone.third_place_playoff":"Meilleurs 3es","zone.eliminated":"Éliminées","hero.groups":"groupes","hero.teams":"équipes","hero.not_started":"Pas commencé","phase.regular_season":"Saison régulière","phase.group_stage":"Phase de groupes","phase.playoffs":"Barrages","col.pos":"#","col.team":"Équipe","col.played":"J","col.wins":"G","col.draws":"N","col.losses":"P","col.gd":"+/-","col.points":"Pts","generic.no_match":"Aucun match disponible","generic.matches_count":"{n} matchs","generic.unknown_entity":"Entité inconnue","generic.close":"Fermer","generic.unknown":"Inconnu","popup.match_details":"Détails du match","popup.lineups":"Compositions","popup.timeline":"Chronologie","popup.h2h":"Confrontations","popup.no_events":"Aucun événement disponible","month.1":"Janv","month.2":"Févr","month.3":"Mars","month.4":"Avr","month.5":"Mai","month.6":"Juin","month.7":"Juil","month.8":"Août","month.9":"Sept","month.10":"Oct","month.11":"Nov","month.12":"Déc","scorers.goals":"Buts","scorers.matches":"Matchs","scorers.empty":"Aucun buteur disponible","scorers.rank":"#"},es:{"card.bracket":"Cuadro","card.lineup":"Alineaciones","card.timeline":"Cronología","card.news":"Noticias","card.standings":"Clasificación","card.scorers":"Goleadores","round.final":"Final","round.semifinals":"Semifinales","round.quarterfinals":"Cuartos de final","round.r16":"Octavos de final","round.r32":"Dieciseisavos","round.knockout_playoffs":"Eliminatorias previas","round.preliminary":"Ronda preliminar","round.short.semifinals":"Semis","round.short.quarterfinals":"Cuartos","round.short.r16":"Octavos","bracket.empty.title":"Cuadro no disponible","bracket.empty.sub":"La fase eliminatoria comenzará pronto","bracket.tbd":"Por def.","bracket.tied_agg":"Empate global","bracket.agg":"Global","status.live":"En vivo","status.finished":"Finalizado","status.scheduled":"Programado","status.full_time":"Final","status.halftime":"Descanso","status.first_half":"Primer tiempo","status.second_half":"Segundo tiempo","status.kickoff":"Saque inicial","status.end":"Fin","event.goal":"Gol","event.yellow_card":"Tarjeta amarilla","event.red_card":"Tarjeta roja","event.substitution":"Sustitución","event.var":"VAR","event.header":"Cabezazo","event.shot":"Disparo","event.penalty":"Penalti","event.free_kick":"Falta directa","form.W":"V","form.D":"E","form.L":"D","team.details":"Detalles","team.possession":"Posesión","team.shots":"Tiros","team.on_target":"Al arco","team.fouls":"Faltas","team.spectators":"espectadores","team.top_scorer":"Goleador","team.next_match":"Próximo partido","team.in":"En","team.no_match":"Ningún partido disponible","team.off_season":"Nueva temporada próximamente","team.unknown_entity":"Entidad desconocida","team.upcoming_matches":"Próximos partidos","team.previous_matches":"Partidos anteriores","team.form_trend":"Forma de la temporada","team.h2h":"Cara a cara","standings.stats":"partidos jugados · goles","standings.pos_label":"Posición","standings.compact_hidden":"equipos ocultos","time.today":"Hoy","time.yesterday":"Ayer","time.tomorrow":"Mañana","time.now":"ahora","time.in_n_min":"en {n} min","time.in_n_h":"en {n} h","time.in_n_d":"en {n} d","time.n_min_ago":"hace {n} min","time.n_h_ago":"hace {n} h","time.n_d_ago":"hace {n} d","lineup.bench":"Banquillo","lineup.empty.title":"Alineaciones no disponibles","lineup.empty.sub":"Las alineaciones se publican poco antes del saque inicial","timeline.empty.title":"Aún no hay eventos","timeline.empty.sub":"Los eventos aparecen durante el partido","timeline.event":"Evento","timeline.penalty":"Penalti","news.empty":"No hay noticias disponibles","news.articles":"{n} artículos","zone.champions":"Champions","zone.europa":"Europa","zone.conference":"Conference League","zone.relegation":"Descenso","zone.qualified":"Clasificadas","zone.third_place_playoff":"Mejores 3°","zone.eliminated":"Eliminadas","hero.groups":"grupos","hero.teams":"equipos","hero.not_started":"No iniciado","phase.regular_season":"Temporada regular","phase.group_stage":"Fase de grupos","phase.playoffs":"Eliminatorias","col.pos":"#","col.team":"Equipo","col.played":"PJ","col.wins":"G","col.draws":"E","col.losses":"P","col.gd":"+/-","col.points":"Pts","generic.no_match":"Ningún partido disponible","generic.matches_count":"{n} partidos","generic.unknown_entity":"Entidad desconocida","generic.close":"Cerrar","generic.unknown":"Desconocido","popup.match_details":"Detalles del partido","popup.lineups":"Alineaciones","popup.timeline":"Cronología","popup.h2h":"Enfrentamientos","popup.no_events":"Sin eventos disponibles","month.1":"Ene","month.2":"Feb","month.3":"Mar","month.4":"Abr","month.5":"May","month.6":"Jun","month.7":"Jul","month.8":"Ago","month.9":"Sep","month.10":"Oct","month.11":"Nov","month.12":"Dic","scorers.goals":"Goles","scorers.matches":"Partidos","scorers.empty":"No hay goleadores disponibles","scorers.rank":"#"},de:{"card.bracket":"K.o.-Runde","card.lineup":"Aufstellungen","card.timeline":"Spielverlauf","card.news":"Nachrichten","card.standings":"Tabelle","card.scorers":"Torschützen","round.final":"Finale","round.semifinals":"Halbfinale","round.quarterfinals":"Viertelfinale","round.r16":"Achtelfinale","round.r32":"Sechzehntelfinale","round.knockout_playoffs":"K.o.-Playoffs","round.preliminary":"Vorrunde","round.short.semifinals":"HF","round.short.quarterfinals":"VF","round.short.r16":"AF","bracket.empty.title":"K.o.-Runde nicht verfügbar","bracket.empty.sub":"Die K.o.-Phase beginnt bald","bracket.tbd":"N.N.","bracket.tied_agg":"Gleichstand gesamt","bracket.agg":"Gesamt","status.live":"Live","status.finished":"Beendet","status.scheduled":"Geplant","status.full_time":"Endstand","status.halftime":"Halbzeit","status.first_half":"1. Halbzeit","status.second_half":"2. Halbzeit","status.kickoff":"Anstoß","status.end":"Ende","event.goal":"Tor","event.yellow_card":"Gelbe Karte","event.red_card":"Rote Karte","event.substitution":"Auswechslung","event.var":"VAR","event.header":"Kopfball","event.shot":"Schuss","event.penalty":"Elfmeter","event.free_kick":"Freistoß","form.W":"S","form.D":"U","form.L":"N","team.details":"Details","team.possession":"Ballbesitz","team.shots":"Schüsse","team.on_target":"Aufs Tor","team.fouls":"Fouls","team.spectators":"Zuschauer","team.top_scorer":"Torschützenkönig","team.next_match":"Nächstes Spiel","team.upcoming_matches":"Nächste Spiele","team.previous_matches":"Vorherige Spiele","team.form_trend":"Saisonform","team.h2h":"Direktvergleich","team.in":"in","team.no_match":"Kein Spiel verfügbar","team.off_season":"Neue Saison beginnt bald","team.unknown_entity":"Unbekannte Entität","standings.stats":"Spiele · Tore","standings.pos_label":"Position","standings.compact_hidden":"Teams ausgeblendet","time.today":"Heute","time.yesterday":"Gestern","time.tomorrow":"Morgen","time.now":"jetzt","time.in_n_min":"in {n} Min.","time.in_n_h":"in {n} Std.","time.in_n_d":"in {n} T.","time.n_min_ago":"vor {n} Min.","time.n_h_ago":"vor {n} Std.","time.n_d_ago":"vor {n} T.","lineup.bench":"Bank","lineup.empty.title":"Aufstellungen nicht verfügbar","lineup.empty.sub":"Aufstellungen werden kurz vor Anstoß veröffentlicht","timeline.empty.title":"Noch keine Ereignisse","timeline.empty.sub":"Ereignisse erscheinen während des Spiels","timeline.event":"Ereignis","timeline.penalty":"Elfmeter","news.empty":"Keine Nachrichten verfügbar","news.articles":"{n} Artikel","zone.champions":"Champions League","zone.europa":"Europa League","zone.conference":"Conference League","zone.relegation":"Abstieg","zone.qualified":"Qualifiziert","zone.third_place_playoff":"Bester 3.","zone.eliminated":"Ausgeschieden","hero.groups":"Gruppen","hero.teams":"Teams","hero.not_started":"Nicht gestartet","phase.regular_season":"Reguläre Saison","phase.group_stage":"Gruppenphase","phase.playoffs":"Playoffs","col.pos":"#","col.team":"Verein","col.played":"Sp","col.wins":"S","col.draws":"U","col.losses":"N","col.gd":"+/-","col.points":"Pkt","generic.no_match":"Kein Spiel verfügbar","generic.matches_count":"{n} Spiele","generic.unknown_entity":"Unbekannte Entität","generic.close":"Schließen","generic.unknown":"Unbekannt","popup.match_details":"Spieldetails","popup.lineups":"Aufstellungen","popup.timeline":"Spielverlauf","popup.h2h":"Direktvergleich","popup.no_events":"Keine Ereignisse verfügbar","month.1":"Jan","month.2":"Feb","month.3":"Mär","month.4":"Apr","month.5":"Mai","month.6":"Jun","month.7":"Jul","month.8":"Aug","month.9":"Sep","month.10":"Okt","month.11":"Nov","month.12":"Dez","scorers.goals":"Tore","scorers.matches":"Spiele","scorers.empty":"Keine Torschützen verfügbar","scorers.rank":"#"},pt:{"card.bracket":"Chave","card.lineup":"Escalações","card.timeline":"Cronologia","card.news":"Notícias","card.standings":"Classificação","card.scorers":"Artilheiros","round.final":"Final","round.semifinals":"Meias-finais","round.quarterfinals":"Quartas de final","round.r16":"Oitavas de final","round.r32":"Avos de final","round.knockout_playoffs":"Pré-eliminatórias","round.preliminary":"Fase preliminar","round.short.semifinals":"Semis","round.short.quarterfinals":"Quartas","round.short.r16":"Oitavas","bracket.empty.title":"Chave não disponível","bracket.empty.sub":"A fase eliminatória começa em breve","bracket.tbd":"A def.","bracket.tied_agg":"Empate no agregado","bracket.agg":"Agregado","status.live":"Ao vivo","status.finished":"Encerrado","status.scheduled":"Programado","status.full_time":"Tempo normal","status.halftime":"Intervalo","status.first_half":"1º tempo","status.second_half":"2º tempo","status.kickoff":"Pontapé inicial","status.end":"Fim","event.goal":"Gol","event.yellow_card":"Cartão amarelo","event.red_card":"Cartão vermelho","event.substitution":"Substituição","event.var":"VAR","event.header":"Cabeçada","event.shot":"Chute","event.penalty":"Pênalti","event.free_kick":"Falta","form.W":"V","form.D":"E","form.L":"D","team.details":"Detalhes","team.possession":"Posse","team.shots":"Chutes","team.on_target":"No gol","team.fouls":"Faltas","team.spectators":"espectadores","team.top_scorer":"Artilheiro","team.next_match":"Próximo jogo","team.upcoming_matches":"Próximos jogos","team.previous_matches":"Jogos anteriores","team.form_trend":"Forma na temporada","team.h2h":"Confronto direto","team.in":"em","team.no_match":"Nenhum jogo disponível","team.off_season":"Nova temporada em breve","team.unknown_entity":"Entidade desconhecida","standings.stats":"jogos disputados · gols","standings.pos_label":"Posição","standings.compact_hidden":"times ocultos","time.today":"Hoje","time.yesterday":"Ontem","time.tomorrow":"Amanhã","time.now":"agora","time.in_n_min":"em {n} min","time.in_n_h":"em {n} h","time.in_n_d":"em {n} d","time.n_min_ago":"há {n} min","time.n_h_ago":"há {n} h","time.n_d_ago":"há {n} d","lineup.bench":"Banco","lineup.empty.title":"Escalações não disponíveis","lineup.empty.sub":"As escalações são publicadas pouco antes do início","timeline.empty.title":"Ainda sem eventos","timeline.empty.sub":"Os eventos aparecem durante o jogo","timeline.event":"Evento","timeline.penalty":"Pênalti","news.empty":"Sem notícias disponíveis","news.articles":"{n} artigos","zone.champions":"Champions League","zone.europa":"Europa League","zone.conference":"Conference League","zone.relegation":"Rebaixamento","zone.qualified":"Classificado","zone.third_place_playoff":"Melhores 3°","zone.eliminated":"Eliminado","hero.groups":"grupos","hero.teams":"times","hero.not_started":"Não iniciado","phase.regular_season":"Temporada regular","phase.group_stage":"Fase de grupos","phase.playoffs":"Eliminatórias","col.pos":"#","col.team":"Time","col.played":"J","col.wins":"V","col.draws":"E","col.losses":"D","col.gd":"+/-","col.points":"Pts","generic.no_match":"Nenhum jogo disponível","generic.matches_count":"{n} jogos","generic.unknown_entity":"Entidade desconhecida","generic.close":"Fechar","generic.unknown":"Desconhecido","popup.match_details":"Detalhes do jogo","popup.lineups":"Escalações","popup.timeline":"Cronologia","popup.h2h":"Confronto direto","popup.no_events":"Sem eventos disponíveis","month.1":"Jan","month.2":"Fev","month.3":"Mar","month.4":"Abr","month.5":"Mai","month.6":"Jun","month.7":"Jul","month.8":"Ago","month.9":"Set","month.10":"Out","month.11":"Nov","month.12":"Dez","scorers.goals":"Gols","scorers.matches":"Jogos","scorers.empty":"Nenhum artilheiro disponível","scorers.rank":"#"}},ce=["en","it","fr","es","nl","de","pt"];function de(e,t){const a=[];t&&"string"==typeof t.language&&a.push(t.language),e&&e.locale&&e.locale.language&&a.push(e.locale.language),e&&e.language&&a.push(e.language);for(const e of a){if(!e)continue;const t=String(e).toLowerCase().split("-")[0];if(ce.includes(t))return t}return"en"}function pe(e,t,a){let i=(le[t]||le.en)[e];return void 0===i&&(i=le.en[e]),void 0===i?e:(a&&Object.keys(a).forEach((e=>{i=i.replace(new RegExp("\\{"+e+"\\}","g"),a[e])})),i)}const he=n`
   :host {
     /* Accent palette — standaard (dark/light) */
     --cl-accent: #6366f1;
@@ -182,28 +182,28 @@
     --cl-toast-bg: #090600;
     --cl-num-bg: #090600;
   }
-`,ge=["dark","light","feyenoord","classic","neon","gold"];function ue(e,t){const a=function(e){const t=e&&"string"==typeof e.skin?e.skin.toLowerCase():"dark";return ge.includes(t)?t:"dark"}(t);return e&&e.setAttribute&&e.setAttribute("data-skin",a),a}const me=(e,t)=>Array.from({length:t-e+1},((t,a)=>e+a)),fe={serie_a:{match:(e,t)=>"ita.1"===e||t.includes("italian_serie_a"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},premier_league:{match:(e,t)=>"eng.1"===e||t.includes("english_premier"),champions:[1,2,3,4,5],europa:[6],conference:[7],relegation:"bottom3"},laliga:{match:(e,t)=>"esp.1"===e||t.includes("spanish_la_liga")||t.includes("spanish_laliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},bundesliga:{match:(e,t)=>"ger.1"===e||t.includes("german_bundesliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:[17,18]},ligue_1:{match:(e,t)=>"fra.1"===e||t.includes("french_ligue_1"),champions:[1,2,3],europa:[4],conference:[5],relegation:[17,18]},eredivisie:{match:(e,t)=>"ned.1"===e||t.includes("dutch_eredivisie"),champions:[1,2],europa:[3],conference:[4,5],relegation:[17,18]},primeira_liga:{match:(e,t)=>"por.1"===e||t.includes("portuguese_primeira"),champions:[1,2],europa:[3],conference:[4],relegation:[17,18]},ucl_league_phase:{match:(e,t)=>"uefa.champions"===e||t.includes("uefa_champions_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uel_league_phase:{match:(e,t)=>"uefa.europa"===e||t.includes("uefa_europa_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uecl_league_phase:{match:(e,t)=>"uefa.europa.conf"===e||t.includes("uefa_conference"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},world_cup:{match:(e,t)=>"fifa.world"===e||t.includes("fifa_world_cup")||t.includes("world_cup"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"🏆",accent:"world_cup"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},uefa_euro:{match:(e,t)=>"uefa.euro"===e||t.includes("uefa_euro")||t.includes("european_championship"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"⭐",accent:"uefa_euro"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},copa_america:{match:(e,t)=>"conmebol.america"===e||t.includes("copa_america")||t.includes("conmebol_america"),champions:[1,2],europa:[],conference:[],relegation:"bottom2",kind:"cup_group",hero:{icon:"🏆",accent:"copa_america"},labels:{champions:"zone.qualified",europa:null,conference:null,relegation:"zone.eliminated"}}};customElements.define("soccer-live-classifica",class extends oe{static get properties(){return{hass:{},_config:{},maxTeamsVisible:{type:Number},hideHeader:{type:Boolean},selectedGroup:{type:String},_eventSubscriptions:{type:Array},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxTeamsVisible=e.max_teams_visible?e.max_teams_visible:10,this.hideHeader=e.hide_header||!1,this.selectedGroup=e.selected_group||"",this.showEventToasts=!0===e.show_event_toasts,this.highlightTeam=(e.highlight_team||e.my_team||"").toLowerCase(),this.showStats=!1!==e.show_stats,this.showGoalsFor=!0===e.show_goals_for,this.compactMode=!0===e.compact_mode,this.compactTop=parseInt(e.compact_top)||5,this.compactBottom=parseInt(e.compact_bottom)||3,this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}_t(e,t){return pe(e,de(this.hass,this._config),t)}connectedCallback(){super.connectedCallback(),this._subscribeToEvents()}disconnectedCallback(){super.disconnectedCallback(),this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this._config.entity||"",a=e.competition_code;if(!a)return!1;const i=a.replace(/\./g,"_").toLowerCase();return t.toLowerCase().includes(i)}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;this._eventBelongsToThisCard(a)&&this.showEventToasts&&this._showEventToast(t,a)}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e?(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"):"soccer_live_match_finished"===e&&(a=`<strong>${this._t("status.finished")}!</strong> ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="finished"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}getCardSize(){return 5}static getConfigElement(){return document.createElement("soccer-live-classifica-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",max_teams_visible:10,hide_header:!1,selected_group:"",show_event_toasts:!1}}_getZoneConfig(){if(this._config.zone_config)return this._config.zone_config;if(this._config.zone_preset&&fe[this._config.zone_preset])return fe[this._config.zone_preset];return this._inferPresetFromEntity()||{champions:[],europa:[],conference:[],relegation:null}}_getZoneLabels(){const e=this._getZoneConfig().labels||{};return{champions:void 0!==e.champions?e.champions:"zone.champions",europa:void 0!==e.europa?e.europa:"zone.europa",conference:void 0!==e.conference?e.conference:"zone.conference",relegation:void 0!==e.relegation?e.relegation:"zone.relegation"}}_hasZonePositions(e){return!!e&&(Array.isArray(e)?e.length>0:"string"==typeof e&&/^bottom\d+$/.test(e))}_inferPresetFromEntity(){const e=(this._config.entity||"").toLowerCase(),t=this.hass&&this._config.entity?this.hass.states[this._config.entity]:null,a=t&&t.attributes?String(t.attributes.competition_code||"").toLowerCase():"";for(const[,t]of Object.entries(fe))if(t.match&&t.match(a,e))return t;return null}_positionInZone(e,t,a){if(!a)return!1;const i=String(a).match(/^bottom(\d+)$/);if(i){const a=parseInt(i[1],10);return t&&e>t-a}return!!Array.isArray(a)&&a.includes(Number(e))}_translatePhase(e){return e?{"regular-season":this._t("phase.regular_season"),"regular season":this._t("phase.regular_season"),"group-stage":this._t("phase.group_stage"),"group stage":this._t("phase.group_stage"),playoffs:this._t("phase.playoffs")}[String(e).toLowerCase()]||e:""}_shouldShowPhase(e){return!!e&&("regular-season"!==String(e).toLowerCase()&&!/\d{4}/.test(e))}_isCupGroupStage(){const e=this._getZoneConfig();return e&&"cup_group"===e.kind}_groupHasNoMatches(e){if(!e||!e.length)return!1;const t=e=>{if(null==e||""===e)return 0;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?0:t};return e.every((e=>t(e.wins)+t(e.draws)+t(e.losses)===0))}_zoneClass(e,t){const a=this._getZoneConfig();return this._positionInZone(e,t,a.champions)?1!==e||this._isCupGroupStage()?"zone-cl":"zone-cl rank-first":this._positionInZone(e,t,a.europa)?"zone-el":this._positionInZone(e,t,a.conference)?"zone-conf":this._positionInZone(e,t,a.relegation)?"zone-rel":"zone-default"}_sortStandings(e,t){let a=(e||[]).filter((e=>null!=e.rank));return t.includes("MLS")?(a=a.slice().sort(((e,t)=>t.points!==e.points?t.points-e.points:t.goal_difference!==e.goal_difference?t.goal_difference-e.goal_difference:t.goals_for-e.goals_for)),a.forEach(((e,t)=>{e.rank=t+1}))):a=a.slice().sort(((e,t)=>e.rank-t.rank)),a}_currentGroup(e){return e.find((e=>e.name===this.selectedGroup))||e[0]}render(){if(!this.hass||!this._config)return B``;const e=this._config.entity,t=this.hass.states[e];if(!t)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;const a=t.attributes.season||"",i=t.attributes.league_abbreviation&&"N/A"!==t.attributes.league_abbreviation?t.attributes.league_abbreviation:null,s=i&&t.attributes.league_name?a.replace(t.attributes.league_name,i).trim():a,n=t.attributes.standings_groups||[],o=!this.selectedGroup&&n.length>1,r=this._currentGroup(n),l=this._sortStandings(r?r.standings:[],s),c=l.length,d=48*Math.min(this.maxTeamsVisible,c)+50,p=this.highlightTeam?(l.find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam)))||{}).rank:null,h=Math.round(l.reduce(((e,t)=>e+(parseInt(t.games_played)||0)),0)/2),g=l.reduce(((e,t)=>e+(parseInt(t.goals_for)||0)),0),u=(t.attributes.standings_groups||[]).some((e=>(e.standings||[]).some((e=>(parseInt(e.games_played)||0)>0)))),m=!u&&c>0&&l.every((e=>0===parseInt(e.wins??"0")&&0===parseInt(e.draws??"0")&&0===parseInt(e.losses??"0")));return B`
+`,ge=["dark","light","feyenoord","classic","neon","gold"];function ue(e,t){const a=function(e){const t=e&&"string"==typeof e.skin?e.skin.toLowerCase():"dark";return ge.includes(t)?t:"dark"}(t);return e&&e.setAttribute&&e.setAttribute("data-skin",a),a}const me=(e,t)=>Array.from({length:t-e+1},((t,a)=>e+a)),fe={serie_a:{match:(e,t)=>"ita.1"===e||t.includes("italian_serie_a"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},premier_league:{match:(e,t)=>"eng.1"===e||t.includes("english_premier"),champions:[1,2,3,4,5],europa:[6],conference:[7],relegation:"bottom3"},laliga:{match:(e,t)=>"esp.1"===e||t.includes("spanish_la_liga")||t.includes("spanish_laliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:"bottom3"},bundesliga:{match:(e,t)=>"ger.1"===e||t.includes("german_bundesliga"),champions:[1,2,3,4],europa:[5],conference:[6],relegation:[17,18]},ligue_1:{match:(e,t)=>"fra.1"===e||t.includes("french_ligue_1"),champions:[1,2,3],europa:[4],conference:[5],relegation:[17,18]},eredivisie:{match:(e,t)=>"ned.1"===e||t.includes("dutch_eredivisie"),champions:[1,2],europa:[3],conference:[4,5],relegation:[17,18]},primeira_liga:{match:(e,t)=>"por.1"===e||t.includes("portuguese_primeira"),champions:[1,2],europa:[3],conference:[4],relegation:[17,18]},ucl_league_phase:{match:(e,t)=>"uefa.champions"===e||t.includes("uefa_champions_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uel_league_phase:{match:(e,t)=>"uefa.europa"===e||t.includes("uefa_europa_league"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},uecl_league_phase:{match:(e,t)=>"uefa.europa.conf"===e||t.includes("uefa_conference"),champions:me(1,8),europa:me(9,24),conference:[],relegation:"bottom12"},world_cup:{match:(e,t)=>"fifa.world"===e||t.includes("fifa_world_cup")||t.includes("world_cup"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"🏆",accent:"world_cup"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},uefa_euro:{match:(e,t)=>"uefa.euro"===e||t.includes("uefa_euro")||t.includes("european_championship"),champions:[1,2],europa:[3],conference:[],relegation:"bottom1",kind:"cup_group",hero:{icon:"⭐",accent:"uefa_euro"},labels:{champions:"zone.qualified",europa:"zone.third_place_playoff",conference:null,relegation:"zone.eliminated"}},copa_america:{match:(e,t)=>"conmebol.america"===e||t.includes("copa_america")||t.includes("conmebol_america"),champions:[1,2],europa:[],conference:[],relegation:"bottom2",kind:"cup_group",hero:{icon:"🏆",accent:"copa_america"},labels:{champions:"zone.qualified",europa:null,conference:null,relegation:"zone.eliminated"}}};customElements.define("soccer-live-classifica",class extends oe{static get properties(){return{hass:{},_config:{},maxTeamsVisible:{type:Number},hideHeader:{type:Boolean},selectedGroup:{type:String},_eventSubscriptions:{type:Array},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxTeamsVisible=e.max_teams_visible?e.max_teams_visible:10,this.hideHeader=e.hide_header||!1,this.selectedGroup=e.selected_group||"",this.showEventToasts=!0===e.show_event_toasts,this.highlightTeam=(e.highlight_team||e.my_team||"").toLowerCase(),this.showStats=!1!==e.show_stats,this.showGoalsFor=!0===e.show_goals_for,this.compactMode=!0===e.compact_mode,this.compactTop=parseInt(e.compact_top)||5,this.compactBottom=parseInt(e.compact_bottom)||3,this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}_t(e,t){return pe(e,de(this.hass,this._config),t)}connectedCallback(){super.connectedCallback(),this._subscribeToEvents()}disconnectedCallback(){super.disconnectedCallback(),this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this._config.entity||"",a=e.competition_code;if(!a)return!1;const i=a.replace(/\./g,"_").toLowerCase();return t.toLowerCase().includes(i)}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;this._eventBelongsToThisCard(a)&&this.showEventToasts&&this._showEventToast(t,a)}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e?(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"):"soccer_live_match_finished"===e&&(a=`<strong>${this._t("status.finished")}!</strong> ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="finished"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}getCardSize(){return 5}static getConfigElement(){return document.createElement("soccer-live-classifica-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",max_teams_visible:10,hide_header:!1,selected_group:"",show_event_toasts:!1}}_getZoneConfig(){if(this._config.zone_config)return this._config.zone_config;if(this._config.zone_preset&&fe[this._config.zone_preset])return fe[this._config.zone_preset];return this._inferPresetFromEntity()||{champions:[],europa:[],conference:[],relegation:null}}_getZoneLabels(){const e=this._getZoneConfig().labels||{};return{champions:void 0!==e.champions?e.champions:"zone.champions",europa:void 0!==e.europa?e.europa:"zone.europa",conference:void 0!==e.conference?e.conference:"zone.conference",relegation:void 0!==e.relegation?e.relegation:"zone.relegation"}}_hasZonePositions(e){return!!e&&(Array.isArray(e)?e.length>0:"string"==typeof e&&/^bottom\d+$/.test(e))}_inferPresetFromEntity(){const e=(this._config.entity||"").toLowerCase(),t=this.hass&&this._config.entity?this.hass.states[this._config.entity]:null,a=t&&t.attributes?String(t.attributes.competition_code||"").toLowerCase():"";for(const[,t]of Object.entries(fe))if(t.match&&t.match(a,e))return t;return null}_positionInZone(e,t,a){if(!a)return!1;const i=String(a).match(/^bottom(\d+)$/);if(i){const a=parseInt(i[1],10);return t&&e>t-a}return!!Array.isArray(a)&&a.includes(Number(e))}_translatePhase(e){return e?{"regular-season":this._t("phase.regular_season"),"regular season":this._t("phase.regular_season"),"group-stage":this._t("phase.group_stage"),"group stage":this._t("phase.group_stage"),playoffs:this._t("phase.playoffs")}[String(e).toLowerCase()]||e:""}_shouldShowPhase(e){return!!e&&("regular-season"!==String(e).toLowerCase()&&!/\d{4}/.test(e))}_isCupGroupStage(){const e=this._getZoneConfig();return e&&"cup_group"===e.kind}_groupHasNoMatches(e){if(!e||!e.length)return!1;const t=e=>{if(null==e||""===e)return 0;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?0:t};return e.every((e=>t(e.wins)+t(e.draws)+t(e.losses)===0))}_zoneClass(e,t){const a=this._getZoneConfig();return this._positionInZone(e,t,a.champions)?1!==e||this._isCupGroupStage()?"zone-cl":"zone-cl rank-first":this._positionInZone(e,t,a.europa)?"zone-el":this._positionInZone(e,t,a.conference)?"zone-conf":this._positionInZone(e,t,a.relegation)?"zone-rel":"zone-default"}_sortStandings(e,t){let a=(e||[]).filter((e=>null!=e.rank));return t.includes("MLS")?(a=a.slice().sort(((e,t)=>t.points!==e.points?t.points-e.points:t.goal_difference!==e.goal_difference?t.goal_difference-e.goal_difference:t.goals_for-e.goals_for)),a.forEach(((e,t)=>{e.rank=t+1}))):a=a.slice().sort(((e,t)=>e.rank-t.rank)),a}_currentGroup(e){return e.find((e=>e.name===this.selectedGroup))||e[0]}render(){if(!this.hass||!this._config)return U``;const e=this._config.entity,t=this.hass.states[e];if(!t)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;const a=t.attributes.season||"",i=t.attributes.league_abbreviation&&"N/A"!==t.attributes.league_abbreviation?t.attributes.league_abbreviation:null,s=i&&t.attributes.league_name?a.replace(t.attributes.league_name,i).trim():a,n=t.attributes.standings_groups||[],o=!this.selectedGroup&&n.length>1,r=this._currentGroup(n),l=this._sortStandings(r?r.standings:[],s),c=l.length,d=48*Math.min(this.maxTeamsVisible,c)+50,p=this.highlightTeam?(l.find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam)))||{}).rank:null,h=Math.round(l.reduce(((e,t)=>e+(parseInt(t.games_played)||0)),0)/2),g=l.reduce(((e,t)=>e+(parseInt(t.goals_for)||0)),0),u=(t.attributes.standings_groups||[]).some((e=>(e.standings||[]).some((e=>(parseInt(e.games_played)||0)>0)))),m=!u&&c>0&&l.every((e=>0===parseInt(e.wins??"0")&&0===parseInt(e.draws??"0")&&0===parseInt(e.losses??"0")));return U`
       <ha-card>
-        ${this.showEventToasts&&this._toastVisible?B`
+        ${this.showEventToasts&&this._toastVisible?U`
           <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
         `:""}
 
         ${this.hideHeader?"":this._renderHeader(t,s,r,n,o,p)}
 
-        ${m?B`
+        ${m?U`
           <div class="preseason-banner">
             <span class="preseason-icon">🗓️</span>
             <span>Seizoen ${s||""} is nog niet begonnen</span>
           </div>
         `:""}
 
-        ${o?this._renderGroupsGrid(n,s):B`
+        ${o?this._renderGroupsGrid(n,s):U`
             <div class="table-wrap" style="max-height: ${d}px;">
               ${this._renderFullTable(l,c)}
             </div>
           `}
 
-        ${this.showStats&&h>0?B`
+        ${this.showStats&&h>0?U`
           <div class="season-stats">
             <span>${h} ${this._t("standings.stats").split("·")[0].trim()}</span>
             <span class="stats-dot">·</span>
@@ -213,7 +213,7 @@
 
         ${this._renderLegend()}
       </ha-card>
-    `}_renderFullTable(e,t){let a=e,i=null;if(this.compactMode&&t>this.compactTop+this.compactBottom){const s=e.slice(0,this.compactTop),n=e.slice(t-this.compactBottom),o=t-this.compactTop-this.compactBottom,r=this.highlightTeam?e.slice(this.compactTop,t-this.compactBottom).find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam))):null;a=[...s,...r?[r]:[],{_separator:!0,hiddenCount:o},...n],i=!0}return B`
+    `}_renderFullTable(e,t){let a=e,i=null;if(this.compactMode&&t>this.compactTop+this.compactBottom){const s=e.slice(0,this.compactTop),n=e.slice(t-this.compactBottom),o=t-this.compactTop-this.compactBottom,r=this.highlightTeam?e.slice(this.compactTop,t-this.compactBottom).find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam))):null;a=[...s,...r?[r]:[],{_separator:!0,hiddenCount:o},...n],i=!0}return U`
       <table class="standings-table">
         <thead>
           <tr>
@@ -228,19 +228,19 @@
           </tr>
         </thead>
         <tbody>
-          ${a.map((e=>{if(e._separator)return B`
+          ${a.map((e=>{if(e._separator)return U`
               <tr class="separator-row">
                 <td colspan="8">
                   <span class="separator-dots">· · · ${e.hiddenCount} ${this._t("standings.compact_hidden")} · · ·</span>
                 </td>
-              </tr>`;const a=this.highlightTeam&&e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam),i=e=>{if(null==e||""===e)return null;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?null:t},s=i(e.wins),n=i(e.draws),o=i(e.losses),r=i(e.goal_difference),l=null!==s&&null!==n&&null!==o?s+n+o:null,c=null===r?"":r>0?"gd-pos":r<0?"gd-neg":"",d=null===r?"-":r>0?`+${r}`:`${r}`;return B`
+              </tr>`;const a=this.highlightTeam&&e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam),i=e=>{if(null==e||""===e)return null;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?null:t},s=i(e.wins),n=i(e.draws),o=i(e.losses),r=i(e.goal_difference),l=null!==s&&null!==n&&null!==o?s+n+o:null,c=null===r?"":r>0?"gd-pos":r<0?"gd-neg":"",d=null===r?"-":r>0?`+${r}`:`${r}`;return U`
               <tr class="${this._zoneClass(e.rank,t)} ${a?"highlighted-team":""}">
                 <td><div class="rank-cell"><div class="rank-num">${e.rank}</div></div></td>
                 <td class="team-cell">
                   <img src="${e.team_logo}" alt="${e.team_name}" />
                   <div class="tname-group">
                     <span class="tname">${e.team_name}</span>
-                    ${this.showGoalsFor&&e.goals_for&&parseInt(e.goals_for)>=0?B`<span class="goals-for-hint">⚽ ${e.goals_for}</span>`:""}
+                    ${this.showGoalsFor&&e.goals_for&&parseInt(e.goals_for)>=0?U`<span class="goals-for-hint">⚽ ${e.goals_for}</span>`:""}
                   </div>
                 </td>
                 <td>${l??"-"}</td>
@@ -253,7 +253,7 @@
             `}))}
         </tbody>
       </table>
-    `}_renderCompactTable(e,t){return B`
+    `}_renderCompactTable(e,t){return U`
       <table class="standings-table compact">
         <thead>
           <tr>
@@ -264,7 +264,7 @@
           </tr>
         </thead>
         <tbody>
-          ${e.map((e=>{const a=(e=>{if(null==e||""===e)return null;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?null:t})(e.goal_difference),i=null===a?"":a>0?"gd-pos":a<0?"gd-neg":"",s=null===a?"-":a>0?`+${a}`:`${a}`;return B`
+          ${e.map((e=>{const a=(e=>{if(null==e||""===e)return null;const t=parseInt(String(e).replace("+",""),10);return isNaN(t)?null:t})(e.goal_difference),i=null===a?"":a>0?"gd-pos":a<0?"gd-neg":"",s=null===a?"-":a>0?`+${a}`:`${a}`;return U`
               <tr class="${this._zoneClass(e.rank,t)}">
                 <td><div class="rank-cell"><div class="rank-num">${e.rank}</div></div></td>
                 <td class="team-cell">
@@ -277,36 +277,36 @@
             `}))}
         </tbody>
       </table>
-    `}_renderHeader(e,t,a,i,s,n){const o=this._getZoneConfig(),r=this._isCupGroupStage(),l=o&&o.hero?o.hero:null,c=e.attributes.league_abbreviation&&"N/A"!==e.attributes.league_abbreviation?e.attributes.league_abbreviation:null,d=c&&t?t.replace(c,"").trim():t&&"n/a"!==t.toLowerCase()?t:"",p=s?this._t("phase.group_stage"):this._shouldShowPhase(a&&a.name)?this._translatePhase(a.name):"",h=[];c&&h.push(this._t("card.standings")),d&&h.push(d),p&&h.push(p);let g=0;if(s)for(const e of i)g+=(e.standings||[]).filter((e=>null!=e.rank)).length;return B`
+    `}_renderHeader(e,t,a,i,s,n){const o=this._getZoneConfig(),r=this._isCupGroupStage(),l=o&&o.hero?o.hero:null,c=e.attributes.league_abbreviation&&"N/A"!==e.attributes.league_abbreviation?e.attributes.league_abbreviation:null,d=c&&t?t.replace(c,"").trim():t&&"n/a"!==t.toLowerCase()?t:"",p=s?this._t("phase.group_stage"):this._shouldShowPhase(a&&a.name)?this._translatePhase(a.name):"",h=[];c&&h.push(this._t("card.standings")),d&&h.push(d),p&&h.push(p);let g=0;if(s)for(const e of i)g+=(e.standings||[]).filter((e=>null!=e.rank)).length;return U`
       <div class="top-bar ${r?"top-bar-cup":""} ${l?`accent-${l.accent}`:""}">
-        ${l&&l.icon?B`<div class="hero-icon">${l.icon}</div>`:""}
+        ${l&&l.icon?U`<div class="hero-icon">${l.icon}</div>`:""}
         <div class="league-title">
           <h2>${c||e.state}</h2>
           <div class="sub">${h.join(" · ")}</div>
         </div>
-        ${n?B`<span class="highlight-pos-badge">${n}e</span>`:""}
-        ${s&&r?B`
+        ${n?U`<span class="highlight-pos-badge">${n}e</span>`:""}
+        ${s&&r?U`
           <div class="hero-badges">
             <span class="badge">${i.length} ${this._t("hero.groups")}</span>
             <span class="badge">${g} ${this._t("hero.teams")}</span>
           </div>
         `:""}
       </div>
-    `}_renderLegend(){const e=this._getZoneConfig(),t=this._getZoneLabels(),a=[{key:"champions",dot:"cl",positions:e.champions,label:t.champions},{key:"europa",dot:"el",positions:e.europa,label:t.europa},{key:"conference",dot:"conf",positions:e.conference,label:t.conference},{key:"relegation",dot:"rel",positions:e.relegation,label:t.relegation}].filter((e=>e.label&&this._hasZonePositions(e.positions)));return a.length?B`
+    `}_renderLegend(){const e=this._getZoneConfig(),t=this._getZoneLabels(),a=[{key:"champions",dot:"cl",positions:e.champions,label:t.champions},{key:"europa",dot:"el",positions:e.europa,label:t.europa},{key:"conference",dot:"conf",positions:e.conference,label:t.conference},{key:"relegation",dot:"rel",positions:e.relegation,label:t.relegation}].filter((e=>e.label&&this._hasZonePositions(e.positions)));return a.length?U`
       <div class="legend">
-        ${a.map((e=>B`
+        ${a.map((e=>U`
           <div class="legend-item">
             <span class="legend-dot ${e.dot}"></span>${this._t(e.label)}
           </div>
         `))}
       </div>
-    `:""}_renderGroupsGrid(e,t){const a=this._isCupGroupStage();return B`
+    `:""}_renderGroupsGrid(e,t){const a=this._isCupGroupStage();return U`
       <div class="groups-grid ${a?"groups-grid-cup":""}">
-        ${e.map((e=>{const a=this._sortStandings(e.standings||[],t),i=this._groupHasNoMatches(a);return B`
+        ${e.map((e=>{const a=this._sortStandings(e.standings||[],t),i=this._groupHasNoMatches(a);return U`
             <div class="group-cell ${i?"group-cell-pending":""}">
               <div class="group-title">
                 <span>${e.name}</span>
-                ${i?B`<span class="group-pending-badge">${this._t("hero.not_started")}</span>`:""}
+                ${i?U`<span class="group-pending-badge">${this._t("hero.not_started")}</span>`:""}
               </div>
               ${this._renderCompactTable(a,a.length)}
             </div>
@@ -774,14 +774,14 @@
         letter-spacing: 0.05em;
         color: var(--secondary-text-color);
       }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities(),(e.has("_config")||e.has("hass"))&&this._config&&this._config.entity&&this._fetchGroups()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_groupChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.selected_group&&this._fireConfigChanged({...this._config,selected_group:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_numberChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=parseInt(t.value,10);isNaN(i)||this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_classifica"))).sort())}_fetchGroups(){const e=this._config&&this._config.entity;if(!this.hass||!e)return void(this.groups=[]);const t=this.hass.states[e];t&&t.attributes&&t.attributes.standings_groups?this.groups=t.attributes.standings_groups.map((e=>e.name)):this.groups=[]}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities(),(e.has("_config")||e.has("hass"))&&this._config&&this._config.entity&&this._fetchGroups()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_groupChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.selected_group&&this._fireConfigChanged({...this._config,selected_group:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_numberChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=parseInt(t.value,10);isNaN(i)||this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_classifica"))).sort())}_fetchGroups(){const e=this._config&&this._config.entity;if(!this.hass||!e)return void(this.groups=[]);const t=this.hass.states[e];t&&t.attributes&&t.attributes.standings_groups?this.groups=t.attributes.standings_groups.map((e=>e.name)):this.groups=[]}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`
               <option value="${t}" ?selected=${t===e}>${t}</option>
             `))}
           </select>
@@ -792,7 +792,7 @@
           <label class="field-label">Group</label>
           <select @change=${this._groupChanged}>
             <option value="" ?selected=${!this._config.selected_group}>— All —</option>
-            ${this.groups.map((e=>B`
+            ${this.groups.map((e=>U`
               <option value="${e}" ?selected=${e===this._config.selected_group}>${e}</option>
             `))}
           </select>
@@ -847,7 +847,7 @@
             data-config-value="compact_mode" @change=${this._switchChanged}></ha-switch>
         </div>
 
-        ${this._config.compact_mode?B`
+        ${this._config.compact_mode?U`
           <div>
             <label class="field-label">Top N teams</label>
             <input type="number" min="1" max="20"
@@ -886,15 +886,15 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-matches",class extends oe{static get properties(){return{hass:{},_config:{},showPopup:{type:Boolean},activeMatch:{type:Object},_eventSubscriptions:{type:Array},_recentEventMatches:{type:Object},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}constructor(){super(),this._recentEventMatches=new Map,this._eventSubscriptions=[],this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxEventsVisible=e.max_events_visible?e.max_events_visible:5,this.maxEventsTotal=e.max_events_total?e.max_events_total:50,this.showFinishedMatches=void 0===e.show_finished_matches||e.show_finished_matches,this.hideHeader=void 0!==e.hide_header&&e.hide_header,this.hidePastDays=void 0!==e.hide_past_days?e.hide_past_days:0,this.reverseOrder=!0===e.reverse_order,this.showEventToasts=!0===e.show_event_toasts,this.myTeam=(e.my_team||"").toLowerCase(),this.showLiveTicker=!1!==e.show_live_ticker,this.activeMatch=null,this.showPopup=!1}_t(e,t){return pe(e,de(this.hass,this._config),t)}connectedCallback(){super.connectedCallback(),this._subscribeToEvents()}disconnectedCallback(){super.disconnectedCallback(),this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this.hass.states[this._config.entity];return!!t&&(t.attributes.matches||[]).some((t=>t.home_team===e.home_team&&t.away_team===e.away_team))}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;if(!this._eventBelongsToThisCard(a))return;const i=`${a.home_team}_${a.away_team}`;this._recentEventMatches.set(i,"soccer_live_goal"===t?"goal":"card"),this.requestUpdate(),setTimeout((()=>{this._recentEventMatches.delete(i),this.requestUpdate()}),5e3),"soccer_live_goal"===t&&requestAnimationFrame((()=>this._triggerGoalCelebration())),this.showEventToasts&&this._showEventToast(t,a)}_triggerGoalCelebration(){const e=this.shadowRoot&&this.shadowRoot.querySelector("ha-card");if(!e)return;e.querySelectorAll(".confetti").forEach((e=>e.remove()));const t=["#ec4899","#6366f1","#06b6d4","#fbbf24","#10b981","#ef4444"],a=["⚽","🎉","✨","🔥","⭐"];for(let i=0;i<28;i++){const i=document.createElement("div");i.className="confetti",Math.random()>.55?(i.textContent=a[Math.floor(Math.random()*a.length)],i.style.fontSize=12+10*Math.random()+"px",i.style.background="transparent"):(i.style.background=t[Math.floor(Math.random()*t.length)],i.style.borderRadius=Math.random()>.5?"50%":"2px"),i.style.setProperty("--dx",380*(Math.random()-.5)+"px"),i.style.setProperty("--dy",200*Math.random()+80+"px"),i.style.animationDelay=.4*Math.random()+"s",e.appendChild(i),setTimeout((()=>i.remove()),2200)}}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e&&(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}getCardSize(){return 4}static getConfigElement(){return document.createElement("soccer-live-matches-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",max_events_visible:5,max_events_total:50,hide_past_days:0,show_finished_matches:!0,hide_header:!1,show_event_toasts:!1}}_parseMatchDate(e){if(!e)return null;const[t,a]=e.split(" "),[i,s,n]=t.split(/[-\/]/).map(Number),[o,r]=a?a.split(":").map(Number):[0,0];return new Date(n,s-1,i,o,r)}_matchTimeLabel(e){if("in"===e.state)return e.clock&&"N/A"!==e.clock?e.clock:"LIVE";if("post"===e.state)return"FT";if(e.date){const t=e.date.split(" ");return t[1]||t[0]}return"—"}_matchScore(e,t){if("pre"===e.state)return"-";const a=e["home"===t?"home_score":"away_score"];return null==a||"N/A"===a?"-":a}_isWinner(e,t){if("pre"===e.state)return null;const a=parseInt(e.home_score),i=parseInt(e.away_score);return isNaN(a)||isNaN(i)||a===i?null:"home"===t?a>i:i>a}_dayKey(e){if(!e.date)return"—";const t=this._parseMatchDate(e.date);if(!t)return e.date.split(" ")[0]||"—";const a=new Date;a.setHours(0,0,0,0);const i=new Date(t);i.setHours(0,0,0,0);const s=Math.round((i-a)/864e5);if(0===s)return"⚡ "+this._t("time.today");if(-1===s)return this._t("time.yesterday");if(1===s)return this._t("time.tomorrow");const n=this._t("month."+(i.getMonth()+1));return`${i.getDate()} ${n}`}showDetails(e){this.activeMatch=e,this.showPopup=!0}closePopup(){this.showPopup=!1}separateEvents(e){const t=[],a=[],i=[];return e.forEach((e=>{const s=String(e||"");s.includes("Goal")||s.includes("Penalty - Scored")?t.push(this.formatMatchEvent(s)):s.includes("Yellow Card")?a.push(this.formatMatchEvent(s)):s.includes("Red Card")&&i.push(this.formatMatchEvent(s))})),{goals:t,yellowCards:a,redCards:i}}formatMatchEvent(e){const t=e=>this._t(e);let a=String(e||"").trim();a=a.replace(/^Goal\s*-\s*/i,"").replace(/^Yellow Card\s*-\s*/i,"").replace(/^Red Card\s*-\s*/i,"").replace(/^Penalty - Scored\s*-\s*/i,`${t("event.penalty")} - `).replace(/^Header\s*-\s*/i,`${t("event.header")} - `).replace(/^Shot\s*-\s*/i,`${t("event.shot")} - `).replace(/^Free-kick\s*-\s*/i,`${t("event.free_kick")} - `).replace(/^Penalty\s*-\s*/i,`${t("event.penalty")} - `),a=a.replace(/^([^:]+):\s*/,"$1 ");const i=[t("event.header"),t("event.shot"),t("event.penalty"),t("event.free_kick")].map((e=>e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));return a=a.replace(new RegExp(`^(${i.join("|")})\\s*-\\s*(.+)$`,"i"),((e,t,a)=>`${a} (${t.toLowerCase()})`)),a=a.replace(/\bN\/A\b/g,t("generic.unknown")),a}render(){if(!this.hass||!this._config)return B``;const e=this._config.entity,t=this.hass.states[e];if(!t)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;let a=t.attributes.matches||[];const i=t.attributes.league_info?t.attributes.league_info[0]:null,s=t.attributes.team_logo||null;if(this.showFinishedMatches||(a=a.filter((e=>"Full Time"!==e.status))),a=a.slice().sort(((e,t)=>{const a=this._parseMatchDate(e.date)||new Date(0),i=this._parseMatchDate(t.date)||new Date(0);return this.reverseOrder?i-a:a-i})),this.hidePastDays>0){const e=new Date;e.setDate(e.getDate()-this.hidePastDays),a=a.filter((t=>{const a=this._parseMatchDate(t.date);return!a||a>=e}))}const n=a.slice(0,this.maxEventsTotal);if(0===n.length)return B`<ha-card class="empty">${this._t("generic.no_match")}</ha-card>`;const o=n.filter((e=>"in"===e.state)).length,r=new Set(n.map((e=>e.league_name)).filter((e=>e&&"N/A"!==e))),l=r.size>1,c=[];let d=null;n.forEach((e=>{const t=this._dayKey(e);if(t!==d){d=t;const a=this._parseMatchDate(e.date);let i=null;if(a){const e=new Date;e.setHours(0,0,0,0);const t=new Date(a);t.setHours(0,0,0,0),i=Math.round((t-e)/864e5)}c.push({key:t,dayDiff:i,matches:[e]})}else c[c.length-1].matches.push(e)}));const p=Math.max(80*this.maxEventsVisible,240),h=n.filter((e=>"in"===e.state)),g=h.map((e=>`${e.home_abbrev||e.home_team}  ${e.home_score??"-"} - ${e.away_score??"-"}  ${e.away_abbrev||e.away_team}`)).join("     ·     ");return B`
+    `}}),customElements.define("soccer-live-matches",class extends oe{static get properties(){return{hass:{},_config:{},showPopup:{type:Boolean},activeMatch:{type:Object},_eventSubscriptions:{type:Array},_recentEventMatches:{type:Object},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}constructor(){super(),this._recentEventMatches=new Map,this._eventSubscriptions=[],this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxEventsVisible=e.max_events_visible?e.max_events_visible:5,this.maxEventsTotal=e.max_events_total?e.max_events_total:50,this.showFinishedMatches=void 0===e.show_finished_matches||e.show_finished_matches,this.hideHeader=void 0!==e.hide_header&&e.hide_header,this.hidePastDays=void 0!==e.hide_past_days?e.hide_past_days:0,this.reverseOrder=!0===e.reverse_order,this.showEventToasts=!0===e.show_event_toasts,this.myTeam=(e.my_team||"").toLowerCase(),this.showLiveTicker=!1!==e.show_live_ticker,this.activeMatch=null,this.showPopup=!1}_t(e,t){return pe(e,de(this.hass,this._config),t)}connectedCallback(){super.connectedCallback(),this._subscribeToEvents()}disconnectedCallback(){super.disconnectedCallback(),this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this.hass.states[this._config.entity];return!!t&&(t.attributes.matches||[]).some((t=>t.home_team===e.home_team&&t.away_team===e.away_team))}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;if(!this._eventBelongsToThisCard(a))return;const i=`${a.home_team}_${a.away_team}`;this._recentEventMatches.set(i,"soccer_live_goal"===t?"goal":"card"),this.requestUpdate(),setTimeout((()=>{this._recentEventMatches.delete(i),this.requestUpdate()}),5e3),"soccer_live_goal"===t&&requestAnimationFrame((()=>this._triggerGoalCelebration())),this.showEventToasts&&this._showEventToast(t,a)}_triggerGoalCelebration(){const e=this.shadowRoot&&this.shadowRoot.querySelector("ha-card");if(!e)return;e.querySelectorAll(".confetti").forEach((e=>e.remove()));const t=["#ec4899","#6366f1","#06b6d4","#fbbf24","#10b981","#ef4444"],a=["⚽","🎉","✨","🔥","⭐"];for(let i=0;i<28;i++){const i=document.createElement("div");i.className="confetti",Math.random()>.55?(i.textContent=a[Math.floor(Math.random()*a.length)],i.style.fontSize=12+10*Math.random()+"px",i.style.background="transparent"):(i.style.background=t[Math.floor(Math.random()*t.length)],i.style.borderRadius=Math.random()>.5?"50%":"2px"),i.style.setProperty("--dx",380*(Math.random()-.5)+"px"),i.style.setProperty("--dy",200*Math.random()+80+"px"),i.style.animationDelay=.4*Math.random()+"s",e.appendChild(i),setTimeout((()=>i.remove()),2200)}}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e&&(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}getCardSize(){return 4}static getConfigElement(){return document.createElement("soccer-live-matches-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",max_events_visible:5,max_events_total:50,hide_past_days:0,show_finished_matches:!0,hide_header:!1,show_event_toasts:!1}}_parseMatchDate(e){if(!e)return null;const[t,a]=e.split(" "),[i,s,n]=t.split(/[-\/]/).map(Number),[o,r]=a?a.split(":").map(Number):[0,0];return new Date(n,s-1,i,o,r)}_matchTimeLabel(e){if("in"===e.state)return e.clock&&"N/A"!==e.clock?e.clock:"LIVE";if("post"===e.state)return"FT";if(e.date){const t=e.date.split(" ");return t[1]||t[0]}return"—"}_matchScore(e,t){if("pre"===e.state)return"-";const a=e["home"===t?"home_score":"away_score"];return null==a||"N/A"===a?"-":a}_isWinner(e,t){if("pre"===e.state)return null;const a=parseInt(e.home_score),i=parseInt(e.away_score);return isNaN(a)||isNaN(i)||a===i?null:"home"===t?a>i:i>a}_dayKey(e){if(!e.date)return"—";const t=this._parseMatchDate(e.date);if(!t)return e.date.split(" ")[0]||"—";const a=new Date;a.setHours(0,0,0,0);const i=new Date(t);i.setHours(0,0,0,0);const s=Math.round((i-a)/864e5);if(0===s)return"⚡ "+this._t("time.today");if(-1===s)return this._t("time.yesterday");if(1===s)return this._t("time.tomorrow");const n=this._t("month."+(i.getMonth()+1));return`${i.getDate()} ${n}`}showDetails(e){this.activeMatch=e,this.showPopup=!0}closePopup(){this.showPopup=!1}separateEvents(e){const t=[],a=[],i=[];return e.forEach((e=>{const s=String(e||"");s.includes("Goal")||s.includes("Penalty - Scored")?t.push(this.formatMatchEvent(s)):s.includes("Yellow Card")?a.push(this.formatMatchEvent(s)):s.includes("Red Card")&&i.push(this.formatMatchEvent(s))})),{goals:t,yellowCards:a,redCards:i}}formatMatchEvent(e){const t=e=>this._t(e);let a=String(e||"").trim();a=a.replace(/^Goal\s*-\s*/i,"").replace(/^Yellow Card\s*-\s*/i,"").replace(/^Red Card\s*-\s*/i,"").replace(/^Penalty - Scored\s*-\s*/i,`${t("event.penalty")} - `).replace(/^Header\s*-\s*/i,`${t("event.header")} - `).replace(/^Shot\s*-\s*/i,`${t("event.shot")} - `).replace(/^Free-kick\s*-\s*/i,`${t("event.free_kick")} - `).replace(/^Penalty\s*-\s*/i,`${t("event.penalty")} - `),a=a.replace(/^([^:]+):\s*/,"$1 ");const i=[t("event.header"),t("event.shot"),t("event.penalty"),t("event.free_kick")].map((e=>e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));return a=a.replace(new RegExp(`^(${i.join("|")})\\s*-\\s*(.+)$`,"i"),((e,t,a)=>`${a} (${t.toLowerCase()})`)),a=a.replace(/\bN\/A\b/g,t("generic.unknown")),a}render(){if(!this.hass||!this._config)return U``;const e=this._config.entity,t=this.hass.states[e];if(!t)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;let a=t.attributes.matches||[];const i=t.attributes.league_info?t.attributes.league_info[0]:null,s=t.attributes.team_logo||null;if(this.showFinishedMatches||(a=a.filter((e=>"Full Time"!==e.status))),a=a.slice().sort(((e,t)=>{const a=this._parseMatchDate(e.date)||new Date(0),i=this._parseMatchDate(t.date)||new Date(0);return this.reverseOrder?i-a:a-i})),this.hidePastDays>0){const e=new Date;e.setDate(e.getDate()-this.hidePastDays),a=a.filter((t=>{const a=this._parseMatchDate(t.date);return!a||a>=e}))}const n=a.slice(0,this.maxEventsTotal);if(0===n.length)return U`<ha-card class="empty">${this._t("generic.no_match")}</ha-card>`;const o=n.filter((e=>"in"===e.state)).length,r=new Set(n.map((e=>e.league_name)).filter((e=>e&&"N/A"!==e))),l=r.size>1,c=[];let d=null;n.forEach((e=>{const t=this._dayKey(e);if(t!==d){d=t;const a=this._parseMatchDate(e.date);let i=null;if(a){const e=new Date;e.setHours(0,0,0,0);const t=new Date(a);t.setHours(0,0,0,0),i=Math.round((t-e)/864e5)}c.push({key:t,dayDiff:i,matches:[e]})}else c[c.length-1].matches.push(e)}));const p=Math.max(80*this.maxEventsVisible,240),h=n.filter((e=>"in"===e.state)),g=h.map((e=>`${e.home_abbrev||e.home_team}  ${e.home_score??"-"} - ${e.away_score??"-"}  ${e.away_abbrev||e.away_team}`)).join("     ·     ");return U`
       <ha-card>
         <div class="hero-bg"></div>
 
-        ${this.showEventToasts&&this._toastVisible?B`
+        ${this.showEventToasts&&this._toastVisible?U`
           <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
         `:""}
 
-        ${this.showLiveTicker&&h.length>0?B`
+        ${this.showLiveTicker&&h.length>0?U`
           <div class="live-ticker">
             <span class="ticker-badge">LIVE</span>
             <div class="ticker-track">
@@ -904,26 +904,26 @@
           </div>
         `:""}
 
-        ${this.hideHeader?"":B`
+        ${this.hideHeader?"":U`
           <div class="matches-header">
-            ${i&&i.logo_href?B`<img class="league-logo" src="${i.logo_href}" alt="${i.abbreviation||""}" />`:s?B`<img class="league-logo" src="${s}" alt="" />`:""}
+            ${i&&i.logo_href?U`<img class="league-logo" src="${i.logo_href}" alt="${i.abbreviation||""}" />`:s?U`<img class="league-logo" src="${s}" alt="" />`:""}
             <div class="league-info">
               <div class="league-name">${i&&i.abbreviation||t.state||"Soccer Live"}</div>
               <div class="league-dates">
                 ${(()=>{const e=t.attributes.total_matches||t.attributes.matches?.length||0,a=t.attributes.finished_matches_count??(t.attributes.matches||[]).filter((e=>"post"===e.state)).length;return e>0&&a>=0?`${a} / ${e} gespeeld`:i&&i.startDate?`${i.startDate} → ${i.endDate}`:this._t("generic.matches_count",{n:n.length})})()}
               </div>
             </div>
-            ${o>0?B`<span class="live-counter">${o} LIVE</span>`:""}
+            ${o>0?U`<span class="live-counter">${o} LIVE</span>`:""}
           </div>
         `}
 
         <div class="scroll-content" style="max-height: ${p}px;">
-          ${c.map((e=>B`
+          ${c.map((e=>U`
             <div class="day-divider ${0===e.dayDiff?"today":-1===e.dayDiff?"yesterday":1===e.dayDiff?"tomorrow":""}">
               ${e.key}
-              ${null!==e.dayDiff&&e.dayDiff>1?B`<span class="day-rel">· over ${e.dayDiff} d</span>`:""}
+              ${null!==e.dayDiff&&e.dayDiff>1?U`<span class="day-rel">· over ${e.dayDiff} d</span>`:""}
             </div>
-            ${e.matches.map((e=>{const t=`${e.home_team}_${e.away_team}`,a="in"===e.state,i=this._recentEventMatches.get(t),s=this._isWinner(e,"home"),n=this._isWinner(e,"away"),o=e.broadcast&&""!==e.broadcast&&"N/A"!==e.broadcast?e.broadcast:"",r="pre"===e.state,c=this.myTeam&&e.home_team&&e.home_team.toLowerCase().includes(this.myTeam),d=this.myTeam&&e.away_team&&e.away_team.toLowerCase().includes(this.myTeam);return B`
+            ${e.matches.map((e=>{const t=`${e.home_team}_${e.away_team}`,a="in"===e.state,i=this._recentEventMatches.get(t),s=this._isWinner(e,"home"),n=this._isWinner(e,"away"),o=e.broadcast&&""!==e.broadcast&&"N/A"!==e.broadcast?e.broadcast:"",r="pre"===e.state,c=this.myTeam&&e.home_team&&e.home_team.toLowerCase().includes(this.myTeam),d=this.myTeam&&e.away_team&&e.away_team.toLowerCase().includes(this.myTeam);return U`
                 <div class="match-row ${a?"live":""} ${"goal"===i?"goal-pulse":""} ${"card"===i?"card-pulse":""}"
                      @click="${()=>this.showDetails(e)}">
                   <div class="match-time ${a?"live-time":""} ${"post"===e.state?"ft":""}">
@@ -940,12 +940,12 @@
                       <span class="name ${!0===n?"winner":!1===n?"loser":""} ${d?"my-team-name":""}">${e.away_team}</span>
                       <span class="score ${!0===n?"winner":!1===n?"loser":""}">${this._matchScore(e,"away")}</span>
                     </div>
-                    ${o&&r||l&&e.league_name&&"N/A"!==e.league_name?B`
+                    ${o&&r||l&&e.league_name&&"N/A"!==e.league_name?U`
                       <div class="row-extras">
-                        ${l&&e.league_name&&"N/A"!==e.league_name?B`
+                        ${l&&e.league_name&&"N/A"!==e.league_name?U`
                           <span class="league-chip">${e.league_name}</span>
                         `:""}
-                        ${o&&r?B`
+                        ${o&&r?U`
                           <span class="tv-chip" title="Live TV">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
                             ${o}
@@ -1372,14 +1372,14 @@
         color: var(--secondary-text-color);
         margin-top: -4px;
       }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_numberChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=parseInt(t.value,10);isNaN(i)||this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_all"))).sort())}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_numberChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=parseInt(t.value,10);isNaN(i)||this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_all"))).sort())}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`
               <option value="${t}" ?selected=${t===e}>${t}</option>
             `))}
           </select>
@@ -1497,11 +1497,11 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-team",class extends oe{static get properties(){return{hass:{},_config:{},showPopup:{type:Boolean},activeMatch:{type:Object},_eventSubscriptions:{type:Array},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e);const t=["big","huge"].includes(e.score_size)?e.score_size:"normal";this.setAttribute("data-score",t),this.showPopup=!1,this.activeMatch=null,this.showEventToasts=!0===e.show_event_toasts,this.myTeam=(e.my_team||"").toLowerCase(),this.showPreviousMatches=!0===e.show_previous_matches,this.showFormTrend=!0===e.show_form_trend,this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}_t(e,t){return pe(e,de(this.hass,this._config),t)}_translatePhase(e){return e?{"regular-season":this._t("phase.regular_season"),"regular season":this._t("phase.regular_season"),"group-stage":this._t("phase.group_stage"),"group stage":this._t("phase.group_stage"),playoffs:this._t("phase.playoffs")}[String(e).toLowerCase()]||e:""}_shouldShowPhase(e){return!!e&&"regular-season"!==String(e).toLowerCase()}connectedCallback(){super.connectedCallback(),this._subscribeToEvents(),this._countdownInterval=setInterval((()=>this.requestUpdate()),3e4)}disconnectedCallback(){super.disconnectedCallback(),clearInterval(this._countdownInterval),this._countdownInterval=null,this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this.hass.states[this._config.entity];if(!t)return!1;const a=t.attributes.matches||[];if(0===a.length)return!1;const i=a[0];return i.home_team===e.home_team&&i.away_team===e.away_team}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;if(this._eventBelongsToThisCard(a)&&this.showEventToasts)if("soccer_live_goal"===t){const e=a.team===a.home_team?"home":"away";requestAnimationFrame((()=>this._triggerGoalCelebration(e,a)))}else this._showEventToast(t,a)}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e&&(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}_triggerGoalCelebration(e,t){const a=this.shadowRoot&&this.shadowRoot.querySelector("ha-card");if(!a)return;a.querySelectorAll(".confetti, .goal-banner, .goal-flash-overlay").forEach((e=>e.remove())),a.classList.remove("goal-flash"),a.offsetWidth,a.classList.add("goal-flash"),setTimeout((()=>a.classList.remove("goal-flash")),1700);const i=document.createElement("div");i.className="goal-flash-overlay",a.appendChild(i),setTimeout((()=>i.remove()),1e3);const s=document.createElement("div");s.className="goal-banner",s.innerHTML='<div class="goal-banner-text">GOAL!</div>',a.appendChild(s),setTimeout((()=>s.remove()),1700);const n=a.querySelector(".score-numbers");n&&(n.classList.remove("goal-scored"),n.offsetWidth,n.classList.add("goal-scored"),setTimeout((()=>n.classList.remove("goal-scored")),1300));const o=a.querySelectorAll(".team-side .team-logo-big"),r="away"===e?o[1]:o[0];r&&(r.classList.remove("scorer-bounce"),r.offsetWidth,r.classList.add("scorer-bounce"),setTimeout((()=>r.classList.remove("scorer-bounce")),1300)),navigator.vibrate&&navigator.vibrate([180,80,180,80,280]),setTimeout((()=>this._showEventToast("soccer_live_goal",t)),600);const l=["#ec4899","#6366f1","#06b6d4","#fbbf24","#10b981","#ef4444"],c=["⚽","🎉","✨","🔥","⭐"];for(let e=0;e<36;e++){const e=document.createElement("div");e.className="confetti",Math.random()>.55?(e.textContent=c[Math.floor(Math.random()*c.length)],e.style.fontSize=14+10*Math.random()+"px",e.style.background="transparent"):(e.style.background=l[Math.floor(Math.random()*l.length)],e.style.borderRadius=Math.random()>.5?"50%":"2px");const t=380*(Math.random()-.5)+"px",i=240*Math.random()+100+"px";e.style.setProperty("--dx",t),e.style.setProperty("--dy",i),e.style.animationDelay=.3*Math.random()+"s",a.appendChild(e),setTimeout((()=>e.remove()),2e3)}}_parseMatchDate(e){if(!e||"N/A"===e)return null;try{const[t,a]=e.split(" "),[i,s,n]=t.split(/[-\/]/).map(Number),[o,r]=(a||"00:00").split(":").map(Number);return new Date(n,s-1,i,o,r)}catch(e){return null}}_liveCountdown(e){if(!e||"pre"!==e.state)return null;const t=this._parseMatchDate(e.date);if(!t)return null;const a=t-new Date;if(a<=0||a>1728e5)return null;const i=Math.floor(a/6e4);if(i<1)return this._t("time.now");if(i<60)return this._t("time.in_n_min",{n:i});const s=Math.floor(i/60);return this._t("time.in_n_h",{n:s})}getCardSize(){return 4}static getConfigElement(){return document.createElement("soccer-live-team-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",show_event_toasts:!1}}showDetails(e){this.activeMatch=e,this.showPopup=!0}closePopup(){this.showPopup=!1}separateEvents(e){const t=[],a=[],i=[];return e.forEach((e=>{const s=String(e||"");s.includes("Goal")||s.includes("Penalty - Scored")?t.push(this.formatMatchEvent(s)):s.includes("Yellow Card")?a.push(this.formatMatchEvent(s)):s.includes("Red Card")&&i.push(this.formatMatchEvent(s))})),{goals:t,yellowCards:a,redCards:i}}formatMatchEvent(e){const t=e=>this._t(e);let a=String(e||"").trim();a=a.replace(/^Goal\s*-\s*/i,"").replace(/^Yellow Card\s*-\s*/i,"").replace(/^Red Card\s*-\s*/i,"").replace(/^Penalty - Scored\s*-\s*/i,`${t("event.penalty")} - `).replace(/^Header\s*-\s*/i,`${t("event.header")} - `).replace(/^Shot\s*-\s*/i,`${t("event.shot")} - `).replace(/^Free-kick\s*-\s*/i,`${t("event.free_kick")} - `).replace(/^Penalty\s*-\s*/i,`${t("event.penalty")} - `),a=a.replace(/^([^:]+):\s*/,"$1 ");const i=[t("event.header"),t("event.shot"),t("event.penalty"),t("event.free_kick")].map((e=>e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));return a=a.replace(new RegExp(`^(${i.join("|")})\\s*-\\s*(.+)$`,"i"),((e,t,a)=>`${a} (${t.toLowerCase()})`)),a=a.replace(/\bN\/A\b/g,t("generic.unknown")),a}_renderStatusBadge(e){const t=e.state;return"in"===t?B`<span class="status-badge live"><span class="dot"></span>${this._t("status.live")}</span>`:"post"===t?B`<span class="status-badge finished">${this._t("status.finished")}</span>`:B`<span class="status-badge scheduled">${e.date||this._t("status.scheduled")}</span>`}_renderClock(e){const t=e.state;if("in"===t){const t=e.status_detail&&"N/A"!==e.status_detail?e.status_detail:"",a=(e.clock&&"N/A"!==e.clock?e.clock:"")||t||e.status||"";return B`<div class="clock"><span class="dot"></span>${a}</div>`}if("post"===t)return B`<div class="clock finished">${this._t("status.full_time")}</div>`;const a=this._liveCountdown(e);return B`<div class="clock upcoming">${a||e.date||""}</div>`}_renderRecord(e){if(!e||"N/A"===e)return"";const t=String(e).split("-");return 3===t.length?t.every((e=>0===parseInt(e)))?"":B`<div class="record">
+    `}}),customElements.define("soccer-live-team",class extends oe{static get properties(){return{hass:{},_config:{},showPopup:{type:Boolean},activeMatch:{type:Object},_eventSubscriptions:{type:Array},_toastMessage:{type:String},_toastVisible:{type:Boolean},_toastVariant:{type:String}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e);const t=["big","huge"].includes(e.score_size)?e.score_size:"normal";this.setAttribute("data-score",t),this.showPopup=!1,this.activeMatch=null,this.showEventToasts=!0===e.show_event_toasts,this.myTeam=(e.my_team||"").toLowerCase(),this.showPreviousMatches=!0===e.show_previous_matches,this.showFormTrend=!0===e.show_form_trend,this._toastMessage="",this._toastVisible=!1,this._toastVariant="goal",this._toastTimer=null}_t(e,t){return pe(e,de(this.hass,this._config),t)}_translatePhase(e){return e?{"regular-season":this._t("phase.regular_season"),"regular season":this._t("phase.regular_season"),"group-stage":this._t("phase.group_stage"),"group stage":this._t("phase.group_stage"),playoffs:this._t("phase.playoffs")}[String(e).toLowerCase()]||e:""}_shouldShowPhase(e){return!!e&&"regular-season"!==String(e).toLowerCase()}connectedCallback(){super.connectedCallback(),this._subscribeToEvents(),this._countdownInterval=setInterval((()=>this.requestUpdate()),3e4)}disconnectedCallback(){super.disconnectedCallback(),clearInterval(this._countdownInterval),this._countdownInterval=null,this._eventSubscriptions&&Array.isArray(this._eventSubscriptions)&&(this._eventSubscriptions.forEach((e=>{"function"==typeof e&&e()})),this._eventSubscriptions=[])}_subscribeToEvents(){this.hass&&this.hass.connection&&(this._eventSubscriptions=[],["soccer_live_goal","soccer_live_yellow_card","soccer_live_red_card"].forEach((e=>{this.hass.connection.subscribeEvents(this._handleCalcioLiveEvent.bind(this),e).then((e=>{"function"==typeof e&&this._eventSubscriptions.push(e)}))})))}_eventBelongsToThisCard(e){if(!this.hass||!this._config)return!1;const t=this.hass.states[this._config.entity];if(!t)return!1;const a=t.attributes.matches||[];if(0===a.length)return!1;const i=a[0];return i.home_team===e.home_team&&i.away_team===e.away_team}_handleCalcioLiveEvent(e){const t=e.event_type,a=e.data;if(this._eventBelongsToThisCard(a)&&this.showEventToasts)if("soccer_live_goal"===t){const e=a.team===a.home_team?"home":"away";requestAnimationFrame((()=>this._triggerGoalCelebration(e,a)))}else this._showEventToast(t,a)}_showEventToast(e,t){let a="",i="goal";"soccer_live_goal"===e?(a=`<strong>${this._t("event.goal").toUpperCase()}!</strong> ${t.player} · ${t.home_team} ${t.home_score} - ${t.away_score} ${t.away_team}`,i="goal"):"soccer_live_yellow_card"===e?(a=`🟨 <strong>${this._t("event.yellow_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="yellow"):"soccer_live_red_card"===e&&(a=`🟥 <strong>${this._t("event.red_card")}</strong> · ${t.player}${t.minute?` (${t.minute}')`:""}`,i="red"),a&&(this._toastMessage=a,this._toastVariant=i,this._toastVisible=!0,this._toastTimer&&clearTimeout(this._toastTimer),this._toastTimer=setTimeout((()=>{this._toastVisible=!1,this.requestUpdate()}),4e3),this.requestUpdate())}_triggerGoalCelebration(e,t){const a=this.shadowRoot&&this.shadowRoot.querySelector("ha-card");if(!a)return;a.querySelectorAll(".confetti, .goal-banner, .goal-flash-overlay").forEach((e=>e.remove())),a.classList.remove("goal-flash"),a.offsetWidth,a.classList.add("goal-flash"),setTimeout((()=>a.classList.remove("goal-flash")),1700);const i=document.createElement("div");i.className="goal-flash-overlay",a.appendChild(i),setTimeout((()=>i.remove()),1e3);const s=document.createElement("div");s.className="goal-banner",s.innerHTML='<div class="goal-banner-text">GOAL!</div>',a.appendChild(s),setTimeout((()=>s.remove()),1700);const n=a.querySelector(".score-numbers");n&&(n.classList.remove("goal-scored"),n.offsetWidth,n.classList.add("goal-scored"),setTimeout((()=>n.classList.remove("goal-scored")),1300));const o=a.querySelectorAll(".team-side .team-logo-big"),r="away"===e?o[1]:o[0];r&&(r.classList.remove("scorer-bounce"),r.offsetWidth,r.classList.add("scorer-bounce"),setTimeout((()=>r.classList.remove("scorer-bounce")),1300)),navigator.vibrate&&navigator.vibrate([180,80,180,80,280]),setTimeout((()=>this._showEventToast("soccer_live_goal",t)),600);const l=["#ec4899","#6366f1","#06b6d4","#fbbf24","#10b981","#ef4444"],c=["⚽","🎉","✨","🔥","⭐"];for(let e=0;e<36;e++){const e=document.createElement("div");e.className="confetti",Math.random()>.55?(e.textContent=c[Math.floor(Math.random()*c.length)],e.style.fontSize=14+10*Math.random()+"px",e.style.background="transparent"):(e.style.background=l[Math.floor(Math.random()*l.length)],e.style.borderRadius=Math.random()>.5?"50%":"2px");const t=380*(Math.random()-.5)+"px",i=240*Math.random()+100+"px";e.style.setProperty("--dx",t),e.style.setProperty("--dy",i),e.style.animationDelay=.3*Math.random()+"s",a.appendChild(e),setTimeout((()=>e.remove()),2e3)}}_parseMatchDate(e){if(!e||"N/A"===e)return null;try{const[t,a]=e.split(" "),[i,s,n]=t.split(/[-\/]/).map(Number),[o,r]=(a||"00:00").split(":").map(Number);return new Date(n,s-1,i,o,r)}catch(e){return null}}_liveCountdown(e){if(!e||"pre"!==e.state)return null;const t=this._parseMatchDate(e.date);if(!t)return null;const a=t-new Date;if(a<=0||a>1728e5)return null;const i=Math.floor(a/6e4);if(i<1)return this._t("time.now");if(i<60)return this._t("time.in_n_min",{n:i});const s=Math.floor(i/60);return this._t("time.in_n_h",{n:s})}getCardSize(){return 4}static getConfigElement(){return document.createElement("soccer-live-team-editor")}static getStubConfig(){return{entity:"sensor.soccerlive",show_event_toasts:!1}}showDetails(e){this.activeMatch=e,this.showPopup=!0}closePopup(){this.showPopup=!1}separateEvents(e){const t=[],a=[],i=[];return e.forEach((e=>{const s=String(e||"");s.includes("Goal")||s.includes("Penalty - Scored")?t.push(this.formatMatchEvent(s)):s.includes("Yellow Card")?a.push(this.formatMatchEvent(s)):s.includes("Red Card")&&i.push(this.formatMatchEvent(s))})),{goals:t,yellowCards:a,redCards:i}}formatMatchEvent(e){const t=e=>this._t(e);let a=String(e||"").trim();a=a.replace(/^Goal\s*-\s*/i,"").replace(/^Yellow Card\s*-\s*/i,"").replace(/^Red Card\s*-\s*/i,"").replace(/^Penalty - Scored\s*-\s*/i,`${t("event.penalty")} - `).replace(/^Header\s*-\s*/i,`${t("event.header")} - `).replace(/^Shot\s*-\s*/i,`${t("event.shot")} - `).replace(/^Free-kick\s*-\s*/i,`${t("event.free_kick")} - `).replace(/^Penalty\s*-\s*/i,`${t("event.penalty")} - `),a=a.replace(/^([^:]+):\s*/,"$1 ");const i=[t("event.header"),t("event.shot"),t("event.penalty"),t("event.free_kick")].map((e=>e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));return a=a.replace(new RegExp(`^(${i.join("|")})\\s*-\\s*(.+)$`,"i"),((e,t,a)=>`${a} (${t.toLowerCase()})`)),a=a.replace(/\bN\/A\b/g,t("generic.unknown")),a}_renderStatusBadge(e){const t=e.state;return"in"===t?U`<span class="status-badge live"><span class="dot"></span>${this._t("status.live")}</span>`:"post"===t?U`<span class="status-badge finished">${this._t("status.finished")}</span>`:U`<span class="status-badge scheduled">${e.date||this._t("status.scheduled")}</span>`}_renderClock(e){const t=e.state;if("in"===t){const t=e.status_detail&&"N/A"!==e.status_detail?e.status_detail:"",a=(e.clock&&"N/A"!==e.clock?e.clock:"")||t||e.status||"";return U`<div class="clock"><span class="dot"></span>${a}</div>`}if("post"===t)return U`<div class="clock finished">${this._t("status.full_time")}</div>`;const a=this._liveCountdown(e);return U`<div class="clock upcoming">${a||e.date||""}</div>`}_renderRecord(e){if(!e||"N/A"===e)return"";const t=String(e).split("-");return 3===t.length?t.every((e=>0===parseInt(e)))?"":U`<div class="record">
         <span class="rec rec-w">${t[0]}${this._t("form.W")}</span>
         <span class="rec rec-d">${t[1]}${this._t("form.D")}</span>
         <span class="rec rec-l">${t[2]}${this._t("form.L")}</span>
-      </div>`:B`<div class="record"><span class="rec">${e}</span></div>`}_hexToRgb(e){if(!e||"N/A"===e)return null;const t=String(e).replace("#","");return 6!==t.length?null:`${parseInt(t.slice(0,2),16)},${parseInt(t.slice(2,4),16)},${parseInt(t.slice(4,6),16)}`}_renderTopScorer(e){if(!e||!e.name)return"";const t=e.short_name||e.name,a=this._t("team.top_scorer");return B`
+      </div>`:U`<div class="record"><span class="rec">${e}</span></div>`}_hexToRgb(e){if(!e||"N/A"===e)return null;const t=String(e).replace("#","");return 6!==t.length?null:`${parseInt(t.slice(0,2),16)},${parseInt(t.slice(2,4),16)},${parseInt(t.slice(4,6),16)}`}_renderTopScorer(e){if(!e||!e.name)return"";const t=e.short_name||e.name,a=this._t("team.top_scorer");return U`
       <div class="top-scorer" title="${a}: ${e.name} (${e.value})">
         <span class="ts-label">⚽ ${a}</span>
         <div class="ts-row">
@@ -1509,13 +1509,13 @@
           <span class="ts-val">${e.value}<span class="ts-unit">★</span></span>
         </div>
       </div>
-    `}_renderForm(e){if(!e||"N/A"===e)return"";const t=String(e).replace(/[^WLDwld]/g,"").toUpperCase();if(!t.length)return"";const a=t.slice(-5).split(""),i=e=>this._t("form."+e);return B`
+    `}_renderForm(e){if(!e||"N/A"===e)return"";const t=String(e).replace(/[^WLDwld]/g,"").toUpperCase();if(!t.length)return"";const a=t.slice(-5).split(""),i=e=>this._t("form."+e);return U`
       <div class="form-pills">
-        ${a.map((e=>B`<div class="form-pill ${e}">${i(e)}</div>`))}
+        ${a.map((e=>U`<div class="form-pill ${e}">${i(e)}</div>`))}
       </div>
-    `}_renderStatsRow(e){const t=e.home_statistics||{},a=e.away_statistics||{},i=[],s=e=>{const t=parseFloat(e);return isNaN(t)?null:t},n=function(e,n,o){let r=arguments.length>3&&void 0!==arguments[3]?arguments[3]:"";const l=s(t[n]),c=s(a[o]);null!==l&&null!==c&&i.push({label:e,home:t[n],away:a[o],hNum:l,aNum:c,suffix:r})};return n(this._t("team.possession"),"possessionPct","possessionPct","%"),n(this._t("team.shots"),"totalShots","totalShots"),n(this._t("team.on_target"),"shotsOnTarget","shotsOnTarget"),0===i.length?"":B`
+    `}_renderStatsRow(e){const t=e.home_statistics||{},a=e.away_statistics||{},i=[],s=e=>{const t=parseFloat(e);return isNaN(t)?null:t},n=function(e,n,o){let r=arguments.length>3&&void 0!==arguments[3]?arguments[3]:"";const l=s(t[n]),c=s(a[o]);null!==l&&null!==c&&i.push({label:e,home:t[n],away:a[o],hNum:l,aNum:c,suffix:r})};return n(this._t("team.possession"),"possessionPct","possessionPct","%"),n(this._t("team.shots"),"totalShots","totalShots"),n(this._t("team.on_target"),"shotsOnTarget","shotsOnTarget"),0===i.length?"":U`
       <div class="stats-row">
-        ${i.map((e=>{const t=e.hNum+e.aNum,a=t>0?e.hNum/t*100:50,i=100-a;return B`
+        ${i.map((e=>{const t=e.hNum+e.aNum,a=t>0?e.hNum/t*100:50,i=100-a;return U`
             <div class="stat-bar">
               <div class="stat-bar-label">
                 <span class="home-val">${e.home}${e.suffix}</span>
@@ -1529,12 +1529,12 @@
             </div>
           `}))}
       </div>
-    `}render(){if(!this.hass||!this._config)return B``;const e=this._config.entity,t=this.hass.states[e];if(!t)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;if(!t.attributes.matches||0===t.attributes.matches.length)return B`
+    `}render(){if(!this.hass||!this._config)return U``;const e=this._config.entity,t=this.hass.states[e];if(!t)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${e}</ha-card>`;if(!t.attributes.matches||0===t.attributes.matches.length)return U`
         <ha-card class="empty">
           <div style="font-size:40px; opacity:0.25; margin-bottom:10px;">⚽</div>
           <div style="font-weight:700; margin-bottom:4px;">${this._t("team.no_match")}</div>
           <div style="font-size:12px; opacity:0.6;">${this._t("team.off_season")}</div>
-        </ha-card>`;const a=t.attributes.matches[0],i=t.attributes.league_info?t.attributes.league_info[0]:null,s=i&&i.logo_href&&"N/A"!==i.logo_href?i.logo_href:null,n="in"===a.state,o="post"===a.state,r=n||o,l=i&&i.abbreviation&&"N/A"!==i.abbreviation?i.abbreviation:a.league_name&&"N/A"!==a.league_name?a.league_name:a.season_info&&"N/A"!==a.season_info&&this._shouldShowPhase(a.season_info)?this._translatePhase(a.season_info):"",c=a.venue&&"N/A"!==a.venue?a.venue:"",d=a.venue_city&&"N/A"!==a.venue_city?a.venue_city:"",p=c?d?`${c}, ${d}`:c:"—",h=a.broadcast&&""!==a.broadcast&&"N/A"!==a.broadcast?a.broadcast:"",g=parseInt(a.attendance,10),u=!isNaN(g)&&g>0,m=this._hexToRgb(a.home_color),f=this._hexToRgb(a.away_color),v=m||f?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${m||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${f||"236,72,153"},0.18), transparent 55%)`:"",b=this.myTeam||(t.attributes.team_name||"").toLowerCase(),_=b&&a.home_team&&a.home_team.toLowerCase().includes(b),x=b&&a.away_team&&a.away_team.toLowerCase().includes(b);return B`
+        </ha-card>`;const a=t.attributes.matches[0],i=t.attributes.league_info?t.attributes.league_info[0]:null,s=i&&i.logo_href&&"N/A"!==i.logo_href?i.logo_href:null,n="in"===a.state,o="post"===a.state,r=n||o,l=i&&i.abbreviation&&"N/A"!==i.abbreviation?i.abbreviation:a.league_name&&"N/A"!==a.league_name?a.league_name:a.season_info&&"N/A"!==a.season_info&&this._shouldShowPhase(a.season_info)?this._translatePhase(a.season_info):"",c=a.venue&&"N/A"!==a.venue?a.venue:"",d=a.venue_city&&"N/A"!==a.venue_city?a.venue_city:"",p=c?d?`${c}, ${d}`:c:"—",h=a.broadcast&&""!==a.broadcast&&"N/A"!==a.broadcast?a.broadcast:"",g=parseInt(a.attendance,10),u=!isNaN(g)&&g>0,m=this._hexToRgb(a.home_color),f=this._hexToRgb(a.away_color),v=m||f?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${m||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${f||"236,72,153"},0.18), transparent 55%)`:"",b=this.myTeam||(t.attributes.team_name||"").toLowerCase(),_=b&&a.home_team&&a.home_team.toLowerCase().includes(b),x=b&&a.away_team&&a.away_team.toLowerCase().includes(b);return U`
       <ha-card class="${n?"live":""}">
         <div class="bg-logos">
           <div class="bg-logo home"><img src="${a.home_logo}" alt="" loading="lazy"></div>
@@ -1542,14 +1542,14 @@
         </div>
         <div class="hero-bg" style="${v}"></div>
 
-        ${this.showEventToasts&&this._toastVisible?B`
+        ${this.showEventToasts&&this._toastVisible?U`
           <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
         `:""}
 
         <div class="top-bar">
           <div class="competition">
             <span class="comp-icon">
-              ${s?B`<img src="${s}" alt="" />`:"⚽"}
+              ${s?U`<img src="${s}" alt="" />`:"⚽"}
             </span>
             <span class="comp-name">${l||" "}</span>
           </div>
@@ -1568,7 +1568,7 @@
           </div>
 
           <div class="score-center">
-            ${r?B`<div class="score-numbers">${a.home_score} <span class="dash">-</span> ${a.away_score}</div>`:B`<div class="score-vs">tegen</div>`}
+            ${r?U`<div class="score-numbers">${a.home_score} <span class="dash">-</span> ${a.away_score}</div>`:U`<div class="score-vs">tegen</div>`}
             ${this._renderClock(a)}
           </div>
 
@@ -1590,7 +1590,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             <span>${p}</span>
           </div>
-          ${r?B`<button class="info-btn" @click="${()=>this.showDetails(a)}">${this._t("team.details")} ›</button>`:B`
+          ${r?U`<button class="info-btn" @click="${()=>this.showDetails(a)}">${this._t("team.details")} ›</button>`:U`
               <div class="meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <span>${a.date||""}</span>
@@ -1598,15 +1598,15 @@
             `}
         </div>
 
-        ${h||u?B`
+        ${h||u?U`
           <div class="extras-row">
-            ${h?B`
+            ${h?U`
               <div class="extra-chip broadcast">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
                 <span>${h}</span>
               </div>
             `:""}
-            ${u?B`
+            ${u?U`
               <div class="extra-chip attendance">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                 <span>${g.toLocaleString(de(this.hass,this._config))} ${this._t("team.spectators")}</span>
@@ -1620,20 +1620,20 @@
         ${this._renderH2H(a.head_to_head)}
         ${this._renderUpcomingList(t.attributes.upcoming_matches,t.attributes.matches,this.myTeam||t.attributes.team_name)}
       </ha-card>
-    `}_relativeDate(e){if(!e)return"";const t=e.split(" "),[a,i,s]=(t[0]||"").split(/[-\/]/).map(Number);if(!a||!i||!s)return t[0]||"";const n=new Date(s,i-1,a),o=new Date;o.setHours(0,0,0,0);const r=Math.round((n-o)/864e5);if(1===r)return this._t("time.tomorrow");if(r<=6&&r>1)return this._t("time.in_n_d",{n:r});de(this.hass,this._config);const l=`month.${i}`;return`${a} ${this._t(l)}`}_teamBadge(e,t){const a=t&&"N/A"!==t?`#${t.replace("#","")}`:"rgba(var(--cl-accent-rgb),0.25)";return B`<span class="abbrev-badge" style="background:${a}">${e}</span>`}_renderFormTrend(e,t,a){const i=(a||"").toLowerCase(),s=e&&e.length>0?e:(t||[]).filter((e=>"post"===e.state)).slice(-10).reverse();if(0===s.length)return"";const n=s.map((e=>{const t=e.home_team&&e.home_team.toLowerCase().includes(i),a=parseInt(e.home_score),s=parseInt(e.away_score);return isNaN(a)||isNaN(s)?null:a===s?"D":t&&a>s||!t&&s>a?"W":"L"})).filter(Boolean).reverse();if(0===n.length)return"";const o=n.filter((e=>"W"===e)).length,r=n.filter((e=>"D"===e)).length,l=n.filter((e=>"L"===e)).length;return B`
+    `}_relativeDate(e){if(!e)return"";const t=e.split(" "),[a,i,s]=(t[0]||"").split(/[-\/]/).map(Number);if(!a||!i||!s)return t[0]||"";const n=new Date(s,i-1,a),o=new Date;o.setHours(0,0,0,0);const r=Math.round((n-o)/864e5);if(1===r)return this._t("time.tomorrow");if(r<=6&&r>1)return this._t("time.in_n_d",{n:r});de(this.hass,this._config);const l=`month.${i}`;return`${a} ${this._t(l)}`}_teamBadge(e,t){const a=t&&"N/A"!==t?`#${t.replace("#","")}`:"rgba(var(--cl-accent-rgb),0.25)";return U`<span class="abbrev-badge" style="background:${a}">${e}</span>`}_renderFormTrend(e,t,a){const i=(a||"").toLowerCase(),s=e&&e.length>0?e:(t||[]).filter((e=>"post"===e.state)).slice(-10).reverse();if(0===s.length)return"";const n=s.map((e=>{const t=e.home_team&&e.home_team.toLowerCase().includes(i),a=parseInt(e.home_score),s=parseInt(e.away_score);return isNaN(a)||isNaN(s)?null:a===s?"D":t&&a>s||!t&&s>a?"W":"L"})).filter(Boolean).reverse();if(0===n.length)return"";const o=n.filter((e=>"W"===e)).length,r=n.filter((e=>"D"===e)).length,l=n.filter((e=>"L"===e)).length;return U`
       <div class="form-trend-section">
         <div class="upcoming-list-title">${this._t("team.form_trend")||"Seizoenvorm"}</div>
         <div class="form-trend-row">
           <div class="form-trend-dots">
-            ${n.map((e=>B`<span class="ft-dot ${e.toLowerCase()}">${e}</span>`))}
+            ${n.map((e=>U`<span class="ft-dot ${e.toLowerCase()}">${e}</span>`))}
           </div>
           <span class="form-trend-summary">${o}W ${r}G ${l}V</span>
         </div>
       </div>
-    `}_renderPreviousMatches(e,t,a){const i=e&&e.length>0?e:t?t.filter((e=>"post"===e.state)).slice(-3).reverse():[];if(0===i.length)return"";const s=(a||"").toLowerCase();return B`
+    `}_renderPreviousMatches(e,t,a){const i=e&&e.length>0?e:t?t.filter((e=>"post"===e.state)).slice(-3).reverse():[];if(0===i.length)return"";const s=(a||"").toLowerCase();return U`
       <div class="upcoming-list">
         <div class="upcoming-list-title">${this._t("team.previous_matches")}</div>
-        ${i.map((e=>{const t=s&&e.home_team&&e.home_team.toLowerCase().includes(s),a=s&&e.away_team&&e.away_team.toLowerCase().includes(s),i=parseInt(e.home_score),n=parseInt(e.away_score),o=!isNaN(i)&&!isNaN(n)&&i>n,r=!isNaN(i)&&!isNaN(n)&&n>i;return B`
+        ${i.map((e=>{const t=s&&e.home_team&&e.home_team.toLowerCase().includes(s),a=s&&e.away_team&&e.away_team.toLowerCase().includes(s),i=parseInt(e.home_score),n=parseInt(e.away_score),o=!isNaN(i)&&!isNaN(n)&&i>n,r=!isNaN(i)&&!isNaN(n)&&n>i;return U`
             <div class="upcoming-row">
               <span class="upcoming-date">
                 ${e.date?e.date.split(" ")[0]:""}
@@ -1653,10 +1653,10 @@
             </div>
           `}))}
       </div>
-    `}_renderUpcomingList(e,t,a){const i=e&&e.length>0?e:t&&t.length>1?t.slice(1).filter((e=>"pre"===e.state||"in"===e.state)).slice(0,4):[];if(0===i.length)return"";const s=(a||"").toLowerCase();return B`
+    `}_renderUpcomingList(e,t,a){const i=e&&e.length>0?e:t&&t.length>1?t.slice(1).filter((e=>"pre"===e.state||"in"===e.state)).slice(0,4):[];if(0===i.length)return"";const s=(a||"").toLowerCase();return U`
       <div class="upcoming-list">
         <div class="upcoming-list-title">${this._t("team.upcoming_matches")}</div>
-        ${i.map((e=>{const t=s&&e.home_team&&e.home_team.toLowerCase().includes(s),a=s&&e.away_team&&e.away_team.toLowerCase().includes(s),i="in"===e.state,n=e.head_to_head&&e.head_to_head.length>0;return B`
+        ${i.map((e=>{const t=s&&e.home_team&&e.home_team.toLowerCase().includes(s),a=s&&e.away_team&&e.away_team.toLowerCase().includes(s),i="in"===e.state,n=e.head_to_head&&e.head_to_head.length>0;return U`
             <div class="upcoming-row ${n?"clickable":""}"
                  @click="${n?()=>this.showDetails(e):null}">
               <span class="upcoming-date">
@@ -1667,7 +1667,7 @@
                 <img src="${e.home_logo}" alt="" />
                 ${this._teamBadge(e.home_abbrev||"?",e.home_color)}
               </span>
-              ${i?B`<span class="upcoming-live-score">${e.home_score}<span class="live-dot">●</span>${e.away_score}</span>`:B`<span class="upcoming-vs">-</span>`}
+              ${i?U`<span class="upcoming-live-score">${e.home_score}<span class="live-dot">●</span>${e.away_score}</span>`:U`<span class="upcoming-vs">-</span>`}
               <span class="upcoming-team away-side ${a?"tracked":""}">
                 ${this._teamBadge(e.away_abbrev||"?",e.away_color)}
                 <img src="${e.away_logo}" alt="" />
@@ -1675,10 +1675,10 @@
             </div>
           `}))}
       </div>
-    `}_renderH2H(e){if(!e||0===e.length)return"";const t=e.slice(0,3);return B`
+    `}_renderH2H(e){if(!e||0===e.length)return"";const t=e.slice(0,3);return U`
       <div class="h2h-section">
         <div class="upcoming-list-title">${this._t("team.h2h")}</div>
-        ${t.map((e=>{const t=e.date?e.date.split("T")[0].split("-"):[],a=3===t.length?`${t[2]}/${t[1]}/${t[0].slice(2)}`:"",i=parseInt(e.home_score)>parseInt(e.away_score),s=parseInt(e.away_score)>parseInt(e.home_score);return B`
+        ${t.map((e=>{const t=e.date?e.date.split("T")[0].split("-"):[],a=3===t.length?`${t[2]}/${t[1]}/${t[0].slice(2)}`:"",i=parseInt(e.home_score)>parseInt(e.away_score),s=parseInt(e.away_score)>parseInt(e.home_score);return U`
             <div class="h2h-row">
               <span class="h2h-date">${a}</span>
               <span class="h2h-team ${i?"winner":""}">${e.home_team||""}</span>
@@ -2494,14 +2494,14 @@
         letter-spacing: 0.05em;
         color: var(--secondary-text-color);
       }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`
               <option value="${t}" ?selected=${t===e}>${t}</option>
             `))}
           </select>
@@ -2565,14 +2565,14 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-news",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxArticles=e.max_articles?e.max_articles:5,this.hideHeader=!0===e.hide_header,this.hideImages=!0===e.hide_images}_t(e,t){return pe(e,de(this.hass,this._config),t)}getCardSize(){return 4}static getConfigElement(){return document.createElement("soccer-live-news-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_news",max_articles:5,hide_header:!1,hide_images:!1}}_formatDate(e){if(!e)return"";try{const t=new Date(e),a=(new Date-t)/1e3;if(a<60)return this._t("time.now");if(a<3600)return this._t("time.n_min_ago",{n:Math.floor(a/60)});if(a<86400)return this._t("time.n_h_ago",{n:Math.floor(a/3600)});if(a<604800)return this._t("time.n_d_ago",{n:Math.floor(a/86400)});const i=this._t("month."+(t.getMonth()+1));return`${t.getDate()} ${i}`}catch(e){return""}}_openLink(e){e&&window.open(e,"_blank","noopener,noreferrer")}render(){if(!this.hass||!this._config)return B``;const e=this.hass.states[this._config.entity];if(!e)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=(e.attributes.articles||[]).slice(0,this.maxArticles);return 0===t.length?B`
+    `}}),customElements.define("soccer-live-news",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxArticles=e.max_articles?e.max_articles:5,this.hideHeader=!0===e.hide_header,this.hideImages=!0===e.hide_images}_t(e,t){return pe(e,de(this.hass,this._config),t)}getCardSize(){return 4}static getConfigElement(){return document.createElement("soccer-live-news-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_news",max_articles:5,hide_header:!1,hide_images:!1}}_formatDate(e){if(!e)return"";try{const t=new Date(e),a=(new Date-t)/1e3;if(a<60)return this._t("time.now");if(a<3600)return this._t("time.n_min_ago",{n:Math.floor(a/60)});if(a<86400)return this._t("time.n_h_ago",{n:Math.floor(a/3600)});if(a<604800)return this._t("time.n_d_ago",{n:Math.floor(a/86400)});const i=this._t("month."+(t.getMonth()+1));return`${t.getDate()} ${i}`}catch(e){return""}}_openLink(e){e&&window.open(e,"_blank","noopener,noreferrer")}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=(e.attributes.articles||[]).slice(0,this.maxArticles);return 0===t.length?U`
       <ha-card class="empty">
         <div style="font-size:38px; opacity:0.25; margin-bottom:10px;">📰</div>
         <div style="font-weight:700;">${this._t("news.empty")}</div>
-      </ha-card>`:B`
+      </ha-card>`:U`
       <ha-card>
         <div class="hero-bg"></div>
-        ${this.hideHeader?"":B`
+        ${this.hideHeader?"":U`
           <div class="news-header">
             <div class="header-icon">📰</div>
             <div class="header-text">
@@ -2582,18 +2582,18 @@
           </div>
         `}
         <div class="news-list">
-          ${t.map((e=>B`
+          ${t.map((e=>U`
             <article class="news-item ${this.hideImages||!e.image?"no-img":""}" @click="${()=>this._openLink(e.link)}">
-              ${!this.hideImages&&e.image?B`
+              ${!this.hideImages&&e.image?U`
                 <div class="news-img" style="background-image: url('${e.image}');"></div>
               `:""}
               <div class="news-body">
                 <div class="news-meta">
-                  ${e.category?B`<span class="cat">${e.category}</span>`:""}
+                  ${e.category?U`<span class="cat">${e.category}</span>`:""}
                   <span class="date">${this._formatDate(e.published)}</span>
                 </div>
                 <div class="news-headline">${e.headline}</div>
-                ${e.description?B`<div class="news-desc">${e.description}</div>`:""}
+                ${e.description?U`<div class="news-desc">${e.description}</div>`:""}
               </div>
             </article>
           `))}
@@ -2750,14 +2750,14 @@
         box-sizing: border-box;
       }
       h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_numberChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=parseInt(t.value,10);isNaN(i)||this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_news"))).sort())}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_numberChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=parseInt(t.value,10);isNaN(i)||this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_news"))).sort())}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity (news sensor)</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
           </select>
         </div>
 
@@ -2810,17 +2810,17 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-lineup",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.hideHeader=!0===e.hide_header}_t(e,t){return pe(e,de(this.hass,this._config),t)}getCardSize(){return 6}static getConfigElement(){return document.createElement("soccer-live-lineup-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_next",hide_header:!1}}_starters(e){return(e||[]).filter((e=>!0===e.starter))}_bench(e){return(e||[]).filter((e=>!e.starter))}_renderPlayer(e){const t=(e.short_name||e.name||"").split(" ").map((e=>e[0])).slice(0,2).join("");return B`
+    `}}),customElements.define("soccer-live-lineup",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.hideHeader=!0===e.hide_header}_t(e,t){return pe(e,de(this.hass,this._config),t)}getCardSize(){return 6}static getConfigElement(){return document.createElement("soccer-live-lineup-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_next",hide_header:!1}}_starters(e){return(e||[]).filter((e=>!0===e.starter))}_bench(e){return(e||[]).filter((e=>!e.starter))}_renderPlayer(e){const t=(e.short_name||e.name||"").split(" ").map((e=>e[0])).slice(0,2).join("");return U`
       <div class="player" title="${e.name}">
         <div class="player-card">
-          ${e.headshot?B`<img class="player-img" src="${e.headshot}" alt="${e.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                   <div class="player-init" style="display:none;">${t}</div>`:B`<div class="player-init">${t}</div>`}
-          ${e.jersey?B`<div class="player-num">${e.jersey}</div>`:""}
+          ${e.headshot?U`<img class="player-img" src="${e.headshot}" alt="${e.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                   <div class="player-init" style="display:none;">${t}</div>`:U`<div class="player-init">${t}</div>`}
+          ${e.jersey?U`<div class="player-num">${e.jersey}</div>`:""}
         </div>
         <div class="player-name">${e.short_name||e.name}</div>
-        ${e.position?B`<div class="player-pos">${e.position}</div>`:""}
+        ${e.position?U`<div class="player-pos">${e.position}</div>`:""}
       </div>
-    `}render(){if(!this.hass||!this._config)return B``;const e=this.hass.states[this._config.entity];if(!e)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=e.attributes.matches||[];if(0===t.length)return B`<ha-card class="empty">${this._t("generic.no_match")}</ha-card>`;const a=t[0],i=a.lineup_home||e.attributes.lineup_home||[],s=a.lineup_away||e.attributes.lineup_away||[],n=a.formation_home||e.attributes.formation_home||"",o=a.formation_away||e.attributes.formation_away||"";if(0===i.length&&0===s.length)return B`
+    `}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=e.attributes.matches||[];if(0===t.length)return U`<ha-card class="empty">${this._t("generic.no_match")}</ha-card>`;const a=t[0],i=a.lineup_home||e.attributes.lineup_home||[],s=a.lineup_away||e.attributes.lineup_away||[],n=a.formation_home||e.attributes.formation_home||"",o=a.formation_away||e.attributes.formation_away||"";if(0===i.length&&0===s.length)return U`
         <ha-card class="empty">
           <div class="hero-bg"></div>
           <div class="empty-state">
@@ -2829,10 +2829,10 @@
             <div class="empty-sub">${this._t("lineup.empty.sub")}</div>
           </div>
         </ha-card>
-      `;const r=this._starters(i),l=this._bench(i),c=this._starters(s),d=this._bench(s);return B`
+      `;const r=this._starters(i),l=this._bench(i),c=this._starters(s),d=this._bench(s);return U`
       <ha-card>
         <div class="hero-bg"></div>
-        ${this.hideHeader?"":B`
+        ${this.hideHeader?"":U`
           <div class="lineup-header">
             <div class="header-icon">👥</div>
             <div class="header-text">
@@ -2848,13 +2848,13 @@
               <img src="${a.home_logo}" alt="${a.home_team}" />
               <div class="team-block-info">
                 <div class="team-block-name">${a.home_team}</div>
-                ${n?B`<div class="formation">${n}</div>`:""}
+                ${n?U`<div class="formation">${n}</div>`:""}
               </div>
             </div>
             <div class="players-grid">
               ${r.map((e=>this._renderPlayer(e)))}
             </div>
-            ${l.length?B`
+            ${l.length?U`
               <div class="bench-label">${this._t("lineup.bench")}</div>
               <div class="players-grid bench">
                 ${l.map((e=>this._renderPlayer(e)))}
@@ -2867,13 +2867,13 @@
               <img src="${a.away_logo}" alt="${a.away_team}" />
               <div class="team-block-info">
                 <div class="team-block-name">${a.away_team}</div>
-                ${o?B`<div class="formation">${o}</div>`:""}
+                ${o?U`<div class="formation">${o}</div>`:""}
               </div>
             </div>
             <div class="players-grid">
               ${c.map((e=>this._renderPlayer(e)))}
             </div>
-            ${d.length?B`
+            ${d.length?U`
               <div class="bench-label">${this._t("lineup.bench")}</div>
               <div class="players-grid bench">
                 ${d.map((e=>this._renderPlayer(e)))}
@@ -3079,14 +3079,14 @@
       }
       h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
       .hint { font-size: 12px; color: var(--secondary-text-color); }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity (team_match sensor — soccerlive_next_*)</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
           </select>
           <div class="hint" style="margin-top: 4px;">Lineups are published shortly before kick-off.</div>
         </div>
@@ -3125,7 +3125,7 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-timeline",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.hideHeader=!0===e.hide_header,this.reverseOrder=!0===e.reverse_order}_t(e,t){return pe(e,de(this.hass,this._config),t)}getCardSize(){return 5}static getConfigElement(){return document.createElement("soccer-live-timeline-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_next",hide_header:!1,reverse_order:!0}}_eventMeta(e){const t=(e.type||"").toLowerCase(),a=(e.type_text||"").toLowerCase();return a.includes("kickoff")||"kickoff"===t?{icon:"⚽",label:this._t("status.kickoff"),cls:"meta"}:a.includes("halftime")||a.includes("intervallo")?{icon:"⏸",label:this._t("status.halftime"),cls:"meta"}:a.includes("start 2nd")||a.includes("secondo tempo")?{icon:"▶",label:this._t("status.second_half"),cls:"meta"}:a.includes("end regular")||a.includes("full time")?{icon:"🏁",label:this._t("status.end"),cls:"meta"}:"goal"===t||e.scoring_play?{icon:"⚽",label:this._t("event.goal"),cls:"goal"}:a.includes("penalty")?{icon:"⚽",label:this._t("timeline.penalty"),cls:"goal"}:a.includes("yellow card")?{icon:"🟨",label:this._t("event.yellow_card"),cls:"yellow"}:a.includes("red card")?{icon:"🟥",label:this._t("event.red_card"),cls:"red"}:"substitution"===t||a.includes("substitution")?{icon:"🔄",label:this._t("event.substitution"),cls:"sub"}:a.includes("var")?{icon:"📺",label:this._t("event.var"),cls:"meta"}:{icon:"·",label:e.type_text||this._t("timeline.event"),cls:"meta"}}render(){if(!this.hass||!this._config)return B``;const e=this.hass.states[this._config.entity];if(!e)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=e.attributes.matches||[];if(0===t.length)return B`<ha-card class="empty">${this._t("generic.no_match")}</ha-card>`;const a=t[0],i=a.key_events||e.attributes.key_events||[];if(0===i.length)return B`
+    `}}),customElements.define("soccer-live-timeline",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.hideHeader=!0===e.hide_header,this.reverseOrder=!0===e.reverse_order}_t(e,t){return pe(e,de(this.hass,this._config),t)}getCardSize(){return 5}static getConfigElement(){return document.createElement("soccer-live-timeline-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_next",hide_header:!1,reverse_order:!0}}_eventMeta(e){const t=(e.type||"").toLowerCase(),a=(e.type_text||"").toLowerCase();return a.includes("kickoff")||"kickoff"===t?{icon:"⚽",label:this._t("status.kickoff"),cls:"meta"}:a.includes("halftime")||a.includes("intervallo")?{icon:"⏸",label:this._t("status.halftime"),cls:"meta"}:a.includes("start 2nd")||a.includes("secondo tempo")?{icon:"▶",label:this._t("status.second_half"),cls:"meta"}:a.includes("end regular")||a.includes("full time")?{icon:"🏁",label:this._t("status.end"),cls:"meta"}:"goal"===t||e.scoring_play?{icon:"⚽",label:this._t("event.goal"),cls:"goal"}:a.includes("penalty")?{icon:"⚽",label:this._t("timeline.penalty"),cls:"goal"}:a.includes("yellow card")?{icon:"🟨",label:this._t("event.yellow_card"),cls:"yellow"}:a.includes("red card")?{icon:"🟥",label:this._t("event.red_card"),cls:"red"}:"substitution"===t||a.includes("substitution")?{icon:"🔄",label:this._t("event.substitution"),cls:"sub"}:a.includes("var")?{icon:"📺",label:this._t("event.var"),cls:"meta"}:{icon:"·",label:e.type_text||this._t("timeline.event"),cls:"meta"}}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=e.attributes.matches||[];if(0===t.length)return U`<ha-card class="empty">${this._t("generic.no_match")}</ha-card>`;const a=t[0],i=a.key_events||e.attributes.key_events||[];if(0===i.length)return U`
         <ha-card class="empty">
           <div class="hero-bg"></div>
           <div class="empty-state">
@@ -3134,10 +3134,10 @@
             <div class="empty-sub">${this._t("timeline.empty.sub")}</div>
           </div>
         </ha-card>
-      `;const s=this.reverseOrder?[...i].reverse():i;return B`
+      `;const s=this.reverseOrder?[...i].reverse():i;return U`
       <ha-card>
         <div class="hero-bg"></div>
-        ${this.hideHeader?"":B`
+        ${this.hideHeader?"":U`
           <div class="tl-header">
             <div class="header-icon">⏱</div>
             <div class="header-text">
@@ -3152,7 +3152,7 @@
         `}
 
         <div class="tl-body">
-          ${s.map((e=>{const t=this._eventMeta(e),i=a.home_team&&e.team===a.home_team,s=a.away_team&&e.team===a.away_team,n=i?"home":s?"away":"meta",o=(e.athletes||[]).filter(Boolean);return B`
+          ${s.map((e=>{const t=this._eventMeta(e),i=a.home_team&&e.team===a.home_team,s=a.away_team&&e.team===a.away_team,n=i?"home":s?"away":"meta",o=(e.athletes||[]).filter(Boolean);return U`
               <div class="tl-row side-${n} type-${t.cls}">
                 <div class="tl-time">${e.clock||""}</div>
                 <div class="tl-axis">
@@ -3161,12 +3161,12 @@
                 <div class="tl-card">
                   <div class="tl-card-head">
                     <span class="tl-label">${t.label}</span>
-                    ${e.team?B`<span class="tl-team">${e.team}</span>`:""}
+                    ${e.team?U`<span class="tl-team">${e.team}</span>`:""}
                   </div>
-                  ${o.length?B`
+                  ${o.length?U`
                     <div class="tl-athletes">${o.join(", ")}</div>
                   `:""}
-                  ${e.short_text?B`<div class="tl-text">${e.short_text}</div>`:""}
+                  ${e.short_text?U`<div class="tl-text">${e.short_text}</div>`:""}
                 </div>
               </div>
             `}))}
@@ -3377,14 +3377,14 @@
       }
       h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
       .hint { font-size: 12px; color: var(--secondary-text-color); }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity (team_match sensor — soccerlive_next_*)</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
           </select>
           <div class="hint" style="margin-top: 4px;">Events are published during the match.</div>
         </div>
@@ -3431,13 +3431,13 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-bracket",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.hideHeader=!0===e.hide_header,this.compactMode=!0===e.compact,this._cardStyle="tree"===e.style?"tree":"list",this.treeShowPlayoffs=!0===e.tree_show_playoffs}_t(e,t){return pe(e,de(this.hass,this._config),t)}_formatDate(e){if(!e)return"";try{const t=new Date(e),a=this._t("month."+(t.getMonth()+1));return`${t.getDate()} ${a}`}catch(e){return""}}_localizeRoundName(e){const t={Final:"round.final",Semifinals:"round.semifinals",Quarterfinals:"round.quarterfinals","Round of 16":"round.r16","Round of 32":"round.r32","Knockout Playoffs":"round.knockout_playoffs","Preliminary Round":"round.preliminary"}[e.name];return t?this._t(t):e.name}getCardSize(){return 6}static getConfigElement(){return document.createElement("soccer-live-bracket-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_bracket",hide_header:!1,compact:!1,style:"list"}}_formatScore(e){return null==e?"-":String(e)}_renderTie(e){const t=e.team_a||{},a=e.team_b||{},i=e.leg1,s=e.leg2,n=e.single,o=e.winner_team,r=o&&t.name&&o===t.name,l=o&&a.name&&o===a.name,c=(e,t)=>e&&t&&t.name?e.home_team===t.name?e.home_score:e.away_team===t.name?e.away_score:null:null,d=c(i,t),p=c(i,a),h=c(s,t),g=c(s,a),u=c(n,t),m=c(n,a),f=i&&"in"===i.state||s&&"in"===s.state||n&&"in"===n.state,v=!i&&!n;return B`
+    `}}),customElements.define("soccer-live-bracket",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.hideHeader=!0===e.hide_header,this.compactMode=!0===e.compact,this._cardStyle="tree"===e.style?"tree":"list",this.treeShowPlayoffs=!0===e.tree_show_playoffs}_t(e,t){return pe(e,de(this.hass,this._config),t)}_formatDate(e){if(!e)return"";try{const t=new Date(e),a=this._t("month."+(t.getMonth()+1));return`${t.getDate()} ${a}`}catch(e){return""}}_localizeRoundName(e){const t={Final:"round.final",Semifinals:"round.semifinals",Quarterfinals:"round.quarterfinals","Round of 16":"round.r16","Round of 32":"round.r32","Knockout Playoffs":"round.knockout_playoffs","Preliminary Round":"round.preliminary"}[e.name];return t?this._t(t):e.name}getCardSize(){return 6}static getConfigElement(){return document.createElement("soccer-live-bracket-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_bracket",hide_header:!1,compact:!1,style:"list"}}_formatScore(e){return null==e?"-":String(e)}_renderTie(e){const t=e.team_a||{},a=e.team_b||{},i=e.leg1,s=e.leg2,n=e.single,o=e.winner_team,r=o&&t.name&&o===t.name,l=o&&a.name&&o===a.name,c=(e,t)=>e&&t&&t.name?e.home_team===t.name?e.home_score:e.away_team===t.name?e.away_score:null:null,d=c(i,t),p=c(i,a),h=c(s,t),g=c(s,a),u=c(n,t),m=c(n,a),f=i&&"in"===i.state||s&&"in"===s.state||n&&"in"===n.state,v=!i&&!n;return U`
       <div class="tie ${f?"live":""} ${e.completed?"done":""}">
         <div class="tie-row ${r?"winner":""} ${l?"loser":""}">
           <img src="${t.logo}" alt="${t.name}" />
           <span class="tname">${t.name||"TBD"}</span>
           <span class="legs">
-            ${n?B`<span class="leg">${this._formatScore(u)}</span>`:B`
+            ${n?U`<span class="leg">${this._formatScore(u)}</span>`:U`
               <span class="leg">${this._formatScore(d)}</span>
               <span class="leg">${this._formatScore(h)}</span>
             `}
@@ -3447,35 +3447,35 @@
           <img src="${a.logo}" alt="${a.name}" />
           <span class="tname">${a.name||"TBD"}</span>
           <span class="legs">
-            ${n?B`<span class="leg">${this._formatScore(m)}</span>`:B`
+            ${n?U`<span class="leg">${this._formatScore(m)}</span>`:U`
               <span class="leg">${this._formatScore(p)}</span>
               <span class="leg">${this._formatScore(g)}</span>
             `}
           </span>
         </div>
         <div class="tie-foot">
-          ${f?B`<span class="live-badge"><span class="dot"></span>LIVE</span>`:""}
-          ${e.aggregate?B`<span class="agg">${this._t("bracket.agg")} ${e.aggregate}</span>`:""}
-          ${e.tied?B`<span class="agg tied">${this._t("bracket.tied_agg")}</span>`:""}
-          ${e.completed||f||!e.first_leg_date?"":B`<span class="date">${this._formatDate(e.first_leg_date)}</span>`}
-          ${v?B`<span class="date pending">${this._t("bracket.tbd")}</span>`:""}
+          ${f?U`<span class="live-badge"><span class="dot"></span>LIVE</span>`:""}
+          ${e.aggregate?U`<span class="agg">${this._t("bracket.agg")} ${e.aggregate}</span>`:""}
+          ${e.tied?U`<span class="agg tied">${this._t("bracket.tied_agg")}</span>`:""}
+          ${e.completed||f||!e.first_leg_date?"":U`<span class="date">${this._formatDate(e.first_leg_date)}</span>`}
+          ${v?U`<span class="date pending">${this._t("bracket.tbd")}</span>`:""}
         </div>
       </div>
-    `}_aggregateFor(e,t){if(!t||!t.name)return null;const a=(e,t)=>e&&t&&t.name?e.home_team===t.name?e.home_score:e.away_team===t.name?e.away_score:null:null;if(e.single)return a(e.single,t);let i=0,s=!1;const n=a(e.leg1,t),o=a(e.leg2,t);return null!=n&&(i+=n,s=!0),null!=o&&(i+=o,s=!0),s?i:null}_renderMiniTie(e){const t=e.team_a||{},a=e.team_b||{},i=this._aggregateFor(e,t),s=this._aggregateFor(e,a),n=e.winner_team,o=n&&t.name&&n===t.name,r=n&&a.name&&n===a.name,l=e.leg1&&"in"===e.leg1.state||e.leg2&&"in"===e.leg2.state||e.single&&"in"===e.single.state,c=!e.leg1&&!e.single,d=t.abbrev||(t.name?t.name.substring(0,3).toUpperCase():"TBD"),p=a.abbrev||(a.name?a.name.substring(0,3).toUpperCase():"TBD");return B`
+    `}_aggregateFor(e,t){if(!t||!t.name)return null;const a=(e,t)=>e&&t&&t.name?e.home_team===t.name?e.home_score:e.away_team===t.name?e.away_score:null:null;if(e.single)return a(e.single,t);let i=0,s=!1;const n=a(e.leg1,t),o=a(e.leg2,t);return null!=n&&(i+=n,s=!0),null!=o&&(i+=o,s=!0),s?i:null}_renderMiniTie(e){const t=e.team_a||{},a=e.team_b||{},i=this._aggregateFor(e,t),s=this._aggregateFor(e,a),n=e.winner_team,o=n&&t.name&&n===t.name,r=n&&a.name&&n===a.name,l=e.leg1&&"in"===e.leg1.state||e.leg2&&"in"===e.leg2.state||e.single&&"in"===e.single.state,c=!e.leg1&&!e.single,d=t.abbrev||(t.name?t.name.substring(0,3).toUpperCase():"TBD"),p=a.abbrev||(a.name?a.name.substring(0,3).toUpperCase():"TBD");return U`
       <div class="mini-tie ${l?"live":""} ${e.completed?"done":""} ${c?"pending":""}">
         <div class="mini-team ${o?"winner":""} ${r?"loser":""}">
-          ${t.logo?B`<img src="${t.logo}" alt="${t.name}" />`:B`<div class="logo-ph"></div>`}
+          ${t.logo?U`<img src="${t.logo}" alt="${t.name}" />`:U`<div class="logo-ph"></div>`}
           <span class="abbr">${d}</span>
           <span class="agg-num">${null!==i?i:"-"}</span>
         </div>
         <div class="mini-team ${r?"winner":""} ${o?"loser":""}">
-          ${a.logo?B`<img src="${a.logo}" alt="${a.name}" />`:B`<div class="logo-ph"></div>`}
+          ${a.logo?U`<img src="${a.logo}" alt="${a.name}" />`:U`<div class="logo-ph"></div>`}
           <span class="abbr">${p}</span>
           <span class="agg-num">${null!==s?s:"-"}</span>
         </div>
-        ${l?B`<span class="mini-live"><span class="dot"></span></span>`:""}
+        ${l?U`<span class="mini-live"><span class="dot"></span></span>`:""}
       </div>
-    `}_renderTreeRound(e,t){return B`
+    `}_renderTreeRound(e,t){return U`
       <div class="tree-col">
         <div class="tree-col-label">
           <span class="tree-col-label-en">${this._t(t)}</span>
@@ -3484,18 +3484,18 @@
           ${e.map((e=>this._renderMiniTie(e)))}
         </div>
       </div>
-    `}_renderArrows(e,t){if(e<=0)return"";const a=2*e,i=[],s="left"===t,n=`arrow-${t}`;for(let t=0;t<e;t++){const o=(2*t+.5)/a*100,r=(2*t+1.5)/a*100,l=(t+.5)/e*100;s?(i.push(U`<line x1="0" y1="${o}%" x2="50%" y2="${o}%" stroke-linecap="round" />`),i.push(U`<line x1="0" y1="${r}%" x2="50%" y2="${r}%" stroke-linecap="round" />`),i.push(U`<line x1="50%" y1="${o}%" x2="50%" y2="${r}%" />`),i.push(U`<line x1="50%" y1="${l}%" x2="100%" y2="${l}%" marker-end="url(#${n})" />`)):(i.push(U`<line x1="100%" y1="${o}%" x2="50%" y2="${o}%" stroke-linecap="round" />`),i.push(U`<line x1="100%" y1="${r}%" x2="50%" y2="${r}%" stroke-linecap="round" />`),i.push(U`<line x1="50%" y1="${o}%" x2="50%" y2="${r}%" />`),i.push(U`<line x1="50%" y1="${l}%" x2="0" y2="${l}%" marker-end="url(#${n})" />`))}const o=s?U`<marker id="${n}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" overflow="visible"><path d="M0,0 L10,5 L0,10 z" fill="var(--cl-accent)" /></marker>`:U`<marker id="${n}" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" overflow="visible"><path d="M10,0 L0,5 L10,10 z" fill="var(--cl-accent)" /></marker>`;return B`
+    `}_renderArrows(e,t){if(e<=0)return"";const a=2*e,i=[],s="left"===t,n=`arrow-${t}`;for(let t=0;t<e;t++){const o=(2*t+.5)/a*100,r=(2*t+1.5)/a*100,l=(t+.5)/e*100;s?(i.push(q`<line x1="0" y1="${o}%" x2="50%" y2="${o}%" stroke-linecap="round" />`),i.push(q`<line x1="0" y1="${r}%" x2="50%" y2="${r}%" stroke-linecap="round" />`),i.push(q`<line x1="50%" y1="${o}%" x2="50%" y2="${r}%" />`),i.push(q`<line x1="50%" y1="${l}%" x2="100%" y2="${l}%" marker-end="url(#${n})" />`)):(i.push(q`<line x1="100%" y1="${o}%" x2="50%" y2="${o}%" stroke-linecap="round" />`),i.push(q`<line x1="100%" y1="${r}%" x2="50%" y2="${r}%" stroke-linecap="round" />`),i.push(q`<line x1="50%" y1="${o}%" x2="50%" y2="${r}%" />`),i.push(q`<line x1="50%" y1="${l}%" x2="0" y2="${l}%" marker-end="url(#${n})" />`))}const o=s?q`<marker id="${n}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" overflow="visible"><path d="M0,0 L10,5 L0,10 z" fill="var(--cl-accent)" /></marker>`:q`<marker id="${n}" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" overflow="visible"><path d="M10,0 L0,5 L10,10 z" fill="var(--cl-accent)" /></marker>`;return U`
       <div class="tree-arrows ${t}">
         <svg class="connector-svg ${t}" preserveAspectRatio="none">
           <defs>${o}</defs>
           ${i}
         </svg>
       </div>
-    `}_renderTree(e){const t=t=>{const a=e.filter((e=>e.size===t));if(0===a.length)return null;return a.find((e=>"Knockout Playoffs"!==e.name&&"Preliminary Round"!==e.name))||a[a.length-1]},a=e.find((e=>"Knockout Playoffs"===e.name)),i=t(8),s=t(4),n=t(2),o=t(1),r=e=>{if(!e)return{left:[],right:[]};const t=e.ties||[],a=Math.ceil(t.length/2);return{left:t.slice(0,a),right:t.slice(a)}},l=r(i),c=r(s),d=r(n),p=this.treeShowPlayoffs?r(a):null,h=o?o.ties[0]:null;return B`
+    `}_renderTree(e){const t=t=>{const a=e.filter((e=>e.size===t));if(0===a.length)return null;return a.find((e=>"Knockout Playoffs"!==e.name&&"Preliminary Round"!==e.name))||a[a.length-1]},a=e.find((e=>"Knockout Playoffs"===e.name)),i=t(8),s=t(4),n=t(2),o=t(1),r=e=>{if(!e)return{left:[],right:[]};const t=e.ties||[],a=Math.ceil(t.length/2);return{left:t.slice(0,a),right:t.slice(a)}},l=r(i),c=r(s),d=r(n),p=this.treeShowPlayoffs?r(a):null,h=o?o.ties[0]:null;return U`
       <div class="tree-wrap">
         <div class="tree">
           <div class="tree-half left">
-            ${p&&p.left.length?B`
+            ${p&&p.left.length?U`
               ${this._renderTreeRound(p.left,"round.knockout_playoffs")}
               ${l.left.length?this._renderArrows(l.left.length,"left"):""}
             `:""}
@@ -3510,7 +3510,7 @@
           <div class="tree-center">
             <div class="trophy">🏆</div>
             <div class="trophy-label">${this._t("round.final")}</div>
-            ${h?B`<div class="final-tie-wrap">${this._renderMiniTie(h)}</div>`:B`<div class="final-placeholder">${this._t("bracket.tbd")}</div>`}
+            ${h?U`<div class="final-tie-wrap">${this._renderMiniTie(h)}</div>`:U`<div class="final-placeholder">${this._t("bracket.tbd")}</div>`}
           </div>
 
           <div class="tree-half right">
@@ -3520,14 +3520,14 @@
             ${c.right.length?this._renderTreeRound(c.right,"round.quarterfinals"):""}
             ${c.right.length&&l.right.length?this._renderArrows(c.right.length,"right"):""}
             ${l.right.length?this._renderTreeRound(l.right,"round.r16"):""}
-            ${p&&p.right.length?B`
+            ${p&&p.right.length?U`
               ${l.right.length?this._renderArrows(l.right.length,"right"):""}
               ${this._renderTreeRound(p.right,"round.knockout_playoffs")}
             `:""}
           </div>
         </div>
       </div>
-    `}render(){if(!this.hass||!this._config)return B``;const e=this.hass.states[this._config.entity];if(!e)return B`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=e.attributes.rounds||[];return 0===t.length?B`
+    `}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</ha-card>`;const t=e.attributes.rounds||[];return 0===t.length?U`
         <ha-card class="empty">
           <div class="hero-bg"></div>
           <div class="empty-state">
@@ -3536,10 +3536,10 @@
             <div class="empty-sub">${this._t("bracket.empty.sub")}</div>
           </div>
         </ha-card>
-      `:B`
+      `:U`
       <ha-card class="${this.compactMode?"compact":""} style-${this._cardStyle}">
         <div class="hero-bg"></div>
-        ${this.hideHeader?"":B`
+        ${this.hideHeader?"":U`
           <div class="bracket-header">
             <div class="header-icon">🏆</div>
             <div class="header-text">
@@ -3549,9 +3549,9 @@
           </div>
         `}
 
-        ${"tree"===this._cardStyle?this._renderTree(t):B`
+        ${"tree"===this._cardStyle?this._renderTree(t):U`
           <div class="rounds-container">
-            ${t.map((e=>B`
+            ${t.map((e=>U`
               <div class="round">
                 <div class="round-name">
                   <span class="round-name-en">${this._localizeRoundName(e)}</span>
@@ -4115,14 +4115,14 @@
       }
       h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
       .hint { font-size: 12px; color: var(--secondary-text-color); }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_bracket"))).sort())}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}get config(){return this._config}updated(e){e.has("hass")&&this._fetchEntities()}_fireConfigChanged(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){if(!this._config)return;const t=e.target.value;t!==this._config.entity&&this._fireConfigChanged({...this._config,entity:t})}_switchChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.checked;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_selectChanged(e){if(!this._config)return;const t=e.target;if(!t.dataset||!t.dataset.configValue)return;const a=t.dataset.configValue,i=t.value;this._config[a]!==i&&this._fireConfigChanged({...this._config,[a]:i})}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_bracket"))).sort())}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity (bracket sensor — soccerlive_bracket_*)</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
           </select>
           <div class="hint" style="margin-top: 4px;">Available for Champions League, Europa League, Conference League, FIFA World Cup and other cup competitions.</div>
         </div>
@@ -4184,34 +4184,34 @@
           </select>
         </div>
       </div>
-    `}}),customElements.define("soccer-live-cannonieri",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxItems=e.max_items||10,this.hideHeader=e.hide_header||!1}getCardSize(){return 4}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-cannonieri-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_cannonieri_"}}render(){if(!this.hass||!this._config)return B``;const e=this.hass.states[this._config.entity];if(!e)return B`
+    `}}),customElements.define("soccer-live-cannonieri",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e),this.maxItems=e.max_items||10,this.hideHeader=e.hide_header||!1}getCardSize(){return 4}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-cannonieri-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_cannonieri_"}}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`
         <ha-card>
           <div class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</div>
-        </ha-card>`;const t=(e.attributes.scorers||[]).slice(0,this.maxItems),a=e.attributes.league_name||"",i=e.attributes.league_logo||"";return B`
+        </ha-card>`;const t=(e.attributes.scorers||[]).slice(0,this.maxItems),a=e.attributes.league_name||"",i=e.attributes.league_logo||"";return U`
       <ha-card>
-        ${this.hideHeader?"":B`
+        ${this.hideHeader?"":U`
           <div class="header">
-            ${i?B`<img class="league-logo" src="${i}" alt="${a}">`:""}
+            ${i?U`<img class="league-logo" src="${i}" alt="${a}">`:""}
             <div class="header-text">
               <span class="title">${this._t("card.scorers")}</span>
-              ${a?B`<span class="subtitle">${a}</span>`:""}
+              ${a?U`<span class="subtitle">${a}</span>`:""}
             </div>
           </div>
         `}
 
-        ${0===t.length?B`
+        ${0===t.length?U`
           <div class="empty">${this._t("scorers.empty")}</div>
-        `:B`
+        `:U`
           <div class="list">
-            ${t.map(((e,t)=>B`
+            ${t.map(((e,t)=>U`
               <div class="scorer-row ${t%2==0?"even":""}">
                 <span class="rank">${e.rank||t+1}</span>
-                ${e.headshot?B`<img class="headshot" src="${e.headshot}" alt="${e.player}" @error=${e=>e.target.style.display="none"}>`:B`<div class="headshot-placeholder"></div>`}
+                ${e.headshot?U`<img class="headshot" src="${e.headshot}" alt="${e.player}" @error=${e=>e.target.style.display="none"}>`:U`<div class="headshot-placeholder"></div>`}
                 <div class="player-info">
                   <span class="player-name">${e.player}</span>
                   <span class="team-name">${e.team_name}</span>
                 </div>
-                ${e.team_logo?B`<img class="team-logo" src="${e.team_logo}" alt="${e.team_name}" @error=${e=>e.target.style.display="none"}>`:B`<div class="team-logo-placeholder"></div>`}
+                ${e.team_logo?U`<img class="team-logo" src="${e.team_logo}" alt="${e.team_name}" @error=${e=>e.target.style.display="none"}>`:U`<div class="team-logo-placeholder"></div>`}
                 <div class="goals-block">
                   <span class="goals">${e.goals}</span>
                   <span class="goals-label">${this._t("scorers.goals")}</span>
@@ -4391,14 +4391,14 @@
         letter-spacing: 0.05em;
         color: var(--secondary-text-color);
       }
-    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}updated(e){e.has("hass")&&this._fetchEntities()}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_cannonieri"))).sort())}_fire(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){const t=e.target.value;t!==this._config.entity&&this._fire({...this._config,entity:t})}_selectChanged(e){const{configValue:t}=e.target.dataset;if(!t)return;const a=e.target.value;this._config[t]!==a&&this._fire({...this._config,[t]:a})}_numberChanged(e){const{configValue:t}=e.target.dataset;if(!t)return;const a=parseInt(e.target.value,10);isNaN(a)||this._config[t]===a||this._fire({...this._config,[t]:a})}_switchChanged(e){const{configValue:t}=e.target.dataset;if(!t)return;const a=e.target.checked;this._config[t]!==a&&this._fire({...this._config,[t]:a})}render(){if(!this._config||!this.hass)return B``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return B`
+    `}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config={...e}}updated(e){e.has("hass")&&this._fetchEntities()}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_cannonieri"))).sort())}_fire(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){const t=e.target.value;t!==this._config.entity&&this._fire({...this._config,entity:t})}_selectChanged(e){const{configValue:t}=e.target.dataset;if(!t)return;const a=e.target.value;this._config[t]!==a&&this._fire({...this._config,[t]:a})}_numberChanged(e){const{configValue:t}=e.target.dataset;if(!t)return;const a=parseInt(e.target.value,10);isNaN(a)||this._config[t]===a||this._fire({...this._config,[t]:a})}_switchChanged(e){const{configValue:t}=e.target.dataset;if(!t)return;const a=e.target.checked;this._config[t]!==a&&this._fire({...this._config,[t]:a})}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
           <label class="field-label">Entity</label>
           <select @change=${this._entityChanged}>
-            ${t?"":B`<option value="${e}" selected>${e||"— select —"}</option>`}
-            ${this.entities.map((t=>B`
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`
               <option value="${t}" ?selected=${t===e}>${t}</option>
             `))}
           </select>
@@ -4426,7 +4426,7 @@
         <div>
           <label class="field-label">Theme</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
-            ${ve.map((e=>B`
+            ${ve.map((e=>U`
               <option value="${e}" ?selected=${(this._config.skin||"dark")===e}>${e}</option>
             `))}
           </select>
@@ -4435,11 +4435,453 @@
         <div>
           <label class="field-label">Language</label>
           <select data-config-value="language" @change=${this._selectChanged}>
-            ${be.map((e=>B`
+            ${be.map((e=>U`
               <option value="${"auto"===e?"":e}" ?selected=${(this._config.language||"")===("auto"===e?"":e)}>
                 ${e}
               </option>
             `))}
+          </select>
+        </div>
+      </div>
+    `}}),customElements.define("soccer-live-mini-standings",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e)}getCardSize(){return 3}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-mini-standings-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_classifica_",max_rows:5}}static get styles(){return[he,n`
+      ha-card { padding: 12px; }
+      .header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+      .league-logo { width: 24px; height: 24px; object-fit: contain; }
+      .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary-text-color); }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      th { color: var(--secondary-text-color); font-weight: 600; padding: 2px 4px; text-align: center; }
+      th.left { text-align: left; }
+      td { padding: 5px 4px; text-align: center; color: var(--primary-text-color); border-top: 1px solid var(--divider-color, rgba(255,255,255,0.07)); }
+      td.left { text-align: left; }
+      .team-row { display: flex; align-items: center; gap: 6px; }
+      .team-logo { width: 16px; height: 16px; object-fit: contain; }
+      .team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+      .highlight td { background: var(--primary-color, #03a9f4); color: #fff; border-radius: 4px; }
+      .pos { width: 20px; font-weight: 700; color: var(--secondary-text-color); }
+      .pts { font-weight: 700; }
+      .empty { padding: 16px; text-align: center; color: var(--secondary-text-color); }
+    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</div></ha-card>`;const t=e.attributes.standings||[],a=this._config.max_rows||5,i=(this._config.highlight_team||"").toLowerCase(),s=e.attributes.league_name||"",n=e.attributes.league_logo||"",o=t.slice(0,a);return U`
+      <ha-card>
+        ${this._config.hide_header?"":U`
+          <div class="header">
+            ${n?U`<img class="league-logo" src="${n}" alt="">`:""}
+            <span class="title">${s||this._t("card.standings")}</span>
+          </div>
+        `}
+        <table>
+          <tr>
+            <th class="left" style="width:20px">#</th>
+            <th class="left">Team</th>
+            <th>P</th>
+            ${this._config.hide_stats?"":U`<th>W</th><th>D</th><th>L</th><th>GD</th>`}
+            <th class="pts">Pts</th>
+          </tr>
+          ${o.map((e=>{const t=i&&e.team_name&&e.team_name.toLowerCase().includes(i);return U`
+              <tr class="${t?"highlight":""}">
+                <td class="pos">${e.position||e.rank||""}</td>
+                <td class="left">
+                  <div class="team-row">
+                    ${e.team_logo?U`<img class="team-logo" src="${e.team_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+                    <span class="team-name">${e.team_name||""}</span>
+                  </div>
+                </td>
+                <td>${e.played??""}</td>
+                ${this._config.hide_stats?"":U`<td>${e.won??""}</td><td>${e.drawn??""}</td><td>${e.lost??""}</td><td>${e.goal_difference??""}</td>`}
+                <td class="pts">${e.points??""}</td>
+              </tr>
+            `}))}
+        </table>
+      </ha-card>
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-mini-standings",name:"Soccer Live Mini Standings",description:"Compact standings table"});const _e=["dark","light","feyenoord","classic","neon","gold"],xe=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-mini-standings-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+      .card-config { display: flex; flex-direction: column; gap: 16px; }
+      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      label { font-size: 14px; color: var(--primary-text-color); }
+      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
+      select, input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color, #000); box-sizing: border-box; }
+      h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+    `}setConfig(e){this._config={...e}}updated(e){e.has("hass")&&this._fetchEntities()}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_classifica"))).sort())}_fire(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){this._fire({...this._config,entity:e.target.value})}_selectChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.value})}_numberChanged(e){const t=parseInt(e.target.value,10);isNaN(t)||this._fire({...this._config,[e.target.dataset.configValue]:t})}_switchChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.checked})}_textChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.value})}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
+      <div class="card-config">
+        <h3>Sensor</h3>
+        <div>
+          <label class="field-label">Standings entity</label>
+          <select @change=${this._entityChanged}>
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+          </select>
+        </div>
+        <h3>Settings</h3>
+        <div>
+          <label class="field-label">Max rows (default 5)</label>
+          <input type="number" min="1" max="20" .value=${this._config.max_rows??5} data-config-value="max_rows" @change=${this._numberChanged}>
+        </div>
+        <div>
+          <label class="field-label">Highlight team (partial name)</label>
+          <input type="text" .value=${this._config.highlight_team||""} data-config-value="highlight_team" @input=${this._textChanged}>
+        </div>
+        <div class="option">
+          <label>Hide W/D/L/GD columns</label>
+          <ha-switch .checked=${!0===this._config.hide_stats} data-config-value="hide_stats" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>Hide header</label>
+          <ha-switch .checked=${!0===this._config.hide_header} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <h3>Appearance</h3>
+        <div>
+          <label class="field-label">Theme</label>
+          <select data-config-value="skin" @change=${this._selectChanged}>
+            ${_e.map((e=>U`<option value="${e}" ?selected=${(this._config.skin||"dark")===e}>${e}</option>`))}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Language</label>
+          <select data-config-value="language" @change=${this._selectChanged}>
+            ${xe.map((e=>U`<option value="${"auto"===e?"":e}" ?selected=${(this._config.language||"")===("auto"===e?"":e)}>${e}</option>`))}
+          </select>
+        </div>
+      </div>
+    `}}),customElements.define("soccer-live-countdown",class extends oe{static get properties(){return{hass:{},_config:{},_now:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e)}connectedCallback(){super.connectedCallback(),this._timer=setInterval((()=>{this._now=new Date}),1e3)}disconnectedCallback(){super.disconnectedCallback(),clearInterval(this._timer)}getCardSize(){return 3}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-countdown-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_next_"}}_getNextMatch(e){const t=e.attributes,a=t.matches||t.all_matches||[],i=a.find((e=>"scheduled"===e.status||"pre"===e.status))||a[0];return i||(t.home_team?t:null)}_countdown(e){if(!e)return null;const t=new Date(e)-(this._now||new Date);return t<=0?null:{days:Math.floor(t/864e5),hours:Math.floor(t%864e5/36e5),mins:Math.floor(t%36e5/6e4),secs:Math.floor(t%6e4/1e3),diff:t}}static get styles(){return[he,n`
+      ha-card { padding: 16px; }
+      .header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+      .comp-logo { width: 20px; height: 20px; object-fit: contain; }
+      .comp-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+      .teams { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+      .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+      .team-logo { width: 52px; height: 52px; object-fit: contain; }
+      .team-name { font-size: 13px; font-weight: 700; text-align: center; color: var(--primary-text-color); }
+      .vs { font-size: 18px; font-weight: 900; color: var(--secondary-text-color); padding: 0 12px; }
+      .live-score { text-align: center; }
+      .live-badge { display: inline-block; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; margin-bottom: 6px; }
+      .score-big { font-size: 42px; font-weight: 900; color: var(--primary-text-color); letter-spacing: 4px; }
+      .minute { font-size: 13px; color: var(--secondary-text-color); }
+      .countdown { display: flex; justify-content: center; gap: 12px; margin-top: 4px; }
+      .countdown-block { display: flex; flex-direction: column; align-items: center; }
+      .countdown-num { font-size: 32px; font-weight: 900; color: var(--primary-color, #03a9f4); line-height: 1; }
+      .countdown-label { font-size: 10px; color: var(--secondary-text-color); text-transform: uppercase; letter-spacing: 0.05em; }
+      .countdown-sep { font-size: 28px; font-weight: 900; color: var(--secondary-text-color); align-self: flex-start; padding-top: 4px; }
+      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 14px; font-size: 11px; color: var(--secondary-text-color); }
+      .meta-icon { font-size: 13px; }
+      .finished-badge { text-align: center; font-size: 13px; color: var(--secondary-text-color); padding: 8px 0; }
+      .empty { padding: 16px; text-align: center; color: var(--secondary-text-color); }
+    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</div></ha-card>`;const t=this._getNextMatch(e);if(!t)return U`<ha-card><div class="empty">No match data available</div></ha-card>`;const a="live"===t.status||"in"===t.status,i="post"===t.status||"finished"===t.status||"final"===t.status,s=a||i?null:this._countdown(t.date||t.match_date),n=t.competition_name||t.league||e.attributes.league_name||"",o=t.competition_logo||t.league_logo||e.attributes.league_logo||"",r=t.venue&&"N/A"!==t.venue?t.venue:"";return U`
+      <ha-card>
+        ${!this._config.hide_header&&n?U`
+          <div class="header">
+            ${o?U`<img class="comp-logo" src="${o}" alt="">`:""}
+            <span class="comp-name">${n}</span>
+          </div>
+        `:""}
+
+        <div class="teams">
+          <div class="team">
+            ${t.home_logo?U`<img class="team-logo" src="${t.home_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+            <span class="team-name">${t.home_team||"?"}</span>
+          </div>
+
+          ${a?U`
+            <div class="live-score">
+              <div class="live-badge">LIVE</div>
+              <div class="score-big">${t.home_score??0} - ${t.away_score??0}</div>
+              ${t.clock||t.status_detail?U`<div class="minute">${t.clock||t.status_detail}</div>`:""}
+            </div>
+          `:i?U`
+            <div class="live-score">
+              <div class="finished-badge">FT</div>
+              <div class="score-big">${t.home_score??0} - ${t.away_score??0}</div>
+            </div>
+          `:s?U`
+            <div class="countdown">
+              ${s.days>0?U`
+                <div class="countdown-block"><span class="countdown-num">${s.days}</span><span class="countdown-label">days</span></div>
+                <span class="countdown-sep">:</span>
+              `:""}
+              <div class="countdown-block"><span class="countdown-num">${String(s.hours).padStart(2,"0")}</span><span class="countdown-label">hrs</span></div>
+              <span class="countdown-sep">:</span>
+              <div class="countdown-block"><span class="countdown-num">${String(s.mins).padStart(2,"0")}</span><span class="countdown-label">min</span></div>
+              <span class="countdown-sep">:</span>
+              <div class="countdown-block"><span class="countdown-num">${String(s.secs).padStart(2,"0")}</span><span class="countdown-label">sec</span></div>
+            </div>
+          `:U`<span class="vs">vs</span>`}
+
+          <div class="team">
+            ${t.away_logo?U`<img class="team-logo" src="${t.away_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+            <span class="team-name">${t.away_team||"?"}</span>
+          </div>
+        </div>
+
+        ${r?U`
+          <div class="meta">
+            <span class="meta-icon">🏟</span>
+            <span>${r}${t.venue_city&&"N/A"!==t.venue_city?`, ${t.venue_city}`:""}</span>
+          </div>
+        `:""}
+      </ha-card>
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-countdown",name:"Soccer Live Match Countdown",description:"Countdown to next match with live score"});const ye=["dark","light","feyenoord","classic","neon","gold"],we=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-countdown-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+      .card-config { display: flex; flex-direction: column; gap: 16px; }
+      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      label { font-size: 14px; color: var(--primary-text-color); }
+      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
+      select, input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color, #000); box-sizing: border-box; }
+      h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+    `}setConfig(e){this._config={...e}}updated(e){e.has("hass")&&this._fetchEntities()}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next"))).sort())}_fire(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){this._fire({...this._config,entity:e.target.value})}_selectChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.value})}_switchChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.checked})}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
+      <div class="card-config">
+        <h3>Sensor</h3>
+        <div>
+          <label class="field-label">Team match entity (soccerlive_next_*)</label>
+          <select @change=${this._entityChanged}>
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+          </select>
+        </div>
+        <h3>Settings</h3>
+        <div class="option">
+          <label>Hide header</label>
+          <ha-switch .checked=${!0===this._config.hide_header} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <h3>Appearance</h3>
+        <div>
+          <label class="field-label">Theme</label>
+          <select data-config-value="skin" @change=${this._selectChanged}>
+            ${ye.map((e=>U`<option value="${e}" ?selected=${(this._config.skin||"dark")===e}>${e}</option>`))}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Language</label>
+          <select data-config-value="language" @change=${this._selectChanged}>
+            ${we.map((e=>U`<option value="${"auto"===e?"":e}" ?selected=${(this._config.language||"")===("auto"===e?"":e)}>${e}</option>`))}
+          </select>
+        </div>
+      </div>
+    `}}),customElements.define("soccer-live-live-match",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entity)throw new Error("Entity required");this._config=e,ue(this,e)}getCardSize(){return 5}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-live-match-editor")}static getStubConfig(){return{entity:"sensor.soccerlive_next_"}}_getMatch(e){const t=e.attributes,a=t.matches||t.all_matches||[];return a.find((e=>"live"===e.status||"in"===e.status))||a[0]||(t.home_team?t:null)}static get styles(){return[he,n`
+      ha-card { padding: 0; overflow: hidden; }
+      .hero { position: relative; padding: 20px 16px 16px; }
+      .bg-logo { position: absolute; opacity: 0.06; width: 120px; height: 120px; object-fit: contain; }
+      .bg-logo.home { left: -10px; top: 0; }
+      .bg-logo.away { right: -10px; top: 0; }
+      .comp-row { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 14px; }
+      .comp-logo { width: 16px; height: 16px; object-fit: contain; }
+      .comp-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary-text-color); font-weight: 600; }
+      .teams-row { display: flex; align-items: center; justify-content: space-between; }
+      .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+      .team-logo { width: 56px; height: 56px; object-fit: contain; }
+      .team-name { font-size: 13px; font-weight: 700; text-align: center; max-width: 100px; }
+      .score-center { text-align: center; flex: 0 0 auto; padding: 0 8px; }
+      .live-badge { display: inline-block; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 99px; margin-bottom: 4px; }
+      .sched-badge { font-size: 11px; color: var(--secondary-text-color); margin-bottom: 4px; }
+      .score { font-size: 44px; font-weight: 900; letter-spacing: 6px; color: var(--primary-text-color); line-height: 1; }
+      .minute { font-size: 12px; color: var(--secondary-text-color); margin-top: 4px; }
+      .divider { height: 1px; background: var(--divider-color, rgba(255,255,255,0.08)); margin: 0 16px; }
+      .events { padding: 12px 16px; max-height: 220px; overflow-y: auto; }
+      .event-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.05)); }
+      .event-row:last-child { border-bottom: none; }
+      .event-min { font-weight: 700; color: var(--secondary-text-color); min-width: 30px; }
+      .event-icon { font-size: 14px; min-width: 20px; text-align: center; }
+      .event-text { flex: 1; color: var(--primary-text-color); }
+      .event-team { font-size: 10px; color: var(--secondary-text-color); }
+      .no-events { text-align: center; color: var(--secondary-text-color); font-size: 12px; padding: 12px 0; }
+      .meta { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; font-size: 11px; color: var(--secondary-text-color); }
+      .empty { padding: 20px; text-align: center; color: var(--secondary-text-color); }
+      .stats-row { display: flex; align-items: center; padding: 6px 16px; font-size: 11px; }
+      .stat-val { font-weight: 700; min-width: 36px; text-align: center; }
+      .stat-bar-wrap { flex: 1; display: flex; gap: 4px; align-items: center; }
+      .stat-bar { height: 4px; border-radius: 2px; background: var(--primary-color, #03a9f4); }
+      .stat-label { flex: 1; text-align: center; color: var(--secondary-text-color); }
+    `]}_eventIcon(e){if(!e)return"⚽";const t=e.toLowerCase();return t.includes("goal")?"⚽":t.includes("yellow")?"🟨":t.includes("red")?"🟥":t.includes("sub")?"🔄":t.includes("pen")?"⚽":"📋"}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">${this._t("generic.unknown_entity")}: ${this._config.entity}</div></ha-card>`;const t=this._getMatch(e);if(!t)return U`<ha-card><div class="empty">No match data</div></ha-card>`;const a="live"===t.status||"in"===t.status,i="post"===t.status||"finished"===t.status||"final"===t.status,s=t.events||t.match_events||[],n=t.competition_name||t.league||e.attributes.league_name||"",o=t.competition_logo||e.attributes.league_logo||"",r=t.venue&&"N/A"!==t.venue?t.venue:"",l=t.stats||[];return U`
+      <ha-card>
+        <div class="hero">
+          ${t.home_logo?U`<img class="bg-logo home" src="${t.home_logo}" alt="">`:""}
+          ${t.away_logo?U`<img class="bg-logo away" src="${t.away_logo}" alt="">`:""}
+
+          ${n?U`
+            <div class="comp-row">
+              ${o?U`<img class="comp-logo" src="${o}" alt="">`:""}
+              <span class="comp-name">${n}</span>
+            </div>
+          `:""}
+
+          <div class="teams-row">
+            <div class="team">
+              ${t.home_logo?U`<img class="team-logo" src="${t.home_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+              <span class="team-name">${t.home_team||"?"}</span>
+            </div>
+
+            <div class="score-center">
+              ${a?U`<div class="live-badge">LIVE</div>`:i?U`<div class="sched-badge">FT</div>`:U`<div class="sched-badge">${t.date?new Date(t.date).toLocaleDateString():"vs"}</div>`}
+              <div class="score">${a||i?`${t.home_score??0} - ${t.away_score??0}`:"vs"}</div>
+              ${a&&(t.clock||t.status_detail)?U`<div class="minute">${t.clock||t.status_detail}</div>`:""}
+            </div>
+
+            <div class="team">
+              ${t.away_logo?U`<img class="team-logo" src="${t.away_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+              <span class="team-name">${t.away_team||"?"}</span>
+            </div>
+          </div>
+        </div>
+
+        ${s.length>0?U`
+          <div class="divider"></div>
+          <div class="events">
+            ${s.map((e=>U`
+              <div class="event-row">
+                <span class="event-min">${e.clock||e.minute||""}${e.clock?"'":""}</span>
+                <span class="event-icon">${this._eventIcon(e.type)}</span>
+                <div class="event-text">
+                  <div>${e.player||e.text||e.description||""}</div>
+                  ${e.team?U`<div class="event-team">${e.team}</div>`:""}
+                </div>
+              </div>
+            `))}
+          </div>
+        `:a?U`
+          <div class="divider"></div>
+          <div class="events"><div class="no-events">No events yet</div></div>
+        `:""}
+
+        ${l.length>0?U`
+          <div class="divider"></div>
+          ${l.slice(0,this._config.max_stats||4).map((e=>{const t=(e.home||0)+(e.away||0),a=t>0?Math.round(e.home/t*100):50;return U`
+              <div class="stats-row">
+                <span class="stat-val">${e.home??""}</span>
+                <div class="stat-bar-wrap">
+                  <div class="stat-bar" style="width:${a}%; margin-left:auto;"></div>
+                  <span class="stat-label">${e.label||e.name}</span>
+                  <div class="stat-bar" style="width:${100-a}%;"></div>
+                </div>
+                <span class="stat-val">${e.away??""}</span>
+              </div>
+            `}))}
+        `:""}
+
+        ${r?U`
+          <div class="divider"></div>
+          <div class="meta">🏟 ${r}${t.venue_city&&"N/A"!==t.venue_city?`, ${t.venue_city}`:""}</div>
+        `:""}
+      </ha-card>
+    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-live-match",name:"Soccer Live Match Card",description:"Live match details with events and stats"});const $e=["dark","light","feyenoord","classic","neon","gold"],ke=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-live-match-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},entities:{type:Array}}}constructor(){super(),this.entities=[]}static get styles(){return n`
+      .card-config { display: flex; flex-direction: column; gap: 16px; }
+      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      label { font-size: 14px; color: var(--primary-text-color); }
+      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
+      select, input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color, #000); box-sizing: border-box; }
+      h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+    `}setConfig(e){this._config={...e}}updated(e){e.has("hass")&&this._fetchEntities()}_fetchEntities(){this.hass&&(this.entities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next")||e.includes("soccerlive_all"))).sort())}_fire(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_entityChanged(e){this._fire({...this._config,entity:e.target.value})}_selectChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.value})}_numberChanged(e){const t=parseInt(e.target.value,10);isNaN(t)||this._fire({...this._config,[e.target.dataset.configValue]:t})}render(){if(!this._config||!this.hass)return U``;const e=this._config.entity||"",t=e&&this.entities.includes(e);return U`
+      <div class="card-config">
+        <h3>Sensor</h3>
+        <div>
+          <label class="field-label">Team sensor</label>
+          <select @change=${this._entityChanged}>
+            ${t?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+            ${this.entities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+          </select>
+        </div>
+        <h3>Settings</h3>
+        <div>
+          <label class="field-label">Max stats shown (default 4)</label>
+          <input type="number" min="0" max="10" .value=${this._config.max_stats??4} data-config-value="max_stats" @change=${this._numberChanged}>
+        </div>
+        <h3>Appearance</h3>
+        <div>
+          <label class="field-label">Theme</label>
+          <select data-config-value="skin" @change=${this._selectChanged}>
+            ${$e.map((e=>U`<option value="${e}" ?selected=${(this._config.skin||"dark")===e}>${e}</option>`))}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Language</label>
+          <select data-config-value="language" @change=${this._selectChanged}>
+            ${ke.map((e=>U`<option value="${"auto"===e?"":e}" ?selected=${(this._config.language||"")===("auto"===e?"":e)}>${e}</option>`))}
+          </select>
+        </div>
+      </div>
+    `}}),customElements.define("soccer-live-multi-team",class extends oe{static get properties(){return{hass:{},_config:{}}}setConfig(e){if(!e.entities||!e.entities.length)throw new Error("At least one entity required");this._config=e,ue(this,e)}getCardSize(){return Math.max(2,(this._config.entities||[]).length+1)}_t(e,t){return pe(e,de(this.hass,this._config),t)}static getConfigElement(){return document.createElement("soccer-live-multi-team-editor")}static getStubConfig(){return{entities:[]}}_getMatch(e){const t=e.attributes,a=t.matches||t.all_matches||[];return a.find((e=>"live"===e.status||"in"===e.status))||a.find((e=>"scheduled"===e.status||"pre"===e.status))||a[0]||(t.home_team?t:null)}static get styles(){return[he,n`
+      ha-card { padding: 12px; }
+      .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); margin-bottom: 10px; }
+      .match-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.07)); gap: 8px; }
+      .match-row:last-child { border-bottom: none; }
+      .team-block { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+      .team-block.right { flex-direction: row-reverse; }
+      .team-logo { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+      .team-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--primary-text-color); }
+      .score-block { text-align: center; min-width: 60px; }
+      .score { font-size: 15px; font-weight: 900; color: var(--primary-text-color); letter-spacing: 2px; }
+      .live-dot { display: inline-block; width: 6px; height: 6px; background: #e53935; border-radius: 50%; margin-right: 3px; animation: pulse 1s infinite; }
+      .status { font-size: 10px; color: var(--secondary-text-color); }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+      .no-match { font-size: 11px; color: var(--secondary-text-color); text-align: center; padding: 4px; }
+      .empty { padding: 16px; text-align: center; color: var(--secondary-text-color); }
+    `]}_renderMatch(e){const t=this.hass.states[e];if(!t)return U`<div class="match-row"><div class="no-match">Unknown: ${e}</div></div>`;const a=this._getMatch(t);if(!a)return U`<div class="match-row"><div class="no-match">No data for ${e}</div></div>`;const i="live"===a.status||"in"===a.status,s="post"===a.status||"finished"===a.status||"final"===a.status,n=i||s,o=a.date?new Date(a.date).toLocaleDateString([],{month:"short",day:"numeric"}):"",r=a.date?new Date(a.date).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";return U`
+      <div class="match-row">
+        <div class="team-block">
+          ${a.home_logo?U`<img class="team-logo" src="${a.home_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+          <span class="team-name">${a.home_team||"?"}</span>
+        </div>
+
+        <div class="score-block">
+          ${i?U`<div><span class="live-dot"></span><span class="status">${a.clock||"LIVE"}</span></div>`:""}
+          ${n?U`<div class="score">${a.home_score??0} - ${a.away_score??0}</div>`:U`<div class="status">${r||o||"vs"}</div>`}
+          ${s?U`<div class="status">FT</div>`:""}
+        </div>
+
+        <div class="team-block right">
+          <span class="team-name">${a.away_team||"?"}</span>
+          ${a.away_logo?U`<img class="team-logo" src="${a.away_logo}" alt="" @error=${e=>e.target.style.display="none"}>`:""}
+        </div>
+      </div>
+    `}render(){if(!this.hass||!this._config)return U``;const e=this._config.entities||[];return e.length?U`
+      <ha-card>
+        ${this._config.hide_header?"":U`<div class="title">${this._config.title||"My Teams"}</div>`}
+        ${e.map((e=>this._renderMatch(e)))}
+      </ha-card>
+    `:U`<ha-card><div class="empty">No entities configured</div></ha-card>`}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-multi-team",name:"Soccer Live Multi Team",description:"Shows multiple teams' matches in one card"});const Ce=["dark","light","feyenoord","classic","neon","gold"],ze=["auto","en","nl","de","pt","fr","es","it"];customElements.define("soccer-live-multi-team-editor",class extends oe{static get properties(){return{_config:{type:Object},hass:{type:Object},_allEntities:{type:Array}}}constructor(){super(),this._allEntities=[]}static get styles(){return n`
+      .card-config { display: flex; flex-direction: column; gap: 16px; }
+      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      label { font-size: 14px; color: var(--primary-text-color); }
+      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
+      select, input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color, #000); box-sizing: border-box; }
+      h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+      .entity-list { display: flex; flex-direction: column; gap: 8px; }
+      .entity-row { display: flex; gap: 8px; align-items: center; }
+      .entity-row select { flex: 1; }
+      .remove-btn { background: none; border: 1px solid var(--error-color, #e53935); color: var(--error-color, #e53935); border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 13px; }
+      .add-btn { background: var(--primary-color, #03a9f4); color: #fff; border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%; }
+      .hint { font-size: 11px; color: var(--secondary-text-color); }
+    `}setConfig(e){this._config={...e,entities:[...e.entities||[]]}}updated(e){e.has("hass")&&this._fetchEntities()}_fetchEntities(){this.hass&&(this._allEntities=Object.keys(this.hass.states).filter((e=>e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed"))).sort())}_fire(e){this._config=e,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0})),this.requestUpdate()}_selectChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.value})}_switchChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.checked})}_textChanged(e){this._fire({...this._config,[e.target.dataset.configValue]:e.target.value})}_entityChanged(e,t){const a=[...this._config.entities||[]];a[t]=e.target.value,this._fire({...this._config,entities:a})}_removeEntity(e){const t=[...this._config.entities||[]];t.splice(e,1),this._fire({...this._config,entities:t})}_addEntity(){const e=[...this._config.entities||[],""];this._fire({...this._config,entities:e})}render(){if(!this._config||!this.hass)return U``;const e=this._config.entities||[];return U`
+      <div class="card-config">
+        <h3>Teams</h3>
+        <p class="hint">Add one soccerlive_next_* or soccerlive_all_mixed_* sensor per team</p>
+        <div class="entity-list">
+          ${e.map(((e,t)=>U`
+            <div class="entity-row">
+              <select @change=${e=>this._entityChanged(e,t)}>
+                ${e&&this._allEntities.includes(e)?"":U`<option value="${e}" selected>${e||"— select —"}</option>`}
+                ${this._allEntities.map((t=>U`<option value="${t}" ?selected=${t===e}>${t}</option>`))}
+              </select>
+              <button class="remove-btn" @click=${()=>this._removeEntity(t)}>✕</button>
+            </div>
+          `))}
+        </div>
+        <button class="add-btn" @click=${this._addEntity}>+ Add team</button>
+
+        <h3>Settings</h3>
+        <div>
+          <label class="field-label">Card title</label>
+          <input type="text" .value=${this._config.title||""} data-config-value="title" @input=${this._textChanged} placeholder="My Teams">
+        </div>
+        <div class="option">
+          <label>Hide header</label>
+          <ha-switch .checked=${!0===this._config.hide_header} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <h3>Appearance</h3>
+        <div>
+          <label class="field-label">Theme</label>
+          <select data-config-value="skin" @change=${this._selectChanged}>
+            ${Ce.map((e=>U`<option value="${e}" ?selected=${(this._config.skin||"dark")===e}>${e}</option>`))}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Language</label>
+          <select data-config-value="language" @change=${this._selectChanged}>
+            ${ze.map((e=>U`<option value="${"auto"===e?"":e}" ?selected=${(this._config.language||"")===("auto"===e?"":e)}>${e}</option>`))}
           </select>
         </div>
       </div>
