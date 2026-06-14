@@ -49,7 +49,11 @@ class SoccerLiveMiniStandingsEditor extends LitElement {
         </div>
         <h3>Settings</h3>
         <div>
-          <label class="field-label">Max rows (default 5)</label>
+          <label class="field-label">Default group (optional, e.g. "Group A")</label>
+          <input type="text" .value=${this._config.default_group || ''} data-config-value="default_group" @input=${this._textChanged} placeholder="Leave empty for first group">
+        </div>
+        <div>
+          <label class="field-label">Max rows (default all)</label>
           <input type="number" min="1" max="20" .value=${this._config.max_rows ?? 5} data-config-value="max_rows" @change=${this._numberChanged}>
         </div>
         <div>
