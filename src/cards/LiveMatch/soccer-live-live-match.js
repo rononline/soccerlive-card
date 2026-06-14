@@ -5,6 +5,12 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, validateEntity } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
+/**
+ * Soccer Live Match Card
+ * Displays live match details with events and statistics
+ * @class SoccerLiveLiveMatchCard
+ * @extends LitElement
+ */
 class SoccerLiveLiveMatchCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _cachedData: {} }; }
 

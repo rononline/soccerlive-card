@@ -6,11 +6,20 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
+/**
+ * Soccer Live Team Card
+ * Displays current/next match for a team with detailed stats, form, and venue info
+ * @class CalcioLiveTeamNextCard
+ * @extends LitElement
+ */
 class CalcioLiveTeamNextCard extends LitElement {
   static get properties() {
     return {
+      /** @type {object} Home Assistant instance */
       hass: {},
+      /** @type {object} Card configuration object */
       _config: {},
+      /** @type {boolean} Loading state while fetching data */
       _isLoading: { type: Boolean },
       showPopup: { type: Boolean },
       activeMatch: { type: Object },

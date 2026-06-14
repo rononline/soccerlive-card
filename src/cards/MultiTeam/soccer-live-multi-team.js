@@ -5,6 +5,12 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
+/**
+ * Soccer Live Multi Team Card
+ * Shows multiple teams' matches in one compact card
+ * @class SoccerLiveMultiTeamCard
+ * @extends LitElement
+ */
 class SoccerLiveMultiTeamCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _cachedData: {} }; }
 
