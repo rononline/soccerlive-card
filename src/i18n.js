@@ -1,4 +1,4 @@
-// Vertalingen voor alle Voetbal Live kaarten.
+// Translations for all Soccer Live cards.
 // Ondersteunde talen: en (standaard), nl, it, fr, es.
 // Taal wordt bepaald via hass.locale.language of hass.language;
 // kan worden overschreven met config.language op de kaart.

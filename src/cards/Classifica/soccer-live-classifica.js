@@ -177,7 +177,7 @@ class CalcioLiveStandingsCard extends LitElement {
 
     this._eventSubscriptions = [];
 
-    ['calcio_live_goal', 'calcio_live_yellow_card', 'calcio_live_red_card'].forEach(evt => {
+    ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
       this.hass.connection.subscribeEvents(
         this._handleCalcioLiveEvent.bind(this),
         evt
@@ -209,16 +209,16 @@ class CalcioLiveStandingsCard extends LitElement {
   _showEventToast(eventType, eventData) {
     let message = '';
     let variant = 'goal';
-    if (eventType === 'calcio_live_goal') {
+    if (eventType === 'soccer_live_goal') {
       message = `<strong>${this._t('event.goal').toUpperCase()}!</strong> ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'goal';
-    } else if (eventType === 'calcio_live_yellow_card') {
+    } else if (eventType === 'soccer_live_yellow_card') {
       message = `🟨 <strong>${this._t('event.yellow_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'yellow';
-    } else if (eventType === 'calcio_live_red_card') {
+    } else if (eventType === 'soccer_live_red_card') {
       message = `🟥 <strong>${this._t('event.red_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'red';
-    } else if (eventType === 'calcio_live_match_finished') {
+    } else if (eventType === 'soccer_live_match_finished') {
       message = `<strong>${this._t('status.finished')}!</strong> ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'finished';
     }
@@ -238,7 +238,7 @@ class CalcioLiveStandingsCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-classifica-editor"); }
   static getStubConfig() {
     return {
-      entity: "sensor.calcio_live",
+      entity: "sensor.soccerlive",
       max_teams_visible: 10,
       hide_header: false,
       selected_group: '',
@@ -1100,6 +1100,6 @@ customElements.define("soccer-live-classifica", CalcioLiveStandingsCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'soccer-live-classifica',
-  name: 'Voetbal Live Stand Card',
+  name: 'Soccer Live Standings Card',
   description: 'Shows the standings for a league or cup competition',
 });

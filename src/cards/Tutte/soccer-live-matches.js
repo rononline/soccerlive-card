@@ -73,7 +73,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
 
     this._eventSubscriptions = [];
 
-    ['calcio_live_goal', 'calcio_live_yellow_card', 'calcio_live_red_card'].forEach(evt => {
+    ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
       this.hass.connection.subscribeEvents(
         this._handleCalcioLiveEvent.bind(this),
         evt
@@ -99,14 +99,14 @@ class CalcioLiveTodayMatchesCard extends LitElement {
     if (!this._eventBelongsToThisCard(eventData)) return;
 
     const matchKey = `${eventData.home_team}_${eventData.away_team}`;
-    this._recentEventMatches.set(matchKey, eventType === 'calcio_live_goal' ? 'goal' : 'card');
+    this._recentEventMatches.set(matchKey, eventType === 'soccer_live_goal' ? 'goal' : 'card');
     this.requestUpdate();
     setTimeout(() => {
       this._recentEventMatches.delete(matchKey);
       this.requestUpdate();
     }, 5000);
 
-    if (eventType === 'calcio_live_goal') {
+    if (eventType === 'soccer_live_goal') {
       requestAnimationFrame(() => this._triggerGoalCelebration());
     }
 
@@ -143,13 +143,13 @@ class CalcioLiveTodayMatchesCard extends LitElement {
   _showEventToast(eventType, eventData) {
     let message = '';
     let variant = 'goal';
-    if (eventType === 'calcio_live_goal') {
+    if (eventType === 'soccer_live_goal') {
       message = `<strong>${this._t('event.goal').toUpperCase()}!</strong> ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'goal';
-    } else if (eventType === 'calcio_live_yellow_card') {
+    } else if (eventType === 'soccer_live_yellow_card') {
       message = `🟨 <strong>${this._t('event.yellow_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'yellow';
-    } else if (eventType === 'calcio_live_red_card') {
+    } else if (eventType === 'soccer_live_red_card') {
       message = `🟥 <strong>${this._t('event.red_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'red';
     }
@@ -169,7 +169,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-matches-editor"); }
   static getStubConfig() {
     return {
-      entity: "sensor.calcio_live",
+      entity: "sensor.soccerlive",
       max_events_visible: 5,
       max_events_total: 50,
       hide_past_days: 0,
@@ -376,7 +376,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
               ? html`<img class="league-logo" src="${leagueInfo.logo_href}" alt="${leagueInfo.abbreviation || ''}" />`
               : (teamLogo ? html`<img class="league-logo" src="${teamLogo}" alt="" />` : '')}
             <div class="league-info">
-              <div class="league-name">${(leagueInfo && leagueInfo.abbreviation) || stateObj.state || 'Voetbal Live'}</div>
+              <div class="league-name">${(leagueInfo && leagueInfo.abbreviation) || stateObj.state || 'Soccer Live'}</div>
               <div class="league-dates">
                 ${(() => {
                   const total = stateObj.attributes.total_matches || stateObj.attributes.matches?.length || 0;
@@ -898,6 +898,6 @@ customElements.define("soccer-live-matches", CalcioLiveTodayMatchesCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'soccer-live-matches',
-  name: 'Voetbal Live Wedstrijden Card',
+  name: 'Soccer Live Matches Card',
   description: 'Shows all matches for a competition or team',
 });

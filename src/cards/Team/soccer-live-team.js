@@ -86,7 +86,7 @@ class CalcioLiveTeamNextCard extends LitElement {
 
     this._eventSubscriptions = [];
 
-    ['calcio_live_goal', 'calcio_live_yellow_card', 'calcio_live_red_card'].forEach(evt => {
+    ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
       this.hass.connection.subscribeEvents(
         this._handleCalcioLiveEvent.bind(this),
         evt
@@ -114,7 +114,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     if (!this._eventBelongsToThisCard(eventData)) return;
     if (!this.showEventToasts) return;
 
-    if (eventType === 'calcio_live_goal') {
+    if (eventType === 'soccer_live_goal') {
       const scoringSide = eventData.team === eventData.home_team ? 'home' : 'away';
       requestAnimationFrame(() => this._triggerGoalCelebration(scoringSide, eventData));
     } else {
@@ -125,13 +125,13 @@ class CalcioLiveTeamNextCard extends LitElement {
   _showEventToast(eventType, eventData) {
     let message = '';
     let variant = 'goal';
-    if (eventType === 'calcio_live_goal') {
+    if (eventType === 'soccer_live_goal') {
       message = `<strong>${this._t('event.goal').toUpperCase()}!</strong> ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'goal';
-    } else if (eventType === 'calcio_live_yellow_card') {
+    } else if (eventType === 'soccer_live_yellow_card') {
       message = `🟨 <strong>${this._t('event.yellow_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'yellow';
-    } else if (eventType === 'calcio_live_red_card') {
+    } else if (eventType === 'soccer_live_red_card') {
       message = `🟥 <strong>${this._t('event.red_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'red';
     }
@@ -187,7 +187,7 @@ class CalcioLiveTeamNextCard extends LitElement {
 
     if (navigator.vibrate) navigator.vibrate([180, 80, 180, 80, 280]);
 
-    setTimeout(() => this._showEventToast('calcio_live_goal', eventData), 600);
+    setTimeout(() => this._showEventToast('soccer_live_goal', eventData), 600);
 
     const colors = ['#ec4899', '#6366f1', '#06b6d4', '#fbbf24', '#10b981', '#ef4444'];
     const emojis = ['⚽', '🎉', '✨', '🔥', '⭐'];
@@ -238,7 +238,7 @@ class CalcioLiveTeamNextCard extends LitElement {
 
   getCardSize() { return 4; }
   static getConfigElement() { return document.createElement("soccer-live-team-editor"); }
-  static getStubConfig() { return { entity: "sensor.calcio_live", show_event_toasts: false }; }
+  static getStubConfig() { return { entity: "sensor.soccerlive", show_event_toasts: false }; }
 
   showDetails(match) {
     this.activeMatch = match;
@@ -1646,6 +1646,6 @@ customElements.define("soccer-live-team", CalcioLiveTeamNextCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'soccer-live-team',
-  name: 'Voetbal Live Team Card',
+  name: 'Soccer Live Team Card',
   description: 'Shows the next or current match for your team',
 });
