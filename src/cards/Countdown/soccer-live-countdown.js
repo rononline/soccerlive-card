@@ -6,8 +6,29 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
+/**
+ * Soccer Live Countdown Card
+ * Shows countdown to next match with live score display when match is active
+ * @class SoccerLiveCountdownCard
+ * @extends LitElement
+ */
 class SoccerLiveCountdownCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _now: {}, _weatherBadge: {}, _cachedData: {} }; }
+  static get properties() {
+    return {
+      /** @type {object} Home Assistant instance */
+      hass: {},
+      /** @type {object} Card configuration */
+      _config: {},
+      /** @type {boolean} Loading state */
+      _isLoading: { type: Boolean },
+      /** @type {Date} Current time for countdown updates */
+      _now: {},
+      /** @type {object} Weather badge HTML element */
+      _weatherBadge: {},
+      /** @type {object} Cached match data for offline display */
+      _cachedData: {}
+    };
+  }
 
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
