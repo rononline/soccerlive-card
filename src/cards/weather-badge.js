@@ -1,4 +1,5 @@
 import { html, css } from 'lit-element';
+import { t, resolveLang } from '../i18n.js';
 import { getVenueCoordinates, getWeather } from './weather.js';
 
 export const weatherBadgeStyles = css`
@@ -24,7 +25,7 @@ export const weatherBadgeStyles = css`
   }
 `;
 
-export async function renderWeatherBadge(venue) {
+export async function renderWeatherBadge(venue, hass = null, config = null) {
   if (!venue || venue === 'N/A') return html``;
 
   try {
@@ -34,11 +35,13 @@ export async function renderWeatherBadge(venue) {
     const weather = await getWeather(coords.lat, coords.lon);
     if (!weather) return html``;
 
+    const windTooltip = hass ? t('weather.wind', resolveLang(hass, config)) : 'Wind speed (Beaufort)';
+
     return html`
       <div class="weather-badge" title="${venue}: ${weather.description}">
         <span class="weather-icon">${weather.icon}</span>
         <span class="weather-temp">${weather.temp}°</span>
-        <span class="weather-wind" title="Wind speed (Beaufort)">${weather.wind} ${weather.wind_unit || 'BFT'}</span>
+        <span class="weather-wind" title="${windTooltip}">${weather.wind} ${weather.wind_unit || 'BFT'}</span>
       </div>
     `;
   } catch (e) {

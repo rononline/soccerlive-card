@@ -733,7 +733,7 @@ class CalcioLiveTeamNextCard extends LitElement {
 
   async _loadWeather(venue) {
     try {
-      this._weatherBadge = await renderWeatherBadge(venue);
+      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config);
       this.requestUpdate();
     } catch (e) {
       console.warn('Weather load failed:', e);

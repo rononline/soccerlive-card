@@ -177,6 +177,9 @@ const TRANSLATIONS = {
 
     // Match display
     'match.vs': 'vs',
+
+    // Weather
+    'weather.wind': 'Wind speed (Beaufort)',
   },
   nl: {
     'card.bracket': 'Schema',
@@ -330,6 +333,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mijn Teams',
 
     'match.vs': 'tegen',
+
+    'weather.wind': 'Windsnelheid (Beaufort)',
   },
   it: {
     'card.bracket': 'Tabellone',
@@ -483,6 +488,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'I Miei Team',
 
     'match.vs': 'contro',
+
+    'weather.wind': 'Velocità del vento (Beaufort)',
   },
   fr: {
     'card.bracket': 'Tableau',
@@ -636,6 +643,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mes Équipes',
 
     'match.vs': 'contre',
+
+    'weather.wind': 'Vitesse du vent (Beaufort)',
   },
   es: {
     'card.bracket': 'Cuadro',
@@ -789,6 +798,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mis Equipos',
 
     'match.vs': 'vs',
+
+    'weather.wind': 'Velocidad del viento (Beaufort)',
   },
   de: {
     'card.bracket': 'K.o.-Runde',
@@ -942,6 +953,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Meine Teams',
 
     'match.vs': 'gegen',
+
+    'weather.wind': 'Windgeschwindigkeit (Beaufort)',
   },
   pt: {
     'card.bracket': 'Chave',
@@ -1095,6 +1108,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Meus Times',
 
     'match.vs': 'contra',
+
+    'weather.wind': 'Velocidade do vento (Beaufort)',
   },
 };
 
