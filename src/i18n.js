@@ -163,6 +163,14 @@ const TRANSLATIONS = {
 
     // Commentary card
     'commentary.empty': 'No live commentary available',
+
+    // Generic UI strings
+    'ui.loading': 'Loading...',
+    'ui.select_entity': 'Select entity',
+    'ui.unknown_entity': 'Unknown entity',
+    'ui.sensor_unavailable': 'Sensor unavailable',
+    'ui.invalid_config': 'Invalid configuration',
+    'ui.entity_required': 'Entity required',
   },
   nl: {
     'card.bracket': 'Schema',
@@ -305,6 +313,13 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     'commentary.empty': 'Geen live commentaar beschikbaar',
+
+    'ui.loading': 'Laden...',
+    'ui.select_entity': 'Selecteer entiteit',
+    'ui.unknown_entity': 'Onbekende entiteit',
+    'ui.sensor_unavailable': 'Sensor niet beschikbaar',
+    'ui.invalid_config': 'Ongeldige configuratie',
+    'ui.entity_required': 'Entiteit vereist',
   },
   it: {
     'card.bracket': 'Tabellone',
@@ -447,6 +462,13 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     'commentary.empty': 'Nessun commento in diretta disponibile',
+
+    'ui.loading': 'Caricamento...',
+    'ui.select_entity': 'Seleziona entità',
+    'ui.unknown_entity': 'Entità sconosciuta',
+    'ui.sensor_unavailable': 'Sensore non disponibile',
+    'ui.invalid_config': 'Configurazione non valida',
+    'ui.entity_required': 'Entità obbligatoria',
   },
   fr: {
     'card.bracket': 'Tableau',
@@ -589,6 +611,13 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     'commentary.empty': 'Aucun commentaire en direct disponible',
+
+    'ui.loading': 'Chargement...',
+    'ui.select_entity': 'Sélectionner une entité',
+    'ui.unknown_entity': 'Entité inconnue',
+    'ui.sensor_unavailable': 'Capteur indisponible',
+    'ui.invalid_config': 'Configuration invalide',
+    'ui.entity_required': 'Entité requise',
   },
   es: {
     'card.bracket': 'Cuadro',
@@ -731,6 +760,13 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     'commentary.empty': 'No hay comentario en vivo disponible',
+
+    'ui.loading': 'Cargando...',
+    'ui.select_entity': 'Seleccionar entidad',
+    'ui.unknown_entity': 'Entidad desconocida',
+    'ui.sensor_unavailable': 'Sensor no disponible',
+    'ui.invalid_config': 'Configuración inválida',
+    'ui.entity_required': 'Entidad requerida',
   },
   de: {
     'card.bracket': 'K.o.-Runde',
@@ -873,6 +909,13 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     'commentary.empty': 'Kein Live-Kommentar verfügbar',
+
+    'ui.loading': 'Wird geladen...',
+    'ui.select_entity': 'Entität auswählen',
+    'ui.unknown_entity': 'Unbekannte Entität',
+    'ui.sensor_unavailable': 'Sensor nicht verfügbar',
+    'ui.invalid_config': 'Ungültige Konfiguration',
+    'ui.entity_required': 'Entität erforderlich',
   },
   pt: {
     'card.bracket': 'Chave',
@@ -1015,6 +1058,13 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     'commentary.empty': 'Nenhum comentário ao vivo disponível',
+
+    'ui.loading': 'Carregando...',
+    'ui.select_entity': 'Selecionar entidade',
+    'ui.unknown_entity': 'Entidade desconhecida',
+    'ui.sensor_unavailable': 'Sensor indisponível',
+    'ui.invalid_config': 'Configuração inválida',
+    'ui.entity_required': 'Entidade obrigatória',
   },
 };
 
