@@ -2,12 +2,15 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
+import { renderLoading, spinnerStyles } from "../loading-spinner.js";
+import { renderCardError } from "../card-error.js";
 
 class CalcioLiveTeamNextCard extends LitElement {
   static get properties() {
     return {
       hass: {},
       _config: {},
+      _isLoading: { type: Boolean },
       showPopup: { type: Boolean },
       activeMatch: { type: Object },
       _eventSubscriptions: { type: Array },
@@ -26,6 +29,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     applySkin(this, config);
     const scoreSize = ['big', 'huge'].includes(config.score_size) ? config.score_size : 'normal';
     this.setAttribute('data-score', scoreSize);
+    this._isLoading = true;
     this.showPopup = false;
     this.activeMatch = null;
     this.showEventToasts = config.show_event_toasts === true;
@@ -66,6 +70,15 @@ class CalcioLiveTeamNextCard extends LitElement {
     this._subscribeToEvents();
     // Refresh countdown every 30s without waiting for sensor polls
     this._countdownInterval = setInterval(() => this.requestUpdate(), 30000);
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has('hass')) {
+      const stateObj = this.hass?.states[this._config?.entity];
+      if (stateObj && stateObj.state !== 'unavailable') {
+        this._isLoading = false;
+      }
+    }
   }
 
   disconnectedCallback() {
@@ -419,10 +432,12 @@ class CalcioLiveTeamNextCard extends LitElement {
   }
 
   render() {
-    if (!this.hass || !this._config) return html``;
+    if (!this.hass || !this._config) return renderLoading('Loading...');
     const entityId = this._config.entity;
     const stateObj = this.hass.states[entityId];
-    if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${entityId}</ha-card>`;
+    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${entityId}`, 'Check the entity configuration');
+    if (stateObj.state === 'unavailable') return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
+    if (this._isLoading) return renderLoading('Fetching match data...');
     if (!stateObj.attributes.matches || stateObj.attributes.matches.length === 0) {
       return html`
         <ha-card class="empty">
@@ -898,7 +913,7 @@ class CalcioLiveTeamNextCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, weatherBadgeStyles, css`
+    return [skinStyles, spinnerStyles, weatherBadgeStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;

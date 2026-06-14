@@ -1,14 +1,30 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderLoading, spinnerStyles } from "../loading-spinner.js";
+import { renderCardError } from "../card-error.js";
 
 class SoccerLiveMultiTeamCard extends LitElement {
-  static get properties() { return { hass: {}, _config: {} }; }
+  static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean } }; }
 
   setConfig(config) {
     if (!config.entities || !config.entities.length) throw new Error("At least one entity required");
     this._config = config;
     applySkin(this, config);
+    this._isLoading = true;
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has('hass')) {
+      const entities = this._config?.entities || [];
+      const allAvailable = entities.every(e => {
+        const stateObj = this.hass?.states[e];
+        return stateObj && stateObj.state !== 'unavailable';
+      });
+      if (allAvailable) {
+        this._isLoading = false;
+      }
+    }
   }
 
   getCardSize() { return Math.max(2, (this._config.entities || []).length + 1); }
@@ -25,7 +41,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, spinnerStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 12px; border-radius: 12px; }
       .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cl-text-2); margin-bottom: 10px; }
       .match-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.07)); gap: 8px; }
@@ -81,9 +97,13 @@ class SoccerLiveMultiTeamCard extends LitElement {
   }
 
   render() {
-    if (!this.hass || !this._config) return html``;
+    if (!this.hass || !this._config) return renderLoading('Loading...');
     const entities = this._config.entities || [];
-    if (!entities.length) return html`<ha-card><div class="empty">No entities configured</div></ha-card>`;
+    if (!entities.length) return renderCardError('⚽', 'No entities', 'No entities configured', 'Add at least one team entity');
+    if (this._isLoading) return renderLoading('Fetching team data...');
+
+    const missingEntities = entities.filter(e => !this.hass.states[e]);
+    if (missingEntities.length > 0) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${missingEntities[0]}`, 'Check your entity configuration');
 
     return html`
       <ha-card>
