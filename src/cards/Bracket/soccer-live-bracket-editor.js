@@ -78,7 +78,7 @@ class CalcioLiveBracketEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter(id => id.startsWith('sensor.soccerlive_bracket'))
+      .filter(id => id.includes('soccerlive_bracket'))
       .sort();
   }
 

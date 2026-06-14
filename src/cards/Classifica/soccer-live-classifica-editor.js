@@ -138,7 +138,7 @@ class CalcioLiveClassificaCardEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter((entityId) => entityId.startsWith('sensor.soccerlive_classifica'))
+      .filter((entityId) => entityId.includes('soccerlive_classifica'))
       .sort();
   }
 

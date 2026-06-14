@@ -91,7 +91,7 @@ class CalcioLiveNewsEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter(id => id.startsWith('sensor.soccerlive_news'))
+      .filter(id => id.includes('soccerlive_news'))
       .sort();
   }
 
