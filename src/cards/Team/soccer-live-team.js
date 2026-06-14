@@ -722,6 +722,13 @@ class CalcioLiveTeamNextCard extends LitElement {
     if (changedProperties.has('activeMatch') && this.activeMatch) {
       this._loadWeather(this.activeMatch.venue);
     }
+    // Load weather for main match when hass updates
+    if (changedProperties.has('hass') && this.hass && this._config) {
+      const stateObj = this.hass.states[this._config.entity];
+      if (stateObj && stateObj.attributes.matches && stateObj.attributes.matches[0]) {
+        this._loadWeather(stateObj.attributes.matches[0].venue);
+      }
+    }
   }
 
   async _loadWeather(venue) {
