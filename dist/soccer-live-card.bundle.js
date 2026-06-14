@@ -4582,7 +4582,7 @@
       .pos { width: 22px; font-weight: 700; color: var(--cl-text-2); }
       .pts { font-weight: 700; color: var(--cl-accent); }
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); font-size: 13px; }
-    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.standings_groups||[];if(!t.length)return U`<ha-card><div class="empty">No standings data</div></ha-card>`;const a=t.find((e=>e.name===this._selectedGroup))||t[0],i=a&&a.standings||[],s=this._config.max_rows||i.length,n=(this._config.highlight_team||"").toLowerCase(),o=e.attributes.league_name||e.attributes.league_abbreviation||"",r=e.attributes.league_logo||"",l=i.slice(0,s),c=t.length>1;return U`
+    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return ze("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");const t=e.attributes.standings_groups||[];if(!t.length)return U`<ha-card><div class="empty">No standings data</div></ha-card>`;const a=t.find((e=>e.name===this._selectedGroup))||t[0],i=a&&a.standings||[],s=this._config.max_rows||i.length,n=(this._config.highlight_team||"").toLowerCase(),o=e.attributes.league_name||e.attributes.league_abbreviation||"",r=e.attributes.league_logo||"",l=i.slice(0,s),c=t.length>1;return U`
       <ha-card>
         ${this._config.hide_header?"":U`
           <div class="header">
@@ -5102,7 +5102,7 @@
       .live-dot { display: inline-block; width: 5px; height: 5px; background: var(--cl-live, #ef4444); border-radius: 50%; margin-right: 2px; animation: pulse 1s infinite; }
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); font-size: 13px; }
-    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.matches||[];if(!t.length)return U`<ha-card><div class="empty">No match data</div></ha-card>`;const a=this._groupByCompetition(t),i=a.find((e=>e.key===this._selectedComp))||a[0],s=this._config.team_name||e.attributes.team_name||"",n=e.attributes.team_logo||"",o=i.featured;return U`
+    `]}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return ze("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");const t=e.attributes.matches||[];if(!t.length)return U`<ha-card><div class="empty">No match data</div></ha-card>`;const a=this._groupByCompetition(t),i=a.find((e=>e.key===this._selectedComp))||a[0],s=this._config.team_name||e.attributes.team_name||"",n=e.attributes.team_logo||"",o=i.featured;return U`
       <ha-card>
         ${this._config.hide_header?"":U`
           <div class="card-header">
@@ -5279,7 +5279,7 @@
       .event-desc { font-size: 11px; color: var(--cl-text-2); }
       .no-commentary { text-align: center; padding: 24px 16px; color: var(--cl-text-2); }
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); }
-    `]}_getEventIcon(e){if(!e)return"📋";const t=e.toLowerCase();return t.includes("goal")?"⚽":t.includes("yellow")?"🟨":t.includes("red")?"🟥":t.includes("substitut")||t.includes("sub")?"🔄":t.includes("penaalty")||t.includes("pen")?"⚽":t.includes("own goal")?"🔴":"📋"}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return U`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;const t=e.attributes.commentary||[],a=(e.attributes.matches||[]).find((e=>"in"===e.state)),i=a?.home_team||e.attributes.home_team||"?",s=a?.away_team||e.attributes.away_team||"?",n=a?.home_score??e.attributes.home_score??0,o=a?.away_score??e.attributes.away_score??0,r=e.attributes.match_status||"",l=(e.attributes.league_info||[{}])[0].abbreviation||"",c="in"===r||a&&"in"===a.state,d=a?a.clock:"",p=a?a.home_logo:"",h=a?a.away_logo:"";return U`
+    `]}_getEventIcon(e){if(!e)return"📋";const t=e.toLowerCase();return t.includes("goal")?"⚽":t.includes("yellow")?"🟨":t.includes("red")?"🟥":t.includes("substitut")||t.includes("sub")?"🔄":t.includes("penaalty")||t.includes("pen")?"⚽":t.includes("own goal")?"🔴":"📋"}render(){if(!this.hass||!this._config)return U``;const e=this.hass.states[this._config.entity];if(!e)return ze("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");const t=e.attributes.commentary||[],a=(e.attributes.matches||[]).find((e=>"in"===e.state)),i=a?.home_team||e.attributes.home_team||"?",s=a?.away_team||e.attributes.away_team||"?",n=a?.home_score??e.attributes.home_score??0,o=a?.away_score??e.attributes.away_score??0,r=e.attributes.match_status||"",l=(e.attributes.league_info||[{}])[0].abbreviation||"",c="in"===r||a&&"in"===a.state,d=a?a.clock:"",p=a?a.home_logo:"",h=a?a.away_logo:"";return U`
       <ha-card>
         <div class="header">
           ${l?U`<div class="comp-name">${l}</div>`:""}

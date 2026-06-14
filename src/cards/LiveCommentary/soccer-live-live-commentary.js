@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderCardError } from "../card-error.js";
 
 class SoccerLiveLiveCommentaryCard extends LitElement {
   static get properties() { return { hass: {}, _config: {} }; }
@@ -119,7 +120,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   render() {
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return html`<ha-card><div class="empty">Unknown entity: ${this._config.entity}</div></ha-card>`;
+    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
 
     const commentary = stateObj.attributes.commentary || [];
     const liveMatches = stateObj.attributes.matches || [];
