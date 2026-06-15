@@ -59,6 +59,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     this.setAttribute('data-score', scoreSize);
     this._isLoading = true;
     this._loadingStarted = Date.now();
+    this._lastWeatherVenue = null;
     this.showPopup = false;
     this.activeMatch = null;
     this.showEventToasts = config.show_event_toasts === true;
@@ -474,8 +475,8 @@ class CalcioLiveTeamNextCard extends LitElement {
     }
     if (this._isLoading) {
       if (Date.now() - this._loadingStarted > 10000)
-        return renderCardError('⏱', 'Loading timeout', `Entity not responding: ${this._config.entity}`, 'Check if the integration is running');
-      return renderLoading('Fetching match data...');
+        return renderCardError('⏱', this._t('ui.loading_timeout'), `${this._t('ui.entity_not_responding')}: ${this._config.entity}`, this._t('ui.check_integration'));
+      return renderLoading(this._t('ui.loading'));
     }
     const attributes = stateObj ? stateObj.attributes : this._cachedData;
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {

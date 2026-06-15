@@ -171,6 +171,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor unavailable',
     'ui.invalid_config': 'Invalid configuration',
     'ui.entity_required': 'Entity required',
+    'ui.loading_timeout': 'Loading timeout',
+    'ui.entity_not_responding': 'Entity not responding',
+    'ui.check_integration': 'Check if the integration is running',
 
     // Multi Team card
     'card.my_teams': 'My Teams',
@@ -329,6 +332,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor niet beschikbaar',
     'ui.invalid_config': 'Ongeldige configuratie',
     'ui.entity_required': 'Entiteit vereist',
+    'ui.loading_timeout': 'Laden mislukt',
+    'ui.entity_not_responding': 'Entiteit reageert niet',
+    'ui.check_integration': 'Controleer of de integratie actief is',
 
     'card.my_teams': 'Mijn Teams',
 
@@ -484,6 +490,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensore non disponibile',
     'ui.invalid_config': 'Configurazione non valida',
     'ui.entity_required': 'Entità obbligatoria',
+    'ui.loading_timeout': 'Timeout caricamento',
+    'ui.entity_not_responding': 'Entità non risponde',
+    'ui.check_integration': 'Controlla se l\'integrazione è attiva',
 
     'card.my_teams': 'I Miei Team',
 
@@ -639,6 +648,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Capteur indisponible',
     'ui.invalid_config': 'Configuration invalide',
     'ui.entity_required': 'Entité requise',
+    'ui.loading_timeout': 'Délai de chargement dépassé',
+    'ui.entity_not_responding': 'L\'entité ne répond pas',
+    'ui.check_integration': 'Vérifiez que l\'intégration est active',
 
     'card.my_teams': 'Mes Équipes',
 
@@ -794,6 +806,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor no disponible',
     'ui.invalid_config': 'Configuración inválida',
     'ui.entity_required': 'Entidad requerida',
+    'ui.loading_timeout': 'Tiempo de carga agotado',
+    'ui.entity_not_responding': 'La entidad no responde',
+    'ui.check_integration': 'Comprueba si la integración está activa',
 
     'card.my_teams': 'Mis Equipos',
 
@@ -949,6 +964,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor nicht verfügbar',
     'ui.invalid_config': 'Ungültige Konfiguration',
     'ui.entity_required': 'Entität erforderlich',
+    'ui.loading_timeout': 'Ladetimeout',
+    'ui.entity_not_responding': 'Entität antwortet nicht',
+    'ui.check_integration': 'Prüfe ob die Integration aktiv ist',
 
     'card.my_teams': 'Meine Teams',
 
@@ -1104,6 +1122,9 @@ const TRANSLATIONS = {
     'ui.sensor_unavailable': 'Sensor indisponível',
     'ui.invalid_config': 'Configuração inválida',
     'ui.entity_required': 'Entidade obrigatória',
+    'ui.loading_timeout': 'Tempo de carregamento esgotado',
+    'ui.entity_not_responding': 'Entidade não responde',
+    'ui.check_integration': 'Verifique se a integração está ativa',
 
     'card.my_teams': 'Meus Times',
 

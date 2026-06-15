@@ -159,8 +159,8 @@ class SoccerLiveLiveMatchCard extends LitElement {
     }
     if (this._isLoading) {
       if (Date.now() - this._loadingStarted > 10000)
-        return renderCardError('⏱', 'Loading timeout', `Entity not responding: ${this._config.entity}`, 'Check if the integration is running');
-      return renderLoading('Fetching match data...');
+        return renderCardError('⏱', this._t('ui.loading_timeout'), `${this._t('ui.entity_not_responding')}: ${this._config.entity}`, this._t('ui.check_integration'));
+      return renderLoading(this._t('ui.loading'));
     }
 
     const attributes = stateObj ? stateObj.attributes : this._cachedData;

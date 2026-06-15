@@ -4,12 +4,16 @@
 const CACHE_KEY_PREFIX = 'soccerlive_cache_';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const _lastWritten = new Map(); // entityId -> last JSON string written
+const MAX_LAST_WRITTEN = 50;
 
 export class OfflineCache {
   static set(entityId, data) {
     try {
       const json = JSON.stringify(data);
       if (_lastWritten.get(entityId) === json) return; // no change, skip write
+      if (_lastWritten.size >= MAX_LAST_WRITTEN) {
+        _lastWritten.delete(_lastWritten.keys().next().value);
+      }
       _lastWritten.set(entityId, json);
       localStorage.setItem(
         CACHE_KEY_PREFIX + entityId,
