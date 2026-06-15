@@ -25,11 +25,18 @@ export const weatherBadgeStyles = css`
   }
 `;
 
-export async function renderWeatherBadge(venue, hass = null, config = null) {
+export async function renderWeatherBadge(venue, hass = null, config = null, venue_lat = null, venue_lon = null) {
   if (!venue || venue === 'N/A') return html``;
 
   try {
-    const coords = await getVenueCoordinates(venue);
+    // Use server-provided coordinates if available (from integration), otherwise geocode
+    let coords = null;
+    if (venue_lat !== null && venue_lon !== null) {
+      coords = { lat: venue_lat, lon: venue_lon };
+    } else {
+      coords = await getVenueCoordinates(venue);
+    }
+
     if (!coords) return html``;
 
     const weather = await getWeather(coords.lat, coords.lon);
