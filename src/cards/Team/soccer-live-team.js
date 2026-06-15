@@ -3,7 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
-import { renderCardError } from "../card-error.js";
+import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
 /**
@@ -480,12 +480,11 @@ class CalcioLiveTeamNextCard extends LitElement {
     }
     const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {
-      return html`
-        <ha-card class="empty">
-          <div style="font-size:40px; opacity:0.25; margin-bottom:10px;">⚽</div>
-          <div style="font-weight:700; margin-bottom:4px;">${this._t('team.no_match')}</div>
-          <div style="font-size:12px; opacity:0.6;">${this._t('team.off_season')}</div>
-        </ha-card>`;
+      // Distinguish: wrong entity type vs off-season
+      const entityId = this._config.entity || '';
+      if (!entityId.includes('soccerlive_next_') && !entityId.includes('soccerlive_all_mixed_'))
+        return renderCardError('⚠️', this._t('ui.wrong_entity_type'), entityId, this._t('ui.wrong_entity_type_hint'));
+      return renderInfoState('📅', this._t('ui.off_season'), this._t('team.off_season'));
     }
 
     const match = attributes.matches[0];

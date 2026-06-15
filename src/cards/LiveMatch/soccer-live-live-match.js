@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
-import { renderCardError, validateEntity } from "../card-error.js";
+import { renderCardError, renderInfoState, validateEntity } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
 /**
@@ -164,8 +164,15 @@ class SoccerLiveLiveMatchCard extends LitElement {
     }
 
     const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
-    const match = this._getMatch({ attributes: attributes });
-    if (!match) return renderCardError('⚽', 'No match data', 'Unable to find match information', 'Check if the sensor has data');
+    const allMatches = attributes?.matches || [];
+    const match = this._getMatch({ attributes });
+    if (!match) {
+      // Sensor has matches but none are live/pre/post yet → off-season or empty
+      if (!allMatches.length)
+        return renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint'));
+      // Sensor has data but no suitable match (edge case)
+      return renderInfoState('⚽', this._t('ui.no_live_match'), this._t('ui.no_live_match_hint'));
+    }
 
     const isLive = match.state === 'in' || match.status === 'live';
     const isFinished = match.state === 'post';

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
-import { renderCardError } from "../card-error.js";
+import { renderCardError, renderInfoState } from "../card-error.js";
 
 class SoccerLiveLiveCommentaryCard extends LitElement {
   static get properties() { return { hass: {}, _config: {} }; }
@@ -120,11 +120,15 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   render() {
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
+    if (!stateObj) return renderCardError('⚠️', this._t('ui.unknown_entity'), `${this._config.entity}`, this._t('ui.wrong_entity_type_hint'));
+    if (stateObj.state === 'unavailable') return renderCardError('📡', this._t('ui.sensor_unavailable'), '', this._t('ui.check_integration'));
 
     const commentary = stateObj.attributes.commentary || [];
     const liveMatches = stateObj.attributes.matches || [];
     const liveMatch = liveMatches.find(m => m.state === 'in');
+
+    if (!liveMatch && !commentary.length)
+      return renderInfoState('🎙️', this._t('ui.no_live_match'), this._t('ui.no_live_match_hint'));
 
     const homeTeam = liveMatch?.home_team || stateObj.attributes.home_team || '?';
     const awayTeam = liveMatch?.away_team || stateObj.attributes.away_team || '?';

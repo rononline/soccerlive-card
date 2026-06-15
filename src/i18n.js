@@ -174,6 +174,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Loading timeout',
     'ui.entity_not_responding': 'Entity not responding',
     'ui.check_integration': 'Check if the integration is running',
+    'ui.no_live_match': 'No live match right now',
+    'ui.no_live_match_hint': 'Commentary appears here during a live game',
+    'ui.off_season': 'Off season',
+    'ui.off_season_hint': 'No matches scheduled in this period',
+    'ui.endpoint_unsupported': 'Not available for this competition',
+    'ui.endpoint_unsupported_hint': 'ESPN does not provide this data for all competitions',
+    'ui.wrong_entity_type': 'Wrong sensor type',
+    'ui.wrong_entity_type_hint': 'This card expects a different sensor',
 
     // Multi Team card
     'card.my_teams': 'My Teams',
@@ -335,6 +343,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Laden mislukt',
     'ui.entity_not_responding': 'Entiteit reageert niet',
     'ui.check_integration': 'Controleer of de integratie actief is',
+    'ui.no_live_match': 'Geen live wedstrijd nu',
+    'ui.no_live_match_hint': 'Commentaar verschijnt hier tijdens een live wedstrijd',
+    'ui.off_season': 'Geen wedstrijden',
+    'ui.off_season_hint': 'Geen wedstrijden gepland in deze periode',
+    'ui.endpoint_unsupported': 'Niet beschikbaar voor dit toernooi',
+    'ui.endpoint_unsupported_hint': 'ESPN biedt deze data niet voor alle competities',
+    'ui.wrong_entity_type': 'Verkeerd sensortype',
+    'ui.wrong_entity_type_hint': 'Deze kaart verwacht een ander sensortype',
 
     'card.my_teams': 'Mijn Teams',
 
@@ -493,6 +509,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Timeout caricamento',
     'ui.entity_not_responding': 'Entità non risponde',
     'ui.check_integration': 'Controlla se l\'integrazione è attiva',
+    'ui.no_live_match': 'Nessuna partita in diretta',
+    'ui.no_live_match_hint': 'Il commento appare qui durante una partita live',
+    'ui.off_season': 'Fuori stagione',
+    'ui.off_season_hint': 'Nessuna partita programmata in questo periodo',
+    'ui.endpoint_unsupported': 'Non disponibile per questa competizione',
+    'ui.endpoint_unsupported_hint': 'ESPN non fornisce questi dati per tutte le competizioni',
+    'ui.wrong_entity_type': 'Tipo di sensore errato',
+    'ui.wrong_entity_type_hint': 'Questa card si aspetta un sensore diverso',
 
     'card.my_teams': 'I Miei Team',
 
@@ -651,6 +675,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Délai de chargement dépassé',
     'ui.entity_not_responding': 'L\'entité ne répond pas',
     'ui.check_integration': 'Vérifiez que l\'intégration est active',
+    'ui.no_live_match': 'Aucun match en direct',
+    'ui.no_live_match_hint': 'Le commentaire s\'affiche ici pendant un match en direct',
+    'ui.off_season': 'Hors saison',
+    'ui.off_season_hint': 'Aucun match prévu pendant cette période',
+    'ui.endpoint_unsupported': 'Non disponible pour cette compétition',
+    'ui.endpoint_unsupported_hint': 'ESPN ne fournit pas ces données pour toutes les compétitions',
+    'ui.wrong_entity_type': 'Mauvais type de capteur',
+    'ui.wrong_entity_type_hint': 'Cette carte attend un capteur différent',
 
     'card.my_teams': 'Mes Équipes',
 
@@ -809,6 +841,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Tiempo de carga agotado',
     'ui.entity_not_responding': 'La entidad no responde',
     'ui.check_integration': 'Comprueba si la integración está activa',
+    'ui.no_live_match': 'Sin partido en directo ahora',
+    'ui.no_live_match_hint': 'El comentario aparece aquí durante un partido en vivo',
+    'ui.off_season': 'Fuera de temporada',
+    'ui.off_season_hint': 'No hay partidos programados en este período',
+    'ui.endpoint_unsupported': 'No disponible para esta competición',
+    'ui.endpoint_unsupported_hint': 'ESPN no proporciona estos datos para todas las competiciones',
+    'ui.wrong_entity_type': 'Tipo de sensor incorrecto',
+    'ui.wrong_entity_type_hint': 'Esta tarjeta espera un sensor diferente',
 
     'card.my_teams': 'Mis Equipos',
 
@@ -967,6 +1007,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Ladetimeout',
     'ui.entity_not_responding': 'Entität antwortet nicht',
     'ui.check_integration': 'Prüfe ob die Integration aktiv ist',
+    'ui.no_live_match': 'Kein Live-Spiel gerade',
+    'ui.no_live_match_hint': 'Kommentar erscheint hier während eines Live-Spiels',
+    'ui.off_season': 'Keine Spiele',
+    'ui.off_season_hint': 'Keine Spiele in diesem Zeitraum geplant',
+    'ui.endpoint_unsupported': 'Nicht verfügbar für diesen Wettbewerb',
+    'ui.endpoint_unsupported_hint': 'ESPN stellt diese Daten nicht für alle Wettbewerbe bereit',
+    'ui.wrong_entity_type': 'Falscher Sensortyp',
+    'ui.wrong_entity_type_hint': 'Diese Karte erwartet einen anderen Sensor',
 
     'card.my_teams': 'Meine Teams',
 
@@ -1125,6 +1173,14 @@ const TRANSLATIONS = {
     'ui.loading_timeout': 'Tempo de carregamento esgotado',
     'ui.entity_not_responding': 'Entidade não responde',
     'ui.check_integration': 'Verifique se a integração está ativa',
+    'ui.no_live_match': 'Sem jogo ao vivo agora',
+    'ui.no_live_match_hint': 'O comentário aparece aqui durante um jogo ao vivo',
+    'ui.off_season': 'Fora de temporada',
+    'ui.off_season_hint': 'Nenhum jogo agendado neste período',
+    'ui.endpoint_unsupported': 'Não disponível para esta competição',
+    'ui.endpoint_unsupported_hint': 'ESPN não fornece esses dados para todas as competições',
+    'ui.wrong_entity_type': 'Tipo de sensor incorreto',
+    'ui.wrong_entity_type_hint': 'Este cartão espera um sensor diferente',
 
     'card.my_teams': 'Meus Times',
 
