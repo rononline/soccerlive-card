@@ -33,7 +33,7 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 - 🎨 **Animations** — live pulse, score pop, goal confetti + banner
 - 🔔 **In-card toasts** — optional on goals and cards, no notification spam
 - 🏆 **Bracket** — list style or tournament tree with SVG connector lines
-- 🎨 **Themes** — `dark`, `light`, `feyenoord`, `classic`, `neon`, `gold`
+- 🎨 **Themes** — `dark`, `light`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `feyenoord`, `arsenal`, `barcelona`, `real-madrid`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
 - 🌦️ **Weather** — current conditions at the match venue (Team and Countdown cards)
@@ -243,6 +243,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Team standing summary below name (`home_standing_summary`) | v3.4.0 |
 | Broadcast channels list (`broadcasts`) | v3.4.0 |
 | Stats / Commentary / Video chips with links (`match.links`) | v3.4.1 |
+| `week_number` per match (competition schedule grouping) | v3.4.2 |
 | Neutral venue flag (`neutral_site`) | v3.4.0 |
 | News byline, tags, premium flag | v3.4.0 |
 | Season form from summary (`last_five_home/away`) | v3.4.0 |
