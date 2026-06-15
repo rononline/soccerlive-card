@@ -73,7 +73,7 @@ All cards share these common options:
 
 ```yaml
 type: custom:soccer-live-classifica
-entity: sensor.soccerlive_standings_ned_1
+entity: sensor.soccer_live_standings_ned_1
 max_teams_visible: 18
 hide_header: false
 show_event_toasts: false
@@ -83,7 +83,7 @@ show_event_toasts: false
 
 ```yaml
 type: custom:soccer-live-team
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 show_event_toasts: true
 score_size: normal    # normal / big / huge
 show_previous_matches: true
@@ -99,7 +99,7 @@ The card shows a **weather badge** (temperature, wind) for the match venue when 
 
 ```yaml
 type: custom:soccer-live-matches
-entity: sensor.soccerlive_all_ned_1
+entity: sensor.soccer_live_all_ned_1
 max_events_visible: 6
 max_events_total: 50
 show_finished_matches: true
@@ -111,7 +111,7 @@ show_event_toasts: false
 
 ```yaml
 type: custom:soccer-live-news
-entity: sensor.soccerlive_news_ned_1
+entity: sensor.soccer_live_news_ned_1
 max_articles: 5
 hide_images: false
 ```
@@ -120,7 +120,7 @@ hide_images: false
 
 ```yaml
 type: custom:soccer-live-lineup
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 ```
 
 > Available shortly before kick-off (once ESPN publishes the lineups).
@@ -129,7 +129,7 @@ entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
 
 ```yaml
 type: custom:soccer-live-timeline
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 reverse_order: true   # newest on top
 ```
 
@@ -137,7 +137,7 @@ reverse_order: true   # newest on top
 
 ```yaml
 type: custom:soccer-live-bracket
-entity: sensor.soccerlive_bracket_uefa_champions
+entity: sensor.soccer_live_bracket_uefa_champions
 style: tree           # 'list' (default) or 'tree'
 compact: false
 tree_show_playoffs: false
@@ -150,12 +150,12 @@ Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World 
 
 ```yaml
 type: custom:soccer-live-cannonieri
-entity: sensor.soccerlive_scorers_ned_1
+entity: sensor.soccer_live_scorers_ned_1
 max_items: 10
 hide_header: false
 ```
 
-The top scorers sensor (`soccerlive_scorers_*`) is created automatically for every competition sensor.
+The top scorers sensor (`soccer_live_scorers_*`) is created automatically for every competition sensor.
 Shows: rank, player photo, name, team logo and goal tally.
 
 > Not all competitions provide top scorer data via ESPN. If the sensor shows `Not available`, the competition does not support this endpoint.
@@ -164,7 +164,7 @@ Shows: rank, player photo, name, team logo and goal tally.
 
 ```yaml
 type: custom:soccer-live-countdown
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 ```
 
 Shows a countdown timer to the next match, switches to live score when the match is active.
@@ -174,7 +174,7 @@ Also shows a **weather badge** for the match venue.
 
 ```yaml
 type: custom:soccer-live-mini-standings
-entity: sensor.soccerlive_standings_ned_1
+entity: sensor.soccer_live_standings_ned_1
 max_rows: 5
 group: null          # optional: filter standings group (e.g. "WK A", "WK B")
 highlight_team: null # optional: highlight team name
@@ -187,7 +187,7 @@ Rows sorted by points, then wins, then goal difference.
 
 ```yaml
 type: custom:soccer-live-live-match
-entity: sensor.soccerlive_all_ned_1
+entity: sensor.soccer_live_all_ned_1
 max_stats: 4
 ```
 
@@ -198,9 +198,9 @@ Displays the current/best match with key events, possession stats, and shots on 
 ```yaml
 type: custom:soccer-live-multi-team
 entities:
-  - sensor.soccerlive_next_ned_1_feyenoord_rotterdam
-  - sensor.soccerlive_all_mixed_ajax
-  - sensor.soccerlive_all_mixed_psv_eindhoven
+  - sensor.soccer_live_next_ned_1_feyenoord_rotterdam
+  - sensor.soccer_live_all_mixed_ajax
+  - sensor.soccer_live_all_mixed_psv_eindhoven
 title: My Teams
 hide_header: false
 ```
@@ -211,7 +211,7 @@ Shows multiple teams' matches in one compact card, each on its own row.
 
 ```yaml
 type: custom:soccer-live-team-competitions
-entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
+entity: sensor.soccer_live_all_mixed_feyenoord_rotterdam
 team_name: "Feyenoord"      # optional: override team name
 default_comp: "Eredivisie"  # optional: default competition tab
 ```
@@ -222,12 +222,12 @@ All team competitions in one card with a tab selector to switch between leagues 
 
 ```yaml
 type: custom:soccer-live-live-commentary
-entity: sensor.soccerlive_commentary_ned_1
+entity: sensor.soccer_live_commentary_ned_1
 ```
 
 Real-time play-by-play commentary with event icons and score progression.
 
-> Requires a `soccerlive_commentary_*` sensor. Commentary availability depends on ESPN API support for the specific competition.
+> Requires a `soccer_live_commentary_*` sensor. Commentary availability depends on ESPN API support for the specific competition.
 
 ---
 

@@ -44,7 +44,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
     return html`
       <div class="card-config">
         <h3>Sensor</h3>
-        <p class="hint">Use a <strong>soccerlive_all_mixed_*</strong> sensor (contains all competitions for one team)</p>
+        <p class="hint">Use a <strong>soccer_live_all_mixed_*</strong> sensor (contains all competitions for one team)</p>
         <div>
           <label class="field-label">Entity</label>
           <select @change=${this._entityChanged}>

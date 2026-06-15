@@ -50,7 +50,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
   getCardSize() { return 5; }
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-live-match-editor"); }
-  static getStubConfig() { return { entity: "sensor.soccerlive_next_" }; }
+  static getStubConfig() { return { entity: "sensor.soccer_live_next_" }; }
 
   _getMatch(stateObj) {
     const matches = stateObj.attributes.matches || [];

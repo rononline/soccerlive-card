@@ -24,7 +24,7 @@ class SoccerLiveCountdownEditor extends LitElement {
 
   _fetchEntities() {
     if (!this.hass) return;
-    this.entities = Object.keys(this.hass.states).filter(id => id.includes('soccerlive_next')).sort();
+    this.entities = Object.keys(this.hass.states).filter(id => id.includes('soccer_live_next')).sort();
   }
 
   _fire(cfg) { this._config = cfg; this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: cfg }, bubbles: true, composed: true })); this.requestUpdate(); }
@@ -40,7 +40,7 @@ class SoccerLiveCountdownEditor extends LitElement {
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
-          <label class="field-label">Team match entity (soccerlive_next_*)</label>
+          <label class="field-label">Team match entity (soccer_live_next_*)</label>
           <select @change=${this._entityChanged}>
             ${!inList ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}

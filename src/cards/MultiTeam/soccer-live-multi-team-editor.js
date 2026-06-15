@@ -25,7 +25,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this._allEntities = Object.keys(this.hass.states)
-      .filter(id => id.includes('soccerlive_next') || id.includes('all_mixed'))
+      .filter(id => id.includes('soccer_live_next') || id.includes('all_mixed'))
       .sort();
   }
 
@@ -57,7 +57,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
     return html`
       <div class="card-config">
         <h3>Teams</h3>
-        <p class="hint">Add one soccerlive_next_* or soccerlive_all_mixed_* sensor per team</p>
+        <p class="hint">Add one soccer_live_next_* or soccer_live_all_mixed_* sensor per team</p>
         <div class="entity-list">
           ${entities.map((e, i) => html`
             <div class="entity-row">
