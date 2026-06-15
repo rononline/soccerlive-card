@@ -14,6 +14,11 @@ const TRANSLATIONS = {
     'card.scorers': 'Top Scorers',
     'card.stats': 'Stats',
     'card.commentary': 'Commentary',
+    'card.video': 'Video',
+    'ui.neutral_site': 'Neutral venue',
+    'ui.open_stats': 'Open ESPN stats',
+    'ui.open_commentary': 'Open ESPN commentary',
+    'ui.open_video': 'Open ESPN video',
 
     // Bracket rounds
     'round.final': 'Final',
@@ -203,6 +208,11 @@ const TRANSLATIONS = {
     'card.scorers': 'Topschutters',
     'card.stats': 'Stats',
     'card.commentary': 'Commentaar',
+    'card.video': 'Video',
+    'ui.neutral_site': 'Neutraal terrein',
+    'ui.open_stats': 'Open statistieken op ESPN',
+    'ui.open_commentary': 'Open commentaar op ESPN',
+    'ui.open_video': 'Open video op ESPN',
 
     'round.final': 'Finale',
     'round.semifinals': 'Halve finales',
@@ -371,6 +381,11 @@ const TRANSLATIONS = {
     'card.scorers': 'Capocannonieri',
     'card.stats': 'Statistiche',
     'card.commentary': 'Telecronaca',
+    'card.video': 'Video',
+    'ui.neutral_site': 'Campo neutro',
+    'ui.open_stats': 'Apri statistiche ESPN',
+    'ui.open_commentary': 'Apri telecronaca ESPN',
+    'ui.open_video': 'Apri video ESPN',
 
     'round.final': 'Finale',
     'round.semifinals': 'Semifinali',
@@ -1037,6 +1052,11 @@ const TRANSLATIONS = {
     'card.scorers': 'Artilheiros',
     'card.stats': 'Estatísticas',
     'card.commentary': 'Comentário',
+    'card.video': 'Vídeo',
+    'ui.neutral_site': 'Campo neutro',
+    'ui.open_stats': 'Abrir estatísticas ESPN',
+    'ui.open_commentary': 'Abrir comentário ESPN',
+    'ui.open_video': 'Abrir vídeo ESPN',
 
     'round.final': 'Final',
     'round.semifinals': 'Meias-finais',
