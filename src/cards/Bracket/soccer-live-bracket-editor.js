@@ -78,7 +78,7 @@ class SoccerLiveBracketEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter(id => id.includes('soccer_live_bracket'))
+      .filter(id => id.includes('soccerlive_bracket') || id.includes('soccer_live_bracket'))
       .sort();
   }
 
