@@ -30,6 +30,17 @@ class SoccerLiveMultiTeamCard extends LitElement {
     this._config = config;
     applySkin(this, config);
     this._isLoading = true;
+    this._loadingStarted = Date.now();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._loadingTimer = setTimeout(() => this.requestUpdate(), 10000);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    clearTimeout(this._loadingTimer);
   }
 
   updated(changedProperties) {
@@ -122,7 +133,11 @@ class SoccerLiveMultiTeamCard extends LitElement {
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const entities = this._config.entities || [];
     if (!entities.length) return renderCardError('⚽', 'No entities', 'No entities configured', 'Add at least one team entity');
-    if (this._isLoading) return renderLoading('Fetching team data...');
+    if (this._isLoading) {
+      if (Date.now() - this._loadingStarted > 10000)
+        return renderCardError('⏱', 'Loading timeout', `Entities not responding`, 'Check if the integration is running');
+      return renderLoading('Fetching team data...');
+    }
 
     const missingEntities = entities.filter(e => !this.hass.states[e]);
     const hasAnyUnavailable = entities.some(e => this.hass.states[e]?.state === 'unavailable');

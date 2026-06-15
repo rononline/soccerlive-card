@@ -58,6 +58,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     const scoreSize = ['big', 'huge'].includes(config.score_size) ? config.score_size : 'normal';
     this.setAttribute('data-score', scoreSize);
     this._isLoading = true;
+    this._loadingStarted = Date.now();
     this.showPopup = false;
     this.activeMatch = null;
     this.showEventToasts = config.show_event_toasts === true;
@@ -96,8 +97,8 @@ class CalcioLiveTeamNextCard extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this._subscribeToEvents();
-    // Refresh countdown every 30s without waiting for sensor polls
     this._countdownInterval = setInterval(() => this.requestUpdate(), 30000);
+    this._loadingTimer = setTimeout(() => this.requestUpdate(), 10000);
   }
 
 
@@ -105,6 +106,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     super.disconnectedCallback();
     clearInterval(this._countdownInterval);
     this._countdownInterval = null;
+    clearTimeout(this._loadingTimer);
 
     if (this._eventSubscriptions && Array.isArray(this._eventSubscriptions)) {
       this._eventSubscriptions.forEach(unsub => {
@@ -470,7 +472,11 @@ class CalcioLiveTeamNextCard extends LitElement {
         return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
       }
     }
-    if (this._isLoading) return renderLoading('Fetching match data...');
+    if (this._isLoading) {
+      if (Date.now() - this._loadingStarted > 10000)
+        return renderCardError('⏱', 'Loading timeout', `Entity not responding: ${this._config.entity}`, 'Check if the integration is running');
+      return renderLoading('Fetching match data...');
+    }
     const attributes = stateObj ? stateObj.attributes : this._cachedData;
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {
       return html`

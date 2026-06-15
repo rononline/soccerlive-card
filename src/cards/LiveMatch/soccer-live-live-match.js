@@ -28,6 +28,17 @@ class SoccerLiveLiveMatchCard extends LitElement {
   constructor() {
     super();
     this._isLoading = true;
+    this._loadingStarted = Date.now();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._loadingTimer = setTimeout(() => this.requestUpdate(), 10000);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    clearTimeout(this._loadingTimer);
   }
 
   setConfig(config) {
@@ -146,7 +157,11 @@ class SoccerLiveLiveMatchCard extends LitElement {
         return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
       }
     }
-    if (this._isLoading) return renderLoading('Fetching match data...');
+    if (this._isLoading) {
+      if (Date.now() - this._loadingStarted > 10000)
+        return renderCardError('⏱', 'Loading timeout', `Entity not responding: ${this._config.entity}`, 'Check if the integration is running');
+      return renderLoading('Fetching match data...');
+    }
 
     const attributes = stateObj ? stateObj.attributes : this._cachedData;
     const match = this._getMatch({ attributes: attributes });
