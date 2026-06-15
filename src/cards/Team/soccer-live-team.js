@@ -1465,7 +1465,7 @@ class CalcioLiveTeamNextCard extends LitElement {
       }
       .upcoming-row {
         display: grid;
-        grid-template-columns: 52px 1fr 16px 1fr;
+        grid-template-columns: 52px 1fr 45px 1fr;
         align-items: center;
         gap: 6px;
         padding: 6px 0;
