@@ -10,7 +10,7 @@
 # 🏅 STANDINGS
 # League table with coloured zones (CL / EL / relegation), top team in gold
 type: custom:soccer-live-classifica
-entity: sensor.soccerlive_standings_ned_1
+entity: sensor.soccer_live_standings_ned_1
 language: auto           # auto-detect from HA locale
 skin: dark              # color theme
 max_teams_visible: 18   # show top N teams (rest expandable)
@@ -22,7 +22,7 @@ show_event_toasts: false # goal animations
 # ⚽ TEAM
 # Live match: score, form pills, season record, top scorer, attendance
 type: custom:soccer-live-team
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 show_event_toasts: true # goal celebration with confetti
 score_size: normal      # normal, big, huge
 
@@ -31,7 +31,7 @@ score_size: normal      # normal, big, huge
 # 📋 MATCHES
 # Day-grouped matches with live highlighting and FT badge
 type: custom:soccer-live-matches
-entity: sensor.soccerlive_all_ned_1
+entity: sensor.soccer_live_all_ned_1
 max_events_visible: 6     # matches shown before "show more"
 max_events_total: 50      # total matches to load
 show_finished_matches: true
@@ -42,7 +42,7 @@ hide_past_days: 0         # hide matches from N days ago
 # 📰 NEWS
 # Article feed with images and relative timestamps
 type: custom:soccer-live-news
-entity: sensor.soccerlive_news_ned_1
+entity: sensor.soccer_live_news_ned_1
 max_articles: 5
 hide_images: false
 
@@ -52,14 +52,14 @@ hide_images: false
 # Starting eleven for both teams, formation, shirt numbers
 # Available shortly before kick-off (once ESPN publishes the lineups)
 type: custom:soccer-live-lineup
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 
 ---
 
 # ⏱ TIMELINE
 # Minute-by-minute log (goals, cards, substitutions)
 type: custom:soccer-live-timeline
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 reverse_order: true     # newest events on top
 
 ---
@@ -67,7 +67,7 @@ reverse_order: true     # newest events on top
 # 🏆 BRACKET
 # Knockout bracket: list view or tournament tree with trophy
 type: custom:soccer-live-bracket
-entity: sensor.soccerlive_bracket_uefa_champions
+entity: sensor.soccer_live_bracket_uefa_champions
 style: tree             # list (default) or tree
 compact: false
 tree_show_playoffs: false
@@ -81,11 +81,11 @@ tree_show_playoffs: false
 # 🥇 TOP SCORERS
 # Top scorers list with photo, team logo and goal tally
 type: custom:soccer-live-cannonieri
-entity: sensor.soccerlive_scorers_ned_1
+entity: sensor.soccer_live_scorers_ned_1
 max_items: 10
 hide_header: false
 
-# Top scorers sensors (soccerlive_scorers_*) are created automatically
+# Top scorers sensors (soccer_live_scorers_*) are created automatically
 # for every competition sensor
 
 ---
@@ -93,7 +93,7 @@ hide_header: false
 # ⏳ COUNTDOWN
 # Countdown timer to next match with live score display
 type: custom:soccer-live-countdown
-entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 language: auto
 skin: dark
 
@@ -102,7 +102,7 @@ skin: dark
 # 🏆 MINI STANDINGS
 # Compact standings table with configurable rows and optional team highlight
 type: custom:soccer-live-mini-standings
-entity: sensor.soccerlive_standings_ned_1
+entity: sensor.soccer_live_standings_ned_1
 language: auto
 skin: dark
 max_rows: 5                 # show top 5 teams
@@ -114,7 +114,7 @@ highlight_team: null        # optional: highlight team name
 # ⚽ LIVE MATCH
 # Current match with key events, possession, and shot stats
 type: custom:soccer-live-live-match
-entity: sensor.soccerlive_all_ned_1
+entity: sensor.soccer_live_all_ned_1
 language: auto
 skin: dark
 
@@ -123,7 +123,7 @@ skin: dark
 # 🔄 MULTI TEAM
 # Multiple teams' matches in one card, auto-grouped by team
 type: custom:soccer-live-multi-team
-entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
+entity: sensor.soccer_live_all_mixed_feyenoord_rotterdam
 language: auto
 skin: dark
 
@@ -132,7 +132,7 @@ skin: dark
 # 🗂️ TEAM COMPETITIONS
 # All team competitions with tab selector for easy switching
 type: custom:soccer-live-team-competitions
-entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
+entity: sensor.soccer_live_all_mixed_feyenoord_rotterdam
 language: auto
 skin: dark
 team_name: "Feyenoord Rotterdam"   # override displayed team name
@@ -143,10 +143,10 @@ hide_header: false                 # hide team header
 
 # 💬 LIVE COMMENTARY
 # Real-time play-by-play commentary with event icons and score progression
-# ⚠️ Requires soccerlive_commentary_* sensor from integration
+# ⚠️ Requires soccer_live_commentary_* sensor from integration
 # ⚠️ Commentary availability depends on ESPN API support
 type: custom:soccer-live-live-commentary
-entity: sensor.soccerlive_commentary_ned_1_feyenoord_rotterdam
+entity: sensor.soccer_live_commentary_ned_1_feyenoord_rotterdam
 language: auto
 skin: dark
 hide_header: false
@@ -186,34 +186,34 @@ views:
   - title: Feyenoord
     cards:
       - type: custom:soccer-live-team
-        entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+        entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
         show_event_toasts: true
 
       - type: custom:soccer-live-countdown
-        entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+        entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 
       - type: custom:soccer-live-lineup
-        entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+        entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 
       - type: custom:soccer-live-live-match
-        entity: sensor.soccerlive_all_ned_1
+        entity: sensor.soccer_live_all_ned_1
 
   - title: Eredivisie
     cards:
       - type: custom:soccer-live-classifica
-        entity: sensor.soccerlive_standings_ned_1
+        entity: sensor.soccer_live_standings_ned_1
         max_teams_visible: 10
 
       - type: custom:soccer-live-matches
-        entity: sensor.soccerlive_all_ned_1
+        entity: sensor.soccer_live_all_ned_1
         max_events_visible: 5
 
   - title: Europe
     cards:
       - type: custom:soccer-live-bracket
-        entity: sensor.soccerlive_bracket_uefa_champions
+        entity: sensor.soccer_live_bracket_uefa_champions
         style: tree
 
       - type: custom:soccer-live-cannonieri
-        entity: sensor.soccerlive_scorers_uefa_champions
+        entity: sensor.soccer_live_scorers_uefa_champions
         max_items: 10

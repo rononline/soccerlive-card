@@ -482,7 +482,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {
       // Distinguish: wrong entity type vs off-season
       const entityId = this._config.entity || '';
-      if (!entityId.includes('soccerlive_next_') && !entityId.includes('soccerlive_all_mixed_'))
+      if (!entityId.includes('soccer_live_next_') && !entityId.includes('soccer_live_all_mixed_'))
         return renderCardError('⚠️', this._t('ui.wrong_entity_type'), entityId, this._t('ui.wrong_entity_type_hint'));
       return renderInfoState('📅', this._t('ui.off_season'), this._t('team.off_season'));
     }

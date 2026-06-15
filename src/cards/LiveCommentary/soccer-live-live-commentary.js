@@ -15,7 +15,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   getCardSize() { return 5; }
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-live-commentary-editor"); }
-  static getStubConfig() { return { entity: "sensor.soccerlive_commentary_" }; }
+  static getStubConfig() { return { entity: "sensor.soccer_live_commentary_" }; }
 
   static get styles() {
     return [skinStyles, css`

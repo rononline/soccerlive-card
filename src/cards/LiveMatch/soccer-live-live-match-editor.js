@@ -18,7 +18,7 @@ class SoccerLiveLiveMatchEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter(id => id.includes('soccerlive_next') || id.includes('soccerlive_all'))
+      .filter(id => id.includes('soccer_live_next') || id.includes('soccer_live_all'))
       .sort();
   }
 

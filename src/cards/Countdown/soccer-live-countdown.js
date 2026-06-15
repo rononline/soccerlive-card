@@ -96,7 +96,7 @@ class SoccerLiveCountdownCard extends LitElement {
   getCardSize() { return 3; }
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-countdown-editor"); }
-  static getStubConfig() { return { entity: "sensor.soccerlive_next_" }; }
+  static getStubConfig() { return { entity: "sensor.soccer_live_next_" }; }
 
   _parseDate(dateStr) {
     if (!dateStr || dateStr === 'N/A') return null;
