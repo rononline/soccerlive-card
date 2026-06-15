@@ -163,7 +163,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
       return renderLoading(this._t('ui.loading'));
     }
 
-    const attributes = stateObj ? stateObj.attributes : this._cachedData;
+    const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     const match = this._getMatch({ attributes: attributes });
     if (!match) return renderCardError('⚽', 'No match data', 'Unable to find match information', 'Check if the sensor has data');
 
