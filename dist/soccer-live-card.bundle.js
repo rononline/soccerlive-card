@@ -1916,8 +1916,8 @@
               </div>
             `:""}
             ${m?R`<div class="extra-chip neutral">⚖️ <span>Neutraal terrein</span></div>`:""}
-            ${i.has_stats?R`<div class="extra-chip info clickable" @click="${()=>{const e=i.links&&(i.links.stats||i.links.summary);e&&window.open(e,"_blank")}}" title="Open ESPN stats">📊 <span>${this._t("card.stats")}</span></div>`:""}
-            ${i.has_commentary?R`<div class="extra-chip info clickable" @click="${()=>{const e=i.links&&(i.links.commentary||i.links.summary);e&&window.open(e,"_blank")}}" title="Open ESPN commentary">💬 <span>${this._t("card.commentary")}</span></div>`:""}
+            ${i.has_stats?R`<div class="extra-chip info clickable" @click="${()=>{const e=i.links&&(i.links.stats||i.links.summary);e&&window.open(e,"_blank","noopener,noreferrer")}}" title="Open ESPN stats">📊 <span>${this._t("card.stats")}</span></div>`:""}
+            ${i.has_commentary?R`<div class="extra-chip info clickable" @click="${()=>{const e=i.links&&(i.links.commentary||i.links.summary);e&&window.open(e,"_blank","noopener,noreferrer")}}" title="Open ESPN commentary">💬 <span>${this._t("card.commentary")}</span></div>`:""}
           </div>
         `:""}
 
