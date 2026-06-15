@@ -181,7 +181,7 @@ class SoccerLiveStandingsCard extends LitElement {
 
     ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
       this.hass.connection.subscribeEvents(
-        this._handleCalcioLiveEvent.bind(this),
+        this._handleSoccerLiveEvent.bind(this),
         evt
       ).then(unsub => {
         if (typeof unsub === 'function') {
@@ -200,7 +200,7 @@ class SoccerLiveStandingsCard extends LitElement {
     return entityId.toLowerCase().includes(normalized);
   }
 
-  _handleCalcioLiveEvent(event) {
+  _handleSoccerLiveEvent(event) {
     const eventType = event.event_type;
     const eventData = event.data;
     if (!this._eventBelongsToThisCard(eventData)) return;

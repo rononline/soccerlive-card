@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 
-class CalcioLiveTimelineCard extends LitElement {
+class SoccerLiveTimelineCard extends LitElement {
   static get properties() {
     return {
       hass: {},
@@ -312,7 +312,7 @@ class CalcioLiveTimelineCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-timeline", CalcioLiveTimelineCard);
+customElements.define("soccer-live-timeline", SoccerLiveTimelineCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({

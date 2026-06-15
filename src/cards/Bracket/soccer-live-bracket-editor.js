@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-class CalcioLiveBracketEditor extends LitElement {
+class SoccerLiveBracketEditor extends LitElement {
   static get properties() {
     return {
       _config: { type: Object },
@@ -159,4 +159,4 @@ class CalcioLiveBracketEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-bracket-editor', CalcioLiveBracketEditor);
+customElements.define('soccer-live-bracket-editor', SoccerLiveBracketEditor);

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-class CalcioLiveNewsEditor extends LitElement {
+class SoccerLiveNewsEditor extends LitElement {
   static get properties() {
     return {
       _config: { type: Object },
@@ -163,4 +163,4 @@ class CalcioLiveNewsEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-news-editor', CalcioLiveNewsEditor);
+customElements.define('soccer-live-news-editor', SoccerLiveNewsEditor);
