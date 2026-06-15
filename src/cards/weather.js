@@ -32,31 +32,14 @@ async function getVenueCoordinates(venueName) {
     return VENUE_CACHE.get(venueName);
   }
 
-  // Check known venues
+  // Check known venues only - NO browser-side geocoding
+  // Server provides venue_lat/venue_lon via integration
   if (KNOWN_VENUES[venueName]) {
     VENUE_CACHE.set(venueName, KNOWN_VENUES[venueName]);
     return KNOWN_VENUES[venueName];
   }
 
-  // Try Nominatim geocoding API (free, no key)
-  try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(venueName + ' stadium')}&format=json&limit=1`,
-      { headers: { 'Accept-Language': 'en' } }
-    );
-    const data = await response.json();
-    if (data && data.length > 0) {
-      const coords = {
-        lat: parseFloat(data[0].lat),
-        lon: parseFloat(data[0].lon)
-      };
-      VENUE_CACHE.set(venueName, coords);
-      return coords;
-    }
-  } catch (e) {
-    console.warn('Geocoding failed:', e);
-  }
-
+  // No fallback to browser Nominatim - coordinates must come from server
   return null;
 }
 
