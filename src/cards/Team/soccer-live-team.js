@@ -501,7 +501,7 @@ class CalcioLiveTeamNextCard extends LitElement {
         <div class="hero-bg" style="${heroBgStyle}"></div>
 
         ${this.showEventToasts && this._toastVisible ? html`
-          <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
+          <div class="event-toast variant-${this._toastVariant}" .textContent=${this._toastMessage}></div>
         ` : ''}
 
         <div class="top-bar">

@@ -357,7 +357,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
         <div class="hero-bg"></div>
 
         ${this.showEventToasts && this._toastVisible ? html`
-          <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
+          <div class="event-toast variant-${this._toastVariant}" .textContent=${this._toastMessage}></div>
         ` : ''}
 
         ${this.showLiveTicker && liveMatches.length > 0 ? html`
