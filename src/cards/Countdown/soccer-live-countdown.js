@@ -216,8 +216,8 @@ class SoccerLiveCountdownCard extends LitElement {
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
     const countdown = (!isLive && !isFinished) ? this._countdown(match.date) : null;
-    const compName = match.competition_name || stateObj.attributes.league_name || '';
-    const compLogo = match.competition_logo || stateObj.attributes.league_logo || '';
+    const compName = match.competition_name || attributes?.league_name || '';
+    const compLogo = match.competition_logo || attributes?.league_logo || '';
     const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
     const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
 
