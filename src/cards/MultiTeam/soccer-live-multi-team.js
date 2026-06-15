@@ -7,9 +7,20 @@ import { OfflineCache } from "../offline-cache.js";
 
 /**
  * Soccer Live Multi Team Card
- * Shows multiple teams' matches in one compact card
+ * Shows multiple teams' matches in one compact card with auto-grouping
+ *
  * @class SoccerLiveMultiTeamCard
  * @extends LitElement
+ *
+ * @property {object} hass - Home Assistant instance
+ * @property {object} _config - Card configuration with entities array
+ * @property {boolean} _isLoading - Loading state while fetching data
+ * @property {object} _cachedData - Offline cached match data
+ *
+ * @method render() - Renders all team matches in compact row format
+ * @method updated(changedProperties) - Handles hass updates and caches data
+ * @method _getMatch(stateObj) - Extracts best match per team (live → next → last)
+ * @method _renderMatch(entityId) - Renders single match row for team
  */
 class SoccerLiveMultiTeamCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _cachedData: {} }; }

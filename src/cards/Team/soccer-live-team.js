@@ -9,8 +9,25 @@ import { OfflineCache } from "../offline-cache.js";
 /**
  * Soccer Live Team Card
  * Displays current/next match for a team with detailed stats, form, and venue info
+ *
  * @class CalcioLiveTeamNextCard
  * @extends LitElement
+ *
+ * @property {object} hass - Home Assistant instance
+ * @property {object} _config - Card configuration (entity, skin, language, etc.)
+ * @property {boolean} _isLoading - Loading state while fetching data
+ * @property {boolean} showPopup - Whether to show match details popup
+ * @property {object} activeMatch - Currently selected match for popup display
+ * @property {Array} _eventSubscriptions - Event listener unsubscribe functions
+ * @property {string} _toastMessage - Toast notification message
+ * @property {boolean} _toastVisible - Toast visibility state
+ * @property {object} _cachedData - Offline cached match data
+ *
+ * @method render() - Renders the card with match info, stats, and popups
+ * @method updated(changedProperties) - Handles property changes, loads weather data
+ * @method _getMatch(stateObj) - Extracts primary match from state attributes
+ * @method _renderPopup() - Renders detailed match information popup
+ * @method _loadWeather(venue) - Fetches and caches weather for stadium
  */
 class CalcioLiveTeamNextCard extends LitElement {
   static get properties() {

@@ -8,24 +8,33 @@ import { OfflineCache } from "../offline-cache.js";
 
 /**
  * Soccer Live Countdown Card
- * Shows countdown to next match with live score display when match is active
+ * Shows countdown timer to next match with live score display when match is active
+ *
  * @class SoccerLiveCountdownCard
  * @extends LitElement
+ *
+ * @property {object} hass - Home Assistant instance
+ * @property {object} _config - Card configuration (entity, skin, language, etc.)
+ * @property {boolean} _isLoading - Loading state while fetching data
+ * @property {Date} _now - Current time for countdown calculations (updates every second)
+ * @property {object} _weatherBadge - Rendered weather badge HTML element
+ * @property {object} _cachedData - Offline cached match data
+ *
+ * @method render() - Renders countdown timer or live score
+ * @method updated(changedProperties) - Handles hass updates and loads weather
+ * @method _getNextMatch(stateObj) - Extracts next match in priority order (live → pre → post)
+ * @method _countdown(dateStr) - Calculates time remaining to match (days:hours:mins:secs)
+ * @method _parseDate(dateStr) - Parses DD/MM/YYYY HH:MM format into Date object
+ * @method _loadWeather(venue) - Fetches venue weather conditions via Open-Meteo API
  */
 class SoccerLiveCountdownCard extends LitElement {
   static get properties() {
     return {
-      /** @type {object} Home Assistant instance */
       hass: {},
-      /** @type {object} Card configuration */
       _config: {},
-      /** @type {boolean} Loading state */
       _isLoading: { type: Boolean },
-      /** @type {Date} Current time for countdown updates */
       _now: {},
-      /** @type {object} Weather badge HTML element */
       _weatherBadge: {},
-      /** @type {object} Cached match data for offline display */
       _cachedData: {}
     };
   }
