@@ -780,12 +780,15 @@ class CalcioLiveTeamNextCard extends LitElement {
       }
       if (stateObj && stateObj.attributes.matches && stateObj.attributes.matches[0]) {
         const match = stateObj.attributes.matches[0];
-        this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
+        if (match.venue !== this._lastWeatherVenue) {
+          this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
+        }
       }
     }
   }
 
   async _loadWeather(venue, venue_lat = null, venue_lon = null) {
+    this._lastWeatherVenue = venue;
     try {
       this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon);
       this.requestUpdate();
