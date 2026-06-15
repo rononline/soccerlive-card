@@ -209,7 +209,16 @@ class SoccerLiveNewsCard extends LitElement {
         color: var(--cl-text-2);
       }
       .news-meta .cat {
+        background: rgba(99,102,241,0.15);
         color: var(--cl-accent);
+        border-radius: 4px;
+        padding: 2px 7px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .news-meta .cat.premium {
+        background: rgba(251,191,36,0.18);
+        color: var(--cl-gold, #fbbf24);
       }
       .news-meta .date::before {
         content: '·';
@@ -217,6 +226,27 @@ class SoccerLiveNewsCard extends LitElement {
         opacity: 0.4;
       }
       .news-meta .cat + .date::before { content: '·'; }
+      .news-byline {
+        font-size: 10px;
+        color: var(--cl-text-2);
+        margin-top: 4px;
+        opacity: 0.7;
+      }
+      .news-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .news-tag {
+        font-size: 10px;
+        background: rgba(255,255,255,0.06);
+        color: var(--cl-text-2);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 4px;
+        padding: 2px 6px;
+        white-space: nowrap;
+      }
       .news-headline {
         font-size: 14px;
         font-weight: 800;

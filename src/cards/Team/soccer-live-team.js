@@ -607,8 +607,8 @@ class SoccerLiveTeamCard extends LitElement {
               </div>
             ` : ''}
             ${neutralSite ? html`<div class="extra-chip neutral">⚖️ <span>Neutraal terrein</span></div>` : ''}
-            ${match.has_stats ? html`<div class="extra-chip info">📊 <span>Stats</span></div>` : ''}
-            ${match.has_commentary ? html`<div class="extra-chip info">💬 <span>Commentary</span></div>` : ''}
+            ${match.has_stats ? html`<div class="extra-chip info ${match.links && match.links.stats ? 'clickable' : ''}" @click="${match.links && match.links.stats ? () => window.open(match.links.stats, '_blank') : null}" title="${match.links && match.links.stats ? 'Bekijk statistieken op ESPN' : 'Statistieken beschikbaar'}">📊 <span>Stats</span></div>` : ''}
+            ${match.has_commentary ? html`<div class="extra-chip info ${match.links && match.links.commentary ? 'clickable' : ''}" @click="${match.links && match.links.commentary ? () => window.open(match.links.commentary, '_blank') : null}" title="${match.links && match.links.commentary ? 'Bekijk live commentary op ESPN' : 'Commentary beschikbaar'}">💬 <span>Commentary</span></div>` : ''}
           </div>
         ` : ''}
 
@@ -1413,6 +1413,8 @@ class SoccerLiveTeamCard extends LitElement {
         position: relative;
         z-index: 2;
       }
+      .extra-chip.clickable { cursor: pointer; }
+      .extra-chip.clickable:hover { opacity: 0.8; transform: scale(1.03); transition: all 0.15s; }
       .extra-chip {
         display: inline-flex;
         align-items: center;
