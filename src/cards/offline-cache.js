@@ -1,7 +1,7 @@
 // Simple localStorage-based cache for sensor data
 // Allows cards to display last-known state when integration is offline
 
-const CACHE_KEY_PREFIX = 'soccerlive_cache_';
+const CACHE_KEY_PREFIX = 'soccer_live_cache_';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const _lastWritten = new Map(); // entityId -> last JSON string written
 const MAX_LAST_WRITTEN = 50;
