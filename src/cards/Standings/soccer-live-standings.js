@@ -450,7 +450,7 @@ class SoccerLiveStandingsCard extends LitElement {
           </div>
         ` : ''}
 
-        ${this._renderLegend()}
+        ${this._renderLegend(standingsGroup)}
       </ha-card>
     `;
   }
@@ -621,7 +621,27 @@ class SoccerLiveStandingsCard extends LitElement {
     `;
   }
 
-  _renderLegend() {
+  _renderLegend(standingsGroup) {
+    // Build legend from ESPN zone data when available
+    const espnZones = new Map();
+    for (const team of (standingsGroup && standingsGroup.standings || [])) {
+      if (team.zone_color && team.zone_label && !espnZones.has(team.zone_label)) {
+        espnZones.set(team.zone_label, { color: team.zone_color, abbrev: team.zone_abbrev });
+      }
+    }
+    if (espnZones.size) {
+      return html`
+        <div class="legend">
+          ${[...espnZones.entries()].map(([label, z]) => html`
+            <div class="legend-item" title="${label}">
+              <span class="legend-dot" style="background:${z.color};"></span>${z.abbrev || label}
+            </div>
+          `)}
+        </div>
+      `;
+    }
+
+    // Fallback: hardcoded zone presets
     const zones = this._getZoneConfig();
     const labels = this._getZoneLabels();
     const items = [
@@ -630,9 +650,7 @@ class SoccerLiveStandingsCard extends LitElement {
       { key: 'conference', dot: 'conf', positions: zones.conference, label: labels.conference },
       { key: 'relegation', dot: 'rel', positions: zones.relegation, label: labels.relegation },
     ].filter(item => item.label && this._hasZonePositions(item.positions));
-
     if (!items.length) return '';
-
     return html`
       <div class="legend">
         ${items.map(item => html`

@@ -403,7 +403,7 @@
           </div>
         `:""}
 
-        ${this._renderLegend()}
+        ${this._renderLegend(r)}
       </ha-card>
     `}_renderFullTable(e,t){let a=e,i=null;if(this.compactMode&&t>this.compactTop+this.compactBottom){const n=e.slice(0,this.compactTop),s=e.slice(t-this.compactBottom),o=t-this.compactTop-this.compactBottom,r=this.highlightTeam?e.slice(this.compactTop,t-this.compactBottom).find((e=>e.team_name&&e.team_name.toLowerCase().includes(this.highlightTeam))):null;a=[...n,...r?[r]:[],{_separator:!0,hiddenCount:o},...s],i=!0}return R`
       <table class="standings-table">
@@ -484,9 +484,17 @@
           </div>
         `:""}
       </div>
-    `}_renderLegend(){const e=this._getZoneConfig(),t=this._getZoneLabels(),a=[{key:"champions",dot:"cl",positions:e.champions,label:t.champions},{key:"europa",dot:"el",positions:e.europa,label:t.europa},{key:"conference",dot:"conf",positions:e.conference,label:t.conference},{key:"relegation",dot:"rel",positions:e.relegation,label:t.relegation}].filter((e=>e.label&&this._hasZonePositions(e.positions)));return a.length?R`
+    `}_renderLegend(e){const t=new Map;for(const a of e&&e.standings||[])a.zone_color&&a.zone_label&&!t.has(a.zone_label)&&t.set(a.zone_label,{color:a.zone_color,abbrev:a.zone_abbrev});if(t.size)return R`
+        <div class="legend">
+          ${[...t.entries()].map((e=>{let[t,a]=e;return R`
+            <div class="legend-item" title="${t}">
+              <span class="legend-dot" style="background:${a.color};"></span>${a.abbrev||t}
+            </div>
+          `}))}
+        </div>
+      `;const a=this._getZoneConfig(),i=this._getZoneLabels(),n=[{key:"champions",dot:"cl",positions:a.champions,label:i.champions},{key:"europa",dot:"el",positions:a.europa,label:i.europa},{key:"conference",dot:"conf",positions:a.conference,label:i.conference},{key:"relegation",dot:"rel",positions:a.relegation,label:i.relegation}].filter((e=>e.label&&this._hasZonePositions(e.positions)));return n.length?R`
       <div class="legend">
-        ${a.map((e=>R`
+        ${n.map((e=>R`
           <div class="legend-item">
             <span class="legend-dot ${e.dot}"></span>${this._t(e.label)}
           </div>
@@ -1824,13 +1832,13 @@
             </div>
           `}))}
       </div>
-    `}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this._config.entity,t=this.hass.states[e];if(!t){const t=Me.get(e);return t?Ae("⏱","Offline - showing cached data","Last update: "+new Date(t.data.timestamp||Date.now()).toLocaleTimeString(),"Waiting for integration to come online"):Ae("⚠️","Entity not found",`Unable to find: ${e}`,"Check the entity configuration")}if("unavailable"===t.state){const t=Me.get(e);if(!t||!t.data.matches)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=t.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const a=t&&"unavailable"!==t.state?t.attributes:this._cachedData;if(!a||!a.matches||0===a.matches.length){const e=this._config.entity||"";return e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed")||e.includes("soccer_live_next")||e.includes("soccer_live_all_mixed")?Te("📅",this._t("ui.off_season"),this._t("team.off_season")):Ae("⚠️",this._t("ui.wrong_entity_type"),e,this._t("ui.wrong_entity_type_hint"))}const i=a.matches[0],n=a.league_info?a.league_info[0]:null,s=n&&n.logo_href&&"N/A"!==n.logo_href?n.logo_href:null,o="in"===i.state,r="post"===i.state,l=o||r,c=n&&n.abbreviation&&"N/A"!==n.abbreviation?n.abbreviation:i.league_name&&"N/A"!==i.league_name?i.league_name:i.season_info&&"N/A"!==i.season_info&&this._shouldShowPhase(i.season_info)?this._translatePhase(i.season_info):"",d=i.venue&&"N/A"!==i.venue?i.venue:"",p=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",h=d?p?`${d}, ${p}`:d:"—",g=i.broadcast&&""!==i.broadcast&&"N/A"!==i.broadcast?i.broadcast:"",u=(Array.isArray(i.broadcasts)&&i.broadcasts.length&&i.broadcasts,i.neutral_site,parseInt(i.attendance,10)),m=!isNaN(u)&&u>0,f=this._hexToRgb(i.home_color),v=this._hexToRgb(i.away_color),_=f||v?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${f||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${v||"236,72,153"},0.18), transparent 55%)`:"",b=this.myTeam||(a.team_name||"").toLowerCase(),x=b&&i.home_team&&i.home_team.toLowerCase().includes(b),y=b&&i.away_team&&i.away_team.toLowerCase().includes(b);return R`
+    `}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this._config.entity,t=this.hass.states[e];if(!t){const t=Me.get(e);return t?Ae("⏱","Offline - showing cached data","Last update: "+new Date(t.data.timestamp||Date.now()).toLocaleTimeString(),"Waiting for integration to come online"):Ae("⚠️","Entity not found",`Unable to find: ${e}`,"Check the entity configuration")}if("unavailable"===t.state){const t=Me.get(e);if(!t||!t.data.matches)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=t.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const a=t&&"unavailable"!==t.state?t.attributes:this._cachedData;if(!a||!a.matches||0===a.matches.length){const e=this._config.entity||"";return e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed")||e.includes("soccer_live_next")||e.includes("soccer_live_all_mixed")?Te("📅",this._t("ui.off_season"),this._t("team.off_season")):Ae("⚠️",this._t("ui.wrong_entity_type"),e,this._t("ui.wrong_entity_type_hint"))}const i=a.matches[0],n=a.league_info?a.league_info[0]:null,s=n&&n.logo_href&&"N/A"!==n.logo_href?n.logo_href:null,o="in"===i.state,r="post"===i.state,l=o||r,c=n&&n.abbreviation&&"N/A"!==n.abbreviation?n.abbreviation:i.league_name&&"N/A"!==i.league_name?i.league_name:i.season_info&&"N/A"!==i.season_info&&this._shouldShowPhase(i.season_info)?this._translatePhase(i.season_info):"",d=i.venue&&"N/A"!==i.venue?i.venue:"",p=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",h=d?p?`${d}, ${p}`:d:"—",g=i.broadcast&&""!==i.broadcast&&"N/A"!==i.broadcast?i.broadcast:"",u=Array.isArray(i.broadcasts)&&i.broadcasts.length?i.broadcasts:g?[g]:[],m=i.neutral_site||!1,f=parseInt(i.attendance,10),v=!isNaN(f)&&f>0,_=this._hexToRgb(i.home_color),b=this._hexToRgb(i.away_color),x=_||b?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${_||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${b||"236,72,153"},0.18), transparent 55%)`:"",y=this.myTeam||(a.team_name||"").toLowerCase(),w=y&&i.home_team&&i.home_team.toLowerCase().includes(y),$=y&&i.away_team&&i.away_team.toLowerCase().includes(y);return R`
       <ha-card class="${o?"live":""}">
         <div class="bg-logos">
           <div class="bg-logo home"><img src="${i.home_logo}" alt="" loading="lazy"></div>
           <div class="bg-logo away"><img src="${i.away_logo}" alt="" loading="lazy"></div>
         </div>
-        <div class="hero-bg" style="${_}"></div>
+        <div class="hero-bg" style="${x}"></div>
 
         ${this.showEventToasts&&this._toastVisible?R`
           <div class="event-toast variant-${this._toastVariant}" .textContent=${this._toastMessage}></div>
@@ -1851,7 +1859,7 @@
             <div class="team-logo-wrap">
               <img class="team-logo-big" src="${i.home_logo}" alt="${i.home_team}" />
             </div>
-            <div class="team-name-big ${x?"my-team":""}">${i.home_team}</div>
+            <div class="team-name-big ${w?"my-team":""}">${i.home_team}</div>
             ${!o&&i.home_standing_summary?R`<div class="standing-summary">${i.home_standing_summary}</div>`:""}
             ${this._renderRecord(i.home_record)}
             ${this._renderForm(i.home_form)}
@@ -1867,7 +1875,7 @@
             <div class="team-logo-wrap">
               <img class="team-logo-big" src="${i.away_logo}" alt="${i.away_team}" />
             </div>
-            <div class="team-name-big ${y?"my-team":""}">${i.away_team}</div>
+            <div class="team-name-big ${$?"my-team":""}">${i.away_team}</div>
             ${!o&&i.away_standing_summary?R`<div class="standing-summary">${i.away_standing_summary}</div>`:""}
             ${this._renderRecord(i.away_record)}
             ${this._renderForm(i.away_form)}
@@ -1893,20 +1901,23 @@
             `}
         </div>
 
-        ${g||m?R`
+        ${u.length||v||m||i.has_stats||i.has_commentary?R`
           <div class="extras-row">
-            ${g?R`
+            ${u.length?R`
               <div class="extra-chip broadcast">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-                <span>${g}</span>
+                <span>${u.join(" · ")}</span>
               </div>
             `:""}
-            ${m?R`
+            ${v?R`
               <div class="extra-chip attendance">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <span>${u.toLocaleString(de(this.hass,this._config))} ${this._t("team.spectators")}</span>
+                <span>${f.toLocaleString(de(this.hass,this._config))} ${this._t("team.spectators")}</span>
               </div>
             `:""}
+            ${m?R`<div class="extra-chip neutral">⚖️ <span>Neutraal terrein</span></div>`:""}
+            ${i.has_stats?R`<div class="extra-chip info">📊 <span>Stats</span></div>`:""}
+            ${i.has_commentary?R`<div class="extra-chip info">💬 <span>Commentary</span></div>`:""}
           </div>
         `:""}
 
@@ -2921,6 +2932,7 @@
                 <div class="news-headline">${e.headline}</div>
                 ${e.description?R`<div class="news-desc">${e.description}</div>`:""}
                 ${e.byline?R`<div class="news-byline">✍ ${e.byline}</div>`:""}
+                ${e.tags&&e.tags.length>1?R`<div class="news-tags">${e.tags.slice(0,4).map((e=>R`<span class="news-tag">${e}</span>`))}</div>`:""}
               </div>
             </article>
           `))}

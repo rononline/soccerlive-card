@@ -592,12 +592,12 @@ class SoccerLiveTeamCard extends LitElement {
           }
         </div>
 
-        ${(broadcast || hasAttendance) ? html`
+        ${(broadcasts.length || hasAttendance || neutralSite || match.has_stats || match.has_commentary) ? html`
           <div class="extras-row">
-            ${broadcast ? html`
+            ${broadcasts.length ? html`
               <div class="extra-chip broadcast">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-                <span>${broadcast}</span>
+                <span>${broadcasts.join(' · ')}</span>
               </div>
             ` : ''}
             ${hasAttendance ? html`
@@ -606,6 +606,9 @@ class SoccerLiveTeamCard extends LitElement {
                 <span>${attendance.toLocaleString(resolveLang(this.hass, this._config))} ${this._t('team.spectators')}</span>
               </div>
             ` : ''}
+            ${neutralSite ? html`<div class="extra-chip neutral">⚖️ <span>Neutraal terrein</span></div>` : ''}
+            ${match.has_stats ? html`<div class="extra-chip info">📊 <span>Stats</span></div>` : ''}
+            ${match.has_commentary ? html`<div class="extra-chip info">💬 <span>Commentary</span></div>` : ''}
           </div>
         ` : ''}
 
