@@ -1,57 +1,81 @@
 # Changelog
 
-## v3.0.0 (2026-06-14)
+## v3.1.8 (2026-06-15)
+- Fix entity ID prefix in all editors and stub configs: `soccerlive_` → `soccer_live_`
+- Fix OfflineCache localStorage key prefix: `soccerlive_cache_` → `soccer_live_`
+- Remove dead code in sensor.py (unused variables, commented-out debug logs)
 
-### ✨ Major Features
-- **Phase 1: Loading States** - All cards show loading spinner while fetching data
-- **Phase 2: Error Handling** - Friendly error messages with troubleshooting hints
-- **Phase 3: Editor UI Improvements** - Unified editor styling with helper components
-- **Phase 4: Offline Fallback** - localStorage caching for graceful degradation (24h TTL)
-- **Phase 5: Push Notifications** - Full documentation on integration-based push notifications
-- **Phase 6: Type Safety & JSDoc** - Comprehensive JSDoc comments for better IDE support
-- **Phase 7: Mobile Responsiveness** - Media queries for tablets (600px) and phones (400px)
+## v3.1.7 (2026-06-15)
+- Differentiated empty states: `renderInfoState` (grey, neutral) vs `renderCardError` (red, action required)
+- Team card: detect wrong entity type vs off-season
+- LiveCommentary: proper empty state when no live match is active
+- LiveMatch: distinguish no-data (off-season) from no-live-match
+- Countdown: off-season info state instead of generic error
+- i18n: 8 new keys in all 7 languages (`ui.no_live_match`, `ui.off_season`, `ui.endpoint_unsupported`, `ui.wrong_entity_type` + hints)
 
-### 🐛 Bug Fixes
-- Fixed Team card loading state infinite loop (duplicate updated() methods)
-- Corrected attributes reference in cached data fallback
+## v3.1.6 (2026-06-15)
+- XSS fix: escape `label` in `renderLineup()` (was unescaped `m.home_team` / `m.away_team`)
 
-### 📊 Cards Improved
-- Team Card - loading states, offline cache, mobile responsive, JSDoc
-- Countdown Card - loading states, offline cache, mobile responsive
-- LiveMatch Card - loading states, offline cache, mobile responsive
-- MultiTeam Card - loading states, offline cache
+## v3.1.5 (2026-06-15)
+- XSS fix: escape all ESPN data in popup `innerHTML` (Team card + Tutte card)
+- Added `esc()` helper covering team names, scores, player names, formations, event text, h2h data
 
-### 📝 Editors Enhanced
-All 8 card editors now use unified `editor-helper.js`:
-- Team, Countdown, MultiTeam, LiveMatch, LiveCommentary, MiniStandings, TeamCompetitions, Lineup, Classifica, Tutte
+## v3.1.4 (2026-06-15)
+- Fix offline cache fallback in Countdown and LiveMatch cards
+- `stateObj` is truthy even when `state === 'unavailable'`, so `_cachedData` was never used
 
-### 🔄 Migration from v2.x
-- v2.x maintained backward compatibility with old `calcio_live_` domain
-- v3.0.0 uses `soccer_live` domain exclusively
-- Existing `calcio_live_*` entities should be migrated to `soccer_live_*` equivalents
-- HACS will auto-update cards to v3.0.0
+## v3.1.3 (2026-06-15)
+- Fix offline cache fallback in Team card (same bug as v3.1.4)
+- Clean up `package.json`: remove ~140 transitive dependencies; only `lit` and `lit-element` remain in `dependencies`
+- Suppress webpack bundle size warning (338 KiB is expected for a lit-element card)
 
-### ⚠️ Breaking Changes
-- Requires Home Assistant 2024.6+
-- Old `calcio_live_` domain references removed
-- Cards now require `sensor.soccer_live_*` entities
+## v3.1.2 (2026-06-15)
+- Translate loading timeout errors in all 7 languages
+- Reset `_lastWeatherVenue` in `setConfig` so weather reloads when entity changes in editor
+- Cap `_lastWritten` Map in OfflineCache at 50 entries
+
+## v3.1.1 (2026-06-15)
+- Loading timeout: show error after 10s if entity never responds (Team, Countdown, LiveMatch, MultiTeam)
+- OfflineCache: skip `localStorage.setItem` when data hasn't changed (content-based throttle)
+
+## v3.1.0 (2026-06-15)
+- Add World Cup 2026 venues (16 stadiums: USA, Canada, Mexico)
+- Add Champions League venues (40+ European stadiums)
+- Add Turkish, Portuguese, Scottish club stadiums
+- Weather only reloads when venue changes (was: every hass state update)
+- Cap VENUE_CACHE and WEATHER_CACHE at 150 entries
+- `getVenueCoordinates()` is now synchronous
+
+## v3.0.9 (2026-06-15)
+- Add all 18 Eredivisie stadiums to `KNOWN_VENUES` (including Sparta-Stadion Het Kasteel)
+- Fix Philips Stadion coordinates (were wrong)
+- Remove bogus `Sanako Stadium` entry
+
+## v3.0.8 (2026-06-15)
+- Disable browser-side Nominatim geocoding (caused CORS errors and 429 rate limiting)
+- Weather badge now uses server-provided coordinates only, with hardcoded fallback list
+
+## v3.0.7 (2026-06-15)
+- Fix release tag: v3.0.6 pointed to wrong commit
+
+## v3.0.6 (2026-06-15)
+- Server-side stadium geocoding via integration (subsequently reverted in v3.0.8 due to CORS)
+
+## v3.0.5 (2026-06-15)
+- XSS fix: replace `innerHTML` with `textContent` in toast messages (Classifica, Tutte)
+- Memory leak fix: `clearTimeout` in `disconnectedCallback` (Classifica, Tutte)
+- JSDoc documentation on Team, Countdown, LiveMatch, MultiTeam cards
+- i18n: replace hardcoded English strings with translation keys in MultiTeam card
+- Mini Standings: replace hardcoded "No standings data" with `renderCardError()`
 
 ---
 
-## v2.26.26 (2026-06-14)
-- HOTFIX: Team card loading state bug
-
-## v2.26.25 (2026-06-14)
-- Phase 7: Mobile responsiveness with media queries
-
-## v2.26.24 (2026-06-14)
-- Phase 5+6: Push notifications documentation and JSDoc
-
-## v2.26.23 (2026-06-14)
-- Phase 4: Offline fallback with localStorage caching
-
-## v2.26.22 (2026-06-14)
-- Phase 3: Editor UI improvements with helper components
-
-## v2.26.21 (2026-06-14)
-- Phase 1: Add loading states to all main cards
+## v3.0.0 (2026-06-14)
+- Initial Soccer Live Card release (fork of Calcio Live Card by @Bobsilvio)
+- Phase 1: Loading states on all cards
+- Phase 2: Error handling with `renderCardError` and `renderLoading`
+- Phase 3: Editor UI improvements with `editor-helper.js`
+- Phase 4: Offline fallback with localStorage caching (24h TTL)
+- Phase 5: Push notifications documentation
+- Phase 6: JSDoc type annotations
+- Phase 7: Mobile responsiveness (media queries at 600px and 400px)
