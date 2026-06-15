@@ -12,14 +12,14 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 
 | Card | Type | Shows |
 |---|---|---|
-| 🏅 **Standings** | `soccer-live-classifica` | League table with coloured zones (CL / EL / relegation), gold for #1 |
+| 🏅 **Standings** | `soccer-live-standings` | League table with coloured zones (CL / EL / relegation), gold for #1 |
 | ⚽ **Team** | `soccer-live-team` | Match: live score, form pills, season record, top scorer, TV channel, attendance, weather |
 | 📋 **Matches** | `soccer-live-matches` | Day-grouped matches with live highlighting and FT badge |
 | 📰 **News** | `soccer-live-news` | Article feed with images and relative timestamps |
 | 👥 **Lineup** | `soccer-live-lineup` | Starting eleven for both teams, formation, shirt numbers |
 | ⏱ **Timeline** | `soccer-live-timeline` | Minute-by-minute log (goals, cards, substitutions) |
 | 🏆 **Bracket** | `soccer-live-bracket` | Knockout bracket: list view or tournament tree with trophy |
-| 🥇 **Top Scorers** | `soccer-live-cannonieri` | Top scorers list with photo, team logo and goal tally |
+| 🥇 **Top Scorers** | `soccer-live-scorers` | Top scorers list with photo, team logo and goal tally |
 | ⏳ **Countdown** | `soccer-live-countdown` | Countdown timer to next match with live score display and weather |
 | 🏆 **Mini Standings** | `soccer-live-mini-standings` | Compact standings table with configurable rows and groups |
 | ⚽ **Live Match** | `soccer-live-live-match` | Current match with key events, possession, and shot stats |
@@ -69,12 +69,10 @@ All cards share these common options:
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `skin` | `dark` | Theme: `dark`, `light`, `feyenoord`, `classic`, `neon`, `gold` |
 
-> **Note on card type names:** Two card types keep their original Italian names for backward compatibility — `soccer-live-classifica` (standings) and `soccer-live-cannonieri` (top scorers). Dashboards using these types continue to work without any changes. The sensor entity IDs they point to are English (`sensor.soccer_live_standings_*`, `sensor.soccer_live_scorers_*`).
-
 ### 🏅 Standings
 
 ```yaml
-type: custom:soccer-live-classifica
+type: custom:soccer-live-standings
 entity: sensor.soccer_live_standings_ned_1
 max_teams_visible: 18
 hide_header: false
@@ -151,7 +149,7 @@ Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World 
 ### 🥇 Top Scorers
 
 ```yaml
-type: custom:soccer-live-cannonieri
+type: custom:soccer-live-scorers
 entity: sensor.soccer_live_scorers_ned_1
 max_items: 10
 hide_header: false

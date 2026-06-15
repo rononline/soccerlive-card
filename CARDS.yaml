@@ -9,7 +9,7 @@
 
 # 🏅 STANDINGS
 # League table with coloured zones (CL / EL / relegation), top team in gold
-type: custom:soccer-live-classifica
+type: custom:soccer-live-standings
 entity: sensor.soccer_live_standings_ned_1
 language: auto           # auto-detect from HA locale
 skin: dark              # color theme
@@ -80,7 +80,7 @@ tree_show_playoffs: false
 
 # 🥇 TOP SCORERS
 # Top scorers list with photo, team logo and goal tally
-type: custom:soccer-live-cannonieri
+type: custom:soccer-live-scorers
 entity: sensor.soccer_live_scorers_ned_1
 max_items: 10
 hide_header: false
@@ -200,7 +200,7 @@ views:
 
   - title: Eredivisie
     cards:
-      - type: custom:soccer-live-classifica
+      - type: custom:soccer-live-standings
         entity: sensor.soccer_live_standings_ned_1
         max_teams_visible: 10
 
@@ -214,6 +214,6 @@ views:
         entity: sensor.soccer_live_bracket_uefa_champions
         style: tree
 
-      - type: custom:soccer-live-cannonieri
+      - type: custom:soccer-live-scorers
         entity: sensor.soccer_live_scorers_uefa_champions
         max_items: 10
