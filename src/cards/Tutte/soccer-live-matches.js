@@ -485,7 +485,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
     }
     const m = this.activeMatch;
     const tx = (k) => this._t(k);
-    // Lees thema-kleuren uit de shadow DOM (CSS vars werken niet buiten shadow DOM)
+    const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     const cs = getComputedStyle(this);
     const clBg = cs.getPropertyValue('--cl-bg').trim() || '#1a1f2e';
     const clText = cs.getPropertyValue('--cl-text').trim() || '#f8fafc';
@@ -497,14 +497,14 @@ class CalcioLiveTodayMatchesCard extends LitElement {
       <div style="background:${clBg}; padding:24px; border-radius:20px; width:90%; max-width:560px; max-height:85vh; overflow-y:auto; border:1px solid ${clDivider}; box-shadow:0 24px 64px rgba(0,0,0,0.6); margin:auto; color:${clText}; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;">
         <h3 style="margin:0 0 20px; font-size:22px; font-weight:800; letter-spacing:-0.02em; background:linear-gradient(135deg,${clAccent},${clAccent2}); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">${tx('popup.match_details')}</h3>
         <div style="display:flex; justify-content:center; align-items:center; gap:18px; margin-bottom:24px;">
-          <img style="width:64px; height:64px; object-fit:contain;" src="${m.home_logo}" alt="${m.home_team}" />
+          <img style="width:64px; height:64px; object-fit:contain;" src="${esc(m.home_logo)}" alt="${esc(m.home_team)}" />
           <div style="text-align:center;">
-            <div style="font-size:38px; font-weight:900; letter-spacing:-0.04em; line-height:1;">${(!m.home_score || m.home_score === 'N/A') ? '-' : m.home_score} <span style="opacity:0.4;">-</span> ${(!m.away_score || m.away_score === 'N/A') ? '-' : m.away_score}</div>
-            <div style="font-size:12px; color:${clText2}; margin-top:8px; font-weight:600;">${(m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : '')}</div>
+            <div style="font-size:38px; font-weight:900; letter-spacing:-0.04em; line-height:1;">${esc((!m.home_score || m.home_score === 'N/A') ? '-' : m.home_score)} <span style="opacity:0.4;">-</span> ${esc((!m.away_score || m.away_score === 'N/A') ? '-' : m.away_score)}</div>
+            <div style="font-size:12px; color:${clText2}; margin-top:8px; font-weight:600;">${esc((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : ''))}</div>
           </div>
-          <img style="width:64px; height:64px; object-fit:contain;" src="${m.away_logo}" alt="${m.away_team}" />
+          <img style="width:64px; height:64px; object-fit:contain;" src="${esc(m.away_logo)}" alt="${esc(m.away_team)}" />
         </div>
-        <p style="text-align:center; color:${clText2}; font-size:14px; margin:0 0 20px;"><strong>${m.home_team}</strong> tegen <strong>${m.away_team}</strong></p>
+        <p style="text-align:center; color:${clText2}; font-size:14px; margin:0 0 20px;"><strong>${esc(m.home_team)}</strong> tegen <strong>${esc(m.away_team)}</strong></p>
         <div id="matches-events-container"></div>
         <button id="popup-close-btn" style="background:linear-gradient(135deg,${clAccent},${clAccent2}); color:white; padding:12px 20px; border:none; border-radius:12px; cursor:pointer; margin-top:20px; font-weight:800; width:100%; font-size:14px;">${tx('generic.close')}</button>
       </div>
@@ -517,7 +517,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
       if (!items.length) return '';
       return `<div style="margin-bottom:14px; padding:14px; background:${color.bg}; border-left:3px solid ${color.border}; border-radius:10px;">
         <h5 style="margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:${color.border}; font-weight:800;">${title}</h5>
-        <ul style="margin:0; padding-left:18px; font-size:13px; color:#cbd5e1;">${items.map(i => `<li style="margin:4px 0;">${i}</li>`).join('')}</ul>
+        <ul style="margin:0; padding-left:18px; font-size:13px; color:#cbd5e1;">${items.map(i => `<li style="margin:4px 0;">${esc(i)}</li>`).join('')}</ul>
       </div>`;
     };
     let html = '';
