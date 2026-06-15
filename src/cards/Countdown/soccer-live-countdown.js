@@ -247,7 +247,7 @@ class SoccerLiveCountdownCard extends LitElement {
               <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
               ${match.clock ? html`<div class="minute">${match.clock}</div>` : ''}
             ` : isFinished ? html`
-              <div class="ft-badge">FT</div>
+              <div class="ft-badge">${this._t('status.full_time')}</div>
               <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
             ` : countdown ? html`
               ${match.date ? html`<div class="sched-date">${match.date}</div>` : ''}
