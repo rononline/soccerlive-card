@@ -13,14 +13,14 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 | Card | Type | Shows |
 |---|---|---|
 | 🏅 **Standings** | `soccer-live-classifica` | League table with coloured zones (CL / EL / relegation), gold for #1 |
-| ⚽ **Team** | `soccer-live-team` | Match: live score, form pills, season record, top scorer, TV channel, attendance |
+| ⚽ **Team** | `soccer-live-team` | Match: live score, form pills, season record, top scorer, TV channel, attendance, weather |
 | 📋 **Matches** | `soccer-live-matches` | Day-grouped matches with live highlighting and FT badge |
 | 📰 **News** | `soccer-live-news` | Article feed with images and relative timestamps |
 | 👥 **Lineup** | `soccer-live-lineup` | Starting eleven for both teams, formation, shirt numbers |
 | ⏱ **Timeline** | `soccer-live-timeline` | Minute-by-minute log (goals, cards, substitutions) |
 | 🏆 **Bracket** | `soccer-live-bracket` | Knockout bracket: list view or tournament tree with trophy |
 | 🥇 **Top Scorers** | `soccer-live-cannonieri` | Top scorers list with photo, team logo and goal tally |
-| ⏳ **Countdown** | `soccer-live-countdown` | Countdown timer to next match with live score display |
+| ⏳ **Countdown** | `soccer-live-countdown` | Countdown timer to next match with live score display and weather |
 | 🏆 **Mini Standings** | `soccer-live-mini-standings` | Compact standings table with configurable rows and groups |
 | ⚽ **Live Match** | `soccer-live-live-match` | Current match with key events, possession, and shot stats |
 | 🔄 **Multi Team** | `soccer-live-multi-team` | Multiple teams' matches in one card |
@@ -28,12 +28,15 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 | 💬 **Live Commentary** | `soccer-live-live-commentary` | Real-time play-by-play commentary with event icons |
 
 ### Features
+
 - 🌍 **Multi-language** — EN / NL / DE / PT / FR / ES / IT, auto-detected via HA locale
 - 🎨 **Animations** — live pulse, score pop, goal confetti + banner
 - 🔔 **In-card toasts** — optional on goals and cards, no notification spam
 - 🏆 **Bracket** — list style or tournament tree with SVG connector lines
 - 🎨 **Themes** — `dark`, `light`, `feyenoord`, `classic`, `neon`, `gold`
 - 📱 **Responsive** — works on mobile, tablet and desktop
+- 📡 **Offline caching** — last-known data shown when integration is unavailable
+- 🌦️ **Weather** — current conditions at the match venue (Team and Countdown cards)
 
 ---
 
@@ -41,36 +44,36 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 
 | Standings | Team | Matches |
 |---|---|---|
-| ![Standings](images/classifica.png) | ![Team](images/squadra.png) | ![Matches](images/campionato.png) |
+| ![Standings](images/standings.png) | ![Team](images/team.png) | ![Matches](images/matches.png) |
 
 ---
 
 ## 📦 Installation via HACS
 
-1. Add the repository as a **custom repository** in HACS:  
+1. Add the repository as a **custom repository** in HACS:
    `https://github.com/rononline/soccerlive-card` — category: **Dashboard**
 2. Install **Soccer Live Card** via HACS
-3. Restart Home Assistant and do a hard refresh of the dashboard (Ctrl+F5 / Cmd+Shift+R)
+3. Restart Home Assistant and do a hard refresh of the dashboard (`Ctrl+F5` / `Cmd+Shift+R`)
 
-> Make sure the [Soccer Live integration](https://github.com/rononline/soccerlive) is installed.
+> Make sure the [Soccer Live integration](https://github.com/rononline/soccerlive) is installed first.
 
 ---
 
 ## 🃏 Card reference
 
-All cards share two common options:
+All cards share these common options:
 
-| Option | Description |
-|---|---|
-| `entity` | The Soccer Live sensor. The editor auto-filters compatible sensors. |
-| `language` | Force language: `auto` (follows HA locale), `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
-| `skin` | `dark` (default), `light`, `feyenoord`, `classic`, `neon`, `gold` |
+| Option | Default | Description |
+|---|---|---|
+| `entity` | required | The Soccer Live sensor entity ID |
+| `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
+| `skin` | `dark` | Theme: `dark`, `light`, `feyenoord`, `classic`, `neon`, `gold` |
 
 ### 🏅 Standings
 
 ```yaml
 type: custom:soccer-live-classifica
-entity: sensor.soccerlive_classifica_ned_1
+entity: sensor.soccerlive_standings_ned_1
 max_teams_visible: 18
 hide_header: false
 show_event_toasts: false
@@ -83,10 +86,14 @@ type: custom:soccer-live-team
 entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
 show_event_toasts: true
 score_size: normal    # normal / big / huge
+show_previous_matches: true
+show_form_trend: true
 ```
 
 With `show_event_toasts: true`, a goal triggers a full celebration:
 confetti burst, flashing card border, large "GOAL!" banner, score animation and vibration on mobile.
+
+The card shows a **weather badge** (temperature, wind) for the match venue when conditions are available.
 
 ### 📋 Matches
 
@@ -136,19 +143,19 @@ compact: false
 tree_show_playoffs: false
 ```
 
-The bracket sensor is created automatically for cup competitions:  
+The bracket sensor is created automatically for cup competitions:
 Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World Cup, Euros, and more.
 
 ### 🥇 Top Scorers
 
 ```yaml
 type: custom:soccer-live-cannonieri
-entity: sensor.soccerlive_cannonieri_ned_1
+entity: sensor.soccerlive_scorers_ned_1
 max_items: 10
 hide_header: false
 ```
 
-The top scorers sensor (`soccerlive_cannonieri_*`) is created automatically for every competition sensor.  
+The top scorers sensor (`soccerlive_scorers_*`) is created automatically for every competition sensor.
 Shows: rank, player photo, name, team logo and goal tally.
 
 > Not all competitions provide top scorer data via ESPN. If the sensor shows `Not available`, the competition does not support this endpoint.
@@ -160,25 +167,28 @@ type: custom:soccer-live-countdown
 entity: sensor.soccerlive_next_ned_1_feyenoord_rotterdam
 ```
 
-Shows a countdown timer to the next match, or live score if match is active.
+Shows a countdown timer to the next match, switches to live score when the match is active.
+Also shows a **weather badge** for the match venue.
 
 ### 🏆 Mini Standings
 
 ```yaml
 type: custom:soccer-live-mini-standings
-entity: sensor.soccerlive_classifica_ned_1
+entity: sensor.soccerlive_standings_ned_1
 max_rows: 5
 group: null          # optional: filter standings group (e.g. "WK A", "WK B")
 highlight_team: null # optional: highlight team name
 ```
 
 Compact standings table with configurable max rows and optional team highlighting.
+Rows sorted by points, then wins, then goal difference.
 
 ### ⚽ Live Match
 
 ```yaml
 type: custom:soccer-live-live-match
 entity: sensor.soccerlive_all_ned_1
+max_stats: 4
 ```
 
 Displays the current/best match with key events, possession stats, and shots on target.
@@ -187,38 +197,43 @@ Displays the current/best match with key events, possession stats, and shots on 
 
 ```yaml
 type: custom:soccer-live-multi-team
-entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
+entities:
+  - sensor.soccerlive_next_ned_1_feyenoord_rotterdam
+  - sensor.soccerlive_all_mixed_ajax
+  - sensor.soccerlive_all_mixed_psv_eindhoven
+title: My Teams
+hide_header: false
 ```
 
-Shows all teams' matches in one card, auto-grouped by team.
+Shows multiple teams' matches in one compact card, each on its own row.
 
 ### 🗂️ Team Competitions
 
 ```yaml
 type: custom:soccer-live-team-competitions
 entity: sensor.soccerlive_all_mixed_feyenoord_rotterdam
-team_name: "Team Name"          # optional: override team name
-default_comp: "Eredivisie"      # optional: default competition tab
+team_name: "Feyenoord"      # optional: override team name
+default_comp: "Eredivisie"  # optional: default competition tab
 ```
 
-All team competitions with tab selector for easy switching between leagues/cups.
+All team competitions in one card with a tab selector to switch between leagues and cups.
 
 ### 💬 Live Commentary
 
 ```yaml
 type: custom:soccer-live-live-commentary
-entity: sensor.soccerlive_commentary_competition_team
+entity: sensor.soccerlive_commentary_ned_1
 ```
 
 Real-time play-by-play commentary with event icons and score progression.
 
-> Requires `soccerlive_commentary_*` sensor from the integration. Commentary availability depends on ESPN API support for the specific competition.
+> Requires a `soccerlive_commentary_*` sensor. Commentary availability depends on ESPN API support for the specific competition.
 
 ---
 
 ## 🌍 Multi-language
 
-All UI text is translated via `src/i18n.js` with **90+ keys** in seven languages.
+All UI text is translated via `src/i18n.js` with **100+ keys** in seven languages.
 
 | Key | EN | NL | DE | PT | FR | ES | IT |
 |---|---|---|---|---|---|---|---|
@@ -226,10 +241,11 @@ All UI text is translated via `src/i18n.js` with **90+ keys** in seven languages
 | `event.goal` | Goal | Doelpunt | Tor | Gol | But | Gol | Goal |
 | `round.r16` | Round of 16 | Achtste finales | Achtelfinale | Oitavas | Huitièmes | Octavos | Ottavi |
 | `status.halftime` | Halftime | Rust | Halbzeit | Intervalo | Mi-temps | Descanso | Intervallo |
+| `ui.loading_timeout` | Loading timeout | Laden mislukt | Ladetimeout | Tempo esgotado | Délai dépassé | Tiempo agotado | Timeout |
 
 ---
 
 ## 📜 License
 
-GPL-3.0 — see [LICENSE](LICENSE).  
+GPL-3.0 — see [LICENSE](LICENSE).
 Data via ESPN public APIs.
