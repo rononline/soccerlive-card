@@ -82,6 +82,15 @@ class SoccerLiveCompetitionScheduleCard extends LitElement {
     return parts[1] || '';
   }
 
+  _dateRange(matches) {
+    if (!matches || !matches.length) return '';
+    const dates = matches.map(m => m.date).filter(Boolean);
+    if (!dates.length) return '';
+    const first = this._formatDate(dates[0]);
+    const last = this._formatDate(dates[dates.length - 1]);
+    return first === last ? first : `${first} – ${last}`;
+  }
+
   render() {
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
@@ -120,8 +129,7 @@ class SoccerLiveCompetitionScheduleCard extends LitElement {
           <button class="nav-btn ${hasPrev ? '' : 'disabled'}" ?disabled="${!hasPrev}"
             @click="${() => { if (hasPrev) this._round = roundKeys[safeIdx - 1]; }}">‹</button>
           <div class="round-display">
-            <div class="round-label">${this._t('competition.round') || 'Speelronde'}</div>
-            <div class="round-number">${currentKey}</div>
+            <div class="round-date-range">${this._dateRange(matches)}</div>
           </div>
           <button class="nav-btn ${hasNext ? '' : 'disabled'}" ?disabled="${!hasNext}"
             @click="${() => { if (hasNext) this._round = roundKeys[safeIdx + 1]; }}">›</button>
@@ -192,12 +200,12 @@ class SoccerLiveCompetitionScheduleCard extends LitElement {
       .round-display {
         background: var(--cl-surface-2, rgba(255,255,255,0.08));
         border-radius: 8px;
-        padding: 8px 20px;
+        padding: 10px 16px;
         text-align: center;
-        min-width: 110px;
+        min-width: 120px;
+        flex: 1;
       }
-      .round-label { font-size: 11px; color: var(--cl-text-2); text-transform: uppercase; letter-spacing: 0.06em; }
-      .round-number { font-size: 22px; font-weight: 900; color: var(--cl-text); line-height: 1.1; }
+      .round-date-range { font-size: 13px; font-weight: 700; color: var(--cl-text); line-height: 1.3; }
 
       .match-list { border-top: 1px solid var(--cl-divider); }
       .match-row {
