@@ -68,7 +68,22 @@ class SoccerLiveMiniStandingsCard extends LitElement {
 
     // Find active group
     const activeGroup = groups.find(g => g.name === this._selectedGroup) || groups[0];
-    const standings = activeGroup ? (activeGroup.standings || []) : [];
+    let standings = activeGroup ? (activeGroup.standings || []) : [];
+
+    // Sort by points (desc), then wins (desc), then goal difference (desc)
+    standings = standings.sort((a, b) => {
+      const ptsA = parseInt(a.pts || a.points || 0);
+      const ptsB = parseInt(b.pts || b.points || 0);
+      if (ptsA !== ptsB) return ptsB - ptsA;
+
+      const wA = parseInt(a.W || a.wins || 0);
+      const wB = parseInt(b.W || b.wins || 0);
+      if (wA !== wB) return wB - wA;
+
+      const gdA = parseInt(a.GD || a.goal_difference || 0);
+      const gdB = parseInt(b.GD || b.goal_difference || 0);
+      return gdB - gdA;
+    });
 
     const maxRows = this._config.max_rows || standings.length;
     const myTeam = (this._config.highlight_team || '').toLowerCase();
