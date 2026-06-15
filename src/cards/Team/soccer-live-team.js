@@ -592,7 +592,7 @@ class SoccerLiveTeamCard extends LitElement {
           }
         </div>
 
-        ${(broadcasts.length || hasAttendance || neutralSite || match.has_stats || match.has_commentary) ? html`
+        ${(broadcasts.length || hasAttendance || neutralSite || match.has_stats || match.has_commentary || (match.links && match.links.video)) ? html`
           <div class="extras-row">
             ${broadcasts.length ? html`
               <div class="extra-chip broadcast">
