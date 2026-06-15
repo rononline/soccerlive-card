@@ -233,6 +233,24 @@ Real-time play-by-play commentary with event icons and score progression.
 
 ---
 
+## 🔗 Integration version requirements
+
+Some card features require a minimum version of the [Soccer Live integration](https://github.com/rononline/soccerlive):
+
+| Feature | Min. integration version |
+|---|---|
+| Standings zone colors from ESPN (`zone_color`, `zone_label`) | v3.4.0 |
+| Team standing summary below name (`home_standing_summary`) | v3.4.0 |
+| Broadcast channels list (`broadcasts`) | v3.4.0 |
+| Stats / Commentary / Video chips with links (`match.links`) | v3.4.1 |
+| Neutral venue flag (`neutral_site`) | v3.4.0 |
+| News byline, tags, premium flag | v3.4.0 |
+| Season form from summary (`last_five_home/away`) | v3.4.0 |
+
+Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
+
+---
+
 ## 🌍 Multi-language
 
 All UI text is translated via `src/i18n.js` with **100+ keys** in seven languages.

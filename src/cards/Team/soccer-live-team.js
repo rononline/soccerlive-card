@@ -606,9 +606,10 @@ class SoccerLiveTeamCard extends LitElement {
                 <span>${attendance.toLocaleString(resolveLang(this.hass, this._config))} ${this._t('team.spectators')}</span>
               </div>
             ` : ''}
-            ${neutralSite ? html`<div class="extra-chip neutral">⚖️ <span>Neutraal terrein</span></div>` : ''}
-            ${match.has_stats && match.links && (match.links.stats || match.links.summary) ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.stats || match.links.summary, '_blank', 'noopener,noreferrer')}" title="Open ESPN stats">📊 <span>${this._t('card.stats')}</span></div>` : ''}
-            ${match.has_commentary && match.links && (match.links.commentary || match.links.summary) ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.commentary || match.links.summary, '_blank', 'noopener,noreferrer')}" title="Open ESPN commentary">💬 <span>${this._t('card.commentary')}</span></div>` : ''}
+            ${neutralSite ? html`<div class="extra-chip neutral">⚖️ <span>${this._t('ui.neutral_site')}</span></div>` : ''}
+            ${match.has_stats && match.links && (match.links.stats || match.links.summary) ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.stats || match.links.summary, '_blank', 'noopener,noreferrer')}" title="${this._t('ui.open_stats')}">📊 <span>${this._t('card.stats')}</span></div>` : ''}
+            ${match.has_commentary && match.links && (match.links.commentary || match.links.summary) ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.commentary || match.links.summary, '_blank', 'noopener,noreferrer')}" title="${this._t('ui.open_commentary')}">💬 <span>${this._t('card.commentary')}</span></div>` : ''}
+            ${match.links && match.links.video ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.video, '_blank', 'noopener,noreferrer')}" title="${this._t('ui.open_video')}">🎬 <span>${this._t('card.video')}</span></div>` : ''}
           </div>
         ` : ''}
 
