@@ -1,11 +1,16 @@
 # Changelog
 
-## v3.5.0 (2026-06-15)
-- Standings legend uses ESPN `zone_label`/`zone_abbrev` when available; tooltip on each row shows full zone name
-- Team card: 📊 Stats / 💬 Commentary / ⚖️ Neutral venue chips when ESPN signals availability
-- Team card: `last_five_home/away` from summary used as form source when available
-- Team card: all broadcast channels shown (was: only first)
-- News card: tags shown below byline (up to 4)
+## v3.6.0 (2026-06-15)
+- Standings legend uses ESPN `zone_label`/`zone_abbrev`; tooltip on each row shows full zone name
+- Team card: 📊 Stats / 💬 Commentary / 🎬 Video / ⚖️ Neutral venue chips (clickable, hidden when no link)
+- Team card: `last_five_home/away` from summary as form source; min. 2 results required
+- Team card: all broadcast channels shown; previous match date no longer wraps
+- Season form dots translated via i18n (D → G in Dutch); single-result form hidden
+- News card: byline, premium badge ★, category tags with CSS
+- Stats/Commentary/Video chip labels translated in all 7 languages
+- i18n complete for FR/ES/DE: `card.stats`, `card.video`, `ui.neutral_site`, `ui.open_*`
+- `noopener,noreferrer` on all external `window.open` calls
+- Competition schedule card removed (ESPN provides no reliable matchday numbers)
 
 ## v3.4.0 (2026-06-15)
 - Standings card uses ESPN `zone_color` directly (no hardcoded rules needed)
