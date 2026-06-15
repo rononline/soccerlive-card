@@ -16,7 +16,7 @@ module.exports = {
           options: {
             presets: [
               ['@babel/preset-env', {
-                targets: "> 0.25%, not dead" // Imposta il target per un supporto ampio dei browser
+                targets: "> 0.25%, not dead",
               }]
             ]
           }
@@ -24,5 +24,6 @@ module.exports = {
       }
     ]
   },
-  mode: 'production'
+  mode: 'production',
+  performance: { hints: false }, // suppress size warnings (338 KiB is normal for a lit card)
 };
