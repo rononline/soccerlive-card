@@ -478,7 +478,7 @@ class CalcioLiveTeamNextCard extends LitElement {
         return renderCardError('⏱', this._t('ui.loading_timeout'), `${this._t('ui.entity_not_responding')}: ${this._config.entity}`, this._t('ui.check_integration'));
       return renderLoading(this._t('ui.loading'));
     }
-    const attributes = stateObj ? stateObj.attributes : this._cachedData;
+    const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {
       return html`
         <ha-card class="empty">
