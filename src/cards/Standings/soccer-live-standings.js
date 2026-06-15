@@ -113,7 +113,7 @@ const ZONE_PRESETS = {
   },
 };
 
-class CalcioLiveStandingsCard extends LitElement {
+class SoccerLiveStandingsCard extends LitElement {
   static get properties() {
     return {
       hass: {},
@@ -237,7 +237,7 @@ class CalcioLiveStandingsCard extends LitElement {
   }
 
   getCardSize() { return 5; }
-  static getConfigElement() { return document.createElement("soccer-live-classifica-editor"); }
+  static getConfigElement() { return document.createElement("soccer-live-standings-editor"); }
   static getStubConfig() {
     return {
       entity: "sensor.soccerlive",
@@ -1097,14 +1097,11 @@ class CalcioLiveStandingsCard extends LitElement {
   }
 }
 
-// Card type name kept as "soccer-live-classifica" for backward compatibility.
-// Existing dashboards using this type continue to work without changes.
-// The sensor entity it points to is now sensor.soccer_live_standings_*.
-customElements.define("soccer-live-classifica", CalcioLiveStandingsCard);
+customElements.define("soccer-live-standings", SoccerLiveStandingsCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'soccer-live-classifica',
+  type: 'soccer-live-standings',
   name: 'Soccer Live Standings Card',
   description: 'Shows the standings for a league or cup competition',
 });

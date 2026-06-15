@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 
-class CalcioLiveCannonieriCard extends LitElement {
+class SoccerLiveScorersCard extends LitElement {
   static get properties() {
     return {
       hass: {},
@@ -25,7 +25,7 @@ class CalcioLiveCannonieriCard extends LitElement {
   }
 
   static getConfigElement() {
-    return document.createElement("soccer-live-cannonieri-editor");
+    return document.createElement("soccer-live-scorers-editor");
   }
 
   static getStubConfig() {
@@ -218,14 +218,11 @@ class CalcioLiveCannonieriCard extends LitElement {
   }
 }
 
-// Card type name kept as "soccer-live-cannonieri" for backward compatibility.
-// Existing dashboards using this type continue to work without changes.
-// The sensor entity it points to is now sensor.soccer_live_scorers_*.
-customElements.define("soccer-live-cannonieri", CalcioLiveCannonieriCard);
+customElements.define("soccer-live-scorers", SoccerLiveScorersCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "soccer-live-cannonieri",
+  type: "soccer-live-scorers",
   name: "Calcio Live · Top Scorers",
   description: "Top scorers for a league",
   preview: false,

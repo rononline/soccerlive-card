@@ -1,5 +1,5 @@
-import "./cards/Classifica/soccer-live-classifica.js";
-import "./cards/Classifica/soccer-live-classifica-editor.js";
+import "./cards/Standings/soccer-live-standings.js";
+import "./cards/Standings/soccer-live-standings-editor.js";
 import "./cards/Tutte/soccer-live-matches.js";
 import "./cards/Tutte/soccer-live-matches-editor.js";
 import "./cards/Team/soccer-live-team.js";
@@ -12,8 +12,8 @@ import "./cards/Timeline/soccer-live-timeline.js";
 import "./cards/Timeline/soccer-live-timeline-editor.js";
 import "./cards/Bracket/soccer-live-bracket.js";
 import "./cards/Bracket/soccer-live-bracket-editor.js";
-import "./cards/Cannonieri/soccer-live-cannonieri.js";
-import "./cards/Cannonieri/soccer-live-cannonieri-editor.js";
+import "./cards/Scorers/soccer-live-scorers.js";
+import "./cards/Scorers/soccer-live-scorers-editor.js";
 import "./cards/MiniStandings/soccer-live-mini-standings.js";
 import "./cards/MiniStandings/soccer-live-mini-standings-editor.js";
 import "./cards/Countdown/soccer-live-countdown.js";
