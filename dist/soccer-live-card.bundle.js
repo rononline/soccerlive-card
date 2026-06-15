@@ -1926,14 +1926,14 @@
         ${this._renderH2H(i.head_to_head)}
         ${this._renderUpcomingList(t.attributes.upcoming_matches,t.attributes.matches,this.myTeam||t.attributes.team_name)}
       </ha-card>
-    `}_relativeDate(e){if(!e)return"";const t=e.split(" "),[a,i,n]=(t[0]||"").split(/[-\/]/).map(Number);if(!a||!i||!n)return t[0]||"";const s=new Date(n,i-1,a),o=new Date;o.setHours(0,0,0,0);const r=Math.round((s-o)/864e5);if(1===r)return this._t("time.tomorrow");if(r<=6&&r>1)return this._t("time.in_n_d",{n:r});de(this.hass,this._config);const l=`month.${i}`;return`${a} ${this._t(l)}`}_teamBadge(e,t){const a=t&&"N/A"!==t?`#${t.replace("#","")}`:"rgba(var(--cl-accent-rgb),0.25)";return R`<span class="abbrev-badge" style="background:${a}">${e}</span>`}_renderFormTrend(e,t,a){const i=(a||"").toLowerCase(),n=e&&e.length>0?e:(t||[]).filter((e=>"post"===e.state)).slice(-10).reverse();if(0===n.length)return"";const s=n.map((e=>{const t=e.home_team&&e.home_team.toLowerCase().includes(i),a=parseInt(e.home_score),n=parseInt(e.away_score);return isNaN(a)||isNaN(n)?null:a===n?"D":t&&a>n||!t&&n>a?"W":"L"})).filter(Boolean).reverse();if(0===s.length)return"";const o=s.filter((e=>"W"===e)).length,r=s.filter((e=>"D"===e)).length,l=s.filter((e=>"L"===e)).length;return R`
+    `}_relativeDate(e){if(!e)return"";const t=e.split(" "),[a,i,n]=(t[0]||"").split(/[-\/]/).map(Number);if(!a||!i||!n)return t[0]||"";const s=new Date(n,i-1,a),o=new Date;o.setHours(0,0,0,0);const r=Math.round((s-o)/864e5);if(1===r)return this._t("time.tomorrow");if(r<=6&&r>1)return this._t("time.in_n_d",{n:r});de(this.hass,this._config);const l=`month.${i}`;return`${a} ${this._t(l)}`}_teamBadge(e,t){const a=t&&"N/A"!==t?`#${t.replace("#","")}`:"rgba(var(--cl-accent-rgb),0.25)";return R`<span class="abbrev-badge" style="background:${a}">${e}</span>`}_renderFormTrend(e,t,a){const i=(a||"").toLowerCase(),n=e&&e.length>0?e:(t||[]).filter((e=>"post"===e.state)).slice(-10).reverse();if(0===n.length)return"";const s=n.map((e=>{const t=e.home_team&&e.home_team.toLowerCase().includes(i),a=parseInt(e.home_score),n=parseInt(e.away_score);return isNaN(a)||isNaN(n)?null:a===n?"D":t&&a>n||!t&&n>a?"W":"L"})).filter(Boolean).reverse();if(s.length<2)return"";const o=s.filter((e=>"W"===e)).length,r=s.filter((e=>"D"===e)).length,l=s.filter((e=>"L"===e)).length;return R`
       <div class="form-trend-section">
         <div class="upcoming-list-title">${this._t("team.form_trend")||"Seizoenvorm"}</div>
         <div class="form-trend-row">
           <div class="form-trend-dots">
-            ${s.map((e=>R`<span class="ft-dot ${e.toLowerCase()}">${e}</span>`))}
+            ${s.map((e=>R`<span class="ft-dot ${e.toLowerCase()}">${this._t("form."+e)}</span>`))}
           </div>
-          <span class="form-trend-summary">${o}W ${r}G ${l}V</span>
+          <span class="form-trend-summary">${o}${this._t("form.W")} ${r}${this._t("form.D")} ${l}${this._t("form.L")}</span>
         </div>
       </div>
     `}_renderPreviousMatches(e,t,a){const i=e&&e.length>0?e.filter((e=>"post"===e.state||!e.state)):t?t.filter((e=>"post"===e.state)).slice(-3).reverse():[];if(0===i.length)return"";const n=(a||"").toLowerCase();return R`
