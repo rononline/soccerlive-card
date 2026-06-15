@@ -12,6 +12,8 @@ const TRANSLATIONS = {
     'card.news': 'News',
     'card.standings': 'Standings',
     'card.scorers': 'Top Scorers',
+    'card.stats': 'Stats',
+    'card.commentary': 'Commentary',
 
     // Bracket rounds
     'round.final': 'Final',
@@ -199,6 +201,8 @@ const TRANSLATIONS = {
     'card.news': 'Nieuws',
     'card.standings': 'Stand',
     'card.scorers': 'Topschutters',
+    'card.stats': 'Stats',
+    'card.commentary': 'Commentaar',
 
     'round.final': 'Finale',
     'round.semifinals': 'Halve finales',
@@ -365,6 +369,8 @@ const TRANSLATIONS = {
     'card.news': 'Notizie',
     'card.standings': 'Classifica',
     'card.scorers': 'Capocannonieri',
+    'card.stats': 'Statistiche',
+    'card.commentary': 'Telecronaca',
 
     'round.final': 'Finale',
     'round.semifinals': 'Semifinali',
@@ -1029,6 +1035,8 @@ const TRANSLATIONS = {
     'card.news': 'Notícias',
     'card.standings': 'Classificação',
     'card.scorers': 'Artilheiros',
+    'card.stats': 'Estatísticas',
+    'card.commentary': 'Comentário',
 
     'round.final': 'Final',
     'round.semifinals': 'Meias-finais',
