@@ -915,18 +915,22 @@ class SoccerLiveTeamCard extends LitElement {
     }
 
     // Timeline (key events)
-    const keyEvents = m.key_events || [];
+    const keyEvents = (m.key_events || []).filter(e => {
+        const txt = (e.type_text || '').toLowerCase();
+        return !txt.includes('delay');
+      });
     if (keyEvents.length) {
       const iconOf = (ev) => {
         const t = (ev.type || '').toLowerCase();
         const txt = (ev.type_text || '').toLowerCase();
         if (t === 'goal' || ev.scoring_play) return '⚽';
         if (txt.includes('yellow')) return '🟨';
-        if (txt.includes('red')) return '🟥';
-        if (t === 'substitution') return '🔄';
-        if (txt.includes('halftime')) return '⏸';
-        if (txt.includes('kickoff')) return '▶';
-        if (txt.includes('end')) return '🏁';
+        if (txt.includes('red card')) return '🟥';
+        if (t === 'substitution' || txt.includes('substitut')) return '🔄';
+        if (txt.includes('halftime') || txt === 'end of half') return '⏸';
+        if (txt.includes('kickoff') || txt.includes('start') || txt.includes('2nd half')) return '▶';
+        if (txt.includes('end') && !txt.includes('delay')) return '🏁';
+        if (txt.includes('var')) return '📺';
         return '·';
       };
       eventsHTML += `<div style="margin-bottom:14px; padding:14px; background:rgba(251,191,36,0.08); border-left:3px solid #fbbf24; border-radius:10px;">

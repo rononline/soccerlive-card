@@ -52,7 +52,7 @@ class SoccerLiveTimelineCard extends LitElement {
     const matches = stateObj.attributes.matches || [];
     if (matches.length === 0) return html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`;
     const m = matches[0];
-    const events = m.key_events || stateObj.attributes.key_events || [];
+    const events = (m.key_events || stateObj.attributes.key_events || []).filter(e => !((e.type_text || '').toLowerCase().includes('delay')));
 
     if (events.length === 0) {
       return html`
