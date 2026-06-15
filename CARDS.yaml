@@ -10,7 +10,7 @@
 # 🏅 STANDINGS
 # League table with coloured zones (CL / EL / relegation), top team in gold
 type: custom:soccer-live-classifica
-entity: sensor.soccerlive_classifica_ned_1
+entity: sensor.soccerlive_standings_ned_1
 language: auto           # auto-detect from HA locale
 skin: dark              # color theme
 max_teams_visible: 18   # show top N teams (rest expandable)
@@ -81,11 +81,11 @@ tree_show_playoffs: false
 # 🥇 TOP SCORERS
 # Top scorers list with photo, team logo and goal tally
 type: custom:soccer-live-cannonieri
-entity: sensor.soccerlive_cannonieri_ned_1
+entity: sensor.soccerlive_scorers_ned_1
 max_items: 10
 hide_header: false
 
-# Top scorers sensors (soccerlive_cannonieri_*) are created automatically
+# Top scorers sensors (soccerlive_scorers_*) are created automatically
 # for every competition sensor
 
 ---
@@ -102,7 +102,7 @@ skin: dark
 # 🏆 MINI STANDINGS
 # Compact standings table with configurable rows and optional team highlight
 type: custom:soccer-live-mini-standings
-entity: sensor.soccerlive_classifica_ned_1
+entity: sensor.soccerlive_standings_ned_1
 language: auto
 skin: dark
 max_rows: 5                 # show top 5 teams
@@ -201,7 +201,7 @@ views:
   - title: Eredivisie
     cards:
       - type: custom:soccer-live-classifica
-        entity: sensor.soccerlive_classifica_ned_1
+        entity: sensor.soccerlive_standings_ned_1
         max_teams_visible: 10
 
       - type: custom:soccer-live-matches
@@ -215,5 +215,5 @@ views:
         style: tree
 
       - type: custom:soccer-live-cannonieri
-        entity: sensor.soccerlive_cannonieri_uefa_champions
+        entity: sensor.soccerlive_scorers_uefa_champions
         max_items: 10
