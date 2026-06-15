@@ -607,8 +607,8 @@ class SoccerLiveTeamCard extends LitElement {
               </div>
             ` : ''}
             ${neutralSite ? html`<div class="extra-chip neutral">⚖️ <span>Neutraal terrein</span></div>` : ''}
-            ${match.has_stats ? html`<div class="extra-chip info ${match.links && match.links.stats ? 'clickable' : ''}" @click="${match.links && match.links.stats ? () => window.open(match.links.stats, '_blank') : null}" title="${match.links && match.links.stats ? 'Bekijk statistieken op ESPN' : 'Statistieken beschikbaar'}">📊 <span>${this._t('card.stats')}</span></div>` : ''}
-            ${match.has_commentary ? html`<div class="extra-chip info ${match.links && match.links.commentary ? 'clickable' : ''}" @click="${match.links && match.links.commentary ? () => window.open(match.links.commentary, '_blank') : null}" title="${match.links && match.links.commentary ? 'Open ESPN commentary' : this._t('card.commentary')}">💬 <span>${this._t('card.commentary')}</span></div>` : ''}
+            ${match.has_stats ? html`<div class="extra-chip info clickable" @click="${() => { const u = match.links && (match.links.stats || match.links.summary); if (u) window.open(u, '_blank'); }}" title="Open ESPN stats">📊 <span>${this._t('card.stats')}</span></div>` : ''}
+            ${match.has_commentary ? html`<div class="extra-chip info clickable" @click="${() => { const u = match.links && (match.links.commentary || match.links.summary); if (u) window.open(u, '_blank'); }}" title="Open ESPN commentary">💬 <span>${this._t('card.commentary')}</span></div>` : ''}
           </div>
         ` : ''}
 
