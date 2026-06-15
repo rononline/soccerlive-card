@@ -172,7 +172,14 @@ class SoccerLiveTeamCardEditor extends LitElement {
             <option value="red-white"  ?selected=${this._config.skin === 'red-white'}>Red & White</option>
             <option value="classic"    ?selected=${this._config.skin === 'classic'}>Classic (groen)</option>
             <option value="neon"       ?selected=${this._config.skin === 'neon'}>Neon</option>
-            <option value="gold"       ?selected=${this._config.skin === 'gold'}>Gold</option>
+            <option value="gold"        ?selected=${this._config.skin === 'gold'}>Gold</option>
+            <option value="orange"     ?selected=${this._config.skin === 'orange'}>Orange (Netherlands)</option>
+            <option value="blue"       ?selected=${this._config.skin === 'blue'}>Blue (Chelsea / PSG / Inter)</option>
+            <option value="black-white" ?selected=${this._config.skin === 'black-white'}>Black &amp; White (Juventus)</option>
+            <option value="feyenoord"  ?selected=${this._config.skin === 'feyenoord'}>Feyenoord (red/white)</option>
+            <option value="arsenal"    ?selected=${this._config.skin === 'arsenal'}>Arsenal</option>
+            <option value="barcelona"  ?selected=${this._config.skin === 'barcelona'}>Barcelona</option>
+            <option value="real-madrid" ?selected=${this._config.skin === 'real-madrid'}>Real Madrid</option>
           </select>
         </div>
         <div>
