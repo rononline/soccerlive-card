@@ -643,7 +643,7 @@ class CalcioLiveTeamNextCard extends LitElement {
 
   _renderPreviousMatches(previousMatches, fallbackMatches, trackedTeam) {
     const prev = previousMatches && previousMatches.length > 0
-      ? previousMatches
+      ? previousMatches.filter(m => m.state === 'post' || !m.state)
       : (fallbackMatches ? fallbackMatches.filter(m => m.state === 'post').slice(-3).reverse() : []);
     if (prev.length === 0) return '';
     const tracked = (trackedTeam || '').toLowerCase();
