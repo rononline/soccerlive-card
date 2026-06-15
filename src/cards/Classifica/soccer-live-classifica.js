@@ -1097,6 +1097,9 @@ class CalcioLiveStandingsCard extends LitElement {
   }
 }
 
+// Card type name kept as "soccer-live-classifica" for backward compatibility.
+// Existing dashboards using this type continue to work without changes.
+// The sensor entity it points to is now sensor.soccer_live_standings_*.
 customElements.define("soccer-live-classifica", CalcioLiveStandingsCard);
 
 window.customCards = window.customCards || [];
