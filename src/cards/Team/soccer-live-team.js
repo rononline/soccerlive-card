@@ -920,6 +920,24 @@ class SoccerLiveTeamCard extends LitElement {
         return !txt.includes('delay');
       });
     if (keyEvents.length) {
+      const EVENT_TEXT_I18N = {
+        'kickoff': 'status.kickoff',
+        'halftime': 'status.halftime',
+        'half time': 'status.halftime',
+        'end of half': 'status.halftime',
+        'start 2nd half': 'status.second_half',
+        'second half': 'status.second_half',
+        'first half': 'status.first_half',
+        'full time': 'status.full_time',
+        'final': 'status.full_time',
+        'end': 'status.end',
+      };
+      const translateEventText = (ev) => {
+        const raw = (ev.athletes || []).filter(Boolean).join(', ') || ev.type_text || '';
+        if ((ev.athletes || []).filter(Boolean).length) return raw;
+        const key = EVENT_TEXT_I18N[(ev.type_text || '').toLowerCase()];
+        return key ? tx(key) : raw;
+      };
       const iconOf = (ev) => {
         const t = (ev.type || '').toLowerCase();
         const txt = (ev.type_text || '').toLowerCase();
@@ -939,7 +957,7 @@ class SoccerLiveTeamCard extends LitElement {
           ${keyEvents.map(e => `<li style="display:grid; grid-template-columns:36px 24px 1fr; gap:8px; align-items:start; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12px; color:#cbd5e1;">
             <span style="text-align:right; font-weight:700; color:#94a3b8; font-variant-numeric:tabular-nums;">${esc(e.clock || '')}</span>
             <span style="text-align:center;">${iconOf(e)}</span>
-            <span><strong style="color:#fff;">${esc((e.athletes||[]).filter(Boolean).join(', ') || e.type_text || '')}</strong>${e.team ? `<br><span style="color:#94a3b8; font-size:11px;">${esc(e.team)}</span>` : ''}</span>
+            <span><strong style="color:#fff;">${esc(translateEventText(e))}</strong>${e.team ? `<br><span style="color:#94a3b8; font-size:11px;">${esc(e.team)}</span>` : ''}</span>
           </li>`).join('')}
         </ul>
       </div>`;
