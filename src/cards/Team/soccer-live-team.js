@@ -654,7 +654,7 @@ class SoccerLiveTeamCard extends LitElement {
       if (hs === as_) return 'D';
       return ((isHome && hs > as_) || (!isHome && as_ > hs)) ? 'W' : 'L';
     }).filter(Boolean).reverse(); // oudste → nieuwste
-    if (results.length === 0) return '';
+    if (results.length < 2) return '';
     const wins = results.filter(r => r === 'W').length;
     const draws = results.filter(r => r === 'D').length;
     const losses = results.filter(r => r === 'L').length;
@@ -663,9 +663,9 @@ class SoccerLiveTeamCard extends LitElement {
         <div class="upcoming-list-title">${this._t('team.form_trend') || 'Seizoenvorm'}</div>
         <div class="form-trend-row">
           <div class="form-trend-dots">
-            ${results.map(r => html`<span class="ft-dot ${r.toLowerCase()}">${r}</span>`)}
+            ${results.map(r => html`<span class="ft-dot ${r.toLowerCase()}">${this._t('form.' + r)}</span>`)}
           </div>
-          <span class="form-trend-summary">${wins}W ${draws}G ${losses}V</span>
+          <span class="form-trend-summary">${wins}${this._t('form.W')} ${draws}${this._t('form.D')} ${losses}${this._t('form.L')}</span>
         </div>
       </div>
     `;
