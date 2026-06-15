@@ -1862,7 +1862,7 @@
             <div class="team-name-big ${w?"my-team":""}">${i.home_team}</div>
             ${!o&&i.home_standing_summary?R`<div class="standing-summary">${i.home_standing_summary}</div>`:""}
             ${this._renderRecord(i.home_record)}
-            ${this._renderForm(i.home_form)}
+            ${o?this._renderForm(i.home_form):this._renderForm(i.last_five_home)||this._renderForm(i.home_form)}
             ${o?"":this._renderTopScorer(i.home_top_scorer)}
           </div>
 
@@ -1878,7 +1878,7 @@
             <div class="team-name-big ${$?"my-team":""}">${i.away_team}</div>
             ${!o&&i.away_standing_summary?R`<div class="standing-summary">${i.away_standing_summary}</div>`:""}
             ${this._renderRecord(i.away_record)}
-            ${this._renderForm(i.away_form)}
+            ${o?this._renderForm(i.away_form):this._renderForm(i.last_five_away)||this._renderForm(i.away_form)}
             ${o?"":this._renderTopScorer(i.away_top_scorer)}
           </div>
         </div>

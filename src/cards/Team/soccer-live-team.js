@@ -547,7 +547,7 @@ class SoccerLiveTeamCard extends LitElement {
             <div class="team-name-big ${homeIsMyTeam ? 'my-team' : ''}">${match.home_team}</div>
             ${!isLive && match.home_standing_summary ? html`<div class="standing-summary">${match.home_standing_summary}</div>` : ''}
             ${this._renderRecord(match.home_record)}
-            ${this._renderForm(match.home_form)}
+            ${!isLive ? (this._renderForm(match.last_five_home) || this._renderForm(match.home_form)) : this._renderForm(match.home_form)}
             ${!isLive ? this._renderTopScorer(match.home_top_scorer) : ''}
           </div>
 
@@ -566,7 +566,7 @@ class SoccerLiveTeamCard extends LitElement {
             <div class="team-name-big ${awayIsMyTeam ? 'my-team' : ''}">${match.away_team}</div>
             ${!isLive && match.away_standing_summary ? html`<div class="standing-summary">${match.away_standing_summary}</div>` : ''}
             ${this._renderRecord(match.away_record)}
-            ${this._renderForm(match.away_form)}
+            ${!isLive ? (this._renderForm(match.last_five_away) || this._renderForm(match.away_form)) : this._renderForm(match.away_form)}
             ${!isLive ? this._renderTopScorer(match.away_top_scorer) : ''}
           </div>
         </div>

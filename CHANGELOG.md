@@ -1,5 +1,36 @@
 # Changelog
 
+## v3.5.0 (2026-06-15)
+- Standings legend uses ESPN `zone_label`/`zone_abbrev` when available; tooltip on each row shows full zone name
+- Team card: 📊 Stats / 💬 Commentary / ⚖️ Neutral venue chips when ESPN signals availability
+- Team card: `last_five_home/away` from summary used as form source when available
+- Team card: all broadcast channels shown (was: only first)
+- News card: tags shown below byline (up to 4)
+
+## v3.4.0 (2026-06-15)
+- Standings card uses ESPN `zone_color` directly (no hardcoded rules needed)
+- Team card shows `standing_summary` below team name in pre-match (e.g. "3rd in Eredivisie")
+- News card: premium badge ★, author (byline), category tags
+- Countdown + LiveMatch: broadcast channels and neutral venue indicator in meta line
+- Fixed: "Calcio Live · Top Scorers" renamed to "Soccer Live Top Scorers" in Add Card picker
+
+## v3.3.0 (2026-06-15)
+- ESC key closes popup in Team and Matches cards
+- Timeline: Start/End Delay events filtered out (ESPN broadcast markers)
+- Timeline: event labels translated (Kickoff → Aftrap, Halftime → Rust, etc.)
+- Countdown: FT badge translated via i18n
+- Arsenal, Barcelona, Real Madrid skins added
+- Orange, Blue, Black-White skins added; `feyenoord` alias fixed
+- All 12 skins visible in every editor dropdown
+- Italian card types renamed: `soccer-live-classifica` → `soccer-live-standings`, `soccer-live-cannonieri` → `soccer-live-scorers`
+- Cached data used consistently (Countdown, LiveMatch): `attributes?.` instead of `stateObj.attributes`
+- Team editor filter shows `all_mixed` sensors alongside `next`
+- Stub configs corrected for Team, Matches, Standings cards
+- OfflineCache key prefix fixed: `soccerlive_cache_` → `soccer_live_`
+- Releases consolidated: removed 50+ micro-releases, replaced with 3 milestone releases
+
+## v3.2.0 (2026-06-15)
+
 ## v3.1.8 (2026-06-15)
 - Fix entity ID prefix in all editors and stub configs: `soccerlive_` → `soccer_live_`
 - Fix OfflineCache localStorage key prefix: `soccerlive_cache_` → `soccer_live_`
