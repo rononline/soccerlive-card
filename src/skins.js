@@ -186,12 +186,112 @@ export const skinStyles = css`
     --cl-toast-bg: #090600;
     --cl-num-bg: #090600;
   }
+
+  /* ---------- ORANGE (Netherlands / Ajax / Dutch clubs) ---------- */
+  :host([data-skin="orange"]) {
+    --cl-accent: #f97316;
+    --cl-accent-2: #fb923c;
+    --cl-accent-rgb: 249,115,22;
+    --cl-accent-2-rgb: 251,146,60;
+    --cl-live: #ef4444;
+    --cl-live-glow: rgba(249,115,22,0.65);
+    --cl-cl: #f97316;
+    --cl-el: #fbbf24;
+    --cl-rel: #dc2626;
+    --cl-conf: #f59e0b;
+    --cl-gold: #fbbf24;
+    --cl-gold-glow: rgba(251,191,36,0.45);
+    --cl-gold-text: #fde68a;
+    --cl-bg: #0d0600;
+    --cl-surface: rgba(249,115,22,0.08);
+    --cl-surface-2: rgba(249,115,22,0.14);
+    --cl-card-2: rgba(249,115,22,0.08);
+    --cl-divider: rgba(249,115,22,0.20);
+    --cl-glass-border: rgba(249,115,22,0.24);
+    --cl-text: #fff8f0;
+    --cl-text-2: #c09060;
+    --cl-shadow: rgba(0,0,0,0.45);
+    --cl-overlay-strong: rgba(0,0,0,0.60);
+    --cl-overlay-soft: rgba(0,0,0,0.28);
+    --cl-chip-bg: rgba(249,115,22,0.12);
+    --cl-chip-border: rgba(249,115,22,0.28);
+    --cl-toast-bg: #080400;
+    --cl-num-bg: #080400;
+  }
+
+  /* ---------- BLUE (Chelsea / PSG / Man City / Inter / Napoli / Lazio) ---------- */
+  :host([data-skin="blue"]) {
+    --cl-accent: #2563eb;
+    --cl-accent-2: #60a5fa;
+    --cl-accent-rgb: 37,99,235;
+    --cl-accent-2-rgb: 96,165,250;
+    --cl-live: #ef4444;
+    --cl-live-glow: rgba(239,68,68,0.5);
+    --cl-cl: #2563eb;
+    --cl-el: #f97316;
+    --cl-rel: #dc2626;
+    --cl-conf: #7c3aed;
+    --cl-gold: #fbbf24;
+    --cl-gold-glow: rgba(251,191,36,0.45);
+    --cl-gold-text: #fde68a;
+    --cl-bg: #00050f;
+    --cl-surface: rgba(37,99,235,0.08);
+    --cl-surface-2: rgba(37,99,235,0.14);
+    --cl-card-2: rgba(37,99,235,0.08);
+    --cl-divider: rgba(37,99,235,0.20);
+    --cl-glass-border: rgba(37,99,235,0.24);
+    --cl-text: #f0f4ff;
+    --cl-text-2: #7090c0;
+    --cl-shadow: rgba(0,0,0,0.50);
+    --cl-overlay-strong: rgba(0,0,0,0.65);
+    --cl-overlay-soft: rgba(0,0,0,0.30);
+    --cl-chip-bg: rgba(37,99,235,0.12);
+    --cl-chip-border: rgba(37,99,235,0.28);
+    --cl-toast-bg: #00030a;
+    --cl-num-bg: #00030a;
+  }
+
+  /* ---------- BLACK-WHITE (Juventus / Newcastle / Borussia) ---------- */
+  :host([data-skin="black-white"]) {
+    --cl-accent: #e2e8f0;
+    --cl-accent-2: #ffffff;
+    --cl-accent-rgb: 226,232,240;
+    --cl-accent-2-rgb: 255,255,255;
+    --cl-live: #ef4444;
+    --cl-live-glow: rgba(239,68,68,0.5);
+    --cl-cl: #e2e8f0;
+    --cl-el: #f97316;
+    --cl-rel: #ef4444;
+    --cl-conf: #a0aec0;
+    --cl-gold: #fbbf24;
+    --cl-gold-glow: rgba(251,191,36,0.45);
+    --cl-gold-text: #fde68a;
+    --cl-bg: #000000;
+    --cl-surface: rgba(255,255,255,0.06);
+    --cl-surface-2: rgba(255,255,255,0.10);
+    --cl-card-2: rgba(255,255,255,0.06);
+    --cl-divider: rgba(255,255,255,0.12);
+    --cl-glass-border: rgba(255,255,255,0.15);
+    --cl-text: #ffffff;
+    --cl-text-2: #94a3b8;
+    --cl-shadow: rgba(0,0,0,0.70);
+    --cl-overlay-strong: rgba(0,0,0,0.70);
+    --cl-overlay-soft: rgba(0,0,0,0.40);
+    --cl-chip-bg: rgba(255,255,255,0.09);
+    --cl-chip-border: rgba(255,255,255,0.18);
+    --cl-toast-bg: #000000;
+    --cl-num-bg: #000000;
+  }
 `;
 
-const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
+const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold', 'orange', 'blue', 'black-white'];
+
+// Aliases: user-facing name -> internal data-skin value
+const SKIN_ALIASES = { 'feyenoord': 'red-white' };
 
 export function resolveSkin(config) {
   const s = config && typeof config.skin === 'string' ? config.skin.toLowerCase() : 'dark';
+  if (SKIN_ALIASES[s]) return SKIN_ALIASES[s];
   return VALID_SKINS.includes(s) ? s : 'dark';
 }
 
