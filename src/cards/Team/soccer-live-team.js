@@ -276,7 +276,7 @@ class SoccerLiveTeamCard extends LitElement {
 
   getCardSize() { return 4; }
   static getConfigElement() { return document.createElement("soccer-live-team-editor"); }
-  static getStubConfig() { return { entity: "sensor.soccerlive", show_event_toasts: false }; }
+  static getStubConfig() { return { entity: "sensor.soccer_live_next_", show_event_toasts: false }; }
 
   showDetails(match) {
     this.activeMatch = match;

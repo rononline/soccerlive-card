@@ -240,7 +240,7 @@ class SoccerLiveStandingsCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-standings-editor"); }
   static getStubConfig() {
     return {
-      entity: "sensor.soccerlive",
+      entity: "sensor.soccer_live_standings_",
       max_teams_visible: 10,
       hide_header: false,
       selected_group: '',
