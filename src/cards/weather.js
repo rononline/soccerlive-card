@@ -8,20 +8,47 @@ const CACHE_DURATION = 3600000; // 1 hour
 
 // Common stadium coordinates (venue name -> lat/lon)
 const KNOWN_VENUES = {
-  'Feyenoord Stadium': { lat: 51.8896, lon: 4.5219 }, // De Kuip, Rotterdam
+  // Eredivisie
+  'Johan Cruijff Arena': { lat: 52.3145, lon: 4.9425 },         // Ajax
+  'Johan Cruijff ArenA': { lat: 52.3145, lon: 4.9425 },
+  'Philips Stadion': { lat: 51.4424, lon: 5.4675 },             // PSV
+  'Stadion Feyenoord': { lat: 51.8896, lon: 4.5219 },           // Feyenoord
+  'Feyenoord Stadium': { lat: 51.8896, lon: 4.5219 },
+  'De Kuip': { lat: 51.8896, lon: 4.5219 },
   'Stadion de Kuip': { lat: 51.8896, lon: 4.5219 },
-  'Ajax Stadium': { lat: 52.3145, lon: 4.9425 }, // Johan Cruijff ArenA
-  'Johan Cruijff Arena': { lat: 52.3145, lon: 4.9425 },
-  'Sanako Stadium': { lat: 52.1601, lon: 5.9850 }, // PSV
-  'Philips Stadion': { lat: 51.3542, lon: 5.2862 },
-  'Allianz Arena': { lat: 48.2188, lon: 11.6247 }, // Bayern Munich
-  'Signal Iduna Park': { lat: 51.4532, lon: 7.4516 }, // Borussia Dortmund
-  'Stamford Bridge': { lat: 51.4821, lon: -0.1910 }, // Chelsea
-  'Old Trafford': { lat: 53.4632, lon: -2.2910 }, // Manchester United
-  'Camp Nou': { lat: 41.3815, lon: 2.1229 }, // Barcelona
+  'AFAS Stadion': { lat: 52.6281, lon: 4.7483 },                // AZ
+  'Stadion Galgenwaard': { lat: 52.0779, lon: 5.1456 },         // FC Utrecht
+  'De Grolsch Veste': { lat: 52.2373, lon: 6.8296 },            // FC Twente
+  'Goffert Stadion': { lat: 51.8307, lon: 5.8606 },             // NEC Nijmegen
+  'Abe Lenstra Stadion': { lat: 52.9584, lon: 5.9141 },         // sc Heerenveen
+  'Sparta-Stadion Het Kasteel': { lat: 51.9171, lon: 4.4658 },  // Sparta Rotterdam
+  'Het Kasteel': { lat: 51.9171, lon: 4.4658 },
+  'De Adelaarshorst': { lat: 52.2488, lon: 6.1737 },            // Go Ahead Eagles
+  'Polman Stadion': { lat: 52.3514, lon: 6.6582 },              // Heracles Almelo
+  'Mandemakers Stadion': { lat: 51.6853, lon: 5.0535 },         // RKC Waalwijk
+  'Euroborg': { lat: 53.1822, lon: 6.5942 },                    // FC Groningen
+  'MAC³PARK Stadion': { lat: 52.5143, lon: 6.1006 },            // PEC Zwolle
+  'MACPARK Stadion': { lat: 52.5143, lon: 6.1006 },
+  'Yanmar Stadion': { lat: 52.3893, lon: 5.2152 },              // Almere City
+  'Rat Verlegh Stadion': { lat: 51.5747, lon: 4.7716 },         // NAC Breda
+  'Koning Willem II Stadion': { lat: 51.5547, lon: 5.0917 },    // Willem II
+  'Fortuna Sittard Stadion': { lat: 51.0011, lon: 5.8683 },     // Fortuna Sittard
+  'GelreDome': { lat: 51.9653, lon: 5.9111 },                   // Vitesse
+  'Kras Stadion': { lat: 52.4436, lon: 4.6264 },                // SC Telstar (Eerste Divisie)
+  'De Vijverberg': { lat: 51.9630, lon: 6.2872 },               // De Graafschap
+  'Cambuur Stadion': { lat: 53.2112, lon: 5.8102 },             // SC Cambuur
+  'Parkstad Limburg Stadion': { lat: 50.9081, lon: 5.9928 },    // Roda JC
+  'Cars Jeans Stadion': { lat: 52.0667, lon: 4.3167 },          // ADO Den Haag
+
+  // International
+  'Allianz Arena': { lat: 48.2188, lon: 11.6247 },
+  'Signal Iduna Park': { lat: 51.4532, lon: 7.4516 },
+  'Stamford Bridge': { lat: 51.4821, lon: -0.1910 },
+  'Old Trafford': { lat: 53.4632, lon: -2.2910 },
+  'Camp Nou': { lat: 41.3815, lon: 2.1229 },
   'Spotify Camp Nou': { lat: 41.3815, lon: 2.1229 },
-  'Santiago Bernabéu': { lat: 40.4530, lon: -3.6883 }, // Real Madrid
-  'San Mamés': { lat: 43.2627, lon: -2.9385 }, // Athletic Bilbao
+  'Santiago Bernabéu': { lat: 40.4530, lon: -3.6883 },
+  'San Mamés': { lat: 43.2627, lon: -2.9385 },
 };
 
 async function getVenueCoordinates(venueName) {
