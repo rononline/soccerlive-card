@@ -401,7 +401,7 @@ class SoccerLiveTeamCard extends LitElement {
   _renderForm(formStr) {
     if (!formStr || formStr === 'N/A') return '';
     const letters = String(formStr).replace(/[^WLDwld]/g, '').toUpperCase();
-    if (!letters.length) return '';
+    if (letters.length < 2) return '';
     const recent = letters.slice(-5).split('');
     const labelOf = (l) => this._t('form.' + l);
     return html`
@@ -1544,6 +1544,8 @@ class SoccerLiveTeamCard extends LitElement {
         flex-direction: column;
         line-height: 1.3;
         flex-shrink: 0;
+        white-space: nowrap;
+        min-width: 52px;
       }
       .upcoming-date-day {
         font-size: 9px;
