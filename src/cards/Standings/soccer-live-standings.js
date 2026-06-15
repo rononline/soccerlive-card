@@ -342,28 +342,19 @@ class SoccerLiveStandingsCard extends LitElement {
     return standings.every(t => num(t.wins) + num(t.draws) + num(t.losses) === 0);
   }
 
-  _zoneClass(rank, total) {
+  _zoneClass(rank, total, team) {
+    // ESPN provides zone color directly — use it when available
+    if (team && team.zone_color) return 'zone-espn';
+
     const zones = this._getZoneConfig();
 
     if (this._positionInZone(rank, total, zones.champions)) {
-      // Nei tornei a gironi (Mondiale/Euro/Copa) #1 e #2 hanno lo stesso
-      // status (qualificate): non distinguere graficamente la 1ª posizione.
       if (rank === 1 && !this._isCupGroupStage()) return 'zone-cl rank-first';
       return 'zone-cl';
     }
-
-    if (this._positionInZone(rank, total, zones.europa)) {
-      return 'zone-el';
-    }
-
-    if (this._positionInZone(rank, total, zones.conference)) {
-      return 'zone-conf';
-    }
-
-    if (this._positionInZone(rank, total, zones.relegation)) {
-      return 'zone-rel';
-    }
-
+    if (this._positionInZone(rank, total, zones.europa)) return 'zone-el';
+    if (this._positionInZone(rank, total, zones.conference)) return 'zone-conf';
+    if (this._positionInZone(rank, total, zones.relegation)) return 'zone-rel';
     return 'zone-default';
   }
 
@@ -518,7 +509,7 @@ class SoccerLiveStandingsCard extends LitElement {
             const gdClass = gd === null ? '' : (gd > 0 ? 'gd-pos' : (gd < 0 ? 'gd-neg' : ''));
             const gdLabel = gd === null ? '-' : (gd > 0 ? `+${gd}` : `${gd}`);
             return html`
-              <tr class="${this._zoneClass(team.rank, total)} ${isHighlighted ? 'highlighted-team' : ''}">
+              <tr class="${this._zoneClass(team.rank, total, team)} ${isHighlighted ? 'highlighted-team' : ''}" style="${team.zone_color ? `--cl-zone-espn:${team.zone_color}` : ''}">
                 <td><div class="rank-cell"><div class="rank-num">${team.rank}</div></div></td>
                 <td class="team-cell">
                   <img src="${team.team_logo}" alt="${team.team_name}" />
@@ -563,7 +554,7 @@ class SoccerLiveStandingsCard extends LitElement {
             const gdClass = gd === null ? '' : (gd > 0 ? 'gd-pos' : (gd < 0 ? 'gd-neg' : ''));
             const gdLabel = gd === null ? '-' : (gd > 0 ? `+${gd}` : `${gd}`);
             return html`
-              <tr class="${this._zoneClass(team.rank, total)}">
+              <tr class="${this._zoneClass(team.rank, total, team)}" style="${team.zone_color ? `--cl-zone-espn:${team.zone_color}` : ''}">
                 <td><div class="rank-cell"><div class="rank-num">${team.rank}</div></div></td>
                 <td class="team-cell">
                   <img src="${team.team_logo}" alt="${team.team_name}" />
@@ -876,10 +867,11 @@ class SoccerLiveStandingsCard extends LitElement {
       .highlighted-team { background: rgba(var(--cl-accent-rgb),0.07); }
       .highlighted-team .tname { font-weight: 800; color: var(--cl-text); }
       .highlighted-team .points-cell { color: var(--cl-accent); font-weight: 900; }
-      .zone-cl td:first-child  { border-left: 3px solid var(--cl-cl);   padding-left: 11px; }
-      .zone-el td:first-child  { border-left: 3px solid var(--cl-el);   padding-left: 11px; }
-      .zone-conf td:first-child{ border-left: 3px solid var(--cl-conf); padding-left: 11px; }
-      .zone-rel td:first-child { border-left: 3px solid var(--cl-rel);  padding-left: 11px; }
+      .zone-cl td:first-child   { border-left: 3px solid var(--cl-cl);        padding-left: 11px; }
+      .zone-el td:first-child   { border-left: 3px solid var(--cl-el);        padding-left: 11px; }
+      .zone-conf td:first-child { border-left: 3px solid var(--cl-conf);      padding-left: 11px; }
+      .zone-rel td:first-child  { border-left: 3px solid var(--cl-rel);       padding-left: 11px; }
+      .zone-espn td:first-child { border-left: 3px solid var(--cl-zone-espn); padding-left: 11px; }
       .standings-table tbody td:last-child { padding-right: 14px; }
 
       .rank-cell {
