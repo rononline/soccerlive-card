@@ -1812,7 +1812,7 @@
           <span class="ts-val">${e.value}<span class="ts-unit">★</span></span>
         </div>
       </div>
-    `}_renderForm(e){if(!e||"N/A"===e)return"";const t=String(e).replace(/[^WLDwld]/g,"").toUpperCase();if(!t.length)return"";const a=t.slice(-5).split(""),i=e=>this._t("form."+e);return R`
+    `}_renderForm(e){if(!e||"N/A"===e)return"";const t=String(e).replace(/[^WLDwld]/g,"").toUpperCase();if(t.length<2)return"";const a=t.slice(-5).split(""),i=e=>this._t("form."+e);return R`
       <div class="form-pills">
         ${a.map((e=>R`<div class="form-pill ${e}">${i(e)}</div>`))}
       </div>
@@ -2543,6 +2543,8 @@
         flex-direction: column;
         line-height: 1.3;
         flex-shrink: 0;
+        white-space: nowrap;
+        min-width: 52px;
       }
       .upcoming-date-day {
         font-size: 9px;
