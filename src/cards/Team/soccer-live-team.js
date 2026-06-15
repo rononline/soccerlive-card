@@ -807,6 +807,7 @@ class SoccerLiveTeamCard extends LitElement {
     if (!this.showPopup || !this.activeMatch) {
       const existingPopup = document.getElementById('soccer-live-team-popup');
       if (existingPopup) existingPopup.remove();
+      if (this._escHandler) { document.removeEventListener('keydown', this._escHandler); this._escHandler = null; }
       return;
     }
 
@@ -825,6 +826,8 @@ class SoccerLiveTeamCard extends LitElement {
       popupContainer.addEventListener('click', (e) => {
         if (e.target === popupContainer) this.showPopup = false;
       });
+      this._escHandler = (e) => { if (e.key === 'Escape') this.showPopup = false; };
+      document.addEventListener('keydown', this._escHandler);
       document.body.appendChild(popupContainer);
     }
 
