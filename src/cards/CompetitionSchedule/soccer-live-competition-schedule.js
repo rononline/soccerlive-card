@@ -22,13 +22,19 @@ class SoccerLiveCompetitionScheduleCard extends LitElement {
 
   _groupByRound(matches) {
     const rounds = new Map();
+    const hasWeekNumbers = matches.some(m => m.week_number != null);
     for (const m of matches) {
-      const key = m.week_number != null ? m.week_number : this._weekFromDate(m.date);
+      const key = hasWeekNumbers ? m.week_number : this._weekFromDate(m.date);
       if (!rounds.has(key)) rounds.set(key, []);
       rounds.get(key).push(m);
     }
-    // Sort rounds numerically
-    return new Map([...rounds.entries()].sort((a, b) => a[0] - b[0]));
+    // Sort by key, then re-key sequentially when ESPN has no week numbers
+    const sorted = [...rounds.entries()].sort((a, b) => a[0] - b[0]);
+    if (!hasWeekNumbers) {
+      // Relabel 1, 2, 3... so ISO week numbers don't show as round numbers
+      return new Map(sorted.map(([, ms], i) => [i + 1, ms]));
+    }
+    return new Map(sorted);
   }
 
   _weekFromDate(dateStr) {
