@@ -162,6 +162,8 @@ class CalcioLiveStandingsCard extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+
     if (this._eventSubscriptions && Array.isArray(this._eventSubscriptions)) {
       this._eventSubscriptions.forEach(unsub => {
         if (typeof unsub === 'function') {
