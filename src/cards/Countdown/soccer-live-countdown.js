@@ -3,7 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
-import { renderCardError } from "../card-error.js";
+import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 
 /**
@@ -210,7 +210,7 @@ class SoccerLiveCountdownCard extends LitElement {
 
     const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     const match = this._getNextMatch({ attributes: attributes });
-    if (!match) return renderCardError('⚽', 'No match data', 'Unable to find match information', 'Check if the sensor has data');
+    if (!match) return renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint'));
 
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
