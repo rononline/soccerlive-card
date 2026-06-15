@@ -62,7 +62,11 @@ class SoccerLiveCountdownCard extends LitElement {
       }
     }
     if (changedProperties.has('hass') || changedProperties.has('_config')) {
-      this._loadWeather();
+      const stateObj = this.hass?.states[this._config?.entity];
+      const venue = stateObj?.attributes?.matches?.[0]?.venue;
+      if (venue && venue !== this._lastWeatherVenue) {
+        this._loadWeather();
+      }
     }
   }
 
@@ -72,6 +76,7 @@ class SoccerLiveCountdownCard extends LitElement {
     if (!stateObj || !stateObj.attributes.matches) return;
     const match = stateObj.attributes.matches[0];
     if (match && match.venue) {
+      this._lastWeatherVenue = match.venue;
       try {
         this._weatherBadge = await renderWeatherBadge(match.venue, this.hass, this._config, match.venue_lat, match.venue_lon);
         this.requestUpdate();
