@@ -16,7 +16,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
   getCardSize() { return 3; }
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-mini-standings-editor"); }
-  static getStubConfig() { return { entity: "sensor.soccerlive_classifica_", max_rows: 5 }; }
+  static getStubConfig() { return { entity: "sensor.soccerlive_standings_", max_rows: 5 }; }
 
   _selectGroup(name) {
     this._selectedGroup = name;
