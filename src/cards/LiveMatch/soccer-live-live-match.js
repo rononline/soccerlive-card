@@ -7,9 +7,20 @@ import { OfflineCache } from "../offline-cache.js";
 
 /**
  * Soccer Live Match Card
- * Displays live match details with events and statistics
+ * Displays live match details with events, statistics, and possession data
+ *
  * @class SoccerLiveLiveMatchCard
  * @extends LitElement
+ *
+ * @property {object} hass - Home Assistant instance
+ * @property {object} _config - Card configuration (entity, skin, language, etc.)
+ * @property {boolean} _isLoading - Loading state while fetching data
+ * @property {object} _cachedData - Offline cached match data
+ *
+ * @method render() - Renders live match display with events and stats
+ * @method updated(changedProperties) - Handles hass updates and caches data
+ * @method _getMatch(stateObj) - Extracts primary match from state attributes
+ * @method _eventIcon(type) - Returns emoji icon based on event type (goal, card, sub, etc.)
  */
 class SoccerLiveLiveMatchCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _isLoading: { type: Boolean }, _cachedData: {} }; }
