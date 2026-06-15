@@ -1714,7 +1714,7 @@
           <span class="form-trend-summary">${o}W ${r}G ${l}V</span>
         </div>
       </div>
-    `}_renderPreviousMatches(e,t,a){const i=e&&e.length>0?e:t?t.filter((e=>"post"===e.state)).slice(-3).reverse():[];if(0===i.length)return"";const s=(a||"").toLowerCase();return U`
+    `}_renderPreviousMatches(e,t,a){const i=e&&e.length>0?e.filter((e=>"post"===e.state||!e.state)):t?t.filter((e=>"post"===e.state)).slice(-3).reverse():[];if(0===i.length)return"";const s=(a||"").toLowerCase();return U`
       <div class="upcoming-list">
         <div class="upcoming-list-title">${this._t("team.previous_matches")}</div>
         ${i.map((e=>{const t=s&&e.home_team&&e.home_team.toLowerCase().includes(s),a=s&&e.away_team&&e.away_team.toLowerCase().includes(s),i=parseInt(e.home_score),n=parseInt(e.away_score),o=!isNaN(i)&&!isNaN(n)&&i>n,r=!isNaN(i)&&!isNaN(n)&&n>i;return U`
