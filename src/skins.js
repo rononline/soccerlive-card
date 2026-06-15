@@ -282,9 +282,105 @@ export const skinStyles = css`
     --cl-toast-bg: #000000;
     --cl-num-bg: #000000;
   }
+
+  /* ---------- ARSENAL (cannon red / gold) ---------- */
+  :host([data-skin="arsenal"]) {
+    --cl-accent: #ef0107;
+    --cl-accent-2: #c8a232;
+    --cl-accent-rgb: 239,1,7;
+    --cl-accent-2-rgb: 200,162,50;
+    --cl-live: #ff3333;
+    --cl-live-glow: rgba(239,1,7,0.65);
+    --cl-cl: #ef0107;
+    --cl-el: #c8a232;
+    --cl-rel: #990000;
+    --cl-conf: #cc0000;
+    --cl-gold: #c8a232;
+    --cl-gold-glow: rgba(200,162,50,0.45);
+    --cl-gold-text: #e8c84a;
+    --cl-bg: #0a0000;
+    --cl-surface: rgba(239,1,7,0.08);
+    --cl-surface-2: rgba(239,1,7,0.14);
+    --cl-card-2: rgba(50,0,0,0.90);
+    --cl-divider: rgba(239,1,7,0.20);
+    --cl-glass-border: rgba(239,1,7,0.25);
+    --cl-text: #ffffff;
+    --cl-text-2: #c09090;
+    --cl-shadow: rgba(0,0,0,0.55);
+    --cl-overlay-strong: rgba(0,0,0,0.65);
+    --cl-overlay-soft: rgba(0,0,0,0.35);
+    --cl-chip-bg: rgba(239,1,7,0.14);
+    --cl-chip-border: rgba(239,1,7,0.30);
+    --cl-toast-bg: #050000;
+    --cl-num-bg: #050000;
+  }
+
+  /* ---------- BARCELONA (blaugrana) ---------- */
+  :host([data-skin="barcelona"]) {
+    --cl-accent: #004d98;
+    --cl-accent-2: #a50044;
+    --cl-accent-rgb: 0,77,152;
+    --cl-accent-2-rgb: 165,0,68;
+    --cl-live: #ef4444;
+    --cl-live-glow: rgba(165,0,68,0.65);
+    --cl-cl: #004d98;
+    --cl-el: #a50044;
+    --cl-rel: #7a0033;
+    --cl-conf: #0066cc;
+    --cl-gold: #fbbf24;
+    --cl-gold-glow: rgba(251,191,36,0.40);
+    --cl-gold-text: #fde68a;
+    --cl-bg: #000510;
+    --cl-surface: rgba(0,77,152,0.10);
+    --cl-surface-2: rgba(0,77,152,0.18);
+    --cl-card-2: rgba(0,10,40,0.90);
+    --cl-divider: rgba(0,77,152,0.25);
+    --cl-glass-border: rgba(0,77,152,0.30);
+    --cl-text: #f0f4ff;
+    --cl-text-2: #7a9abf;
+    --cl-shadow: rgba(0,0,0,0.55);
+    --cl-overlay-strong: rgba(0,0,0,0.65);
+    --cl-overlay-soft: rgba(0,0,0,0.32);
+    --cl-chip-bg: rgba(0,77,152,0.15);
+    --cl-chip-border: rgba(165,0,68,0.35);
+    --cl-toast-bg: #000308;
+    --cl-num-bg: #000308;
+  }
+
+  /* ---------- REAL MADRID (los blancos) ---------- */
+  :host([data-skin="real-madrid"]) {
+    --cl-accent: #f5f5f5;
+    --cl-accent-2: #c8a951;
+    --cl-accent-rgb: 245,245,245;
+    --cl-accent-2-rgb: 200,169,81;
+    --cl-live: #ef4444;
+    --cl-live-glow: rgba(239,68,68,0.5);
+    --cl-cl: #f5f5f5;
+    --cl-el: #c8a951;
+    --cl-rel: #ef4444;
+    --cl-conf: #b0b8cc;
+    --cl-gold: #c8a951;
+    --cl-gold-glow: rgba(200,169,81,0.45);
+    --cl-gold-text: #e8cc70;
+    --cl-bg: #06071a;
+    --cl-surface: rgba(245,245,245,0.06);
+    --cl-surface-2: rgba(245,245,245,0.10);
+    --cl-card-2: rgba(10,12,30,0.90);
+    --cl-divider: rgba(245,245,245,0.12);
+    --cl-glass-border: rgba(245,245,245,0.16);
+    --cl-text: #ffffff;
+    --cl-text-2: #8a96b4;
+    --cl-shadow: rgba(0,0,0,0.60);
+    --cl-overlay-strong: rgba(0,0,0,0.70);
+    --cl-overlay-soft: rgba(0,0,0,0.38);
+    --cl-chip-bg: rgba(245,245,245,0.09);
+    --cl-chip-border: rgba(200,169,81,0.35);
+    --cl-toast-bg: #030410;
+    --cl-num-bg: #030410;
+  }
 `;
 
-const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold', 'orange', 'blue', 'black-white'];
+const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold', 'orange', 'blue', 'black-white', 'arsenal', 'barcelona', 'real-madrid'];
 
 // Aliases: user-facing name -> internal data-skin value
 const SKIN_ALIASES = { 'feyenoord': 'red-white' };
