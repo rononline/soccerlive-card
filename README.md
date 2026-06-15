@@ -66,6 +66,8 @@ All cards share these common options:
 | Option | Default | Description |
 |---|---|---|
 | `entity` | required | The Soccer Live sensor entity ID |
+
+> **Entity IDs:** Examples in this README use simplified IDs like `sensor.soccer_live_standings_ned_1`. Your actual entity IDs may be longer (e.g. `sensor.soccer_live_ned_1_soccerlive_standings_dutch_eredivisie`). Use the visual editor to pick the correct sensor.
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `skin` | `dark` | Theme: `dark`, `light`, `feyenoord`, `classic`, `neon`, `gold` |
 
