@@ -171,7 +171,7 @@ class SoccerLiveMatchesCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-matches-editor"); }
   static getStubConfig() {
     return {
-      entity: "sensor.soccerlive",
+      entity: "sensor.soccer_live_all_",
       max_events_visible: 5,
       max_events_total: 50,
       hide_past_days: 0,

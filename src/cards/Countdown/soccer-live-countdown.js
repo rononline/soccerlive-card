@@ -75,8 +75,9 @@ class SoccerLiveCountdownCard extends LitElement {
   async _loadWeather() {
     if (!this.hass || !this._config) return;
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj || !stateObj.attributes.matches) return;
-    const match = stateObj.attributes.matches[0];
+    const attrs = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
+    if (!attrs?.matches) return;
+    const match = attrs.matches[0];
     if (match && match.venue) {
       this._lastWeatherVenue = match.venue;
       try {

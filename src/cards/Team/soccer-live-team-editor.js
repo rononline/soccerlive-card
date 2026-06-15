@@ -114,7 +114,10 @@ class SoccerLiveTeamCardEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter((entityId) => entityId.includes('soccerlive_next') || entityId.includes('soccer_live_next'))
+      .filter((entityId) =>
+        entityId.includes('soccerlive_next') || entityId.includes('soccer_live_next') ||
+        entityId.includes('soccerlive_all_mixed') || entityId.includes('soccer_live_all_mixed')
+      )
       .sort();
   }
 
