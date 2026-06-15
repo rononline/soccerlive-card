@@ -769,7 +769,7 @@ class CalcioLiveTeamNextCard extends LitElement {
       this.renderPopupToBody();
     }
     if (changedProperties.has('activeMatch') && this.activeMatch) {
-      this._loadWeather(this.activeMatch.venue);
+      this._loadWeather(this.activeMatch.venue, this.activeMatch.venue_lat, this.activeMatch.venue_lon);
     }
     // Load weather for main match when hass updates + handle loading state
     if (changedProperties.has('hass') && this.hass && this._config) {
@@ -779,14 +779,15 @@ class CalcioLiveTeamNextCard extends LitElement {
         OfflineCache.set(this._config.entity, stateObj.attributes);
       }
       if (stateObj && stateObj.attributes.matches && stateObj.attributes.matches[0]) {
-        this._loadWeather(stateObj.attributes.matches[0].venue);
+        const match = stateObj.attributes.matches[0];
+        this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
       }
     }
   }
 
-  async _loadWeather(venue) {
+  async _loadWeather(venue, venue_lat = null, venue_lon = null) {
     try {
-      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config);
+      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon);
       this.requestUpdate();
     } catch (e) {
       console.warn('Weather load failed:', e);
