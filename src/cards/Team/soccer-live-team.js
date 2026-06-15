@@ -900,7 +900,7 @@ class CalcioLiveTeamNextCard extends LitElement {
         if (!starters.length) return '';
         return `<div style="margin-bottom:8px;">
           <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
-            <span style="font-size:12px; font-weight:800; color:#fff;">${label}</span>
+            <span style="font-size:12px; font-weight:800; color:#fff;">${esc(label)}</span>
             ${formation ? `<span style="font-size:10px; font-weight:700; color:#6366f1; letter-spacing:0.1em;">${esc(formation)}</span>` : ''}
           </div>
           <div style="font-size:12px; color:#cbd5e1; line-height:1.7;">
