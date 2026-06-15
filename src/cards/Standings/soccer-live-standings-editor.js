@@ -139,7 +139,7 @@ class SoccerLiveStandingsEditor extends LitElement {
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
-      .filter((entityId) => entityId.includes('soccer_live_standings'))
+      .filter((entityId) => entityId.includes('soccerlive_standings') || entityId.includes('soccer_live_standings'))
       .sort();
   }
 
