@@ -10,7 +10,7 @@ import { OfflineCache } from "../offline-cache.js";
  * Soccer Live Team Card
  * Displays current/next match for a team with detailed stats, form, and venue info
  *
- * @class CalcioLiveTeamNextCard
+ * @class SoccerLiveTeamCard
  * @extends LitElement
  *
  * @property {object} hass - Home Assistant instance
@@ -29,7 +29,7 @@ import { OfflineCache } from "../offline-cache.js";
  * @method _renderPopup() - Renders detailed match information popup
  * @method _loadWeather(venue) - Fetches and caches weather for stadium
  */
-class CalcioLiveTeamNextCard extends LitElement {
+class SoccerLiveTeamCard extends LitElement {
   static get properties() {
     return {
       /** @type {object} Home Assistant instance */
@@ -126,7 +126,7 @@ class CalcioLiveTeamNextCard extends LitElement {
 
     ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
       this.hass.connection.subscribeEvents(
-        this._handleCalcioLiveEvent.bind(this),
+        this._handleSoccerLiveEvent.bind(this),
         evt
       ).then(unsub => {
         if (typeof unsub === 'function') {
@@ -146,7 +146,7 @@ class CalcioLiveTeamNextCard extends LitElement {
     return m.home_team === eventData.home_team && m.away_team === eventData.away_team;
   }
 
-  _handleCalcioLiveEvent(event) {
+  _handleSoccerLiveEvent(event) {
     const eventType = event.event_type;
     const eventData = event.data;
     if (!this._eventBelongsToThisCard(eventData)) return;
@@ -1753,7 +1753,7 @@ class CalcioLiveTeamNextCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-team", CalcioLiveTeamNextCard);
+customElements.define("soccer-live-team", SoccerLiveTeamCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { editorStyles } from '../editor-helper.js';
 
-class CalcioLiveLineupEditor extends LitElement {
+class SoccerLiveLineupEditor extends LitElement {
   static get properties() {
     return {
       _config: { type: Object },
@@ -137,4 +137,4 @@ class CalcioLiveLineupEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-lineup-editor', CalcioLiveLineupEditor);
+customElements.define('soccer-live-lineup-editor', SoccerLiveLineupEditor);

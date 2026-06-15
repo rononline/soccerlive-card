@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-class CalcioLiveTimelineEditor extends LitElement {
+class SoccerLiveTimelineEditor extends LitElement {
   static get properties() {
     return {
       _config: { type: Object },
@@ -144,4 +144,4 @@ class CalcioLiveTimelineEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-timeline-editor', CalcioLiveTimelineEditor);
+customElements.define('soccer-live-timeline-editor', SoccerLiveTimelineEditor);

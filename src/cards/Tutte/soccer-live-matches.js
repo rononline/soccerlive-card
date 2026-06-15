@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 
-class CalcioLiveTodayMatchesCard extends LitElement {
+class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
     return {
       hass: {},
@@ -77,7 +77,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
 
     ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
       this.hass.connection.subscribeEvents(
-        this._handleCalcioLiveEvent.bind(this),
+        this._handleSoccerLiveEvent.bind(this),
         evt
       ).then(unsub => {
         if (typeof unsub === 'function') {
@@ -95,7 +95,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
     return matches.some(m => m.home_team === eventData.home_team && m.away_team === eventData.away_team);
   }
 
-  _handleCalcioLiveEvent(event) {
+  _handleSoccerLiveEvent(event) {
     const eventType = event.event_type;
     const eventData = event.data;
     if (!this._eventBelongsToThisCard(eventData)) return;
@@ -895,7 +895,7 @@ class CalcioLiveTodayMatchesCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-matches", CalcioLiveTodayMatchesCard);
+customElements.define("soccer-live-matches", SoccerLiveMatchesCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({

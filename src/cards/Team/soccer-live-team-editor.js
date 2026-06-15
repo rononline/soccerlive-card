@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { editorStyles, renderSelector, renderToggle, renderFieldGroup, renderSection } from '../editor-helper.js';
 
-class CalcioLiveTeamNextCardEditor extends LitElement {
+class SoccerLiveTeamCardEditor extends LitElement {
   static get properties() {
     return {
       _config: { type: Object },
@@ -198,4 +198,4 @@ class CalcioLiveTeamNextCardEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-team-editor', CalcioLiveTeamNextCardEditor);
+customElements.define('soccer-live-team-editor', SoccerLiveTeamCardEditor);
