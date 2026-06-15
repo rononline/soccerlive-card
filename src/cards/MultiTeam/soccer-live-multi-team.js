@@ -73,10 +73,10 @@ class SoccerLiveMultiTeamCard extends LitElement {
 
   _renderMatch(entityId) {
     const stateObj = this.hass.states[entityId];
-    if (!stateObj) return html`<div class="match-row"><div class="no-match">Unknown: ${entityId}</div></div>`;
+    if (!stateObj) return html`<div class="match-row"><div class="no-match">${this._t('team.unknown_entity')}: ${entityId}</div></div>`;
 
     const match = this._getMatch(stateObj);
-    if (!match) return html`<div class="match-row"><div class="no-match">No data for ${entityId}</div></div>`;
+    if (!match) return html`<div class="match-row"><div class="no-match">${this._t('team.no_match')} (${entityId})</div></div>`;
 
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';

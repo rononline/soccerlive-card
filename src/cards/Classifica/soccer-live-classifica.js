@@ -429,7 +429,7 @@ class CalcioLiveStandingsCard extends LitElement {
     return html`
       <ha-card>
         ${this.showEventToasts && this._toastVisible ? html`
-          <div class="event-toast variant-${this._toastVariant}" .innerHTML=${this._toastMessage}></div>
+          <div class="event-toast variant-${this._toastVariant}" .textContent=${this._toastMessage}></div>
         ` : ''}
 
         ${this.hideHeader ? '' : this._renderHeader(stateObj, seasonName, standingsGroup, standingsGroups, showAllGroups, highlightPos)}

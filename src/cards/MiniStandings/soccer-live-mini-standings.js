@@ -64,7 +64,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
     if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
 
     const groups = stateObj.attributes.standings_groups || [];
-    if (!groups.length) return html`<ha-card><div class="empty">No standings data</div></ha-card>`;
+    if (!groups.length) return renderCardError('⚽', 'No standings data', 'Unable to fetch league standings', 'Check if the league has started');
 
     // Find active group
     const activeGroup = groups.find(g => g.name === this._selectedGroup) || groups[0];
