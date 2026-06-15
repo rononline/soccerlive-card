@@ -69,6 +69,8 @@ All cards share these common options:
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `skin` | `dark` | Theme: `dark`, `light`, `feyenoord`, `classic`, `neon`, `gold` |
 
+> **Note on card type names:** Two card types keep their original Italian names for backward compatibility — `soccer-live-classifica` (standings) and `soccer-live-cannonieri` (top scorers). Dashboards using these types continue to work without any changes. The sensor entity IDs they point to are English (`sensor.soccer_live_standings_*`, `sensor.soccer_live_scorers_*`).
+
 ### 🏅 Standings
 
 ```yaml

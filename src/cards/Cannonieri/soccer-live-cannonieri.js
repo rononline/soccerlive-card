@@ -218,6 +218,9 @@ class CalcioLiveCannonieriCard extends LitElement {
   }
 }
 
+// Card type name kept as "soccer-live-cannonieri" for backward compatibility.
+// Existing dashboards using this type continue to work without changes.
+// The sensor entity it points to is now sensor.soccer_live_scorers_*.
 customElements.define("soccer-live-cannonieri", CalcioLiveCannonieriCard);
 
 window.customCards = window.customCards || [];
