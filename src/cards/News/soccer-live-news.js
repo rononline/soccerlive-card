@@ -85,11 +85,12 @@ class SoccerLiveNewsCard extends LitElement {
               ` : ''}
               <div class="news-body">
                 <div class="news-meta">
-                  ${a.category ? html`<span class="cat">${a.category}</span>` : ''}
+                  ${a.premium ? html`<span class="cat premium">★ Premium</span>` : (a.category ? html`<span class="cat">${a.category}</span>` : '')}
                   <span class="date">${this._formatDate(a.published)}</span>
                 </div>
                 <div class="news-headline">${a.headline}</div>
                 ${a.description ? html`<div class="news-desc">${a.description}</div>` : ''}
+                ${a.byline ? html`<div class="news-byline">✍ ${a.byline}</div>` : ''}
               </div>
             </article>
           `)}

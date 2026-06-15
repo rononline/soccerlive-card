@@ -1824,7 +1824,7 @@
             </div>
           `}))}
       </div>
-    `}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this._config.entity,t=this.hass.states[e];if(!t){const t=Me.get(e);return t?Ae("⏱","Offline - showing cached data","Last update: "+new Date(t.data.timestamp||Date.now()).toLocaleTimeString(),"Waiting for integration to come online"):Ae("⚠️","Entity not found",`Unable to find: ${e}`,"Check the entity configuration")}if("unavailable"===t.state){const t=Me.get(e);if(!t||!t.data.matches)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=t.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const a=t&&"unavailable"!==t.state?t.attributes:this._cachedData;if(!a||!a.matches||0===a.matches.length){const e=this._config.entity||"";return e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed")||e.includes("soccer_live_next")||e.includes("soccer_live_all_mixed")?Te("📅",this._t("ui.off_season"),this._t("team.off_season")):Ae("⚠️",this._t("ui.wrong_entity_type"),e,this._t("ui.wrong_entity_type_hint"))}const i=a.matches[0],n=a.league_info?a.league_info[0]:null,s=n&&n.logo_href&&"N/A"!==n.logo_href?n.logo_href:null,o="in"===i.state,r="post"===i.state,l=o||r,c=n&&n.abbreviation&&"N/A"!==n.abbreviation?n.abbreviation:i.league_name&&"N/A"!==i.league_name?i.league_name:i.season_info&&"N/A"!==i.season_info&&this._shouldShowPhase(i.season_info)?this._translatePhase(i.season_info):"",d=i.venue&&"N/A"!==i.venue?i.venue:"",p=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",h=d?p?`${d}, ${p}`:d:"—",g=i.broadcast&&""!==i.broadcast&&"N/A"!==i.broadcast?i.broadcast:"",u=parseInt(i.attendance,10),m=!isNaN(u)&&u>0,f=this._hexToRgb(i.home_color),v=this._hexToRgb(i.away_color),_=f||v?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${f||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${v||"236,72,153"},0.18), transparent 55%)`:"",b=this.myTeam||(a.team_name||"").toLowerCase(),x=b&&i.home_team&&i.home_team.toLowerCase().includes(b),y=b&&i.away_team&&i.away_team.toLowerCase().includes(b);return R`
+    `}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this._config.entity,t=this.hass.states[e];if(!t){const t=Me.get(e);return t?Ae("⏱","Offline - showing cached data","Last update: "+new Date(t.data.timestamp||Date.now()).toLocaleTimeString(),"Waiting for integration to come online"):Ae("⚠️","Entity not found",`Unable to find: ${e}`,"Check the entity configuration")}if("unavailable"===t.state){const t=Me.get(e);if(!t||!t.data.matches)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=t.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const a=t&&"unavailable"!==t.state?t.attributes:this._cachedData;if(!a||!a.matches||0===a.matches.length){const e=this._config.entity||"";return e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed")||e.includes("soccer_live_next")||e.includes("soccer_live_all_mixed")?Te("📅",this._t("ui.off_season"),this._t("team.off_season")):Ae("⚠️",this._t("ui.wrong_entity_type"),e,this._t("ui.wrong_entity_type_hint"))}const i=a.matches[0],n=a.league_info?a.league_info[0]:null,s=n&&n.logo_href&&"N/A"!==n.logo_href?n.logo_href:null,o="in"===i.state,r="post"===i.state,l=o||r,c=n&&n.abbreviation&&"N/A"!==n.abbreviation?n.abbreviation:i.league_name&&"N/A"!==i.league_name?i.league_name:i.season_info&&"N/A"!==i.season_info&&this._shouldShowPhase(i.season_info)?this._translatePhase(i.season_info):"",d=i.venue&&"N/A"!==i.venue?i.venue:"",p=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",h=d?p?`${d}, ${p}`:d:"—",g=i.broadcast&&""!==i.broadcast&&"N/A"!==i.broadcast?i.broadcast:"",u=(Array.isArray(i.broadcasts)&&i.broadcasts.length&&i.broadcasts,i.neutral_site,parseInt(i.attendance,10)),m=!isNaN(u)&&u>0,f=this._hexToRgb(i.home_color),v=this._hexToRgb(i.away_color),_=f||v?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${f||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${v||"236,72,153"},0.18), transparent 55%)`:"",b=this.myTeam||(a.team_name||"").toLowerCase(),x=b&&i.home_team&&i.home_team.toLowerCase().includes(b),y=b&&i.away_team&&i.away_team.toLowerCase().includes(b);return R`
       <ha-card class="${o?"live":""}">
         <div class="bg-logos">
           <div class="bg-logo home"><img src="${i.home_logo}" alt="" loading="lazy"></div>
@@ -1852,6 +1852,7 @@
               <img class="team-logo-big" src="${i.home_logo}" alt="${i.home_team}" />
             </div>
             <div class="team-name-big ${x?"my-team":""}">${i.home_team}</div>
+            ${!o&&i.home_standing_summary?R`<div class="standing-summary">${i.home_standing_summary}</div>`:""}
             ${this._renderRecord(i.home_record)}
             ${this._renderForm(i.home_form)}
             ${o?"":this._renderTopScorer(i.home_top_scorer)}
@@ -1867,6 +1868,7 @@
               <img class="team-logo-big" src="${i.away_logo}" alt="${i.away_team}" />
             </div>
             <div class="team-name-big ${y?"my-team":""}">${i.away_team}</div>
+            ${!o&&i.away_standing_summary?R`<div class="standing-summary">${i.away_standing_summary}</div>`:""}
             ${this._renderRecord(i.away_record)}
             ${this._renderForm(i.away_form)}
             ${o?"":this._renderTopScorer(i.away_top_scorer)}
@@ -2913,11 +2915,12 @@
               `:""}
               <div class="news-body">
                 <div class="news-meta">
-                  ${e.category?R`<span class="cat">${e.category}</span>`:""}
+                  ${e.premium?R`<span class="cat premium">★ Premium</span>`:e.category?R`<span class="cat">${e.category}</span>`:""}
                   <span class="date">${this._formatDate(e.published)}</span>
                 </div>
                 <div class="news-headline">${e.headline}</div>
                 ${e.description?R`<div class="news-desc">${e.description}</div>`:""}
+                ${e.byline?R`<div class="news-byline">✍ ${e.byline}</div>`:""}
               </div>
             </article>
           `))}
@@ -4802,7 +4805,7 @@
         .cd-num { font-size: 20px !important; min-width: 32px !important; }
         .team-name { font-size: 11px !important; }
       }
-    `]}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this.hass.states[this._config.entity];if(!e)return Me.get(this._config.entity)?Ae("⏱","Offline - showing cached data","Last update: "+(new Date).toLocaleTimeString(),"Waiting for integration to come online"):Ae("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");if("unavailable"===e.state){const e=Me.get(this._config.entity);if(!e)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=e.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const t=e&&"unavailable"!==e.state?e.attributes:this._cachedData,a=this._getNextMatch({attributes:t});if(!a)return Te("📅",this._t("ui.off_season"),this._t("ui.off_season_hint"));const i="in"===a.state,n="post"===a.state,s=i||n?null:this._countdown(a.date),o=a.competition_name||t?.league_name||"",r=a.competition_logo||t?.league_logo||"",l=a.venue&&"N/A"!==a.venue?a.venue:"",c=a.venue_city&&"N/A"!==a.venue_city?a.venue_city:"",d=this._t("cd.days")||"days",p=this._t("cd.hrs")||"hrs",h=this._t("cd.min")||"min",g=this._t("cd.sec")||"sec";return R`
+    `]}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this.hass.states[this._config.entity];if(!e)return Me.get(this._config.entity)?Ae("⏱","Offline - showing cached data","Last update: "+(new Date).toLocaleTimeString(),"Waiting for integration to come online"):Ae("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");if("unavailable"===e.state){const e=Me.get(this._config.entity);if(!e)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=e.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const t=e&&"unavailable"!==e.state?e.attributes:this._cachedData,a=this._getNextMatch({attributes:t});if(!a)return Te("📅",this._t("ui.off_season"),this._t("ui.off_season_hint"));const i="in"===a.state,n="post"===a.state,s=i||n?null:this._countdown(a.date),o=a.competition_name||t?.league_name||"",r=a.competition_logo||t?.league_logo||"",l=a.venue&&"N/A"!==a.venue?a.venue:"",c=a.venue_city&&"N/A"!==a.venue_city?a.venue_city:"",d=Array.isArray(a.broadcasts)&&a.broadcasts.length?a.broadcasts:a.broadcast&&"N/A"!==a.broadcast?[a.broadcast]:[],p=a.neutral_site||!1,h=this._t("cd.days")||"days",g=this._t("cd.hrs")||"hrs",u=this._t("cd.min")||"min",m=this._t("cd.sec")||"sec";return R`
       <ha-card>
         ${!this._config.hide_header&&o?R`
           <div class="header">
@@ -4829,14 +4832,14 @@
               ${a.date?R`<div class="sched-date">${a.date}</div>`:""}
               <div class="countdown">
                 ${s.days>0?R`
-                  <div class="cd-block"><span class="cd-num">${s.days}</span><span class="cd-label">${d}</span></div>
+                  <div class="cd-block"><span class="cd-num">${s.days}</span><span class="cd-label">${h}</span></div>
                   <span class="cd-sep">:</span>
                 `:""}
-                <div class="cd-block"><span class="cd-num">${String(s.hours).padStart(2,"0")}</span><span class="cd-label">${p}</span></div>
+                <div class="cd-block"><span class="cd-num">${String(s.hours).padStart(2,"0")}</span><span class="cd-label">${g}</span></div>
                 <span class="cd-sep">:</span>
-                <div class="cd-block"><span class="cd-num">${String(s.mins).padStart(2,"0")}</span><span class="cd-label">${h}</span></div>
+                <div class="cd-block"><span class="cd-num">${String(s.mins).padStart(2,"0")}</span><span class="cd-label">${u}</span></div>
                 <span class="cd-sep">:</span>
-                <div class="cd-block"><span class="cd-num">${String(s.secs).padStart(2,"0")}</span><span class="cd-label">${g}</span></div>
+                <div class="cd-block"><span class="cd-num">${String(s.secs).padStart(2,"0")}</span><span class="cd-label">${m}</span></div>
               </div>
             `:R`
               ${a.date?R`<div class="sched-date">${a.date}</div>`:""}
@@ -4850,10 +4853,11 @@
           </div>
         </div>
 
-        ${l?R`
+        ${l||d.length?R`
           <div class="meta">
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span>🏟 ${l}${c?`, ${c}`:""}</span>
+              ${l?R`<span>🏟 ${l}${c?`, ${c}`:""}${p?" ⚖️":""}</span>`:""}
+              ${d.length?R`<span style="color:var(--cl-accent);">📺 ${d.join(" · ")}</span>`:""}
               ${this._weatherBadge?this._weatherBadge:""}
             </div>
           </div>
@@ -4950,7 +4954,7 @@
         .score { font-size: 28px !important; letter-spacing: 2px !important; }
         .team-name { font-size: 11px !important; max-width: 65px !important; }
       }
-    `]}updated(e){if(e.has("hass")){const e=this.hass?.states[this._config?.entity];e&&"unavailable"!==e.state&&(this._isLoading=!1,Me.set(this._config.entity,e.attributes))}}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this.hass.states[this._config.entity];if(!e)return Me.get(this._config.entity)?Ae("⏱","Offline - showing cached data","Last update: "+(new Date).toLocaleTimeString(),"Waiting for integration"):Ae("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");if("unavailable"===e.state){const e=Me.get(this._config.entity);if(!e||!e.data.matches)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=e.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const t=e&&"unavailable"!==e.state?e.attributes:this._cachedData,a=t?.matches||[],i=this._getMatch({attributes:t});if(!i)return a.length?Te("⚽",this._t("ui.no_live_match"),this._t("ui.no_live_match_hint")):Te("📅",this._t("ui.off_season"),this._t("ui.off_season_hint"));const n="in"===i.state||"live"===i.status,s="post"===i.state,o=("pre"===i.state||i.status,i.key_events||i.events||i.match_events||[]),r=i.competition_name||t?.league_name||"",l=i.competition_logo||t?.league_logo||"",c=i.venue&&"N/A"!==i.venue?i.venue:"",d=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",p=i.stats||i.statistics||[];return R`
+    `]}updated(e){if(e.has("hass")){const e=this.hass?.states[this._config?.entity];e&&"unavailable"!==e.state&&(this._isLoading=!1,Me.set(this._config.entity,e.attributes))}}render(){if(!this.hass||!this._config)return Ee("Loading...");const e=this.hass.states[this._config.entity];if(!e)return Me.get(this._config.entity)?Ae("⏱","Offline - showing cached data","Last update: "+(new Date).toLocaleTimeString(),"Waiting for integration"):Ae("⚠️","Entity not found",`Unable to find: ${this._config.entity}`,"Check the entity configuration");if("unavailable"===e.state){const e=Me.get(this._config.entity);if(!e||!e.data.matches)return Ae("📡","Sensor unavailable","The integration may not be running","Restart Home Assistant or check the integration");this._cachedData=e.data}if(this._isLoading)return Date.now()-this._loadingStarted>1e4?Ae("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):Ee(this._t("ui.loading"));const t=e&&"unavailable"!==e.state?e.attributes:this._cachedData,a=t?.matches||[],i=this._getMatch({attributes:t});if(!i)return a.length?Te("⚽",this._t("ui.no_live_match"),this._t("ui.no_live_match_hint")):Te("📅",this._t("ui.off_season"),this._t("ui.off_season_hint"));const n="in"===i.state||"live"===i.status,s="post"===i.state,o=("pre"===i.state||i.status,i.key_events||i.events||i.match_events||[]),r=i.competition_name||t?.league_name||"",l=i.competition_logo||t?.league_logo||"",c=(Array.isArray(i.broadcasts)&&i.broadcasts.length?i.broadcasts:i.broadcast&&"N/A"!==i.broadcast&&i.broadcast,i.neutral_site,i.venue&&"N/A"!==i.venue?i.venue:""),d=i.venue_city&&"N/A"!==i.venue_city?i.venue_city:"",p=i.stats||i.statistics||[];return R`
       <ha-card>
         <div class="hero">
           ${i.home_logo?R`<img class="bg-logo home" src="${i.home_logo}" alt="">`:""}

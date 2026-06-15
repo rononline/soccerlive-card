@@ -220,6 +220,8 @@ class SoccerLiveCountdownCard extends LitElement {
     const compLogo = match.competition_logo || attributes?.league_logo || '';
     const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
     const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
+    const broadcasts = Array.isArray(match.broadcasts) && match.broadcasts.length ? match.broadcasts : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : []);
+    const neutralSite = match.neutral_site || false;
 
     const lDay = this._t('cd.days') || 'days';
     const lHrs = this._t('cd.hrs') || 'hrs';
@@ -274,10 +276,11 @@ class SoccerLiveCountdownCard extends LitElement {
           </div>
         </div>
 
-        ${venue ? html`
+        ${(venue || broadcasts.length) ? html`
           <div class="meta">
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span>🏟 ${venue}${venueCity ? `, ${venueCity}` : ''}</span>
+              ${venue ? html`<span>🏟 ${venue}${venueCity ? `, ${venueCity}` : ''}${neutralSite ? ' ⚖️' : ''}</span>` : ''}
+              ${broadcasts.length ? html`<span style="color:var(--cl-accent);">📺 ${broadcasts.join(' · ')}</span>` : ''}
               ${this._weatherBadge ? this._weatherBadge : ''}
             </div>
           </div>

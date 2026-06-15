@@ -180,6 +180,8 @@ class SoccerLiveLiveMatchCard extends LitElement {
     const events = match.key_events || match.events || match.match_events || [];
     const compName = match.competition_name || attributes?.league_name || '';
     const compLogo = match.competition_logo || attributes?.league_logo || '';
+    const broadcasts = Array.isArray(match.broadcasts) && match.broadcasts.length ? match.broadcasts : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : []);
+    const neutralSite = match.neutral_site || false;
     const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
     const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
     const stats = match.stats || match.statistics || [];
