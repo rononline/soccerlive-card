@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.6.4 (2026-06-16)
+- Live Match: stats built from `home_statistics`/`away_statistics` (all stats visible, not just 4)
+- Live Match: visual comparison bar per stat (home accent / away dimmed)
+- Live Match: "No events yet" translated via i18n (`popup.no_events`)
+- `package.json` version synced to `3.6.3`
+- `hacs.json`: description added
+
+## v3.6.3 (2026-06-16)
+- Bundle rebuilt clean without competition schedule card
+- Fixes HACS version mismatch after release consolidation
+
 ## v3.6.0 (2026-06-15)
 - Standings legend uses ESPN `zone_label`/`zone_abbrev`; tooltip on each row shows full zone name
 - Team card: 📊 Stats / 💬 Commentary / 🎬 Video / ⚖️ Neutral venue chips (clickable, hidden when no link)

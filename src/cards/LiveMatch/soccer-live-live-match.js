@@ -103,10 +103,12 @@ class SoccerLiveLiveMatchCard extends LitElement {
       .meta { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; font-size: 11px; color: var(--cl-text-2); }
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); }
       .stats-row { display: flex; align-items: center; padding: 5px 16px; font-size: 11px; gap: 6px; }
-      .stat-val { font-weight: 700; min-width: 28px; text-align: center; color: var(--cl-text); }
-      .stat-bars { flex: 1; display: flex; gap: 2px; align-items: center; height: 4px; }
-      .stat-bar { height: 4px; border-radius: 2px; background: var(--cl-accent); }
-      .stat-label { flex: 1; text-align: center; color: var(--cl-text-2); font-size: 10px; }
+      .stat-val { font-weight: 700; min-width: 32px; text-align: center; color: var(--cl-text); }
+      .stat-center { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+      .stat-label { text-align: center; color: var(--cl-text-2); font-size: 10px; }
+      .stat-bars { display: flex; gap: 2px; height: 4px; border-radius: 2px; overflow: hidden; }
+      .stat-bar.home { background: var(--cl-accent); border-radius: 2px 0 0 2px; }
+      .stat-bar.away { background: var(--cl-text-2); opacity: 0.4; border-radius: 0 2px 2px 0; }
 
       @media (max-width: 600px) {
         .hero { padding: 14px 10px 12px !important; }
@@ -184,7 +186,14 @@ class SoccerLiveLiveMatchCard extends LitElement {
     const neutralSite = match.neutral_site || false;
     const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
     const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
-    const stats = match.stats || match.statistics || [];
+    let stats = match.stats || [];
+    if (!stats.length && match.home_statistics && typeof match.home_statistics === 'object') {
+      const homeS = match.home_statistics;
+      const awayS = match.away_statistics || {};
+      stats = Object.entries(homeS)
+        .filter(([k]) => k !== 'Unknown')
+        .map(([k, hv]) => ({ label: k, home: hv, away: awayS[k] ?? 'N/A' }));
+    }
 
     return html`
       <ha-card>
@@ -236,21 +245,29 @@ class SoccerLiveLiveMatchCard extends LitElement {
           </div>
         ` : isLive ? html`
           <div class="divider"></div>
-          <div class="events"><div class="no-events">No events yet</div></div>
+          <div class="events"><div class="no-events">${this._t('popup.no_events')}</div></div>
         ` : ''}
 
         ${stats.length > 0 ? html`
           <div class="divider"></div>
-          ${stats.slice(0, this._config.max_stats || 4).map(s => {
-            const hv = parseFloat(s.home ?? s.homeValue ?? 0) || 0;
-            const av = parseFloat(s.away ?? s.awayValue ?? 0) || 0;
+          ${stats.map(s => {
+            const rawH = String(s.home ?? s.homeValue ?? '');
+            const rawA = String(s.away ?? s.awayValue ?? '');
+            const hv = parseFloat(rawH) || 0;
+            const av = parseFloat(rawA) || 0;
             const total = hv + av;
             const homePct = total > 0 ? Math.round((hv / total) * 100) : 50;
             return html`
               <div class="stats-row">
-                <span class="stat-val">${s.home ?? s.homeValue ?? ''}</span>
-                <div class="stat-label">${s.label || s.name || s.type || ''}</div>
-                <span class="stat-val">${s.away ?? s.awayValue ?? ''}</span>
+                <span class="stat-val">${rawH}</span>
+                <div class="stat-center">
+                  <div class="stat-label">${s.label || s.name || s.type || ''}</div>
+                  <div class="stat-bars">
+                    <div class="stat-bar home" style="width:${homePct}%"></div>
+                    <div class="stat-bar away" style="width:${100 - homePct}%"></div>
+                  </div>
+                </div>
+                <span class="stat-val">${rawA}</span>
               </div>
             `;
           })}
