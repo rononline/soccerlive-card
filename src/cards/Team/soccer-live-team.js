@@ -619,6 +619,7 @@ class SoccerLiveTeamCard extends LitElement {
         ${this._renderH2H(match.head_to_head, match.home_team)}
         ${this._renderUpcomingList(stateObj.attributes.upcoming_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name)}
       </ha-card>
+      ${this.showPopup && this.activeMatch ? this._renderPopup() : ''}
     `;
   }
 
@@ -802,8 +803,16 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   updated(changedProperties) {
-    if (changedProperties.has('showPopup') || changedProperties.has('activeMatch')) {
-      this.renderPopupToBody();
+    if (changedProperties.has('showPopup')) {
+      if (this.showPopup) {
+        if (!this._escHandler) {
+          this._escHandler = e => { if (e.key === 'Escape') this.showPopup = false; };
+          document.addEventListener('keydown', this._escHandler);
+        }
+      } else if (this._escHandler) {
+        document.removeEventListener('keydown', this._escHandler);
+        this._escHandler = null;
+      }
     }
     if (changedProperties.has('activeMatch') && this.activeMatch) {
       this._loadWeather(this.activeMatch.venue, this.activeMatch.venue_lat, this.activeMatch.venue_lon);
@@ -838,223 +847,262 @@ class SoccerLiveTeamCard extends LitElement {
     }
   }
 
-  renderPopupToBody() {
-    if (!this.showPopup || !this.activeMatch) {
-      const existingPopup = document.getElementById('soccer-live-team-popup');
-      if (existingPopup) existingPopup.remove();
-      if (this._escHandler) { document.removeEventListener('keydown', this._escHandler); this._escHandler = null; }
-      return;
-    }
-
-    let popupContainer = document.getElementById('soccer-live-team-popup');
-    if (!popupContainer) {
-      popupContainer = document.createElement('div');
-      popupContainer.id = 'soccer-live-team-popup';
-      popupContainer.style.cssText = `
-        position: fixed; inset: 0;
-        display: flex; justify-content: center; align-items: center;
-        z-index: 999999;
-        background: rgba(0,0,0,0.7);
-        backdrop-filter: blur(8px);
-        overflow: auto;
-      `;
-      popupContainer.addEventListener('click', (e) => {
-        if (e.target === popupContainer) this.showPopup = false;
-      });
-      this._escHandler = (e) => { if (e.key === 'Escape') this.showPopup = false; };
-      document.addEventListener('keydown', this._escHandler);
-      document.body.appendChild(popupContainer);
-    }
-
+  _renderPopup() {
     const m = this.activeMatch;
-    const tx = (k) => this._t(k);
-    const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    const cs = getComputedStyle(this);
-    const clBg = cs.getPropertyValue('--cl-bg').trim() || '#1a1f2e';
-    const clText = cs.getPropertyValue('--cl-text').trim() || '#f8fafc';
-    const clText2 = cs.getPropertyValue('--cl-text-2').trim() || '#94a3b8';
-    const clAccent = cs.getPropertyValue('--cl-accent').trim() || '#6366f1';
-    const clAccent2 = cs.getPropertyValue('--cl-accent-2').trim() || '#ec4899';
-    const clDivider = cs.getPropertyValue('--cl-divider').trim() || 'rgba(255,255,255,0.08)';
-    const clSurface = cs.getPropertyValue('--cl-surface').trim() || 'rgba(255,255,255,0.04)';
-    popupContainer.innerHTML = `
-      <div style="background:${clBg}; padding: 24px; border-radius: 20px; width: 90%; max-width: 560px; max-height: 85vh; overflow-y: auto; border: 1px solid ${clDivider}; box-shadow: 0 24px 64px rgba(0,0,0,0.6); margin: auto; color: ${clText}; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;">
-        <h3 style="margin:0 0 20px; font-size: 22px; font-weight: 800; letter-spacing:-0.02em; background: linear-gradient(135deg,${clAccent},${clAccent2}); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color: transparent;">${tx('popup.match_details')}</h3>
-        <div style="display:flex; justify-content:center; align-items:center; gap:18px; margin-bottom:24px;">
-          <img style="width:72px; height:72px; object-fit:contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));" src="${esc(m.home_logo)}" alt="${esc(m.home_team)}" />
-          <div style="text-align:center;">
-            <div style="font-size:42px; font-weight:900; letter-spacing:-0.04em; line-height:1;">${esc(m.home_score ?? '-')} <span style="opacity:0.4;">-</span> ${esc(m.away_score ?? '-')}</div>
-            <div style="font-size:12px; color:${clText2}; margin-top:8px; font-weight:600;">${esc(m.clock ?? m.status ?? '')}</div>
+    return html`
+      <div class="popup-overlay" @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}">
+        <div class="popup-box">
+          <h3 class="popup-title">${this._t('popup.match_details')}</h3>
+          <div class="popup-score-row">
+            <img class="popup-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
+            <div class="popup-score-center">
+              <div class="popup-score">${m.home_score ?? '-'}<span class="popup-score-sep"> - </span>${m.away_score ?? '-'}</div>
+              <div class="popup-clock">${m.clock ?? m.status ?? ''}</div>
+            </div>
+            <img class="popup-logo" src="${m.away_logo}" alt="" @error="${e => e.target.style.display='none'}">
           </div>
-          <img style="width:72px; height:72px; object-fit:contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));" src="${esc(m.away_logo)}" alt="${esc(m.away_team)}" />
+          <div class="popup-stats-grid">
+            ${this._renderPopupStatBox(m.home_team, m.home_statistics)}
+            ${this._renderPopupStatBox(m.away_team, m.away_statistics)}
+          </div>
+          ${this._renderPopupEventGroups(m)}
+          ${this._renderPopupLineup(m)}
+          ${this._renderPopupTimeline(m)}
+          ${this._renderPopupH2H(m)}
+          <button class="popup-close-btn" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
-          <div style="background:${clSurface}; padding:14px; border-radius:14px;">
-            <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:${clText2}; font-weight:700; margin-bottom:6px;">${esc(m.home_team)}</div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.possession')}:</span> <strong>${esc(m.home_statistics?.possessionPct ?? '—')}%</strong></div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.shots')}:</span> <strong>${esc(m.home_statistics?.totalShots ?? '—')}</strong></div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.on_target')}:</span> <strong>${esc(m.home_statistics?.shotsOnTarget ?? '—')}</strong></div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.fouls')}:</span> <strong>${esc(m.home_statistics?.foulsCommitted ?? '—')}</strong></div>
-          </div>
-          <div style="background:${clSurface}; padding:14px; border-radius:14px;">
-            <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:${clText2}; font-weight:700; margin-bottom:6px;">${esc(m.away_team)}</div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.possession')}:</span> <strong>${esc(m.away_statistics?.possessionPct ?? '—')}%</strong></div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.shots')}:</span> <strong>${esc(m.away_statistics?.totalShots ?? '—')}</strong></div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.on_target')}:</span> <strong>${esc(m.away_statistics?.shotsOnTarget ?? '—')}</strong></div>
-            <div style="font-size:13px;"><span style="color:${clText2};">${tx('team.fouls')}:</span> <strong>${esc(m.away_statistics?.foulsCommitted ?? '—')}</strong></div>
-          </div>
-        </div>
-        <div id="team-events-container"></div>
-        <button id="popup-close-btn" style="background:linear-gradient(135deg,${clAccent},${clAccent2}); color:white; padding:12px 20px; border:none; border-radius:12px; cursor:pointer; margin-top:20px; font-weight:800; width:100%; font-size:14px;">${tx('generic.close')}</button>
       </div>
     `;
+  }
 
-    const closeBtn = popupContainer.querySelector('#popup-close-btn');
-    if (closeBtn) closeBtn.addEventListener('click', () => { this.showPopup = false; });
+  _renderPopupStatBox(teamName, stats) {
+    const s = stats || {};
+    const hasStat = Object.keys(s).length > 0;
+    if (!hasStat) return html`<div class="popup-stat-box"><div class="popup-stat-team">${teamName}</div></div>`;
+    return html`
+      <div class="popup-stat-box">
+        <div class="popup-stat-team">${teamName}</div>
+        <div class="popup-stat-row"><span>${this._t('team.possession')}:</span> <strong>${s.possessionPct ?? '—'}</strong></div>
+        <div class="popup-stat-row"><span>${this._t('team.shots')}:</span> <strong>${s.totalShots ?? '—'}</strong></div>
+        <div class="popup-stat-row"><span>${this._t('team.on_target')}:</span> <strong>${s.shotsOnTarget ?? '—'}</strong></div>
+        <div class="popup-stat-row"><span>${this._t('team.fouls')}:</span> <strong>${s.foulsCommitted ?? '—'}</strong></div>
+      </div>
+    `;
+  }
 
-    const eventsContainer = popupContainer.querySelector('#team-events-container');
+  _renderPopupEventGroups(m) {
     const { goals, yellowCards, redCards } = this.separateEvents(m.match_details || []);
-    const renderGroup = (title, items, color) => {
-      if (!items.length) return '';
-      return `<div style="margin-bottom:14px; padding:14px; background:${color.bg}; border-left:3px solid ${color.border}; border-radius:10px;">
-        <h5 style="margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:${color.border}; font-weight:800;">${title}</h5>
-        <ul style="margin:0; padding-left:18px; font-size:13px; color:#cbd5e1;">${items.map(i => `<li style="margin:4px 0;">${esc(i)}</li>`).join('')}</ul>
-      </div>`;
-    };
-    let eventsHTML = '';
-    eventsHTML += renderGroup(tx('event.goal'), goals, { bg: 'rgba(99,102,241,0.1)', border: '#6366f1' });
-    eventsHTML += renderGroup(tx('event.yellow_card'), yellowCards, { bg: 'rgba(245,158,11,0.1)', border: '#f59e0b' });
-    eventsHTML += renderGroup(tx('event.red_card'), redCards, { bg: 'rgba(239,68,68,0.1)', border: '#ef4444' });
+    if (!goals.length && !yellowCards.length && !redCards.length) return '';
+    const group = (title, items, cls) => items.length ? html`
+      <div class="popup-event-group ${cls}">
+        <h5 class="popup-event-title">${title}</h5>
+        <ul class="popup-event-list">${items.map(i => html`<li>${i}</li>`)}</ul>
+      </div>` : '';
+    return html`
+      ${group(this._t('event.goal'), goals, 'goal')}
+      ${group(this._t('event.yellow_card'), yellowCards, 'yellow')}
+      ${group(this._t('event.red_card'), redCards, 'red')}
+    `;
+  }
 
-    // Lineup (se disponibile dal sensor team_match arricchito con summary)
+  _renderPopupLineup(m) {
     const lineupHome = m.lineup_home || [];
     const lineupAway = m.lineup_away || [];
-    if (lineupHome.length || lineupAway.length) {
-      const fH = m.formation_home || '';
-      const fA = m.formation_away || '';
-      const renderLineup = (players, formation, label) => {
-        const starters = (players || []).filter(p => p.starter);
-        if (!starters.length) return '';
-        return `<div style="margin-bottom:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
-            <span style="font-size:12px; font-weight:800; color:#fff;">${esc(label)}</span>
-            ${formation ? `<span style="font-size:10px; font-weight:700; color:#6366f1; letter-spacing:0.1em;">${esc(formation)}</span>` : ''}
+    if (!lineupHome.length && !lineupAway.length) return '';
+    const teamBlock = (players, formation, label) => {
+      const starters = (players || []).filter(p => p.starter);
+      if (!starters.length) return '';
+      return html`
+        <div class="popup-lineup-team">
+          <div class="popup-lineup-header">
+            <span>${label}</span>
+            ${formation ? html`<span class="popup-formation">${formation}</span>` : ''}
           </div>
-          <div style="font-size:12px; color:#cbd5e1; line-height:1.7;">
-            ${starters.map(p => `<span style="display:inline-block; padding:2px 8px; background:rgba(255,255,255,0.05); border-radius:6px; margin:2px;">${p.jersey ? `<strong style="color:#fbbf24;">${esc(p.jersey)}</strong> ` : ''}${esc(p.short_name || p.name)}</span>`).join('')}
+          <div class="popup-lineup-players">
+            ${starters.map(p => html`<span class="popup-player">${p.jersey ? html`<strong class="popup-jersey">${p.jersey}</strong> ` : ''}${p.short_name || p.name}</span>`)}
           </div>
         </div>`;
-      };
-      eventsHTML += `<div style="margin-bottom:14px; padding:14px; background:rgba(16,185,129,0.08); border-left:3px solid #10b981; border-radius:10px;">
-        <h5 style="margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#10b981; font-weight:800;">${tx('popup.lineups')}</h5>
-        ${renderLineup(lineupHome, fH, m.home_team)}
-        ${renderLineup(lineupAway, fA, m.away_team)}
+    };
+    return html`
+      <div class="popup-section popup-section-lineup">
+        <h5 class="popup-section-title lineup">${this._t('popup.lineups')}</h5>
+        ${teamBlock(lineupHome, m.formation_home, m.home_team)}
+        ${teamBlock(lineupAway, m.formation_away, m.away_team)}
       </div>`;
-    }
+  }
 
-    // Timeline (key events)
-    const keyEvents = (m.key_events || []).filter(e => {
-        const txt = (e.type_text || '').toLowerCase();
-        return !txt.includes('delay');
-      });
-    if (keyEvents.length) {
-      const EVENT_TEXT_I18N = {
-        'kickoff': 'status.kickoff',
-        'halftime': 'status.halftime',
-        'half time': 'status.halftime',
-        'end of half': 'status.halftime',
-        'start 2nd half': 'status.second_half',
-        'second half': 'status.second_half',
-        'first half': 'status.first_half',
-        'full time': 'status.full_time',
-        'final': 'status.full_time',
-        'end': 'status.end',
-      };
-      const translateEventText = (ev) => {
-        const raw = (ev.athletes || []).filter(Boolean).join(', ') || ev.type_text || '';
-        if ((ev.athletes || []).filter(Boolean).length) return raw;
-        const key = EVENT_TEXT_I18N[(ev.type_text || '').toLowerCase()];
-        return key ? tx(key) : raw;
-      };
-      const iconOf = (ev) => {
-        const t = (ev.type || '').toLowerCase();
-        const txt = (ev.type_text || '').toLowerCase();
-        if (t === 'goal' || ev.scoring_play) return '⚽';
-        if (txt.includes('yellow')) return '🟨';
-        if (txt.includes('red card')) return '🟥';
-        if (t === 'substitution' || txt.includes('substitut')) return '🔄';
-        if (txt.includes('halftime') || txt === 'end of half') return '⏸';
-        if (txt.includes('kickoff') || txt.includes('start') || txt.includes('2nd half')) return '▶';
-        if (txt.includes('end') && !txt.includes('delay')) return '🏁';
-        if (txt.includes('var')) return '📺';
-        return '·';
-      };
-      eventsHTML += `<div style="margin-bottom:14px; padding:14px; background:rgba(251,191,36,0.08); border-left:3px solid #fbbf24; border-radius:10px;">
-        <h5 style="margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#fbbf24; font-weight:800;">${tx('popup.timeline')}</h5>
-        <ul style="margin:0; padding:0; list-style:none;">
-          ${keyEvents.map(e => `<li style="display:grid; grid-template-columns:36px 24px 1fr; gap:8px; align-items:start; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12px; color:#cbd5e1;">
-            <span style="text-align:right; font-weight:700; color:#94a3b8; font-variant-numeric:tabular-nums;">${esc(e.clock || '')}</span>
-            <span style="text-align:center;">${iconOf(e)}</span>
-            <span><strong style="color:#fff;">${esc(translateEventText(e))}</strong>${e.team ? `<br><span style="color:#94a3b8; font-size:11px;">${esc(e.team)}</span>` : ''}</span>
-          </li>`).join('')}
+  _renderPopupTimeline(m) {
+    const keyEvents = (m.key_events || []).filter(e => !(e.type_text || '').toLowerCase().includes('delay'));
+    if (!keyEvents.length) return '';
+    const EVENT_I18N = { 'kickoff':'status.kickoff','halftime':'status.halftime','half time':'status.halftime','end of half':'status.halftime','start 2nd half':'status.second_half','second half':'status.second_half','first half':'status.first_half','full time':'status.full_time','final':'status.full_time','end':'status.end' };
+    const translateText = ev => {
+      const athletes = (ev.athletes || []).filter(Boolean);
+      if (athletes.length) return athletes.join(', ');
+      const key = EVENT_I18N[(ev.type_text || '').toLowerCase()];
+      return key ? this._t(key) : (ev.type_text || '');
+    };
+    const iconOf = ev => {
+      const t = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
+      if (t === 'goal' || ev.scoring_play) return '⚽';
+      if (txt.includes('yellow')) return '🟨';
+      if (txt.includes('red card')) return '🟥';
+      if (t === 'substitution' || txt.includes('substitut')) return '🔄';
+      if (txt.includes('halftime') || txt === 'end of half') return '⏸';
+      if (txt.includes('kickoff') || txt.includes('start') || txt.includes('2nd half')) return '▶';
+      if (txt.includes('end')) return '🏁';
+      if (txt.includes('var')) return '📺';
+      return '·';
+    };
+    return html`
+      <div class="popup-section popup-section-timeline">
+        <h5 class="popup-section-title timeline">${this._t('popup.timeline')}</h5>
+        <ul class="popup-timeline-list">
+          ${keyEvents.map(e => html`
+            <li class="popup-timeline-item">
+              <span class="popup-tl-clock">${e.clock || ''}</span>
+              <span class="popup-tl-icon">${iconOf(e)}</span>
+              <span class="popup-tl-text"><strong>${translateText(e)}</strong>${e.team ? html`<br><span class="popup-tl-team">${e.team}</span>` : ''}</span>
+            </li>`)}
         </ul>
       </div>`;
-    }
+  }
 
-    // Head to head
+  _renderPopupH2H(m) {
     const h2h = m.head_to_head || [];
-    if (h2h.length) {
-      // Compute W/D/L from the perspective of m.home_team
-      const homeTeamName = (m.home_team || '').toLowerCase();
-      let homeWins = 0, draws = 0, awayWins = 0;
-      h2h.forEach(g => {
-        const hs = parseInt(g.home_score) || 0;
-        const as = parseInt(g.away_score) || 0;
-        if (hs === as) { draws++; return; }
-        const h2hHomeIsOurHome = (g.home_team || '').toLowerCase().includes(homeTeamName) || homeTeamName.includes((g.home_team || '').toLowerCase().split(' ')[0]);
-        const homeWonGame = hs > as;
-        if (h2hHomeIsOurHome ? homeWonGame : !homeWonGame) homeWins++;
-        else awayWins++;
-      });
-      const total = homeWins + draws + awayWins;
-      const homePct = total ? Math.round((homeWins / total) * 100) : 33;
-      const drawPct = total ? Math.round((draws / total) * 100) : 34;
-      const awayPct = 100 - homePct - drawPct;
-      eventsHTML += `<div style="margin-bottom:14px; padding:14px; background:rgba(var(--cl-accent-rgb),0.08); border-left:3px solid var(--cl-accent); border-radius:10px;">
-        <h5 style="margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#6366f1; font-weight:800;">${tx('popup.h2h')} (${h2h.length})</h5>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:12px; color:#cbd5e1;">
-          <span><strong style="color:#fff; font-size:18px;">${homeWins}</strong> ${esc(m.home_team || '')}</span>
-          <span style="color:#94a3b8;">${draws} ${tx('match.draw') || 'Draw'}</span>
-          <span>${esc(m.away_team || '')} <strong style="color:#fff; font-size:18px;">${awayWins}</strong></span>
+    if (!h2h.length) return '';
+    const homeName = (m.home_team || '').toLowerCase();
+    let hw = 0, dr = 0, aw = 0;
+    h2h.forEach(g => {
+      const hs = parseInt(g.home_score) || 0, as = parseInt(g.away_score) || 0;
+      if (hs === as) { dr++; return; }
+      const ours = (g.home_team || '').toLowerCase().includes(homeName) || homeName.includes((g.home_team || '').toLowerCase().split(' ')[0]);
+      if (ours ? hs > as : as > hs) hw++; else aw++;
+    });
+    const tot = hw + dr + aw;
+    const hPct = tot ? Math.round(hw / tot * 100) : 33;
+    const dPct = tot ? Math.round(dr / tot * 100) : 34;
+    const aPct = 100 - hPct - dPct;
+    const lang = resolveLang(this.hass, this._config);
+    return html`
+      <div class="popup-section popup-section-h2h">
+        <h5 class="popup-section-title h2h">${this._t('popup.h2h')} (${h2h.length})</h5>
+        <div class="popup-h2h-summary">
+          <span><strong class="popup-h2h-num">${hw}</strong> ${m.home_team || ''}</span>
+          <span class="popup-h2h-draw">${dr} ${this._t('match.draw') || 'D'}</span>
+          <span>${m.away_team || ''} <strong class="popup-h2h-num">${aw}</strong></span>
         </div>
-        <div style="display:flex; gap:2px; height:6px; border-radius:3px; overflow:hidden; margin-bottom:12px;">
-          <div style="width:${homePct}%; background:#6366f1; border-radius:3px 0 0 3px;"></div>
-          <div style="width:${drawPct}%; background:#94a3b8;"></div>
-          <div style="width:${awayPct}%; background:#ec4899; border-radius:0 3px 3px 0;"></div>
+        <div class="popup-h2h-bar">
+          <div class="popup-h2h-seg home" style="width:${hPct}%"></div>
+          <div class="popup-h2h-seg draw" style="width:${dPct}%"></div>
+          <div class="popup-h2h-seg away" style="width:${aPct}%"></div>
         </div>
-        <ul style="margin:0; padding:0; list-style:none;">
+        <ul class="popup-h2h-list">
           ${h2h.slice(0, 8).map(g => {
-            const dt = g.date ? new Date(g.date).toLocaleDateString(resolveLang(this.hass, this._config)) : '';
-            const hs = parseInt(g.home_score) || 0;
-            const as = parseInt(g.away_score) || 0;
-            const homeBold = hs > as ? 'color:#fff;font-weight:800;' : 'color:#94a3b8;';
-            const awayBold = as > hs ? 'color:#fff;font-weight:800;' : 'color:#94a3b8;';
-            return `<li style="display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12px;">
-              <span style="text-align:right; ${homeBold}">${esc(g.home_team)}</span>
-              <span style="font-weight:700; color:#cbd5e1; white-space:nowrap;">${esc(String(g.home_score ?? '-'))} - ${esc(String(g.away_score ?? '-'))}</span>
-              <span style="text-align:left; ${awayBold}">${esc(g.away_team)}</span>
-            </li>
-            <li style="text-align:center; padding:2px 0; font-size:10px; color:#475569; border-bottom:1px solid rgba(255,255,255,0.04);">${esc(dt)}</li>`;
-          }).join('')}
+            const hs = parseInt(g.home_score) || 0, as = parseInt(g.away_score) || 0;
+            const dt = g.date ? new Date(g.date).toLocaleDateString(lang) : '';
+            return html`
+              <li class="popup-h2h-row">
+                <span class="popup-h2h-team ${hs > as ? 'winner' : ''}">${g.home_team}</span>
+                <span class="popup-h2h-score">${g.home_score ?? '-'} - ${g.away_score ?? '-'}</span>
+                <span class="popup-h2h-team away ${as > hs ? 'winner' : ''}">${g.away_team}</span>
+              </li>
+              <li class="popup-h2h-date">${dt}</li>`;
+          })}
         </ul>
       </div>`;
-    }
-
-    eventsContainer.innerHTML = eventsHTML || `<p style="text-align:center; color:#94a3b8; font-size:13px;">${tx('popup.no_events')}</p>`;
   }
 
   static get styles() {
     return [skinStyles, spinnerStyles, weatherBadgeStyles, css`
+      /* ── Popup overlay (renders inside shadow DOM, position:fixed escapes the card) ── */
+      .popup-overlay {
+        position: fixed; inset: 0; z-index: 999999;
+        display: flex; justify-content: center; align-items: center;
+        background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
+        overflow: auto; padding: 16px;
+      }
+      .popup-box {
+        background: var(--cl-bg, #1a1f2e);
+        border: 1px solid var(--cl-divider, rgba(255,255,255,0.08));
+        border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+        color: var(--cl-text, #f8fafc);
+        max-height: 85vh; max-width: 560px; width: 100%;
+        overflow-y: auto; padding: 24px; margin: auto;
+      }
+      .popup-title {
+        margin: 0 0 20px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      }
+      .popup-score-row { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 24px; }
+      .popup-logo { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+      .popup-score-center { text-align: center; }
+      .popup-score { font-size: 42px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+      .popup-score-sep { opacity: 0.4; }
+      .popup-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 8px; font-weight: 600; }
+      .popup-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+      .popup-stat-box { background: rgba(255,255,255,0.04); padding: 14px; border-radius: 14px; }
+      .popup-stat-team { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cl-text-2, #94a3b8); font-weight: 700; margin-bottom: 6px; }
+      .popup-stat-row { font-size: 13px; margin-bottom: 2px; }
+      .popup-stat-row span { color: var(--cl-text-2, #94a3b8); }
+      .popup-event-group { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
+      .popup-event-group.goal { background: rgba(99,102,241,0.1); border-color: #6366f1; }
+      .popup-event-group.yellow { background: rgba(245,158,11,0.1); border-color: #f59e0b; }
+      .popup-event-group.red { background: rgba(239,68,68,0.1); border-color: #ef4444; }
+      .popup-event-title { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+      .popup-event-group.goal .popup-event-title { color: #6366f1; }
+      .popup-event-group.yellow .popup-event-title { color: #f59e0b; }
+      .popup-event-group.red .popup-event-title { color: #ef4444; }
+      .popup-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
+      .popup-event-list li { margin: 4px 0; }
+      .popup-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
+      .popup-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
+      .popup-section-timeline { background: rgba(251,191,36,0.08); border-color: #fbbf24; }
+      .popup-section-h2h { background: rgba(99,102,241,0.08); border-color: var(--cl-accent, #6366f1); }
+      .popup-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+      .popup-section-title.lineup { color: #10b981; }
+      .popup-section-title.timeline { color: #fbbf24; }
+      .popup-section-title.h2h { color: var(--cl-accent, #6366f1); }
+      .popup-lineup-team { margin-bottom: 8px; }
+      .popup-lineup-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+      .popup-lineup-header span:first-child { font-size: 12px; font-weight: 800; color: #fff; }
+      .popup-formation { font-size: 10px; font-weight: 700; color: var(--cl-accent, #6366f1); letter-spacing: 0.1em; }
+      .popup-lineup-players { font-size: 12px; color: #cbd5e1; line-height: 1.7; }
+      .popup-player { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin: 2px; }
+      .popup-jersey { color: #fbbf24; }
+      .popup-timeline-list { margin: 0; padding: 0; list-style: none; }
+      .popup-timeline-item { display: grid; grid-template-columns: 36px 24px 1fr; gap: 8px; align-items: start; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
+      .popup-timeline-item:last-child { border-bottom: none; }
+      .popup-tl-clock { text-align: right; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; }
+      .popup-tl-icon { text-align: center; }
+      .popup-tl-text strong { color: #fff; }
+      .popup-tl-team { color: #94a3b8; font-size: 11px; }
+      .popup-h2h-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: #cbd5e1; }
+      .popup-h2h-num { color: #fff; font-size: 18px; font-weight: 800; }
+      .popup-h2h-draw { color: #94a3b8; }
+      .popup-h2h-bar { display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+      .popup-h2h-seg.home { background: var(--cl-accent, #6366f1); border-radius: 3px 0 0 3px; }
+      .popup-h2h-seg.draw { background: #94a3b8; }
+      .popup-h2h-seg.away { background: var(--cl-accent-2, #ec4899); border-radius: 0 3px 3px 0; }
+      .popup-h2h-list { margin: 0; padding: 0; list-style: none; }
+      .popup-h2h-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+      .popup-h2h-team { color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
+      .popup-h2h-team.away { text-align: left; }
+      .popup-h2h-team.winner { color: #fff; font-weight: 800; }
+      .popup-h2h-score { font-weight: 700; color: #cbd5e1; white-space: nowrap; text-align: center; }
+      .popup-h2h-date { text-align: center; padding: 2px 0; font-size: 10px; color: #475569; border-bottom: 1px solid rgba(255,255,255,0.04); list-style: none; }
+      .popup-close-btn {
+        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
+        color: white; padding: 12px 20px; border: none; border-radius: 12px;
+        cursor: pointer; margin-top: 20px; font-weight: 800; width: 100%; font-size: 14px;
+      }
+      @media (max-width: 600px) {
+        .popup-box { padding: 16px; }
+        .popup-logo { width: 52px; height: 52px; }
+        .popup-score { font-size: 32px; }
+        .popup-stats-grid { grid-template-columns: 1fr; }
+      }
+
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;
