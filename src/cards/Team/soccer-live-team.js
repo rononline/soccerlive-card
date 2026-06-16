@@ -616,7 +616,7 @@ class SoccerLiveTeamCard extends LitElement {
 
         ${this.showFormTrend ? this._renderFormTrend(stateObj.attributes.previous_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name) : ''}
         ${this.showPreviousMatches ? this._renderPreviousMatches(stateObj.attributes.previous_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name) : ""}
-        ${this._renderH2H(match.head_to_head)}
+        ${this._renderH2H(match.head_to_head, match.home_team)}
         ${this._renderUpcomingList(stateObj.attributes.upcoming_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name)}
       </ha-card>
     `;
@@ -755,13 +755,35 @@ class SoccerLiveTeamCard extends LitElement {
     `;
   }
 
-  _renderH2H(headToHead) {
+  _renderH2H(headToHead, homeTeam) {
     if (!headToHead || headToHead.length === 0) return '';
-    const recent = headToHead.slice(0, 3);
+    const homeName = (homeTeam || '').toLowerCase();
+    let hw = 0, dr = 0, aw = 0;
+    headToHead.forEach(g => {
+      const hs = parseInt(g.home_score) || 0;
+      const as = parseInt(g.away_score) || 0;
+      if (hs === as) { dr++; return; }
+      const h2hHomeIsOurs = (g.home_team || '').toLowerCase().includes(homeName) || homeName.includes((g.home_team || '').toLowerCase().split(' ')[0]);
+      if (h2hHomeIsOurs ? hs > as : as > hs) hw++; else aw++;
+    });
+    const total = hw + dr + aw;
+    const hPct = total ? Math.round((hw / total) * 100) : 33;
+    const dPct = total ? Math.round((dr / total) * 100) : 34;
+    const aPct = 100 - hPct - dPct;
     return html`
       <div class="h2h-section">
         <div class="upcoming-list-title">${this._t('team.h2h')}</div>
-        ${recent.map(g => {
+        <div class="h2h-summary">
+          <span class="h2h-summary-num home">${hw}</span>
+          <span class="h2h-summary-label">${this._t('match.draw') || 'D'} ${dr}</span>
+          <span class="h2h-summary-num away">${aw}</span>
+        </div>
+        <div class="h2h-bar">
+          <div class="h2h-bar-seg home" style="width:${hPct}%"></div>
+          <div class="h2h-bar-seg draw" style="width:${dPct}%"></div>
+          <div class="h2h-bar-seg away" style="width:${aPct}%"></div>
+        </div>
+        ${headToHead.slice(0, 5).map(g => {
           const d = g.date ? g.date.split('T')[0].split('-') : [];
           const dateLabel = d.length === 3 ? `${d[2]}/${d[1]}/${d[0].slice(2)}` : '';
           const homeWon = parseInt(g.home_score) > parseInt(g.away_score);
@@ -982,15 +1004,47 @@ class SoccerLiveTeamCard extends LitElement {
     // Head to head
     const h2h = m.head_to_head || [];
     if (h2h.length) {
+      // Compute W/D/L from the perspective of m.home_team
+      const homeTeamName = (m.home_team || '').toLowerCase();
+      let homeWins = 0, draws = 0, awayWins = 0;
+      h2h.forEach(g => {
+        const hs = parseInt(g.home_score) || 0;
+        const as = parseInt(g.away_score) || 0;
+        if (hs === as) { draws++; return; }
+        const h2hHomeIsOurHome = (g.home_team || '').toLowerCase().includes(homeTeamName) || homeTeamName.includes((g.home_team || '').toLowerCase().split(' ')[0]);
+        const homeWonGame = hs > as;
+        if (h2hHomeIsOurHome ? homeWonGame : !homeWonGame) homeWins++;
+        else awayWins++;
+      });
+      const total = homeWins + draws + awayWins;
+      const homePct = total ? Math.round((homeWins / total) * 100) : 33;
+      const drawPct = total ? Math.round((draws / total) * 100) : 34;
+      const awayPct = 100 - homePct - drawPct;
       eventsHTML += `<div style="margin-bottom:14px; padding:14px; background:rgba(var(--cl-accent-rgb),0.08); border-left:3px solid var(--cl-accent); border-radius:10px;">
         <h5 style="margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:#6366f1; font-weight:800;">${tx('popup.h2h')} (${h2h.length})</h5>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:12px; color:#cbd5e1;">
+          <span><strong style="color:#fff; font-size:18px;">${homeWins}</strong> ${esc(m.home_team || '')}</span>
+          <span style="color:#94a3b8;">${draws} ${tx('match.draw') || 'Draw'}</span>
+          <span>${esc(m.away_team || '')} <strong style="color:#fff; font-size:18px;">${awayWins}</strong></span>
+        </div>
+        <div style="display:flex; gap:2px; height:6px; border-radius:3px; overflow:hidden; margin-bottom:12px;">
+          <div style="width:${homePct}%; background:#6366f1; border-radius:3px 0 0 3px;"></div>
+          <div style="width:${drawPct}%; background:#94a3b8;"></div>
+          <div style="width:${awayPct}%; background:#ec4899; border-radius:0 3px 3px 0;"></div>
+        </div>
         <ul style="margin:0; padding:0; list-style:none;">
           ${h2h.slice(0, 8).map(g => {
             const dt = g.date ? new Date(g.date).toLocaleDateString(resolveLang(this.hass, this._config)) : '';
-            return `<li style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12px; color:#cbd5e1;">
-              <span>${esc(g.home_team)} <strong>${esc(g.home_score ?? '-')}</strong> - <strong>${esc(g.away_score ?? '-')}</strong> ${esc(g.away_team)}</span>
-              <span style="color:#94a3b8;">${esc(dt)}</span>
-            </li>`;
+            const hs = parseInt(g.home_score) || 0;
+            const as = parseInt(g.away_score) || 0;
+            const homeBold = hs > as ? 'color:#fff;font-weight:800;' : 'color:#94a3b8;';
+            const awayBold = as > hs ? 'color:#fff;font-weight:800;' : 'color:#94a3b8;';
+            return `<li style="display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12px;">
+              <span style="text-align:right; ${homeBold}">${esc(g.home_team)}</span>
+              <span style="font-weight:700; color:#cbd5e1; white-space:nowrap;">${esc(String(g.home_score ?? '-'))} - ${esc(String(g.away_score ?? '-'))}</span>
+              <span style="text-align:left; ${awayBold}">${esc(g.away_team)}</span>
+            </li>
+            <li style="text-align:center; padding:2px 0; font-size:10px; color:#475569; border-bottom:1px solid rgba(255,255,255,0.04);">${esc(dt)}</li>`;
           }).join('')}
         </ul>
       </div>`;
@@ -1637,6 +1691,19 @@ class SoccerLiveTeamCard extends LitElement {
         border-top: 1px solid var(--cl-divider);
         padding: 10px 16px 14px;
       }
+      .h2h-summary {
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 11px; margin-bottom: 6px; color: var(--cl-text-2);
+      }
+      .h2h-summary-num { font-size: 20px; font-weight: 800; color: var(--cl-text); }
+      .h2h-summary-label { font-size: 10px; text-align: center; color: var(--cl-text-2); }
+      .h2h-bar {
+        display: flex; height: 5px; border-radius: 3px; overflow: hidden; gap: 2px;
+        margin-bottom: 10px;
+      }
+      .h2h-bar-seg.home { background: var(--cl-accent); border-radius: 3px 0 0 3px; }
+      .h2h-bar-seg.draw { background: var(--cl-text-2); opacity: 0.4; }
+      .h2h-bar-seg.away { background: var(--cl-accent-2); border-radius: 0 3px 3px 0; }
       .h2h-row {
         display: flex; align-items: center; gap: 6px;
         padding: 5px 0;
