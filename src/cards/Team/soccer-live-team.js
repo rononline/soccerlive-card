@@ -121,6 +121,7 @@ class SoccerLiveTeamCard extends LitElement {
 
   _subscribeToEvents() {
     if (!this.hass || !this.hass.connection) return;
+    if (this._eventSubscriptions && this._eventSubscriptions.length > 0) return;
 
     this._eventSubscriptions = [];
 
@@ -784,6 +785,10 @@ class SoccerLiveTeamCard extends LitElement {
     }
     if (changedProperties.has('activeMatch') && this.activeMatch) {
       this._loadWeather(this.activeMatch.venue, this.activeMatch.venue_lat, this.activeMatch.venue_lon);
+    }
+    // Subscribe to HA events on first hass (connectedCallback fires before hass is set)
+    if (changedProperties.has('hass') && this.hass && !this._eventSubscriptions?.length) {
+      this._subscribeToEvents();
     }
     // Load weather for main match when hass updates + handle loading state
     if (changedProperties.has('hass') && this.hass && this._config) {
