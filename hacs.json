@@ -1,5 +1,6 @@
 {
   "name": "Soccer Live Card",
+  "description": "Beautiful football cards for Home Assistant — live scores, standings, lineup, countdown, news and more.",
   "content_in_root": false,
   "filename": "soccer-live-card.bundle.js",
   "homeassistant": "2024.8.0",
