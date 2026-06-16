@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.6.5 (2026-06-16)
+- Fix: event toasts (goal / card notifications) now reliably subscribe — `connectedCallback` fires before `hass` is available in HA; subscription now triggered from `updated()` on first `hass`, with guard against duplicate subscriptions
+
 ## v3.6.4 (2026-06-16)
 - Live Match: stats built from `home_statistics`/`away_statistics` (all stats visible, not just 4)
 - Live Match: visual comparison bar per stat (home accent / away dimmed)
