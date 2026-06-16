@@ -117,6 +117,11 @@ class SoccerLiveTeamCard extends LitElement {
       });
       this._eventSubscriptions = [];
     }
+
+    if (this._escHandler) {
+      document.removeEventListener('keydown', this._escHandler);
+      this._escHandler = null;
+    }
   }
 
   _subscribeToEvents() {
@@ -614,10 +619,10 @@ class SoccerLiveTeamCard extends LitElement {
           </div>
         ` : ''}
 
-        ${this.showFormTrend ? this._renderFormTrend(stateObj.attributes.previous_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name) : ''}
-        ${this.showPreviousMatches ? this._renderPreviousMatches(stateObj.attributes.previous_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name) : ""}
+        ${this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
+        ${this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ""}
         ${this._renderH2H(match.head_to_head, match.home_team)}
-        ${this._renderUpcomingList(stateObj.attributes.upcoming_matches, stateObj.attributes.matches, this.myTeam || stateObj.attributes.team_name)}
+        ${this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name)}
       </ha-card>
       ${this.showPopup && this.activeMatch ? this._renderPopup() : ''}
     `;
