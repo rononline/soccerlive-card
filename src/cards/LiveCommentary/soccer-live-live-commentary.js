@@ -142,14 +142,14 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
 
     return html`
       <ha-card>
-        ${renderSoccerHeader({
+        ${!this._config.hide_header ? renderSoccerHeader({
           logo: liveMatch?.competition_logo || null,
           title: leagueName || 'Live Commentary',
           badge: isLive
             ? renderSoccerBadge(`${clock ? clock + "' " : ''}LIVE`, 'live')
             : renderSoccerBadge(`${homeScore}–${awayScore}`, 'ft'),
           fallbackIcon: '🎙️',
-        })}
+        }) : ''}
         <div class="match-header">
             <div class="team-block">
               ${homeLogo ? html`<img class="team-logo" src="${homeLogo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}

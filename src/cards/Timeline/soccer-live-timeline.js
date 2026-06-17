@@ -158,31 +158,6 @@ class SoccerLiveTimelineCard extends LitElement {
         pointer-events: none;
       }
 
-      .tl-header {
-        position: relative; z-index: 1;
-        display: flex; align-items: center; gap: 12px;
-        padding: 16px 18px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
-      .header-icon {
-        width: 40px; height: 40px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--cl-accent), var(--cl-gold));
-        display: flex; align-items: center; justify-content: center;
-        font-size: 20px;
-      }
-      .header-text .title {
-        font-size: 18px; font-weight: 900;
-        letter-spacing: -0.02em;
-        color: var(--cl-text);
-      }
-      .header-text .subtitle {
-        display: flex; align-items: center; gap: 6px;
-        font-size: 12px;
-        color: var(--cl-text-2);
-        margin-top: 2px;
-        font-weight: 700;
-      }
       .mini-logo { width: 16px; height: 16px; object-fit: contain; }
 
       .tl-body {

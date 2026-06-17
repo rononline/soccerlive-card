@@ -619,45 +619,7 @@ class SoccerLiveMatchesCard extends LitElement {
         from { transform: translateX(0); }
         to { transform: translateX(calc(-100% - 60px)); }
       }
-      .matches-header {
-        position: relative;
-        z-index: 1;
-        display: flex; align-items: center; gap: 14px;
-        padding: 16px 16px 14px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
-      .matches-header::after {
-        content: '';
-        position: absolute;
-        left: 14px; right: 14px; bottom: -1px;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--cl-accent), transparent);
-        opacity: 0.4;
-      }
-      .league-logo {
-        width: 42px; height: 42px;
-        object-fit: contain;
-        filter: drop-shadow(0 2px 8px rgba(var(--cl-accent-rgb),0.3));
-      }
-      .league-info {
-        flex: 1;
-        min-width: 0;
-      }
-      .league-name {
-        font-size: 16px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        color: var(--cl-text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .league-dates {
-        font-size: 11px;
-        color: var(--cl-text-2);
-        margin-top: 2px;
-        font-weight: 500;
-      }
+      /* .matches-header / .league-logo / .league-info / .league-name / .league-dates removed — now .top-bar from soccerHeaderStyles */
       .live-counter {
         flex-shrink: 0;
         background: linear-gradient(135deg, var(--cl-live), #f97316);

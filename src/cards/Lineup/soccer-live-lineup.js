@@ -180,31 +180,6 @@ class SoccerLiveLineupCard extends LitElement {
         pointer-events: none;
       }
 
-      .lineup-header {
-        position: relative; z-index: 1;
-        display: flex; align-items: center; gap: 12px;
-        padding: 16px 18px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
-      .header-icon {
-        width: 40px; height: 40px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--cl-accent), #10b981);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 20px;
-        box-shadow: 0 4px 16px rgba(var(--cl-accent-rgb),0.4);
-      }
-      .header-text .title {
-        font-size: 18px; font-weight: 900;
-        letter-spacing: -0.02em;
-        color: var(--cl-text);
-      }
-      .header-text .subtitle {
-        font-size: 11px;
-        color: var(--cl-text-2);
-        margin-top: 2px;
-        font-weight: 600;
-      }
 
       .teams-row {
         position: relative; z-index: 1;

@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.13.1 (2026-06-17)
+- LiveCommentary: migrate to shared-header; add `hide_header` guard (was always showing)
+- TeamCompetitions: migrate `.card-header` to shared-header; remove dead CSS
+- MiniStandings: remove dead `.header` / `.league-logo` / `.title` CSS
+- Timeline, Lineup, Bracket: remove dead `.header-icon` / `.header-text` CSS
+- Matches: remove dead `.matches-header` / `.league-logo` / `.league-info` CSS block
+
+## v3.13.0 (2026-06-17)
+- All cards now use `shared-header.js` — Team, Countdown, Matches, Timeline, Lineup, Bracket, MiniStandings added
+- Team card own `.top-bar`/`.competition`/`.comp-icon` CSS removed; `soccerHeaderStyles` imported
+
 ## v3.12.0 (2026-06-17)
 
 ### Design consistency: shared header
