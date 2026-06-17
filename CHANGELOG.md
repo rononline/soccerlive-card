@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.7.2 (2026-06-17)
+- Team card: `_toastTimer` cleared in `disconnectedCallback`
+- Team card: `banner.innerHTML` replaced with `createElement/textContent` for style consistency
+- CHANGELOG caught up after version bumps
+
 ## v3.7.1 (2026-06-17)
 - Team card: all goal animation timeouts tracked in `_animationTimers`, cleared in `disconnectedCallback`
 - Tutte popup: score `0` no longer shown as `-` (falsy check replaced by explicit null/empty/'N/A' check)

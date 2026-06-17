@@ -124,6 +124,9 @@ class SoccerLiveTeamCard extends LitElement {
       this._escHandler = null;
     }
 
+    clearTimeout(this._toastTimer);
+    this._toastTimer = null;
+
     if (this._animationTimers) {
       this._animationTimers.forEach(t => clearTimeout(t));
       this._animationTimers = [];
@@ -214,7 +217,10 @@ class SoccerLiveTeamCard extends LitElement {
 
     const banner = document.createElement('div');
     banner.className = 'goal-banner';
-    banner.innerHTML = '<div class="goal-banner-text">GOAL!</div>';
+    const bannerText = document.createElement('div');
+    bannerText.className = 'goal-banner-text';
+    bannerText.textContent = 'GOAL!';
+    banner.appendChild(bannerText);
     card.appendChild(banner);
     this._animationTimers.push(setTimeout(() => banner.remove(), 1700));
 
