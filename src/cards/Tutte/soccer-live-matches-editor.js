@@ -186,6 +186,15 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div class="option">
+          <label>Hide broadcasts</label>
+          <ha-switch
+            .checked=${this._config.hide_broadcasts === true}
+            data-config-value="hide_broadcasts"
+            @change=${this._switchChanged}
+          ></ha-switch>
+        </div>
+
+        <div class="option">
           <label>Newest Matches First</label>
           <ha-switch
             .checked=${this._config.reverse_order === true}

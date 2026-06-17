@@ -437,7 +437,7 @@ class SoccerLiveMatchesCard extends LitElement {
                         ${isMultiLeague && match.league_name && match.league_name !== 'N/A' ? html`
                           <span class="league-chip">${match.league_name}</span>
                         ` : ''}
-                        ${broadcast && isUpcoming ? html`
+                        ${broadcast && isUpcoming && !this._config.hide_broadcasts ? html`
                           <span class="tv-chip" title="Live TV">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
                             ${broadcast}
