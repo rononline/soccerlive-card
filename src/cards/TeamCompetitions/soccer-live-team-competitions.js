@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveTeamCompetitionsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedComp: { type: String } }; }
@@ -54,7 +55,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -62,15 +63,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
         border-radius: 12px;
         overflow: hidden;
       }
-      .card-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 16px 10px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
-      .team-logo { width: 32px; height: 32px; object-fit: contain; }
-      .team-name { font-size: 15px; font-weight: 700; color: var(--cl-text); }
+      /* .top-bar from soccerHeaderStyles */
       .comp-tabs {
         display: flex;
         gap: 2px;
@@ -124,12 +117,11 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
     return html`
       <ha-card>
-        ${!this._config.hide_header ? html`
-          <div class="card-header">
-            ${teamLogo ? html`<img class="team-logo" src="${teamLogo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-            <span class="team-name">${teamName || 'Team'}</span>
-          </div>
-        ` : ''}
+        ${!this._config.hide_header ? renderSoccerHeader({
+          logo: teamLogo || null,
+          title: teamName || 'Team',
+          fallbackIcon: '🗂️',
+        }) : ''}
 
         ${groups.length > 1 ? html`
           <div class="comp-tabs">

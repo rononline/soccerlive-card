@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveLiveCommentaryCard extends LitElement {
   static get properties() { return { hass: {}, _config: {} }; }
@@ -18,7 +19,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   static getStubConfig() { return { entity: "sensor.soccer_live_commentary_" }; }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -28,10 +29,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
         display: flex;
         flex-direction: column;
       }
-      .header {
-        padding: 16px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
+      /* .top-bar from soccerHeaderStyles */
       .match-header {
         display: flex;
         align-items: center;
@@ -144,9 +142,15 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
 
     return html`
       <ha-card>
-        <div class="header">
-          ${leagueName ? html`<div class="comp-name">${leagueName}</div>` : ''}
-          <div class="match-header">
+        ${renderSoccerHeader({
+          logo: liveMatch?.competition_logo || null,
+          title: leagueName || 'Live Commentary',
+          badge: isLive
+            ? renderSoccerBadge(`${clock ? clock + "' " : ''}LIVE`, 'live')
+            : renderSoccerBadge(`${homeScore}–${awayScore}`, 'ft'),
+          fallbackIcon: '🎙️',
+        })}
+        <div class="match-header">
             <div class="team-block">
               ${homeLogo ? html`<img class="team-logo" src="${homeLogo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
               <span class="team-name">${homeTeam}</span>

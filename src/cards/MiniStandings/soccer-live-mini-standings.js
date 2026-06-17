@@ -32,9 +32,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
         padding: 12px;
         border-radius: 12px;
       }
-      .header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-      .league-logo { width: 22px; height: 22px; object-fit: contain; }
-      .title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cl-text); flex: 1; }
+      /* .header / .league-logo / .title removed — now from soccerHeaderStyles */
       .groups { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
       .group-btn {
         font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; cursor: pointer;
