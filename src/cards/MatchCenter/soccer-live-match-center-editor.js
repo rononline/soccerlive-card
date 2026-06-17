@@ -42,6 +42,10 @@ class SoccerLiveMatchCenterEditor extends LitElement {
           <label>Hide header</label>
           <input type="checkbox" data-config-value="hide_header" ?checked=${this._config.hide_header === true} @change=${this._toggleChanged}>
         </div>
+        <div class="option">
+          <label>Hide broadcasts</label>
+          <input type="checkbox" data-config-value="hide_broadcasts" ?checked=${this._config.hide_broadcasts === true} @change=${this._toggleChanged}>
+        </div>
       </div>
     `;
   }

@@ -4,14 +4,15 @@ import { html, css } from 'lit-element';
  * Shared match meta component: venue row + broadcast/attendance/link chips.
  *
  * Usage:
- *   renderMatchMeta(match, { lang, t, weatherBadge, showDate })
+ *   renderMatchMeta(match, { lang, t, weatherBadge, showDate, hideBroadcasts })
  *
  * @param {object} match        - Match data object from sensor attributes
  * @param {object} opts
- *   @param {string}  opts.lang         - BCP-47 locale string (for toLocaleString)
- *   @param {Function} opts.t           - Translation function (key) => string
- *   @param {any}     opts.weatherBadge - Pre-rendered weather badge template, or null
- *   @param {boolean} opts.showDate     - Show date/time in the venue row (default false)
+ *   @param {string}   opts.lang            - BCP-47 locale string (for toLocaleString)
+ *   @param {Function} opts.t               - Translation function (key) => string
+ *   @param {any}      opts.weatherBadge    - Pre-rendered weather badge template, or null
+ *   @param {boolean}  opts.showDate        - Show date/time in the venue row (default false)
+ *   @param {boolean}  opts.hideBroadcasts  - Suppress broadcast chips (default false)
  */
 export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false, hideBroadcasts = false } = {}) => {
   if (!match) return html``;
