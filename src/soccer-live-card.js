@@ -158,12 +158,16 @@ class SoccerLiveCard extends HTMLElement {
     return this._child?.getCardSize?.() ?? 1;
   }
 
+  getGridOptions() {
+    return this._child?.getGridOptions?.();
+  }
+
   static getConfigElement() {
     return document.createElement('soccer-live-card-editor');
   }
 
   static getStubConfig() {
-    return { card_type: 'team' };
+    return {};
   }
 }
 
@@ -184,6 +188,7 @@ class SoccerLiveCardEditor extends LitElement {
     this._config = {};
     this._subEditor = null;
     this._subEditorType = null;
+    this._configByType = {};  // remembers per-type config when switching
   }
 
   setConfig(config) {
@@ -243,12 +248,20 @@ class SoccerLiveCardEditor extends LitElement {
   _typeChanged(e) {
     const type = e.target.value;
     if (!type) return;
-    // Preserve shared fields when switching type
-    const shared = {};
-    for (const f of SHARED_FIELDS) {
-      if (this._config[f] !== undefined) shared[f] = this._config[f];
+    // Save current type-specific config before switching
+    const currentType = this._config.card_type;
+    if (currentType) this._configByType[currentType] = { ...this._config };
+    // Restore previous config for new type, or start with shared fields only
+    const prev = this._configByType[type];
+    if (prev) {
+      this._dispatch({ ...prev, card_type: type });
+    } else {
+      const shared = {};
+      for (const f of SHARED_FIELDS) {
+        if (this._config[f] !== undefined) shared[f] = this._config[f];
+      }
+      this._dispatch({ ...shared, card_type: type });
     }
-    this._dispatch({ ...shared, card_type: type });
   }
 
   _dispatch(config) {

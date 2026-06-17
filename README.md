@@ -74,7 +74,8 @@ All cards share these common options:
 ### 🏅 Standings
 
 ```yaml
-type: custom:soccer-live-standings
+type: custom:soccer-live-card
+card_type: standings
 entity: sensor.soccer_live_standings_ned_1
 max_teams_visible: 18
 hide_header: false
@@ -84,7 +85,8 @@ show_event_toasts: false
 ### ⚽ Team
 
 ```yaml
-type: custom:soccer-live-team
+type: custom:soccer-live-card
+card_type: team
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 show_event_toasts: true
 score_size: normal    # normal / big / huge
@@ -100,7 +102,8 @@ The card shows a **weather badge** (temperature, wind) for the match venue when 
 ### 📋 Matches
 
 ```yaml
-type: custom:soccer-live-matches
+type: custom:soccer-live-card
+card_type: matches
 entity: sensor.soccer_live_all_ned_1
 max_events_visible: 6
 max_events_total: 50
@@ -112,7 +115,8 @@ show_event_toasts: false
 ### 📰 News
 
 ```yaml
-type: custom:soccer-live-news
+type: custom:soccer-live-card
+card_type: news
 entity: sensor.soccer_live_news_ned_1
 max_articles: 5
 hide_images: false
@@ -121,7 +125,8 @@ hide_images: false
 ### 👥 Lineup
 
 ```yaml
-type: custom:soccer-live-lineup
+type: custom:soccer-live-card
+card_type: lineup
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 ```
 
@@ -130,7 +135,8 @@ entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 ### ⏱ Timeline
 
 ```yaml
-type: custom:soccer-live-timeline
+type: custom:soccer-live-card
+card_type: timeline
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 reverse_order: true   # newest on top
 ```
@@ -138,7 +144,8 @@ reverse_order: true   # newest on top
 ### 🏆 Bracket
 
 ```yaml
-type: custom:soccer-live-bracket
+type: custom:soccer-live-card
+card_type: bracket
 entity: sensor.soccer_live_bracket_uefa_champions
 style: tree           # 'list' (default) or 'tree'
 compact: false
@@ -151,7 +158,8 @@ Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World 
 ### 🥇 Top Scorers
 
 ```yaml
-type: custom:soccer-live-scorers
+type: custom:soccer-live-card
+card_type: scorers
 entity: sensor.soccer_live_scorers_ned_1
 max_items: 10
 hide_header: false
@@ -165,7 +173,8 @@ Shows: rank, player photo, name, team logo and goal tally.
 ### ⏳ Countdown
 
 ```yaml
-type: custom:soccer-live-countdown
+type: custom:soccer-live-card
+card_type: countdown
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 ```
 
@@ -175,7 +184,8 @@ Also shows a **weather badge** for the match venue.
 ### 🏆 Mini Standings
 
 ```yaml
-type: custom:soccer-live-mini-standings
+type: custom:soccer-live-card
+card_type: mini-standings
 entity: sensor.soccer_live_standings_ned_1
 max_rows: 5
 group: null          # optional: filter standings group (e.g. "WK A", "WK B")
@@ -188,7 +198,8 @@ Rows sorted by points, then wins, then goal difference.
 ### ⚽ Live Match
 
 ```yaml
-type: custom:soccer-live-live-match
+type: custom:soccer-live-card
+card_type: live-match
 entity: sensor.soccer_live_all_ned_1
 max_stats: 4
 ```
@@ -198,7 +209,8 @@ Displays the current/best match with key events, possession stats, and shots on 
 ### 🔄 Multi Team
 
 ```yaml
-type: custom:soccer-live-multi-team
+type: custom:soccer-live-card
+card_type: multi-team
 entities:
   - sensor.soccer_live_next_ned_1_feyenoord_rotterdam
   - sensor.soccer_live_all_mixed_ajax
@@ -212,7 +224,8 @@ Shows multiple teams' matches in one compact card, each on its own row.
 ### 🗂️ Team Competitions
 
 ```yaml
-type: custom:soccer-live-team-competitions
+type: custom:soccer-live-card
+card_type: team-competitions
 entity: sensor.soccer_live_all_mixed_feyenoord_rotterdam
 team_name: "Feyenoord"      # optional: override team name
 default_comp: "Eredivisie"  # optional: default competition tab
@@ -223,7 +236,8 @@ All team competitions in one card with a tab selector to switch between leagues 
 ### 💬 Live Commentary
 
 ```yaml
-type: custom:soccer-live-live-commentary
+type: custom:soccer-live-card
+card_type: live-commentary
 entity: sensor.soccer_live_commentary_ned_1
 ```
 

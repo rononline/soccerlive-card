@@ -1,5 +1,28 @@
 # Changelog
 
+## v3.8.3 (2026-06-17)
+- Fix: `_dispatch()` now always includes `type: custom:soccer-live-card` so HA never loses the wrapper identity
+
+## v3.8.2 (2026-06-17)
+- Card picker: short card_type values (`team`, `standings`, etc.) — long names still accepted for backward compat
+- Scorers and Live Commentary added to picker with editors
+- Switching type now preserves `entity`, `skin`, `language`, `show_event_toasts`
+- Emoji removed from type dropdown labels
+
+## v3.8.1 (2026-06-17)
+- Fix: `import from 'lit-element'` (was 'lit'), `{ type: Object }` property declarations
+- Fix: sub-card `setConfig` exceptions caught when entity not yet configured
+
+## v3.8.0 (2026-06-17)
+- Single card picker entry (`custom:soccer-live-card`) replaces 14 separate entries
+- `SoccerLiveCard` wrapper creates sub-card based on `card_type`
+- `SoccerLiveCardEditor`: type dropdown first, then sub-card editor embedded below
+- **Breaking change**: YAML now uses `type: custom:soccer-live-card` + `card_type: team`
+
+## v3.7.3 (2026-06-17)
+- Team card: `_toastTimer` cleared in `disconnectedCallback`
+- `banner.innerHTML` replaced with `createElement/textContent`
+
 ## v3.7.2 (2026-06-17)
 - Team card: `_toastTimer` cleared in `disconnectedCallback`
 - Team card: `banner.innerHTML` replaced with `createElement/textContent` for style consistency
