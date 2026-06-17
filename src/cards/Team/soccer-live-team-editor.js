@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { editorStyles, renderSelector, renderToggle, renderFieldGroup, renderSection } from '../editor-helper.js';
+import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveTeamCardEditor extends LitElement {
   static get properties() {
@@ -74,6 +75,8 @@ class SoccerLiveTeamCardEditor extends LitElement {
     if (changedProperties.has('hass')) this._fetchEntities();
   }
 
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
   _fireConfigChanged(newConfig) {
     this._config = newConfig;
     this.dispatchEvent(new CustomEvent('config-changed', {
@@ -128,9 +131,9 @@ class SoccerLiveTeamCardEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t('editor.sensor')}</h3>
         <div>
-          <label class="field-label">Entity</label>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!entityInList ? html`<option value="${currentEntity}" selected>${currentEntity || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`
@@ -139,25 +142,25 @@ class SoccerLiveTeamCardEditor extends LitElement {
           </select>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t('editor.settings')}</h3>
         <div>
-          <label class="field-label">Mijn team (accentueren)</label>
-          <input type="text" placeholder="bijv. Feyenoord Rotterdam"
+          <label class="field-label">${this._t('editor.my_team')}</label>
+          <input type="text" placeholder="${this._t('editor.my_team_hint')}"
             .value=${this._config.my_team || ''}
             @change=${(e) => this._fireConfigChanged({...this._config, my_team: e.target.value})} />
         </div>
         <div class="option">
-          <label>Seizoenvorm-trend tonen</label>
+          <label>${this._t('editor.show_form_trend')}</label>
           <ha-switch .checked=${this._config.show_form_trend === true}
             data-config-value="show_form_trend" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
-          <label>Vorige wedstrijden tonen</label>
+          <label>${this._t('editor.show_previous_matches')}</label>
           <ha-switch .checked=${this._config.show_previous_matches === true}
             data-config-value="show_previous_matches" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
-          <label>Show Event Toasts (in-card)</label>
+          <label>${this._t('editor.show_event_toasts')}</label>
           <ha-switch
             .checked=${this._config.show_event_toasts === true}
             data-config-value="show_event_toasts"
@@ -165,15 +168,15 @@ class SoccerLiveTeamCardEditor extends LitElement {
           ></ha-switch>
         </div>
         <div class="option">
-          <label>Hide broadcasts</label>
+          <label>${this._t('editor.hide_broadcasts')}</label>
           <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
-          <label>Compact mode</label>
+          <label>${this._t('editor.compact')}</label>
           <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>
         </div>
         <div>
-          <label class="field-label">Skin</label>
+          <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
@@ -191,7 +194,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Score Size</label>
+          <label class="field-label">${this._t('editor.score_size')}</label>
           <select data-config-value="score_size" @change=${this._selectChanged}>
             <option value="normal" ?selected=${(this._config.score_size || 'normal') === 'normal'}>Normal</option>
             <option value="big" ?selected=${this._config.score_size === 'big'}>Big</option>
@@ -199,7 +202,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>
