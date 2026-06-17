@@ -145,6 +145,17 @@ class SoccerLiveCountdownCard extends LitElement {
         border-radius: 12px;
       }
       /* .top-bar / .competition / .comp-icon from soccerHeaderStyles */
+      /* Compact mode */
+      ha-card.compact { padding: 10px 14px !important; }
+      ha-card.compact .team-logo { width: 32px !important; height: 32px !important; }
+      ha-card.compact .team-name { font-size: 11px !important; }
+      ha-card.compact .cd-num { font-size: 22px !important; }
+      ha-card.compact .cd-sep { font-size: 18px !important; }
+      ha-card.compact .cd-label { font-size: 8px !important; }
+      ha-card.compact .sched-date { font-size: 10px !important; margin-bottom: 4px !important; }
+      ha-card.compact .score { font-size: 30px !important; letter-spacing: 3px !important; }
+      ha-card.compact .smm-venue-row,
+      ha-card.compact .smm-chips { padding: 6px 14px !important; font-size: 10px !important; }
       .teams { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
       .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
       .team-logo { width: 52px; height: 52px; object-fit: contain; }
@@ -244,7 +255,7 @@ class SoccerLiveCountdownCard extends LitElement {
     const lSec = this._t('cd.sec') || 'sec';
 
     return html`
-      <ha-card>
+      <ha-card class="${this._config.compact ? 'compact' : ''}">
         ${!this._config.hide_header ? renderSoccerHeader({
           logo: compLogo || null,
           title: compName,

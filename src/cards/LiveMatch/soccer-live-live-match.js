@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState, validateEntity } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
+import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 
 /**
  * Soccer Live Match Card
@@ -72,7 +73,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, spinnerStyles, css`
+    return [skinStyles, matchMetaStyles, spinnerStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; overflow: hidden; border-radius: 12px; }
       .hero { position: relative; padding: 20px 16px 16px; }
       .bg-logo { position: absolute; opacity: 0.06; width: 110px; height: 110px; object-fit: contain; top: 0; }
@@ -100,7 +101,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
       .event-text { flex: 1; color: var(--cl-text); }
       .event-team { font-size: 10px; color: var(--cl-text-2); }
       .no-events { text-align: center; color: var(--cl-text-2); font-size: 12px; padding: 10px 0; }
-      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; font-size: 11px; color: var(--cl-text-2); }
+      /* .meta removed — now .smm-venue-row / .smm-chips from matchMetaStyles */
       .empty { padding: 20px; text-align: center; color: var(--cl-text-2); }
       .stats-row { display: flex; align-items: center; padding: 5px 16px; font-size: 11px; gap: 6px; }
       .stat-val { font-weight: 700; min-width: 32px; text-align: center; color: var(--cl-text); }
@@ -273,10 +274,10 @@ class SoccerLiveLiveMatchCard extends LitElement {
           })}
         ` : ''}
 
-        ${venue ? html`
-          <div class="divider"></div>
-          <div class="meta">🏟 ${venue}${venueCity ? `, ${venueCity}` : ''}</div>
-        ` : ''}
+        ${renderMatchMeta(match, {
+          lang: resolveLang(this.hass, this._config),
+          t: k => this._t(k),
+        })}
       </ha-card>
     `;
   }

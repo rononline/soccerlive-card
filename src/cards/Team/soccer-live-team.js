@@ -67,6 +67,7 @@ class SoccerLiveTeamCard extends LitElement {
     this.myTeam = (config.my_team || '').toLowerCase();
     this.showPreviousMatches = config.show_previous_matches === true;
     this.showFormTrend = config.show_form_trend === true;
+    this.compact = config.compact === true;
     this._toastMessage = '';
     this._toastVisible = false;
     this._toastVariant = 'goal';
@@ -537,7 +538,7 @@ class SoccerLiveTeamCard extends LitElement {
     const awayIsMyTeam = myTeam && match.away_team && match.away_team.toLowerCase().includes(myTeam);
 
     return html`
-      <ha-card class="${isLive ? 'live' : ''}">
+      <ha-card class="${isLive ? 'live' : ''} ${this.compact ? 'compact' : ''}">
         <div class="bg-logos">
           <div class="bg-logo home"><img src="${match.home_logo}" alt="" loading="lazy"></div>
           <div class="bg-logo away"><img src="${match.away_logo}" alt="" loading="lazy"></div>
@@ -632,10 +633,10 @@ class SoccerLiveTeamCard extends LitElement {
           </div>
         ` : ''}
 
-        ${this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
-        ${this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ""}
-        ${this._renderH2H(match.head_to_head, match.home_team)}
-        ${this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name)}
+        ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
+        ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
+        ${!this.compact ? this._renderH2H(match.head_to_head, match.home_team) : ''}
+        ${!this.compact ? this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
       </ha-card>
       ${this.showPopup && this.activeMatch ? this._renderPopup() : ''}
     `;
@@ -1891,6 +1892,16 @@ class SoccerLiveTeamCard extends LitElement {
         .team-name { font-size: 11px !important; max-width: 70px !important; }
         .event-icon { font-size: 12px !important; }
       }
+      /* Compact mode: smaller scoreboard, hide extras-row */
+      ha-card.compact .team-logo-big { width: 48px !important; height: 48px !important; }
+      ha-card.compact .team-name-big { font-size: 12px !important; }
+      ha-card.compact .scoreboard { padding: 12px 16px !important; }
+      ha-card.compact .score-num { font-size: 36px !important; letter-spacing: 4px !important; }
+      ha-card.compact .standing-summary { display: none; }
+      ha-card.compact .form-dots-row { display: none; }
+      ha-card.compact .top-scorer-row { display: none; }
+      ha-card.compact .extras-row { display: none; }
+      ha-card.compact .meta-row { padding: 8px 14px !important; }
     `];
   }
 }

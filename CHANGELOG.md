@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.15.0 (2026-06-17)
+
+### Compact mode
+- **Team card**: `compact: true` hides form trend, previous matches, H2H, upcoming list and upcoming section; shrinks logo to 48px, score to 36px, hides topscorer/standing rows
+- **Countdown**: `compact: true` reduces logo (32px), countdown numbers (22px), tighter padding throughout
+
+### Click-through consistency
+- **LiveMatch**: own `.meta` venue row replaced by `renderMatchMeta`; broadcast/attendance/stats/commentary/video chips now consistent with Team, MatchCenter and Countdown
+
 ## v3.14.0 (2026-06-17)
 
 ### New: shared-match-meta.js
