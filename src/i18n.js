@@ -953,7 +953,7 @@ const TRANSLATIONS = {
     'editor.settings': 'Paramètres',
     'editor.appearance': 'Apparence',
     'editor.entity': 'Entité',
-    'editor.hide_header': 'Masquer l'en-tête',
+    'editor.hide_header': "Masquer l'en-tête",
     'editor.hide_broadcasts': 'Masquer les diffusions TV',
     'editor.compact': 'Mode compact',
     'editor.show_form_trend': 'Afficher tendance de forme',
