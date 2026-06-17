@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 import { editorStyles } from '../editor-helper.js';
 
 const SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
@@ -20,6 +21,8 @@ class SoccerLiveMultiTeamEditor extends LitElement {
   }
 
   setConfig(config) { this._config = { ...config, entities: [...(config.entities || [])] }; }
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
   updated(p) { if (p.has('hass')) this._fetchEntities(); }
 
   _fetchEntities() {
@@ -73,22 +76,22 @@ class SoccerLiveMultiTeamEditor extends LitElement {
 
         <h3>Settings</h3>
         <div>
-          <label class="field-label">Card title</label>
+          <label class="field-label">${this._t('editor.card_title')}</label>
           <input type="text" .value=${this._config.title || ''} data-config-value="title" @input=${this._textChanged} placeholder="My Teams">
         </div>
         <div class="option">
-          <label>Hide header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
         </div>
         <h3>Appearance</h3>
         <div>
-          <label class="field-label">Theme</label>
+          <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             ${SKINS.map(s => html`<option value="${s}" ?selected=${(this._config.skin || 'dark') === s}>${s}</option>`)}
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             ${LANGS.map(l => html`<option value="${l === 'auto' ? '' : l}" ?selected=${(this._config.language || '') === (l === 'auto' ? '' : l)}>${l}</option>`)}
           </select>

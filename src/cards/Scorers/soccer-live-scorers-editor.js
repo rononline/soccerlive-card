@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { t, resolveLang } from '../../i18n.js';
 
 const SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
 const LANGS  = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
@@ -70,6 +71,9 @@ class SoccerLiveScorersEditor extends LitElement {
     this._config = { ...config };
   }
 
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
+
   updated(changedProperties) {
     if (changedProperties.has('hass')) {
       this._fetchEntities();
@@ -132,7 +136,7 @@ class SoccerLiveScorersEditor extends LitElement {
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
-          <label class="field-label">Entity</label>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!inList ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`
@@ -143,7 +147,7 @@ class SoccerLiveScorersEditor extends LitElement {
 
         <h3>Settings</h3>
         <div>
-          <label class="field-label">Max. items</label>
+          <label class="field-label">${this._t('editor.max_items')}</label>
           <input type="number" min="1" max="25"
             .value=${this._config.max_items ?? 10}
             data-config-value="max_items"
@@ -151,7 +155,7 @@ class SoccerLiveScorersEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Hide header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch
             .checked=${this._config.hide_header === true}
             data-config-value="hide_header"
@@ -161,7 +165,7 @@ class SoccerLiveScorersEditor extends LitElement {
 
         <h3>Appearance</h3>
         <div>
-          <label class="field-label">Theme</label>
+          <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             ${SKINS.map(s => html`
               <option value="${s}" ?selected=${(this._config.skin || 'dark') === s}>${s}</option>
@@ -170,7 +174,7 @@ class SoccerLiveScorersEditor extends LitElement {
         </div>
 
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             ${LANGS.map(l => html`
               <option value="${l === 'auto' ? '' : l}" ?selected=${(this._config.language || '') === (l === 'auto' ? '' : l)}>

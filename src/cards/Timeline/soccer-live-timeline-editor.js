@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveTimelineEditor extends LitElement {
   static get properties() {
@@ -34,6 +35,9 @@ class SoccerLiveTimelineEditor extends LitElement {
     if (!config) throw new Error('Invalid configuration');
     this._config = { ...config };
   }
+
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
   get config() { return this._config; }
 
   updated(changedProperties) {
@@ -100,7 +104,7 @@ class SoccerLiveTimelineEditor extends LitElement {
 
         <h3>Settings</h3>
         <div class="option">
-          <label>Hide Header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch
             .checked=${this._config.hide_header === true}
             data-config-value="hide_header"
@@ -108,7 +112,7 @@ class SoccerLiveTimelineEditor extends LitElement {
           ></ha-switch>
         </div>
         <div class="option">
-          <label>Reverse order (newest first)</label>
+          <label>${this._t('editor.reverse_order')}</label>
           <ha-switch
             .checked=${this._config.reverse_order === true}
             data-config-value="reverse_order"
@@ -116,7 +120,7 @@ class SoccerLiveTimelineEditor extends LitElement {
           ></ha-switch>
         </div>
         <div>
-          <label class="field-label">Skin</label>
+          <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
@@ -134,7 +138,7 @@ class SoccerLiveTimelineEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>

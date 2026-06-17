@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 import { editorStyles } from '../editor-helper.js';
 
 class SoccerLiveMatchesEditor extends LitElement {
@@ -73,6 +74,9 @@ class SoccerLiveMatchesEditor extends LitElement {
     this._config = { ...config };
   }
 
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
+
   get config() { return this._config; }
 
   updated(changedProperties) {
@@ -143,7 +147,7 @@ class SoccerLiveMatchesEditor extends LitElement {
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
-          <label class="field-label">Entity</label>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!entityInList ? html`<option value="${currentEntity}" selected>${currentEntity || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`
@@ -155,20 +159,20 @@ class SoccerLiveMatchesEditor extends LitElement {
         <h3>Settings</h3>
 
         <div>
-          <label class="field-label">Mijn team (accentueren)</label>
+          <label class="field-label">${this._t('editor.my_team')}</label>
           <input type="text" placeholder="bijv. Feyenoord Rotterdam"
             .value=${this._config.my_team || ''}
             @change=${(e) => this._fireConfigChanged({...this._config, my_team: e.target.value})} />
         </div>
 
         <div class="option">
-          <label>Live ticker tonen (bij live wedstrijden)</label>
+          <label>${this._t('editor.show_live_ticker')}</label>
           <ha-switch .checked=${this._config.show_live_ticker !== false}
             data-config-value="show_live_ticker" @change=${this._switchChanged}></ha-switch>
         </div>
 
         <div class="option">
-          <label>Show Finished Matches</label>
+          <label>${this._t('editor.show_finished')}</label>
           <ha-switch
             .checked=${this._config.show_finished_matches !== false}
             data-config-value="show_finished_matches"
@@ -177,7 +181,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Hide Header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch
             .checked=${this._config.hide_header === true}
             data-config-value="hide_header"
@@ -186,7 +190,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Hide broadcasts</label>
+          <label>${this._t('editor.hide_broadcasts')}</label>
           <ha-switch
             .checked=${this._config.hide_broadcasts === true}
             data-config-value="hide_broadcasts"
@@ -195,7 +199,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Newest Matches First</label>
+          <label>${this._t('editor.newest_first')}</label>
           <ha-switch
             .checked=${this._config.reverse_order === true}
             data-config-value="reverse_order"
@@ -204,7 +208,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Show Event Toasts (in-card)</label>
+          <label>${this._t('editor.show_event_toasts')}</label>
           <ha-switch
             .checked=${this._config.show_event_toasts === true}
             data-config-value="show_event_toasts"
@@ -213,7 +217,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div>
-          <label class="field-label">Max Events Visible</label>
+          <label class="field-label">${this._t('editor.max_events_visible')}</label>
           <input
             type="number"
             min="1"
@@ -225,7 +229,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div>
-          <label class="field-label">Max Events Total</label>
+          <label class="field-label">${this._t('editor.max_events_total')}</label>
           <input
             type="number"
             min="1"
@@ -237,7 +241,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div>
-          <label class="field-label">Hide Matches Older Than (Days)</label>
+          <label class="field-label">${this._t('editor.hide_older_than_days')}</label>
           <input
             type="number"
             min="0"
@@ -249,7 +253,7 @@ class SoccerLiveMatchesEditor extends LitElement {
           <div class="hint">Only works when "Show Finished Matches" is enabled.</div>
         </div>
         <div>
-          <label class="field-label">Skin</label>
+          <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
@@ -267,7 +271,7 @@ class SoccerLiveMatchesEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>

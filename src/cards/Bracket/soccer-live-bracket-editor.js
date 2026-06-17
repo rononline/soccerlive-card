@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveBracketEditor extends LitElement {
   static get properties() {
@@ -34,6 +35,9 @@ class SoccerLiveBracketEditor extends LitElement {
     if (!config) throw new Error('Invalid configuration');
     this._config = { ...config };
   }
+
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
   get config() { return this._config; }
 
   updated(changedProperties) {
@@ -100,14 +104,14 @@ class SoccerLiveBracketEditor extends LitElement {
 
         <h3>Settings</h3>
         <div>
-          <label class="field-label">Style</label>
+          <label class="field-label">${this._t('editor.style')}</label>
           <select data-config-value="style" @change=${this._selectChanged}>
             <option value="list" ?selected=${this._config.style !== 'tree'}>List (default)</option>
             <option value="tree" ?selected=${this._config.style === 'tree'}>Tree (bracket with central trophy)</option>
           </select>
         </div>
         <div class="option">
-          <label>Hide Header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch
             .checked=${this._config.hide_header === true}
             data-config-value="hide_header"
@@ -115,7 +119,7 @@ class SoccerLiveBracketEditor extends LitElement {
           ></ha-switch>
         </div>
         <div class="option">
-          <label>Compact (list mode: rounds stacked)</label>
+          <label>${this._t('editor.bracket_compact')}</label>
           <ha-switch
             .checked=${this._config.compact === true}
             data-config-value="compact"
@@ -123,7 +127,7 @@ class SoccerLiveBracketEditor extends LitElement {
           ></ha-switch>
         </div>
         <div class="option">
-          <label>Tree: include Playoffs</label>
+          <label>${this._t('editor.tree_playoffs')}</label>
           <ha-switch
             .checked=${this._config.tree_show_playoffs === true}
             data-config-value="tree_show_playoffs"
@@ -131,7 +135,7 @@ class SoccerLiveBracketEditor extends LitElement {
           ></ha-switch>
         </div>
         <div>
-          <label class="field-label">Skin</label>
+          <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
@@ -149,7 +153,7 @@ class SoccerLiveBracketEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>

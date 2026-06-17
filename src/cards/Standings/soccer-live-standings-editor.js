@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 import { editorStyles } from '../editor-helper.js';
 
 class SoccerLiveStandingsEditor extends LitElement {
@@ -69,6 +70,9 @@ class SoccerLiveStandingsEditor extends LitElement {
     if (!config) throw new Error('Invalid configuration');
     this._config = { ...config };
   }
+
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
 
   get config() { return this._config; }
 
@@ -166,7 +170,7 @@ class SoccerLiveStandingsEditor extends LitElement {
       <div class="card-config">
         <h3>Sensor</h3>
         <div>
-          <label class="field-label">Entity</label>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!entityInList ? html`<option value="${currentEntity}" selected>${currentEntity || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`
@@ -187,7 +191,7 @@ class SoccerLiveStandingsEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Hide Header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch
             .checked=${this._config.hide_header === true}
             data-config-value="hide_header"
@@ -196,7 +200,7 @@ class SoccerLiveStandingsEditor extends LitElement {
         </div>
 
         <div class="option">
-          <label>Show Event Toasts (in-card)</label>
+          <label>${this._t('editor.show_event_toasts')}</label>
           <ha-switch
             .checked=${this._config.show_event_toasts === true}
             data-config-value="show_event_toasts"
@@ -205,52 +209,52 @@ class SoccerLiveStandingsEditor extends LitElement {
         </div>
 
         <div>
-          <label class="field-label">Max Teams Visible</label>
+          <label class="field-label">${this._t('editor.max_teams')}</label>
           <input type="number" min="1" max="50"
             .value=${this._config.max_teams_visible || 10}
             data-config-value="max_teams_visible" @change=${this._numberChanged} />
         </div>
 
         <div>
-          <label class="field-label">Uitgelicht team (my_team)</label>
+          <label class="field-label">${this._t('editor.my_team')}</label>
           <input type="text" placeholder="bijv. Feyenoord Rotterdam"
             .value=${this._config.highlight_team || this._config.my_team || ''}
             @change=${(e) => this._fireConfigChanged({...this._config, highlight_team: e.target.value, my_team: e.target.value})} />
         </div>
 
         <div class="option">
-          <label>Seizoenstotalen tonen</label>
+          <label>${this._t('editor.show_season_totals')}</label>
           <ha-switch .checked=${this._config.show_stats !== false}
             data-config-value="show_stats" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
-          <label>Doelpunten per team tonen</label>
+          <label>${this._t('editor.show_goals_per_team')}</label>
           <ha-switch .checked=${this._config.show_goals_for === true}
             data-config-value="show_goals_for" @change=${this._switchChanged}></ha-switch>
         </div>
 
         <div class="option">
-          <label>Compact modus</label>
+          <label>${this._t('editor.compact')}</label>
           <ha-switch .checked=${this._config.compact_mode === true}
             data-config-value="compact_mode" @change=${this._switchChanged}></ha-switch>
         </div>
 
         ${this._config.compact_mode ? html`
           <div>
-            <label class="field-label">Top N teams</label>
+            <label class="field-label">${this._t('editor.top_n_teams')}</label>
             <input type="number" min="1" max="20"
               .value=${this._config.compact_top || 5}
               data-config-value="compact_top" @change=${this._numberChanged} />
           </div>
           <div>
-            <label class="field-label">Bottom N teams</label>
+            <label class="field-label">${this._t('editor.bottom_n_teams')}</label>
             <input type="number" min="1" max="10"
               .value=${this._config.compact_bottom || 3}
               data-config-value="compact_bottom" @change=${this._numberChanged} />
           </div>
         ` : ''}
         <div>
-          <label class="field-label">Skin</label>
+          <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
@@ -268,7 +272,7 @@ class SoccerLiveStandingsEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>

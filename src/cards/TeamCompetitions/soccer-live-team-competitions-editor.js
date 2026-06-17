@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 import { editorStyles } from '../editor-helper.js';
 
 const SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
@@ -15,6 +16,8 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
   }
 
   setConfig(config) { this._config = { ...config }; }
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
   updated(p) { if (p.has('hass')) this._fetchEntities(); }
 
   _fetchEntities() {
@@ -46,7 +49,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
         <h3>Sensor</h3>
         <p class="hint">Use a <strong>soccer_live_all_mixed_*</strong> sensor (contains all competitions for one team)</p>
         <div>
-          <label class="field-label">Entity</label>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!inList ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
@@ -55,27 +58,27 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
 
         <h3>Settings</h3>
         <div>
-          <label class="field-label">Team name (shown in header)</label>
+          <label class="field-label">${this._t('editor.team_name')}</label>
           <input type="text" .value=${this._config.team_name || ''} data-config-value="team_name" @input=${this._textChanged} placeholder="e.g. Feyenoord Rotterdam">
         </div>
         <div>
-          <label class="field-label">Default competition (optional)</label>
+          <label class="field-label">${this._t('editor.default_competition')}</label>
           <input type="text" .value=${this._config.default_comp || ''} data-config-value="default_comp" @input=${this._textChanged} placeholder="e.g. Eredivisie">
         </div>
         <div class="option">
-          <label>Hide header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
         </div>
 
         <h3>Appearance</h3>
         <div>
-          <label class="field-label">Theme</label>
+          <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             ${SKINS.map(s => html`<option value="${s}" ?selected=${(this._config.skin || 'dark') === s}>${s}</option>`)}
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             ${LANGS.map(l => html`<option value="${l === 'auto' ? '' : l}" ?selected=${(this._config.language || '') === (l === 'auto' ? '' : l)}>${l}</option>`)}
           </select>

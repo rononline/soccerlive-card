@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveTeamFormEditor extends LitElement {
   static get properties() {
@@ -6,6 +7,8 @@ class SoccerLiveTeamFormEditor extends LitElement {
   }
 
   setConfig(config) { this._config = config; }
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
 
   _fire(config) {
     this.dispatchEvent(new CustomEvent('config-changed', { detail: { config }, bubbles: true, composed: true }));
@@ -48,7 +51,7 @@ class SoccerLiveTeamFormEditor extends LitElement {
           <input type="text" data-config-value="team_name" .value=${this._config.team_name || ''} @change=${this._inputChanged} placeholder="e.g. Ajax">
         </div>
         <div class="option">
-          <label>Hide header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <input type="checkbox" data-config-value="hide_header" ?checked=${this._config.hide_header === true} @change=${this._toggleChanged}>
         </div>
       </div>

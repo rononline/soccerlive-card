@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveNewsEditor extends LitElement {
   static get properties() {
@@ -36,6 +37,9 @@ class SoccerLiveNewsEditor extends LitElement {
     if (!config) throw new Error('Invalid configuration');
     this._config = { ...config };
   }
+
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
   get config() { return this._config; }
 
   updated(changedProperties) {
@@ -112,7 +116,7 @@ class SoccerLiveNewsEditor extends LitElement {
 
         <h3>Settings</h3>
         <div class="option">
-          <label>Hide Header</label>
+          <label>${this._t('editor.hide_header')}</label>
           <ha-switch
             .checked=${this._config.hide_header === true}
             data-config-value="hide_header"
@@ -120,7 +124,7 @@ class SoccerLiveNewsEditor extends LitElement {
           ></ha-switch>
         </div>
         <div class="option">
-          <label>Hide Images</label>
+          <label>${this._t('editor.hide_images')}</label>
           <ha-switch
             .checked=${this._config.hide_images === true}
             data-config-value="hide_images"
@@ -128,14 +132,14 @@ class SoccerLiveNewsEditor extends LitElement {
           ></ha-switch>
         </div>
         <div>
-          <label class="field-label">Max Articles</label>
+          <label class="field-label">${this._t('editor.max_articles')}</label>
           <input type="number" min="1" max="20"
             .value=${this._config.max_articles || 5}
             data-config-value="max_articles"
             @change=${this._numberChanged} />
         </div>
         <div>
-          <label class="field-label">Skin</label>
+          <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
             <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
@@ -153,7 +157,7 @@ class SoccerLiveNewsEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">Language</label>
+          <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
             <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>
