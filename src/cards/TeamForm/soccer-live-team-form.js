@@ -72,7 +72,7 @@ class SoccerLiveTeamFormCard extends LitElement {
     if (!s) {
       const c = OfflineCache.get(entityId);
       if (c?.data?.previous_matches) attrs = c.data;
-      else return renderCardError('', 'Entity not found', entityId, 'Check entity configuration');
+      else return renderCardError('', this._t('ui.entity_not_found'), entityId, this._t('ui.check_entity_config'));
     } else if (s.state === 'unavailable') {
       const c = OfflineCache.get(entityId);
       if (c?.data?.previous_matches) attrs = c.data;
@@ -84,7 +84,7 @@ class SoccerLiveTeamFormCard extends LitElement {
     if (this._isLoading && !attrs) return renderLoading('Loading form...');
 
     const prev = attrs?.previous_matches || [];
-    if (!prev.length) return renderInfoState('', 'No form data', 'No previous matches found for this sensor', '');
+    if (!prev.length) return renderInfoState('', this._t('ui.no_form_data'), this._t('ui.no_form_hint'), '');
     return this._renderCard(attrs);
   }
 

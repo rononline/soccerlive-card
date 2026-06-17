@@ -55,13 +55,13 @@ class SoccerLiveScorersCard extends LitElement {
     if (!stateObj) {
       const cached = OfflineCache.get(entityId);
       if (cached?.data?.scorers) attrs = cached.data;
-      else return renderCardError('⚠️', 'Entity not found', entityId, 'Check entity configuration');
+      else return renderCardError('⚠️', this._t('ui.entity_not_found'), entityId, this._t('ui.check_entity_config'));
     } else if (stateObj.state === 'unavailable') {
       const cached = OfflineCache.get(entityId);
       if (cached?.data?.scorers) attrs = cached.data;
       else return renderCardError('📡', 'Sensor unavailable', 'Integration may not be running', 'Restart Home Assistant');
     } else if (stateObj.state === 'Not available') {
-      return renderInfoState('📊', 'Not available', 'Top scorer data not available for this competition via ESPN', '');
+      return renderInfoState('📊', this._t('ui.endpoint_unsupported'), this._t('ui.endpoint_unsupported_hint'), '');
     } else {
       attrs = stateObj.attributes;
     }

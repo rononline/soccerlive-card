@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.17.5 (2026-06-17)
+- Remove duplicate `editor.max_stats` entries in EN and NL
+
+## v3.17.4 (2026-06-17)
+- Fix unescaped apostrophes in FR editor translations
+
+## v3.17.3 / v3.17.2 (2026-06-17)
+- `editor.*` keys added for IT, FR, ES, DE, PT — all 7 languages now fully covered
+
 ## v3.17.0 (2026-06-17)
 - All 15 card editors translated via i18n: `editor.*` keys in EN + NL; other languages fall back to EN
 - MatchCenter editor: checkboxes replaced by `ha-switch` for visual consistency

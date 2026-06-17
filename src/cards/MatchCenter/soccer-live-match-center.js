@@ -70,7 +70,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     if (!s) {
       const c = OfflineCache.get(entityId);
       if (c?.data?.matches) attrs = c.data;
-      else return renderCardError('', 'Entity not found', entityId, 'Check entity configuration');
+      else return renderCardError('', this._t('ui.entity_not_found'), entityId, this._t('ui.check_entity_config'));
     } else if (s.state === 'unavailable') {
       const c = OfflineCache.get(entityId);
       if (c?.data?.matches) attrs = c.data;
@@ -81,7 +81,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
     if (this._isLoading && !attrs) return renderLoading('Loading match...');
     const match = (attrs?.matches || [])[0];
-    if (!match) return renderInfoState('', 'No match data', 'No match available for this entity', '');
+    if (!match) return renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), '');
     return this._renderCard(match);
   }
 
@@ -197,7 +197,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         .filter(([k]) => k !== 'Unknown')
         .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? 'N/A' }));
     }
-    if (!stats.length) return html`<p class="empty">No stats available yet</p>`;
+    if (!stats.length) return html`<p class="empty">${this._t('ui.no_stats_yet')}</p>`;
     return html`
       <div class="stats-list">
         ${stats.map(s => {
@@ -227,7 +227,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   _renderTimeline(match) {
     const events = match.key_events || [];
-    if (!events.length) return html`<p class="empty">No events yet</p>`;
+    if (!events.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
     const icon = type => {
       const s = (type || '').toLowerCase();
       if (s.includes('goal'))   return '⚽';
@@ -255,7 +255,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _renderLineup(match) {
     const home = match.lineup_home || [];
     const away = match.lineup_away || [];
-    if (!home.length && !away.length) return html`<p class="empty">No lineup available yet</p>`;
+    if (!home.length && !away.length) return html`<p class="empty">${this._t('ui.no_lineup_yet')}</p>`;
     return html`
       <div class="lu-wrap">
         ${(match.formation_home || match.formation_away) ? html`
