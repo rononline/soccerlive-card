@@ -26,6 +26,7 @@ class SoccerLiveLiveMatchEditor extends LitElement {
   _entityChanged(ev) { this._fire({ ...this._config, entity: ev.target.value }); }
   _selectChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
   _numberChanged(ev) { const v = parseInt(ev.target.value, 10); if (!isNaN(v)) this._fire({ ...this._config, [ev.target.dataset.configValue]: v }); }
+  _switchChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.checked }); }
 
   render() {
     if (!this._config || !this.hass) return html``;
