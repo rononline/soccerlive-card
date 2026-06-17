@@ -70,6 +70,7 @@ class SoccerLiveTeamCard extends LitElement {
     this._toastVisible = false;
     this._toastVariant = 'goal';
     this._toastTimer = null;
+    if (!this._animationTimers) this._animationTimers = [];
   }
 
   _t(key, vars) {
@@ -121,6 +122,11 @@ class SoccerLiveTeamCard extends LitElement {
     if (this._escHandler) {
       document.removeEventListener('keydown', this._escHandler);
       this._escHandler = null;
+    }
+
+    if (this._animationTimers) {
+      this._animationTimers.forEach(t => clearTimeout(t));
+      this._animationTimers = [];
     }
   }
 
@@ -199,25 +205,25 @@ class SoccerLiveTeamCard extends LitElement {
     card.classList.remove('goal-flash');
     void card.offsetWidth;
     card.classList.add('goal-flash');
-    setTimeout(() => card.classList.remove('goal-flash'), 1700);
+    this._animationTimers.push(setTimeout(() => card.classList.remove('goal-flash'), 1700));
 
     const flash = document.createElement('div');
     flash.className = 'goal-flash-overlay';
     card.appendChild(flash);
-    setTimeout(() => flash.remove(), 1000);
+    this._animationTimers.push(setTimeout(() => flash.remove(), 1000));
 
     const banner = document.createElement('div');
     banner.className = 'goal-banner';
     banner.innerHTML = '<div class="goal-banner-text">GOAL!</div>';
     card.appendChild(banner);
-    setTimeout(() => banner.remove(), 1700);
+    this._animationTimers.push(setTimeout(() => banner.remove(), 1700));
 
     const scoreEl = card.querySelector('.score-numbers');
     if (scoreEl) {
       scoreEl.classList.remove('goal-scored');
       void scoreEl.offsetWidth;
       scoreEl.classList.add('goal-scored');
-      setTimeout(() => scoreEl.classList.remove('goal-scored'), 1300);
+      this._animationTimers.push(setTimeout(() => scoreEl.classList.remove('goal-scored'), 1300));
     }
 
     const sides = card.querySelectorAll('.team-side .team-logo-big');
@@ -226,12 +232,12 @@ class SoccerLiveTeamCard extends LitElement {
       scorerLogo.classList.remove('scorer-bounce');
       void scorerLogo.offsetWidth;
       scorerLogo.classList.add('scorer-bounce');
-      setTimeout(() => scorerLogo.classList.remove('scorer-bounce'), 1300);
+      this._animationTimers.push(setTimeout(() => scorerLogo.classList.remove('scorer-bounce'), 1300));
     }
 
     if (navigator.vibrate) navigator.vibrate([180, 80, 180, 80, 280]);
 
-    setTimeout(() => this._showEventToast('soccer_live_goal', eventData), 600);
+    this._animationTimers.push(setTimeout(() => this._showEventToast('soccer_live_goal', eventData), 600));
 
     const colors = ['#ec4899', '#6366f1', '#06b6d4', '#fbbf24', '#10b981', '#ef4444'];
     const emojis = ['⚽', '🎉', '✨', '🔥', '⭐'];
@@ -253,7 +259,7 @@ class SoccerLiveTeamCard extends LitElement {
       c.style.setProperty('--dy', dy);
       c.style.animationDelay = (Math.random() * 0.3) + 's';
       card.appendChild(c);
-      setTimeout(() => c.remove(), 2000);
+      this._animationTimers.push(setTimeout(() => c.remove(), 2000));
     }
   }
 

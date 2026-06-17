@@ -1,5 +1,31 @@
 # Changelog
 
+## v3.7.1 (2026-06-17)
+- Team card: all goal animation timeouts tracked in `_animationTimers`, cleared in `disconnectedCallback`
+- Tutte popup: score `0` no longer shown as `-` (falsy check replaced by explicit null/empty/'N/A' check)
+- Tutte card: `_cleanupTimers` array tracks `_recentEventMatches` timeouts, cleared on disconnect
+- package-lock.json synced after each version bump
+
+## v3.7.0 (2026-06-17)
+- Tutte + Standings: event subscriptions now triggered from `updated()` on first `hass` (guard against duplicates)
+- Tutte + Standings: `_escHandler` cleaned up in `disconnectedCallback`
+- Tutte popup: rewritten as Lit template in shadow DOM (no global `document.body` injection)
+- Team matching on ESPN `team_id` when available (more reliable than name matching)
+- lockfile synced to 3.6.9 / 3.7.0 after version bumps
+
+## v3.6.9 (2026-06-16)
+- Fix: `_escHandler` cleanup added to `disconnectedCallback` — no dangling ESC listener when card removed while popup is open
+- Use `attributes.*` instead of `stateObj.attributes.*` for previous/upcoming matches (consistent offline/cache rendering)
+
+## v3.6.8 (2026-06-16)
+- hacs.json: `description` field removed (not allowed by HACS schema)
+- package-lock.json synced to 3.6.8
+
+## v3.6.6 (2026-06-16)
+- H2H: W/D/L summary with coloured bar in card and popup
+- Card shows 5 H2H matches (was 3); popup shows 8
+- Winner highlighted bold, loser dimmed in popup
+
 ## v3.6.5 (2026-06-16)
 - Fix: event toasts (goal / card notifications) now reliably subscribe — `connectedCallback` fires before `hass` is available in HA; subscription now triggered from `updated()` on first `hass`, with guard against duplicate subscriptions
 
