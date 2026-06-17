@@ -145,7 +145,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
     if (missingEntities.length > 0 && !hasAnyUnavailable) {
       const cached = OfflineCache.get(entities[0]);
       if (cached) return renderCardError('⏱', 'Offline - showing cached data', 'Last update: ' + new Date().toLocaleTimeString(), 'Waiting for integration');
-      return renderCardError('⚠️', 'Entity not found', `Unable to find: ${missingEntities[0]}`, 'Check your entity configuration');
+      return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${missingEntities[0]}`, this._t('ui.check_entity_config'));
     }
 
     return html`

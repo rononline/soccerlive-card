@@ -219,14 +219,14 @@ class SoccerLiveCountdownCard extends LitElement {
     if (!stateObj) {
       const cached = OfflineCache.get(this._config.entity);
       if (cached) return renderCardError('⏱', 'Offline - showing cached data', 'Last update: ' + new Date().toLocaleTimeString(), 'Waiting for integration to come online');
-      return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
+      return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));
     }
     if (stateObj.state === 'unavailable') {
       const cached = OfflineCache.get(this._config.entity);
       if (cached) {
         this._cachedData = cached.data;
       } else {
-        return renderCardError('📡', 'Sensor unavailable', 'The integration may not be running', 'Restart Home Assistant or check the integration');
+        return renderCardError('📡', this._t('ui.sensor_unavailable'), this._t('ui.sensor_unavailable_hint'), this._t('ui.restart_ha'));
       }
     }
     if (this._isLoading) {

@@ -74,7 +74,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     } else if (s.state === 'unavailable') {
       const c = OfflineCache.get(entityId);
       if (c?.data?.matches) attrs = c.data;
-      else return renderCardError('', 'Sensor unavailable', 'Integration may not be running', 'Restart Home Assistant');
+      else return renderCardError('', this._t('ui.sensor_unavailable'), this._t('ui.sensor_unavailable_hint'), this._t('ui.restart_ha'));
     } else {
       attrs = s.attributes;
     }

@@ -59,7 +59,7 @@ class SoccerLiveScorersCard extends LitElement {
     } else if (stateObj.state === 'unavailable') {
       const cached = OfflineCache.get(entityId);
       if (cached?.data?.scorers) attrs = cached.data;
-      else return renderCardError('📡', 'Sensor unavailable', 'Integration may not be running', 'Restart Home Assistant');
+      else return renderCardError('📡', this._t('ui.sensor_unavailable'), this._t('ui.sensor_unavailable_hint'), this._t('ui.restart_ha'));
     } else if (stateObj.state === 'Not available') {
       return renderInfoState('📊', this._t('ui.endpoint_unsupported'), this._t('ui.endpoint_unsupported_hint'), '');
     } else {

@@ -104,10 +104,10 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
   render() {
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
-    if (!stateObj) return renderCardError('⚠️', 'Entity not found', `Unable to find: ${this._config.entity}`, 'Check the entity configuration');
+    if (!stateObj) return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));
 
     const matches = stateObj.attributes.matches || [];
-    if (!matches.length) return renderCardError('⚽', 'No match data', 'Unable to find matches', 'Check if the team has scheduled matches');
+    if (!matches.length) return renderCardError('⚽', this._t('ui.no_competition_data'), this._t('ui.no_competition_hint'), '');
 
     const groups = this._groupByCompetition(matches);
     const activeGroup = groups.find(g => g.key === this._selectedComp) || groups[0];
