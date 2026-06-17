@@ -255,7 +255,6 @@ class SoccerLiveCardEditor extends LitElement {
   }
 
   _haSelectChanged(e) {
-    // ha-select fires 'selected' on open too; ignore when value didn't change
     const type = e.detail?.value;
     if (!type || type === (this._config?.card_type || '')) return;
     this._typeChanged({ target: { value: type } });
@@ -272,7 +271,7 @@ class SoccerLiveCardEditor extends LitElement {
         <ha-select
           label="Card type"
           .value=${selected}
-          @selected=${this._haSelectChanged}
+          @value-changed=${this._haSelectChanged}
           @closed=${e => e.stopPropagation()}
           fixedMenuPosition
         >
