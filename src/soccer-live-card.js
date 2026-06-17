@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css } from 'lit-element';
 
 import "./cards/Standings/soccer-live-standings.js";
 import "./cards/Standings/soccer-live-standings-editor.js";
@@ -102,7 +102,11 @@ class SoccerLiveCard extends HTMLElement {
       this.appendChild(this._child);
     }
 
-    this._child.setConfig(this._config);
+    try {
+      this._child.setConfig(this._config);
+    } catch (e) {
+      // Sub-card may require entity; safe to ignore until user sets one
+    }
     if (this._hass) this._child.hass = this._hass;
   }
 
@@ -140,8 +144,8 @@ customElements.define('soccer-live-card', SoccerLiveCard);
 class SoccerLiveCardEditor extends LitElement {
   static get properties() {
     return {
-      hass:    {},
-      _config: { state: true },
+      hass:    { type: Object },
+      _config: { type: Object },
     };
   }
 
@@ -153,7 +157,8 @@ class SoccerLiveCardEditor extends LitElement {
   }
 
   setConfig(config) {
-    this._config = config || {};
+    this._config = { ...(config || {}) };
+    this.requestUpdate();
   }
 
   // Pass hass through to sub-editor whenever it changes
@@ -179,8 +184,14 @@ class SoccerLiveCardEditor extends LitElement {
       return;
     }
 
-    // Recreate editor only on type change
-    if (this._subEditorType !== type) {
+    if (this._subEditorType === type) {
+      // Same type: just push updated config
+      try { this._subEditor.setConfig(this._config); } catch (e) { /* entity not yet set */ }
+      return;
+    }
+
+    // Type changed: recreate the sub-editor
+    {
       container.innerHTML = '';
       this._subEditor = document.createElement(editorName);
       this._subEditorType = type;
@@ -192,7 +203,7 @@ class SoccerLiveCardEditor extends LitElement {
       container.appendChild(this._subEditor);
     }
 
-    this._subEditor.setConfig(this._config);
+    try { this._subEditor.setConfig(this._config); } catch (e) { /* entity not yet set */ }
   }
 
   _typeChanged(e) {
