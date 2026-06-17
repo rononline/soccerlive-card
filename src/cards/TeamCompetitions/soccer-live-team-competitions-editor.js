@@ -85,4 +85,6 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
   }
 }
 
-customElements.define("soccer-live-team-competitions-editor", SoccerLiveTeamCompetitionsEditor);
+if (!customElements.get("soccer-live-team-competitions-editor")) {
+  customElements.define("soccer-live-team-competitions-editor", SoccerLiveTeamCompetitionsEditor);
+}

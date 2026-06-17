@@ -98,4 +98,6 @@ class SoccerLiveMultiTeamEditor extends LitElement {
   }
 }
 
-customElements.define("soccer-live-multi-team-editor", SoccerLiveMultiTeamEditor);
+if (!customElements.get("soccer-live-multi-team-editor")) {
+  customElements.define("soccer-live-multi-team-editor", SoccerLiveMultiTeamEditor);
+}

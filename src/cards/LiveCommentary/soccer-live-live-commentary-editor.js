@@ -75,4 +75,6 @@ class SoccerLiveLiveCommentaryEditor extends LitElement {
   }
 }
 
-customElements.define("soccer-live-live-commentary-editor", SoccerLiveLiveCommentaryEditor);
+if (!customElements.get("soccer-live-live-commentary-editor")) {
+  customElements.define("soccer-live-live-commentary-editor", SoccerLiveLiveCommentaryEditor);
+}

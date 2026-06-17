@@ -48,6 +48,20 @@ class SoccerLiveTeamFormCard extends LitElement {
 
   _t(key) { return t(key, resolveLang(this.hass, this._config)); }
 
+  _detectTeam(previousMatches) {
+    // Count team name frequency across all previous matches — the one appearing most is ours
+    const freq = {};
+    (previousMatches || []).forEach(m => {
+      [m.home_team, m.away_team].filter(Boolean).forEach(name => {
+        freq[name] = (freq[name] || 0) + 1;
+      });
+    });
+    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+    // Only trust detection when the top team appears in every match (tracked team always present)
+    if (sorted.length && sorted[0][1] === previousMatches.length) return sorted[0][0];
+    return '';
+  }
+
   render() {
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const entityId = this._config.entity;
@@ -82,8 +96,10 @@ class SoccerLiveTeamFormCard extends LitElement {
     const upcoming = (next && (next.state === 'pre' || next.state === 'in'))
       ? [next, ...upcomingRaw]
       : upcomingRaw;
-    const team      = this._config.team_name || attrs.team_name || next?.home_team || '';
-    const tracked   = team.toLowerCase();
+    // Team detection: prefer explicit config, then sensor attribute, then frequency analysis
+    // of previous_matches (the team appearing in every match is the tracked one).
+    const team    = this._config.team_name || attrs.team_name || this._detectTeam(prev) || '';
+    const tracked = team.toLowerCase();
     const logo      = attrs.team_logo || next?.home_logo || '';
     const hideHeader = this._config.hide_header === true;
 
@@ -135,7 +151,7 @@ class SoccerLiveTeamFormCard extends LitElement {
 
         <!-- Form dots -->
         <div class="section">
-          <div class="section-label">Vorm (${results.length} wedstrijden)</div>
+          <div class="section-label">${this._t('team.form_trend')} (${results.length})</div>
           <div class="form-dots">
             ${results.map(r => html`<span class="dot ${r.r.toLowerCase()}" title="${r.m.home_team} ${r.m.home_score}-${r.m.away_score} ${r.m.away_team}">${r.r}</span>`)}
           </div>
@@ -149,7 +165,7 @@ class SoccerLiveTeamFormCard extends LitElement {
         <!-- Goals trend bars -->
         ${goalData.length ? html`
           <div class="section">
-            <div class="section-label">Goals per wedstrijd</div>
+            <div class="section-label">${this._t('form.goals_per_match')}</div>
             <div class="goal-bars">
               ${goalData.map(g => html`
                 <div class="goal-col">
@@ -162,8 +178,8 @@ class SoccerLiveTeamFormCard extends LitElement {
               `)}
             </div>
             <div class="goal-legend">
-              <span class="leg-dot scored"></span>Voor
-              <span class="leg-dot conceded"></span>Tegen
+              <span class="leg-dot scored"></span>${this._t('form.scored')}
+              <span class="leg-dot conceded"></span>${this._t('form.conceded')}
             </div>
           </div>
         ` : ''}
@@ -173,13 +189,13 @@ class SoccerLiveTeamFormCard extends LitElement {
           <div class="section">
             <div class="home-away-grid">
               <div class="ha-col">
-                <div class="ha-label">Thuis</div>
+                <div class="ha-label">${this._t('form.home')}</div>
                 ${homeRecord ? html`<div class="ha-record">${homeRecord}</div>` : ''}
                 ${homeForm  ? html`<div class="ha-form">${this._renderFormPills(homeForm)}</div>` : ''}
               </div>
               <div class="ha-divider"></div>
               <div class="ha-col">
-                <div class="ha-label">Uit</div>
+                <div class="ha-label">${this._t('form.away')}</div>
                 ${awayRecord ? html`<div class="ha-record">${awayRecord}</div>` : ''}
                 ${awayForm  ? html`<div class="ha-form">${this._renderFormPills(awayForm)}</div>` : ''}
               </div>
@@ -189,7 +205,7 @@ class SoccerLiveTeamFormCard extends LitElement {
 
         <!-- Previous matches list -->
         <div class="section">
-          <div class="section-label">Laatste wedstrijden</div>
+          <div class="section-label">${this._t('team.previous_matches')}</div>
           ${prev.map(m => {
             const isHome = tracked && m.home_team?.toLowerCase().includes(tracked);
             const hs = parseInt(m.home_score), as_ = parseInt(m.away_score);
@@ -214,7 +230,7 @@ class SoccerLiveTeamFormCard extends LitElement {
         <!-- Upcoming -->
         ${upcoming.length ? html`
           <div class="section">
-            <div class="section-label">Komende wedstrijden</div>
+            <div class="section-label">${this._t('team.upcoming_matches')}</div>
             ${upcoming.map(m => html`
               <div class="pm-row">
                 <span class="pm-date">${(m.date || '').split(' ')[0]}</span>

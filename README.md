@@ -28,6 +28,8 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
 | Live Commentary | `live-commentary` | Real-time play-by-play commentary with event icons |
+| Match Center | `match-center` | Tabbed match view: Overview, Stats, Timeline, Lineup, H2H |
+| Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 
 > **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 

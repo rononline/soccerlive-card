@@ -151,4 +151,6 @@ class SoccerLiveTimelineEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-timeline-editor', SoccerLiveTimelineEditor);
+if (!customElements.get('soccer-live-timeline-editor')) {
+  customElements.define('soccer-live-timeline-editor', SoccerLiveTimelineEditor);
+}

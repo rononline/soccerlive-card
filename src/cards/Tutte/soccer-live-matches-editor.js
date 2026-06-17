@@ -275,4 +275,6 @@ class SoccerLiveMatchesEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-matches-editor', SoccerLiveMatchesEditor);
+if (!customElements.get('soccer-live-matches-editor')) {
+  customElements.define('soccer-live-matches-editor', SoccerLiveMatchesEditor);
+}

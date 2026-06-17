@@ -80,4 +80,6 @@ class SoccerLiveMiniStandingsEditor extends LitElement {
   }
 }
 
-customElements.define("soccer-live-mini-standings-editor", SoccerLiveMiniStandingsEditor);
+if (!customElements.get("soccer-live-mini-standings-editor")) {
+  customElements.define("soccer-live-mini-standings-editor", SoccerLiveMiniStandingsEditor);
+}

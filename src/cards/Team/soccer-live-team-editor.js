@@ -208,4 +208,6 @@ class SoccerLiveTeamCardEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-team-editor', SoccerLiveTeamCardEditor);
+if (!customElements.get('soccer-live-team-editor')) {
+  customElements.define('soccer-live-team-editor', SoccerLiveTeamCardEditor);
+}

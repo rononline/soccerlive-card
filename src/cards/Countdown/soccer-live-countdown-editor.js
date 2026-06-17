@@ -69,4 +69,6 @@ class SoccerLiveCountdownEditor extends LitElement {
   }
 }
 
-customElements.define("soccer-live-countdown-editor", SoccerLiveCountdownEditor);
+if (!customElements.get("soccer-live-countdown-editor")) {
+  customElements.define("soccer-live-countdown-editor", SoccerLiveCountdownEditor);
+}

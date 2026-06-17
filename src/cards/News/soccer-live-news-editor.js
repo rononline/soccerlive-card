@@ -170,4 +170,6 @@ class SoccerLiveNewsEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-news-editor', SoccerLiveNewsEditor);
+if (!customElements.get('soccer-live-news-editor')) {
+  customElements.define('soccer-live-news-editor', SoccerLiveNewsEditor);
+}

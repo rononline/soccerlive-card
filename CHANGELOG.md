@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.10.3 (2026-06-17)
+- Countdown: responsive layout — on ≤480px teams go on top row, countdown takes full width below
+- Match Center: header adopts Team card style (comp-icon gradient + competition name + status badge)
+- Team Form: header adopts Team card style (team logo in gradient wrapper + standing badge)
+
+## v3.10.2 (2026-06-17)
+- Team Form: fix missing upcoming match — sensor's `upcoming_matches` skips `matches[0]`; now prepended when state is `pre` or `in`
+
+## v3.10.1 (2026-06-17)
+- Match Center + Team Form editors: entity filter changed from `startsWith()` to `includes()` to match actual HA entity ID naming
+
+## v3.10.0 (2026-06-17)
+- New: **Match Center** card (`card_type: match-center`) — tabbed view with Overview, Stats, Timeline, Lineup, H2H; tabs auto-hide when data is missing
+- New: **Team Form** card (`card_type: team-form`) — form dots, W/D/L summary, goals-per-match chart, home/away split, previous + upcoming match list
+
 ## v3.9.8 (2026-06-17)
 - Card type picker replaced with `ha-form` select (resolves ha-select event compatibility issues)
 - `ha-select` and related dead code removed

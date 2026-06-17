@@ -144,4 +144,6 @@ class SoccerLiveLineupEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-lineup-editor', SoccerLiveLineupEditor);
+if (!customElements.get('soccer-live-lineup-editor')) {
+  customElements.define('soccer-live-lineup-editor', SoccerLiveLineupEditor);
+}

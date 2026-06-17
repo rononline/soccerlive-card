@@ -285,4 +285,6 @@ class SoccerLiveStandingsEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-standings-editor', SoccerLiveStandingsEditor);
+if (!customElements.get('soccer-live-standings-editor')) {
+  customElements.define('soccer-live-standings-editor', SoccerLiveStandingsEditor);
+}

@@ -166,4 +166,6 @@ class SoccerLiveBracketEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-bracket-editor', SoccerLiveBracketEditor);
+if (!customElements.get('soccer-live-bracket-editor')) {
+  customElements.define('soccer-live-bracket-editor', SoccerLiveBracketEditor);
+}

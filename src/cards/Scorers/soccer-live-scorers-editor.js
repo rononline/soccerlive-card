@@ -184,4 +184,6 @@ class SoccerLiveScorersEditor extends LitElement {
   }
 }
 
-customElements.define("soccer-live-scorers-editor", SoccerLiveScorersEditor);
+if (!customElements.get("soccer-live-scorers-editor")) {
+  customElements.define("soccer-live-scorers-editor", SoccerLiveScorersEditor);
+}
