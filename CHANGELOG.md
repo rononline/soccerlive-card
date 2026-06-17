@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.9.2 (2026-06-17)
+## v3.9.3 (2026-06-17)
 - Registry consolidated into single `CARD_REGISTRY` array; `TYPE_TO_ELEMENT`, `CARD_TYPES`, `CARD_EDITORS`, `LEGACY_ELEMENTS` all derived from it
 - Unknown `card_type` shows explicit error card ("Unknown card_type: ...") instead of placeholder
 - `scorers-editor.js`: import fixed from `'lit'` to `'lit-element'`

@@ -126,7 +126,7 @@ class SoccerLiveCard extends HTMLElement {
   _errorCard(message) {
     const el = document.createElement('ha-card');
     el.style.cssText = 'padding:24px;text-align:center;color:#ef4444;font-size:13px;border:1px solid rgba(239,68,68,0.3);';
-    el.textContent = `⚠️ ${message}`;
+    el.textContent = message;
     return el;
   }
 
@@ -147,7 +147,9 @@ class SoccerLiveCard extends HTMLElement {
   }
 }
 
-customElements.define('soccer-live-card', SoccerLiveCard);
+if (!customElements.get('soccer-live-card')) {
+  customElements.define('soccer-live-card', SoccerLiveCard);
+}
 
 // ─── Wrapper editor ───────────────────────────────────────────────────────────
 
@@ -309,7 +311,9 @@ class SoccerLiveCardEditor extends LitElement {
   }
 }
 
-customElements.define('soccer-live-card-editor', SoccerLiveCardEditor);
+if (!customElements.get('soccer-live-card-editor')) {
+  customElements.define('soccer-live-card-editor', SoccerLiveCardEditor);
+}
 
 // ─── Single customCards entry ─────────────────────────────────────────────────
 
