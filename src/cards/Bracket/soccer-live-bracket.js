@@ -1,6 +1,7 @@
 import { LitElement, html, svg, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveBracketCard extends LitElement {
   static get properties() {
@@ -316,13 +317,12 @@ class SoccerLiveBracketCard extends LitElement {
       <ha-card class="${this.compactMode ? 'compact' : ''} style-${this._cardStyle}">
         <div class="hero-bg"></div>
         ${!this.hideHeader ? html`
-          <div class="bracket-header">
-            <div class="header-icon">🏆</div>
-            <div class="header-text">
-              <div class="title">${this._t('card.bracket')}</div>
-              <div class="subtitle">${stateObj.state}</div>
-            </div>
-          </div>
+          ${renderSoccerHeader({
+            logo: stateObj.attributes.league_logo || null,
+            title: stateObj.attributes.league_name || this._t('card.bracket'),
+            badge: renderSoccerBadge(stateObj.state, 'neutral'),
+            fallbackIcon: '🏆',
+          })}
         ` : ''}
 
         ${this._cardStyle === 'tree' ? this._renderTree(rounds) : html`
@@ -344,7 +344,7 @@ class SoccerLiveBracketCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;

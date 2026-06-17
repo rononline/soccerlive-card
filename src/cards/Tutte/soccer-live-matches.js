@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -382,30 +383,21 @@ class SoccerLiveMatchesCard extends LitElement {
           </div>
         ` : ''}
 
-        ${!this.hideHeader ? html`
-          <div class="matches-header">
-            ${leagueInfo && leagueInfo.logo_href
-              ? html`<img class="league-logo" src="${leagueInfo.logo_href}" alt="${leagueInfo.abbreviation || ''}" />`
-              : (teamLogo ? html`<img class="league-logo" src="${teamLogo}" alt="" />` : '')}
-            <div class="league-info">
-              <div class="league-name">${(leagueInfo && leagueInfo.abbreviation) || stateObj.state || 'Soccer Live'}</div>
-              <div class="league-dates">
-                ${(() => {
-                  const total = stateObj.attributes.total_matches || stateObj.attributes.matches?.length || 0;
-                  const finished = stateObj.attributes.finished_matches_count
-                    ?? (stateObj.attributes.matches || []).filter(m => m.state === 'post').length;
-                  if (total > 0 && finished >= 0) {
-                    return `${finished} / ${total} gespeeld`;
-                  }
-                  return leagueInfo && leagueInfo.startDate
-                    ? `${leagueInfo.startDate} → ${leagueInfo.endDate}`
-                    : this._t('generic.matches_count', { n: limited.length });
-                })()}
-              </div>
-            </div>
-            ${liveCount > 0 ? html`<span class="live-counter">${liveCount} LIVE</span>` : ''}
-          </div>
-        ` : ''}
+        ${!this.hideHeader ? (() => {
+          const _logo  = (leagueInfo && leagueInfo.logo_href) || teamLogo || null;
+          const _title = (leagueInfo && leagueInfo.abbreviation) || stateObj.state || 'Soccer Live';
+          const _total    = stateObj.attributes.total_matches || stateObj.attributes.matches?.length || 0;
+          const _finished = stateObj.attributes.finished_matches_count
+            ?? (stateObj.attributes.matches || []).filter(m => m.state === 'post').length;
+          const _badgeText = liveCount > 0
+            ? `${liveCount} LIVE`
+            : _total > 0 ? `${_finished} / ${_total}` : '';
+          return renderSoccerHeader({
+            logo: _logo,
+            title: _title,
+            badge: renderSoccerBadge(_badgeText, liveCount > 0 ? 'live' : 'neutral'),
+          });
+        })() : ''}
 
         <div class="scroll-content" style="max-height: ${scrollHeight}px;">
           ${grouped.map(group => html`
@@ -517,7 +509,7 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;

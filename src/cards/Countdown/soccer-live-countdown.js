@@ -5,6 +5,7 @@ import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 /**
  * Soccer Live Countdown Card
@@ -135,16 +136,14 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, spinnerStyles, weatherBadgeStyles, css`
+    return [skinStyles, soccerHeaderStyles, spinnerStyles, weatherBadgeStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
         padding: 16px;
         border-radius: 12px;
       }
-      .header { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 14px; }
-      .comp-logo { width: 18px; height: 18px; object-fit: contain; }
-      .comp-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cl-text-2); }
+      /* .top-bar / .competition / .comp-icon from soccerHeaderStyles */
       .teams { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
       .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
       .team-logo { width: 52px; height: 52px; object-fit: contain; }
@@ -245,12 +244,15 @@ class SoccerLiveCountdownCard extends LitElement {
 
     return html`
       <ha-card>
-        ${!this._config.hide_header && compName ? html`
-          <div class="header">
-            ${compLogo ? html`<img class="comp-logo" src="${compLogo}" alt="">` : ''}
-            <span class="comp-name">${compName}</span>
-          </div>
-        ` : ''}
+        ${!this._config.hide_header ? renderSoccerHeader({
+          logo: compLogo || null,
+          title: compName,
+          badge: isLive
+            ? renderSoccerBadge(`${match.clock || ''} LIVE`, 'live')
+            : isFinished
+              ? renderSoccerBadge(this._t('status.full_time'), 'ft')
+              : renderSoccerBadge(match.date || '', 'date'),
+        }) : ''}
 
         <div class="teams">
           <div class="team">

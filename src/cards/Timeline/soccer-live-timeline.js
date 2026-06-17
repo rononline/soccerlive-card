@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveTimelineCard extends LitElement {
   static get properties() {
@@ -73,17 +74,14 @@ class SoccerLiveTimelineCard extends LitElement {
       <ha-card>
         <div class="hero-bg"></div>
         ${!this.hideHeader ? html`
-          <div class="tl-header">
-            <div class="header-icon">⏱</div>
-            <div class="header-text">
-              <div class="title">${this._t('card.timeline')}</div>
-              <div class="subtitle">
-                <img class="mini-logo" src="${m.home_logo}" alt="" />
-                <span>${m.home_score ?? '-'} - ${m.away_score ?? '-'}</span>
-                <img class="mini-logo" src="${m.away_logo}" alt="" />
-              </div>
-            </div>
-          </div>
+          ${renderSoccerHeader({
+            logo: m.competition_logo || null,
+            title: m.competition_name || this._t('card.timeline'),
+            badge: (m.state === 'in' || m.state === 'post')
+              ? renderSoccerBadge(`${m.home_score ?? 0}–${m.away_score ?? 0}`, m.state === 'in' ? 'live' : 'ft')
+              : renderSoccerBadge(m.date || '', 'date'),
+            fallbackIcon: '⏱',
+          })}
         ` : ''}
 
         <div class="tl-body">
@@ -118,7 +116,7 @@ class SoccerLiveTimelineCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;

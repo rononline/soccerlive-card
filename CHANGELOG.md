@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.12.0 (2026-06-17)
+
+### Design consistency: shared header
+- `src/cards/shared-header.js` introduced as single source of truth for card headers
+- `renderSoccerHeader({ logo, title, badge, fallbackIcon })` — Team card spec: 24px comp-icon with gradient + box-shadow, 12px/700 title
+- `renderSoccerBadge(text, variant)` — uniform pill in four variants: `live` (red), `ft` (surface), `date` (surface), `neutral` (surface)
+- All cards now import `soccerHeaderStyles` from shared file
+
+### Cards migrated to shared header
+- **Team** — own `.top-bar`/`.competition`/`.comp-icon` CSS removed; z-index override kept for hero-bg overlay
+- **Countdown** — old centred `.header` replaced; live/FT/date badge from shared
+- **Matches** — `.matches-header` replaced; live counter and progress ("1 / 3") as badge
+- **Timeline**, **Lineup**, **Bracket** — old `header-icon` / `header-text` pattern replaced
+- **MiniStandings** — own `.header` replaced
+- Previously migrated: TeamForm, MatchCenter, Scorers, News
+
 ## v3.11.0 (2026-06-17)
 
 ### New cards

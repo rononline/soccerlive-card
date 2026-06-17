@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveMiniStandingsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedGroup: { type: String } }; }
@@ -24,7 +25,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -95,10 +96,10 @@ class SoccerLiveMiniStandingsCard extends LitElement {
     return html`
       <ha-card>
         ${!this._config.hide_header ? html`
-          <div class="header">
-            ${leagueLogo ? html`<img class="league-logo" src="${leagueLogo}" alt="">` : ''}
-            <span class="title">${activeGroup && multiGroup ? activeGroup.name : leagueName}</span>
-          </div>
+          ${renderSoccerHeader({
+            logo: leagueLogo || null,
+            title: (activeGroup && multiGroup) ? activeGroup.name : leagueName,
+          })}
         ` : ''}
 
         ${multiGroup ? html`

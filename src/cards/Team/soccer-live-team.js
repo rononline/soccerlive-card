@@ -5,6 +5,7 @@ import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
+import { soccerHeaderStyles } from '../shared-header.js';
 
 /**
  * Soccer Live Team Card
@@ -1030,7 +1031,7 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, spinnerStyles, weatherBadgeStyles, css`
+    return [skinStyles, soccerHeaderStyles, spinnerStyles, weatherBadgeStyles, css`
       /* ── Popup overlay (renders inside shadow DOM, position:fixed escapes the card) ── */
       .popup-overlay {
         position: fixed; inset: 0; z-index: 999999;
@@ -1203,42 +1204,9 @@ class SoccerLiveTeamCard extends LitElement {
         z-index: 2;
       }
 
-      .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 18px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
-      .competition {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--cl-text);
-        letter-spacing: -0.01em;
-        min-width: 0;
-      }
-      .comp-icon {
-        flex-shrink: 0;
-        width: 24px; height: 24px;
-        border-radius: 8px;
-        background: linear-gradient(135deg, var(--cl-accent), var(--cl-accent-2));
-        display: flex; align-items: center; justify-content: center;
-        font-size: 12px;
-        box-shadow: 0 2px 8px rgba(var(--cl-accent-rgb),0.4);
-        overflow: hidden;
-      }
-      .comp-icon img {
-        width: 100%; height: 100%;
-        object-fit: contain;
-      }
-      .comp-name {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+      /* .top-bar / .competition / .comp-icon / .comp-name from soccerHeaderStyles */
+      /* Team-card top-bar needs z-index due to hero-bg overlay */
+      .top-bar { position: relative; z-index: 2; }
 
       .status-badge {
         flex-shrink: 0;
