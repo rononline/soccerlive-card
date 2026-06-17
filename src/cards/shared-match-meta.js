@@ -33,7 +33,8 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
   const hasCommentary  = match.has_commentary  && (links.commentary  || links.summary);
   const hasVideo       = !!links.video;
 
-  const hasChips = rawBroadcasts.length || hasAttendance || neutralSite || hasStats || hasCommentary || hasVideo;
+  // neutralSite is shown in the venue row, not as a chip — keep it out of hasChips
+  const hasChips = rawBroadcasts.length || hasAttendance || hasStats || hasCommentary || hasVideo;
 
   const openLink = (url) => url && window.open(url, '_blank', 'noopener,noreferrer');
 
@@ -81,21 +82,21 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
               <path d="M23 21v-2a4 4 0 00-3-3.87"/>
               <path d="M16 3.13a4 4 0 010 7.75"/>
             </svg>
-            ${attendance.toLocaleString(lang)}
+            ${attendance.toLocaleString(lang)} ${t('team.spectators') || ''}
           </span>
         ` : ''}
         ${hasStats ? html`
-          <span class="smm-chip link" @click=${() => openLink(links.stats || links.summary)}>
+          <span class="smm-chip link" title="${t('ui.open_stats') || ''}" @click=${() => openLink(links.stats || links.summary)}>
             📊 ${t('card.stats') || 'Stats'}
           </span>
         ` : ''}
         ${hasCommentary ? html`
-          <span class="smm-chip link" @click=${() => openLink(links.commentary || links.summary)}>
+          <span class="smm-chip link" title="${t('ui.open_commentary') || ''}" @click=${() => openLink(links.commentary || links.summary)}>
             💬 ${t('card.commentary') || 'Commentary'}
           </span>
         ` : ''}
         ${hasVideo ? html`
-          <span class="smm-chip link" @click=${() => openLink(links.video)}>
+          <span class="smm-chip link" title="${t('ui.open_video') || ''}" @click=${() => openLink(links.video)}>
             🎬 ${t('card.video') || 'Video'}
           </span>
         ` : ''}

@@ -166,14 +166,14 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ${(homeRec || awayRec) ? html`
           <div class="ov-row">
             <span class="ov-val">${homeRec || '—'}</span>
-            <span class="ov-label">Record</span>
+            <span class="ov-label">${this._t('match.record')}</span>
             <span class="ov-val right">${awayRec || '—'}</span>
           </div>
         ` : ''}
         ${(homeStd || awayStd) ? html`
           <div class="ov-row">
             <span class="ov-val small">${homeStd || '—'}</span>
-            <span class="ov-label">Stand</span>
+            <span class="ov-label">${this._t('match.standing')}</span>
             <span class="ov-val right small">${awayStd || '—'}</span>
           </div>
         ` : ''}
