@@ -255,7 +255,7 @@ class SoccerLiveCardEditor extends LitElement {
   }
 
   _haSelectChanged(e) {
-    const type = e.detail?.value;
+    const type = e.detail?.value ?? e.target?.value;
     if (!type || type === (this._config?.card_type || '')) return;
     this._typeChanged({ target: { value: type } });
   }
@@ -271,13 +271,14 @@ class SoccerLiveCardEditor extends LitElement {
         <ha-select
           label="Card type"
           .value=${selected}
-          @value-changed=${this._haSelectChanged}
+          @selected=${this._haSelectChanged}
+          @change=${this._haSelectChanged}
           @closed=${e => e.stopPropagation()}
           fixedMenuPosition
         >
-          <ha-list-item value="">— Choose a card type —</ha-list-item>
+          <ha-list-item .value=${''}>${'— Choose a card type —'}</ha-list-item>
           ${CARD_TYPES.map(t => html`
-            <ha-list-item value="${t.value}">${t.label}</ha-list-item>
+            <ha-list-item .value=${t.value}>${t.label}</ha-list-item>
           `)}
         </ha-select>
         ${meta ? html`<p class="picker-desc">${meta.description}</p>` : ''}
