@@ -5,6 +5,7 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState, validateEntity } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { translateStatKey } from '../shared-stat-labels.js';
 
 /**
  * Soccer Live Match Card
@@ -193,7 +194,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
       const awayS = match.away_statistics || {};
       stats = Object.entries(homeS)
         .filter(([k]) => k !== 'Unknown')
-        .map(([k, hv]) => ({ label: k, home: hv, away: awayS[k] ?? 'N/A' }));
+        .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? 'N/A' }));
     }
 
     return html`
