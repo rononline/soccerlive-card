@@ -120,9 +120,16 @@ class SoccerLiveTeamFormCard extends LitElement {
     return html`
       <ha-card>
         ${!hideHeader ? html`
-          <div class="header">
-            ${logo ? html`<img class="team-logo" src="${logo}" alt="">` : ''}
-            <span class="team-name">${team || 'Team Form'}</span>
+          <div class="top-bar">
+            <div class="competition">
+              <span class="comp-icon">
+                ${logo ? html`<img src="${logo}" alt="">` : '⚽'}
+              </span>
+              <span class="comp-name">${team || 'Team Form'}</span>
+            </div>
+            ${next?.standing_summary || next?.home_standing_summary
+              ? html`<span class="standing-badge">${next.standing_summary || next.home_standing_summary}</span>`
+              : ''}
           </div>
         ` : ''}
 
@@ -236,9 +243,13 @@ class SoccerLiveTeamFormCard extends LitElement {
   static get styles() {
     return [skinStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
-      .header { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.08)); }
-      .team-logo { width: 28px; height: 28px; object-fit: contain; }
-      .team-name { font-size: 15px; font-weight: 800; }
+      /* Top bar — matches Team card style */
+      .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.08)); }
+      .competition { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; min-width: 0; }
+      .comp-icon { flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #8b5cf6)); display: flex; align-items: center; justify-content: center; font-size: 13px; overflow: hidden; }
+      .comp-icon img { width: 100%; height: 100%; object-fit: contain; }
+      .comp-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .standing-badge { padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; background: var(--cl-surface, rgba(255,255,255,0.06)); color: var(--cl-text-2, #94a3b8); flex-shrink: 0; }
       .section { padding: 12px 16px 4px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
       .section:last-child { border-bottom: none; }
       .section-label { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }

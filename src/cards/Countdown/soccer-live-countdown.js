@@ -178,11 +178,26 @@ class SoccerLiveCountdownCard extends LitElement {
         .comp-name { font-size: 10px !important; }
       }
 
-      @media (max-width: 400px) {
-        .score { font-size: 28px !important; letter-spacing: 2px !important; }
-        .countdown { gap: 4px !important; }
-        .cd-num { font-size: 20px !important; min-width: 32px !important; }
-        .team-name { font-size: 11px !important; }
+      /* On narrow screens: teams on top row, countdown below */
+      @media (max-width: 480px) {
+        .teams { flex-wrap: wrap; justify-content: space-between; margin-bottom: 8px; }
+        .team { flex: 0 1 auto; flex-direction: row; align-items: center; gap: 6px; }
+        .team:first-child { order: 1; }
+        .team:last-child  { order: 2; }
+        .center { order: 3; flex: 0 0 100%; padding: 8px 0 0; }
+        .team-logo { width: 32px !important; height: 32px !important; }
+        .team-name { font-size: 11px !important; text-align: left !important; }
+        .cd-num { font-size: 28px !important; }
+        .cd-sep { font-size: 22px !important; }
+        .countdown { gap: 6px !important; }
+        .score { font-size: 32px !important; letter-spacing: 3px !important; }
+        .sched-date { font-size: 11px !important; margin-bottom: 8px; }
+      }
+
+      @media (max-width: 360px) {
+        .cd-num { font-size: 22px !important; min-width: 28px !important; }
+        .cd-sep { font-size: 16px !important; }
+        .countdown { gap: 3px !important; }
       }
     `];
   }

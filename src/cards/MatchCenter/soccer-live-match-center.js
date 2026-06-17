@@ -126,26 +126,37 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _renderHero(match) {
     const isLive     = match.state === 'in';
     const isFinished = match.state === 'post';
+    const compLogo   = match.competition_logo || '';
+    const compName   = match.competition_name || '';
+    const badgeText  = isLive
+      ? html`<span class="badge live">${match.clock ? `${match.clock}'` : ''} LIVE</span>`
+      : isFinished
+        ? html`<span class="badge ft">FT</span>`
+        : html`<span class="badge date">${match.date || ''}</span>`;
+
     return html`
-      <div class="hero">
-        ${match.competition_logo ? html`<img class="comp-logo" src="${match.competition_logo}" alt="">` : ''}
-        <div class="teams-row">
-          <div class="team">
-            ${match.home_logo ? html`<img class="team-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-            <span class="team-name">${match.home_team || '?'}</span>
-          </div>
-          <div class="score-center">
-            ${isLive ? html`<div class="live-badge">LIVE</div>` : ''}
-            ${isLive || isFinished
-              ? html`<div class="score">${match.home_score ?? 0} – ${match.away_score ?? 0}</div>`
-              : html`<div class="match-date">${match.date || 'vs'}</div>`}
-            ${isLive && match.clock ? html`<div class="clock">${match.clock}'</div>` : ''}
-            ${isFinished ? html`<div class="ft">FT</div>` : ''}
-          </div>
-          <div class="team">
-            ${match.away_logo ? html`<img class="team-logo" src="${match.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-            <span class="team-name">${match.away_team || '?'}</span>
-          </div>
+      <div class="top-bar">
+        <div class="competition">
+          <span class="comp-icon">
+            ${compLogo ? html`<img src="${compLogo}" alt="">` : '⚽'}
+          </span>
+          <span class="comp-name">${compName}</span>
+        </div>
+        ${badgeText}
+      </div>
+      <div class="scoreboard">
+        <div class="mc-team">
+          ${match.home_logo ? html`<img class="mc-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
+          <span class="mc-name">${match.home_team || '?'}</span>
+        </div>
+        <div class="mc-score">
+          ${isLive || isFinished
+            ? html`<span class="mc-num">${match.home_score ?? 0} – ${match.away_score ?? 0}</span>`
+            : html`<span class="mc-vs">vs</span>`}
+        </div>
+        <div class="mc-team away">
+          <span class="mc-name">${match.away_team || '?'}</span>
+          ${match.away_logo ? html`<img class="mc-logo" src="${match.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
         </div>
       </div>
     `;
@@ -318,18 +329,25 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static get styles() {
     return [skinStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
-      /* Hero */
-      .hero { padding: 16px 16px 10px; }
-      .comp-logo { display: block; width: 20px; height: 20px; margin: 0 auto 8px; object-fit: contain; }
-      .teams-row { display: flex; align-items: center; justify-content: space-between; }
-      .team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-      .team-logo { width: 48px; height: 48px; object-fit: contain; }
-      .team-name { font-size: 12px; font-weight: 700; text-align: center; max-width: 90px; }
-      .score-center { text-align: center; flex: 0 0 auto; padding: 0 8px; }
-      .live-badge { display: inline-block; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; margin-bottom: 3px; }
-      .score { font-size: 34px; font-weight: 900; letter-spacing: 4px; }
-      .match-date { font-size: 12px; color: var(--cl-text-2, #94a3b8); }
-      .clock, .ft { font-size: 11px; color: var(--cl-text-2, #94a3b8); margin-top: 2px; }
+      /* Top bar — matches Team card style */
+      .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.08)); }
+      .competition { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 700; min-width: 0; }
+      .comp-icon { flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #8b5cf6)); display: flex; align-items: center; justify-content: center; font-size: 12px; overflow: hidden; }
+      .comp-icon img { width: 100%; height: 100%; object-fit: contain; }
+      .comp-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .badge { padding: 5px 11px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; flex-shrink: 0; }
+      .badge.live { background: #e53935; color: #fff; }
+      .badge.ft   { background: var(--cl-surface, rgba(255,255,255,0.08)); color: var(--cl-text-2, #94a3b8); }
+      .badge.date { background: var(--cl-surface, rgba(255,255,255,0.06)); color: var(--cl-text-2, #94a3b8); }
+      /* Scoreboard */
+      .scoreboard { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; }
+      .mc-team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+      .mc-team.away { align-items: center; }
+      .mc-logo { width: 48px; height: 48px; object-fit: contain; }
+      .mc-name { font-size: 12px; font-weight: 700; text-align: center; max-width: 90px; }
+      .mc-score { text-align: center; flex: 0 0 auto; padding: 0 8px; }
+      .mc-num { font-size: 34px; font-weight: 900; letter-spacing: 4px; }
+      .mc-vs  { font-size: 18px; font-weight: 700; color: var(--cl-text-2, #94a3b8); }
       /* Tabs */
       .tab-bar { display: flex; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.08)); overflow-x: auto; scrollbar-width: none; }
       .tab-bar::-webkit-scrollbar { display: none; }
