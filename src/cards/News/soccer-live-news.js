@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveNewsCard extends LitElement {
   static get properties() {
@@ -68,15 +69,12 @@ class SoccerLiveNewsCard extends LitElement {
     return html`
       <ha-card>
         <div class="hero-bg"></div>
-        ${!this.hideHeader ? html`
-          <div class="news-header">
-            <div class="header-icon">📰</div>
-            <div class="header-text">
-              <div class="title">${this._t('card.news')}</div>
-              <div class="subtitle">${stateObj.state}</div>
-            </div>
-          </div>
-        ` : ''}
+        ${!this.hideHeader ? renderSoccerHeader({
+          logo: stateObj.attributes.league_logo || null,
+          title: stateObj.attributes.league_name || this._t('card.news'),
+          badge: renderSoccerBadge(stateObj.state, 'neutral'),
+          fallbackIcon: '📰',
+        }) : ''}
         <div class="news-list">
           ${articles.map(a => html`
             <article class="news-item ${this.hideImages || !a.image ? 'no-img' : ''}" @click="${() => this._openLink(a.link)}">
@@ -101,7 +99,7 @@ class SoccerLiveNewsCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;
@@ -129,40 +127,7 @@ class SoccerLiveNewsCard extends LitElement {
           radial-gradient(ellipse at 100% 0%, rgba(99,102,241,0.10), transparent 50%);
         pointer-events: none;
       }
-      .news-header {
-        position: relative; z-index: 1;
-        display: flex; align-items: center; gap: 12px;
-        padding: 16px 18px;
-        border-bottom: 1px solid var(--cl-divider);
-      }
-      .news-header::after {
-        content: '';
-        position: absolute;
-        left: 18px; right: 18px; bottom: -1px;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--cl-accent-2), transparent);
-        opacity: 0.4;
-      }
-      .header-icon {
-        width: 40px; height: 40px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--cl-accent), var(--cl-accent-2));
-        display: flex; align-items: center; justify-content: center;
-        font-size: 20px;
-        box-shadow: 0 4px 16px rgba(236,72,153,0.4);
-      }
-      .header-text .title {
-        font-size: 18px;
-        font-weight: 900;
-        letter-spacing: -0.02em;
-        color: var(--cl-text);
-      }
-      .header-text .subtitle {
-        font-size: 11px;
-        color: var(--cl-text-2);
-        margin-top: 2px;
-        font-weight: 600;
-      }
+      /* .top-bar / .competition / .comp-icon come from soccerHeaderStyles */
 
       .news-list {
         position: relative; z-index: 1;

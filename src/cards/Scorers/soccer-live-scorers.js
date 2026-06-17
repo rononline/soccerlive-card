@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 class SoccerLiveScorersCard extends LitElement {
   static get properties() {
@@ -81,12 +82,12 @@ class SoccerLiveScorersCard extends LitElement {
 
     return html`
       <ha-card>
-        ${!hideHeader ? html`
-          <div class="slc-header">
-            ${attrs.league_logo ? html`<img class="slc-league-logo" src="${attrs.league_logo}" alt="">` : ''}
-            <span class="slc-league-name">${attrs.league_name || 'Top Scorers'}</span>
-          </div>
-        ` : ''}
+        ${!hideHeader ? renderSoccerHeader({
+          logo: attrs.league_logo,
+          title: attrs.league_name || 'Top Scorers',
+          badge: renderSoccerBadge(`${visible.length}`, 'neutral'),
+          fallbackIcon: '🥇',
+        }) : ''}
         <div class="slc-list">
           ${visible.map((s, i) => html`
             <div class="slc-row ${i % 2 === 0 ? 'even' : ''}">
@@ -118,19 +119,11 @@ class SoccerLiveScorersCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg); color: var(--cl-text);
         border-radius: 16px; overflow: hidden; padding: 0;
       }
-      .slc-header {
-        display: flex; align-items: center; gap: 10px;
-        padding: 14px 16px 10px;
-        border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.08));
-        font-size: 14px; font-weight: 700;
-      }
-      .slc-league-logo { width: 24px; height: 24px; object-fit: contain; }
-      .slc-league-name { flex: 1; }
       .slc-list { padding: 4px 0; }
       .slc-row {
         display: flex; align-items: center; gap: 10px;

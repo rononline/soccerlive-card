@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 
 const TABS = [
   { id: 'overview',  label: 'Overview' },
@@ -126,24 +127,15 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _renderHero(match) {
     const isLive     = match.state === 'in';
     const isFinished = match.state === 'post';
-    const compLogo   = match.competition_logo || '';
-    const compName   = match.competition_name || '';
-    const badgeText  = isLive
-      ? html`<span class="badge live">${match.clock ? `${match.clock}'` : ''} LIVE</span>`
+    const badge = isLive
+      ? renderSoccerBadge(`${match.clock ? match.clock + "' " : ''}LIVE`, 'live')
       : isFinished
-        ? html`<span class="badge ft">FT</span>`
-        : html`<span class="badge date">${match.date || ''}</span>`;
+        ? renderSoccerBadge('FT', 'ft')
+        : renderSoccerBadge(match.date || '', 'date');
 
     return html`
-      <div class="top-bar">
-        <div class="competition">
-          <span class="comp-icon">
-            ${compLogo ? html`<img src="${compLogo}" alt="">` : '⚽'}
-          </span>
-          <span class="comp-name">${compName}</span>
-        </div>
-        ${badgeText}
-      </div>
+      ${renderSoccerHeader({ logo: match.competition_logo, title: match.competition_name, badge })}
+
       <div class="scoreboard">
         <div class="mc-team">
           ${match.home_logo ? html`<img class="mc-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
@@ -327,18 +319,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
-      /* Top bar — matches Team card style */
-      .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.08)); }
-      .competition { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 700; min-width: 0; }
-      .comp-icon { flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #8b5cf6)); display: flex; align-items: center; justify-content: center; font-size: 12px; overflow: hidden; }
-      .comp-icon img { width: 100%; height: 100%; object-fit: contain; }
-      .comp-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .badge { padding: 5px 11px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; flex-shrink: 0; }
-      .badge.live { background: #e53935; color: #fff; }
-      .badge.ft   { background: var(--cl-surface, rgba(255,255,255,0.08)); color: var(--cl-text-2, #94a3b8); }
-      .badge.date { background: var(--cl-surface, rgba(255,255,255,0.06)); color: var(--cl-text-2, #94a3b8); }
       /* Scoreboard */
       .scoreboard { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; }
       .mc-team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
