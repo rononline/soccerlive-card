@@ -885,10 +885,3 @@ class SoccerLiveBracketCard extends LitElement {
 }
 
 customElements.define("soccer-live-bracket", SoccerLiveBracketCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-bracket',
-  name: 'Soccer Live Bracket Card',
-  description: 'Knockout bracket for Champions League, Europa League, and other cup competitions',
-});

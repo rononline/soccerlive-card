@@ -313,10 +313,3 @@ class SoccerLiveTimelineCard extends LitElement {
 }
 
 customElements.define("soccer-live-timeline", SoccerLiveTimelineCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-timeline',
-  name: 'Soccer Live Timeline Card',
-  description: 'Minute-by-minute timeline of match events',
-});

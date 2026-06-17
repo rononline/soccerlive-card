@@ -291,5 +291,3 @@ class SoccerLiveCountdownCard extends LitElement {
 }
 
 customElements.define("soccer-live-countdown", SoccerLiveCountdownCard);
-window.customCards = window.customCards || [];
-window.customCards.push({ type: "soccer-live-countdown", name: "Soccer Live Match Countdown", description: "Countdown to next match with live score" });

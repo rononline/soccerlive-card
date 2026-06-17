@@ -328,10 +328,3 @@ class SoccerLiveLineupCard extends LitElement {
 }
 
 customElements.define("soccer-live-lineup", SoccerLiveLineupCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-lineup',
-  name: 'Soccer Live Lineup Card',
-  description: 'Shows the lineups of both teams for the current or upcoming match',
-});

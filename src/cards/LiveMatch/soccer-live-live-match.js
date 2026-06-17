@@ -283,5 +283,3 @@ class SoccerLiveLiveMatchCard extends LitElement {
 }
 
 customElements.define("soccer-live-live-match", SoccerLiveLiveMatchCard);
-window.customCards = window.customCards || [];
-window.customCards.push({ type: "soccer-live-live-match", name: "Soccer Live Match Card", description: "Live match details with events and stats" });

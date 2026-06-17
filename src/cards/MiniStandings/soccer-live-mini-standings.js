@@ -148,5 +148,3 @@ class SoccerLiveMiniStandingsCard extends LitElement {
 }
 
 customElements.define("soccer-live-mini-standings", SoccerLiveMiniStandingsCard);
-window.customCards = window.customCards || [];
-window.customCards.push({ type: "soccer-live-mini-standings", name: "Soccer Live Mini Standings", description: "Compact standings table with group selector" });

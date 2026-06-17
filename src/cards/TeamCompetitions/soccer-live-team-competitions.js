@@ -178,9 +178,3 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 }
 
 customElements.define("soccer-live-team-competitions", SoccerLiveTeamCompetitionsCard);
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "soccer-live-team-competitions",
-  name: "Soccer Live Team Competitions",
-  description: "All team competitions with tab selector"
-});

@@ -158,5 +158,3 @@ class SoccerLiveMultiTeamCard extends LitElement {
 }
 
 customElements.define("soccer-live-multi-team", SoccerLiveMultiTeamCard);
-window.customCards = window.customCards || [];
-window.customCards.push({ type: "soccer-live-multi-team", name: "Soccer Live Multi Team", description: "Shows multiple teams' matches in one card" });

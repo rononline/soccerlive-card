@@ -1115,10 +1115,3 @@ class SoccerLiveStandingsCard extends LitElement {
 }
 
 customElements.define("soccer-live-standings", SoccerLiveStandingsCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-standings',
-  name: 'Soccer Live Standings Card',
-  description: 'Shows the standings for a league or cup competition',
-});

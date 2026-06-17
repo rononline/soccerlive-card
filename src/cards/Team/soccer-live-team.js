@@ -1928,10 +1928,3 @@ class SoccerLiveTeamCard extends LitElement {
 }
 
 customElements.define("soccer-live-team", SoccerLiveTeamCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-team',
-  name: 'Soccer Live Team Card',
-  description: 'Shows the next or current match for your team',
-});

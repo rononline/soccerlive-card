@@ -191,9 +191,3 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
 }
 
 customElements.define("soccer-live-live-commentary", SoccerLiveLiveCommentaryCard);
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "soccer-live-live-commentary",
-  name: "Soccer Live Commentary",
-  description: "Live match commentary and events"
-});

@@ -927,10 +927,3 @@ class SoccerLiveMatchesCard extends LitElement {
 }
 
 customElements.define("soccer-live-matches", SoccerLiveMatchesCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-matches',
-  name: 'Soccer Live Matches Card',
-  description: 'Shows all matches for a competition or team',
-});

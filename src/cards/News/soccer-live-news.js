@@ -273,10 +273,3 @@ class SoccerLiveNewsCard extends LitElement {
 }
 
 customElements.define("soccer-live-news", SoccerLiveNewsCard);
-
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-news',
-  name: 'Soccer Live News Card',
-  description: 'Shows the latest football news for a competition',
-});
