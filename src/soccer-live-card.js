@@ -341,10 +341,12 @@ customElements.define('soccer-live-card-editor', SoccerLiveCardEditor);
 // ─── Single customCards entry ─────────────────────────────────────────────────
 
 window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'soccer-live-card',
-  name: 'Soccer Live Card',
-  description: 'Live football scores, standings, lineup, countdown, news and more.',
-  preview: false,
-  documentationURL: 'https://github.com/rononline/soccerlive-card',
-});
+if (!window.customCards.some(c => c.type === 'soccer-live-card')) {
+  window.customCards.push({
+    type: 'soccer-live-card',
+    name: 'Soccer Live Card',
+    description: 'Live football scores, standings, lineup, countdown, news and more.',
+    preview: false,
+    documentationURL: 'https://github.com/rononline/soccerlive-card',
+  });
+}

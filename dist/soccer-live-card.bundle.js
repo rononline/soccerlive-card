@@ -5875,4 +5875,4 @@
         font-size: 12px;
         color: var(--secondary-text-color);
       }
-    `}}),window.customCards=window.customCards||[],window.customCards.push({type:"soccer-live-card",name:"Soccer Live Card",description:"Live football scores, standings, lineup, countdown, news and more.",preview:!1,documentationURL:"https://github.com/rononline/soccerlive-card"})})();
+    `}}),window.customCards=window.customCards||[],window.customCards.some((e=>"soccer-live-card"===e.type))||window.customCards.push({type:"soccer-live-card",name:"Soccer Live Card",description:"Live football scores, standings, lineup, countdown, news and more.",preview:!1,documentationURL:"https://github.com/rononline/soccerlive-card"})})();

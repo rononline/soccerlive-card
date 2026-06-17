@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.9.1 (2026-06-17)
+- Card picker: `resolveElement()` restricted to known legacy element names only (no more arbitrary `soccer-live-*` strings accepted)
+- Card picker: silent catch blocks now emit `console.warn` when entity is already set (easier debugging)
+- Card picker: `type: WRAPPER_TYPE` hardcoded in `_dispatch()` — sub-editors can never override the wrapper identity
+- Card picker: guard against double registration on cache/hot-reload (`customCards.some()` check)
+
+## v3.9.0 (2026-06-17)
+- Scorers card implemented (rank, headshot, player name, team logo, goal tally; offline cache; ESPN unavailable state)
+- `getGridOptions()` delegated to sub-card for sections dashboards
+- Editor remembers per-type config when switching card types (restored on switching back)
+- `getStubConfig()` returns `{}` so picker starts with empty type selection
+- README updated to new YAML format (`card_type: team` etc.)
+
 ## v3.8.3 (2026-06-17)
 - Fix: `_dispatch()` now always includes `type: custom:soccer-live-card` so HA never loses the wrapper identity
 
