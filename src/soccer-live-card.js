@@ -254,33 +254,37 @@ class SoccerLiveCardEditor extends LitElement {
     }));
   }
 
-  _haSelectChanged(e) {
-    const type = e.detail?.value ?? e.target?.value;
-    if (!type || type === (this._config?.card_type || '')) return;
-    this._typeChanged({ target: { value: type } });
-  }
-
   render() {
     const raw = this._config?.card_type || '';
     const selected = CARD_TYPES.find(t => t.value === raw)
       ? raw
       : (Object.entries(TYPE_TO_ELEMENT).find(([, el]) => el === raw)?.[0] || raw);
     const meta = CARD_TYPES.find(t => t.value === selected);
+    const schema = [{
+      name: 'card_type',
+      selector: {
+        select: {
+          mode: 'dropdown',
+          options: [
+            { value: '', label: '— Choose a card type —' },
+            ...CARD_TYPES.map(t => ({ value: t.value, label: t.label })),
+          ],
+        },
+      },
+    }];
     return html`
       <div class="picker-wrap">
-        <ha-select
-          label="Card type"
-          .value=${selected}
-          @selected=${this._haSelectChanged}
-          @change=${this._haSelectChanged}
-          @closed=${e => e.stopPropagation()}
-          fixedMenuPosition
-        >
-          <ha-list-item .value=${''}>${'— Choose a card type —'}</ha-list-item>
-          ${CARD_TYPES.map(t => html`
-            <ha-list-item .value=${t.value}>${t.label}</ha-list-item>
-          `)}
-        </ha-select>
+        <ha-form
+          .hass=${this.hass}
+          .data=${{ card_type: selected }}
+          .schema=${schema}
+          .computeLabel=${() => 'Card type'}
+          @value-changed=${(e) => {
+            const type = e.detail.value?.card_type;
+            if (!type || type === (this._config?.card_type || '')) return;
+            this._typeChanged({ target: { value: type } });
+          }}
+        ></ha-form>
         ${meta ? html`<p class="picker-desc">${meta.description}</p>` : ''}
       </div>
       <div id="sub-editor"></div>
@@ -293,10 +297,6 @@ class SoccerLiveCardEditor extends LitElement {
         padding: 12px 0 4px;
         border-bottom: 1px solid var(--divider-color, rgba(0,0,0,0.12));
         margin-bottom: 16px;
-      }
-      ha-select {
-        width: 100%;
-        display: block;
       }
       .picker-desc {
         margin: 6px 0 0;
