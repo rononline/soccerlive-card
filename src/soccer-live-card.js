@@ -50,9 +50,12 @@ const TYPE_TO_ELEMENT = {
   'live-commentary':   'soccer-live-live-commentary',
 };
 
-// Resolve card_type (short or legacy long) → element name
+// All known legacy long element names (used in old YAML configs)
+const LEGACY_ELEMENTS = new Set(Object.values(TYPE_TO_ELEMENT));
+
+// Resolve card_type (short or known legacy long) → element name
 function resolveElement(cardType) {
-  return TYPE_TO_ELEMENT[cardType] || (cardType?.startsWith('soccer-live-') ? cardType : null);
+  return TYPE_TO_ELEMENT[cardType] || (LEGACY_ELEMENTS.has(cardType) ? cardType : null);
 }
 
 const CARD_TYPES = [
@@ -135,7 +138,7 @@ class SoccerLiveCard extends HTMLElement {
     try {
       this._child.setConfig(this._config);
     } catch (e) {
-      // Sub-card may require entity; safe to ignore until user sets one
+      if (this._config.entity) console.warn(`SoccerLiveCard: setConfig failed for ${this._childType}:`, e);
     }
     if (this._hass) this._child.hass = this._hass;
   }
@@ -225,7 +228,7 @@ class SoccerLiveCardEditor extends LitElement {
 
     if (this._subEditorType === type) {
       // Same type: just push updated config
-      try { this._subEditor.setConfig(this._config); } catch (e) { /* entity not yet set */ }
+      try { this._subEditor.setConfig(this._config); } catch (e) { if (this._config.entity) console.warn('SoccerLiveCardEditor: sub-editor setConfig failed:', e); }
       return;
     }
 
@@ -267,7 +270,7 @@ class SoccerLiveCardEditor extends LitElement {
   _dispatch(config) {
     const nextConfig = {
       ...config,
-      type: this._config?.type || WRAPPER_TYPE,  // always last — sub-editors must not override this
+      type: WRAPPER_TYPE,  // always last — sub-editors must never override this
     };
     this.dispatchEvent(new CustomEvent('config-changed', {
       detail: { config: nextConfig },
