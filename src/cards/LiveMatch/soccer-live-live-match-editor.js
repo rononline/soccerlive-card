@@ -42,6 +42,10 @@ class SoccerLiveLiveMatchEditor extends LitElement {
           </select>
         </div>
         <h3>Settings</h3>
+        <div class="option">
+          <label>Hide broadcasts</label>
+          <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._switchChanged}></ha-switch>
+        </div>
         <div>
           <label class="field-label">Max stats shown (default 4)</label>
           <input type="number" min="0" max="10" .value=${this._config.max_stats ?? 4} data-config-value="max_stats" @change=${this._numberChanged}>

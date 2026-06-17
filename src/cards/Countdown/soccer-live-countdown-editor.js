@@ -51,6 +51,14 @@ class SoccerLiveCountdownEditor extends LitElement {
           <label>Hide header</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
         </div>
+        <div class="option">
+          <label>Hide broadcasts</label>
+          <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>Compact mode</label>
+          <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>
+        </div>
         <h3>Appearance</h3>
         <div>
           <label class="field-label">Theme</label>

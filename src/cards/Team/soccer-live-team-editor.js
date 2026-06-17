@@ -164,6 +164,14 @@ class SoccerLiveTeamCardEditor extends LitElement {
             @change=${this._switchChanged}
           ></ha-switch>
         </div>
+        <div class="option">
+          <label>Hide broadcasts</label>
+          <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>Compact mode</label>
+          <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>
+        </div>
         <div>
           <label class="field-label">Skin</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

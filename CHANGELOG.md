@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.15.8 (2026-06-17)
+- `hide_broadcasts`, `compact` toggles added to Team, Countdown and LiveMatch visual editors
+- `hide_broadcasts` and `compact` documented in README common-options table
+- Dead venue/venueCity/broadcasts/neutralSite vars removed from Countdown and LiveMatch render methods
+- MatchCenter Stats tab: ESPN stat keys translated via `translateStatKey` (same as LiveMatch)
+
 ## v3.15.0 (2026-06-17)
 
 ### Compact mode

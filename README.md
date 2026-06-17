@@ -74,6 +74,9 @@ All cards share these common options:
 | `entity` | required | The Soccer Live sensor entity ID |
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `skin` | `dark` | `dark`, `light`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `feyenoord`, `arsenal`, `barcelona`, `real-madrid` |
+| `hide_header` | `false` | Hide the top bar with competition logo and name |
+| `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, LiveMatch, MatchCenter |
+| `compact` | `false` | Dense layout: smaller scoreboard, hides form/H2H/previous — applies to Team and Countdown |
 
 > **Entity IDs:** Examples in this README use simplified IDs like `sensor.soccer_live_standings_ned_1`. Your actual entity IDs may be longer (e.g. `sensor.soccer_live_ned_1_soccerlive_standings_dutch_eredivisie`). Use the visual editor to pick the correct sensor.
 

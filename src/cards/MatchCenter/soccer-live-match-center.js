@@ -6,6 +6,7 @@ import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { translateStatKey } from '../shared-stat-labels.js';
 
 const TABS = [
   { id: 'overview',  label: 'Overview' },
@@ -194,7 +195,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       const awayS = match.away_statistics || {};
       stats = Object.entries(homeS)
         .filter(([k]) => k !== 'Unknown')
-        .map(([k, hv]) => ({ label: k, home: hv, away: awayS[k] ?? 'N/A' }));
+        .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? 'N/A' }));
     }
     if (!stats.length) return html`<p class="empty">No stats available yet</p>`;
     return html`

@@ -245,11 +245,6 @@ class SoccerLiveCountdownCard extends LitElement {
     const leagueInfo = attributes?.league_info?.[0];
     const compName = match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '';
     const compLogo = match.competition_logo || leagueInfo?.logo_href || attributes?.league_logo || '';
-    const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
-    const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
-    const broadcasts = Array.isArray(match.broadcasts) && match.broadcasts.length ? match.broadcasts : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : []);
-    const neutralSite = match.neutral_site || false;
-
     const lDay = this._t('cd.days') || 'days';
     const lHrs = this._t('cd.hrs') || 'hrs';
     const lMin = this._t('cd.min') || 'min';
