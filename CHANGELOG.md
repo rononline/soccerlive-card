@@ -1,82 +1,33 @@
 # Changelog
 
-## v3.10.3 (2026-06-17)
-- Countdown: responsive layout — on ≤480px teams go on top row, countdown takes full width below
-- Match Center: header adopts Team card style (comp-icon gradient + competition name + status badge)
-- Team Form: header adopts Team card style (team logo in gradient wrapper + standing badge)
+## v3.11.0 (2026-06-17)
 
-## v3.10.2 (2026-06-17)
-- Team Form: fix missing upcoming match — sensor's `upcoming_matches` skips `matches[0]`; now prepended when state is `pre` or `in`
+### New cards
+- **Match Center** (`card_type: match-center`) — tabbed match view: Overview, Stats, Timeline, Lineup, H2H; tabs only appear when data is available
+- **Team Form** (`card_type: team-form`) — W/D/L dots, goals-per-match chart, home/away split, previous + upcoming matches; labels fully translated in 7 languages
 
-## v3.10.1 (2026-06-17)
-- Match Center + Team Form editors: entity filter changed from `startsWith()` to `includes()` to match actual HA entity ID naming
+### Team Form improvements
+- `team_name` in config recommended; auto-detect uses frequency analysis over `previous_matches` but may be ambiguous with one match or repeat opponents
+- Logo and standing badge now use the correct home/away side based on detected team position
 
-## v3.10.0 (2026-06-17)
-- New: **Match Center** card (`card_type: match-center`) — tabbed view with Overview, Stats, Timeline, Lineup, H2H; tabs auto-hide when data is missing
-- New: **Team Form** card (`card_type: team-form`) — form dots, W/D/L summary, goals-per-match chart, home/away split, previous + upcoming match list
+### Card picker
+- Picker uses `ha-form` select (replaces `ha-select` which had unreliable event firing)
+- Card type dropdown preserves `entity`, `skin`, `language`, `show_event_toasts` when switching types
+- Editor remembers full per-type config and restores it when switching back
+- `resolveElement()` restricted to known legacy element names; unknown `card_type` shows an error card instead of a silent placeholder
+- `type: WRAPPER_TYPE` hardcoded in `_dispatch()` — sub-editors cannot override the wrapper identity
+- `customCards` registration guarded against double-load; `customElements.define` guarded on all 28 card + editor elements
 
-## v3.9.8 (2026-06-17)
-- Card type picker replaced with `ha-form` select (resolves ha-select event compatibility issues)
-- `ha-select` and related dead code removed
-
-## v3.9.5 (2026-06-17)
-- `ha-select` picker (visual HA dropdown) replaces native `<select>`
-- `customElements.define` guards added to all 14 sub-card files
-
-## v3.9.4 (2026-06-17)
-- CHANGELOG heading corrected to v3.9.3
-- README common-options table: blockquote moved below table so `language` and `skin` rows render correctly
-- `customElements.define` guards on wrapper elements (`soccer-live-card`, `soccer-live-card-editor`)
-- `_errorCard()` unicode icon removed from source
-
-## v3.9.3 (2026-06-17)
-- Registry consolidated into single `CARD_REGISTRY` array; `TYPE_TO_ELEMENT`, `CARD_TYPES`, `CARD_EDITORS`, `LEGACY_ELEMENTS` all derived from it
-- Unknown `card_type` shows explicit error card ("Unknown card_type: ...") instead of placeholder
-- `scorers-editor.js`: import fixed from `'lit'` to `'lit-element'`
-- `npm audit fix`: 0 vulnerabilities remaining
-- README table updated: `card_type` column replaces legacy element names; legacy note added
-- `_errorCard()` method implemented in wrapper
-
-## v3.9.1 (2026-06-17)
-- Card picker: `resolveElement()` restricted to known legacy element names only (no more arbitrary `soccer-live-*` strings accepted)
-- Card picker: silent catch blocks now emit `console.warn` when entity is already set (easier debugging)
-- Card picker: `type: WRAPPER_TYPE` hardcoded in `_dispatch()` — sub-editors can never override the wrapper identity
-- Card picker: guard against double registration on cache/hot-reload (`customCards.some()` check)
-
-## v3.9.0 (2026-06-17)
-- Scorers card implemented (rank, headshot, player name, team logo, goal tally; offline cache; ESPN unavailable state)
+### Other fixes
+- Countdown card: responsive — on ≤480px teams stack on top row, countdown takes full width below
+- Scorers card implemented (rank, headshot, team logo, goal tally; offline cache; ESPN-unavailable state)
 - `getGridOptions()` delegated to sub-card for sections dashboards
-- Editor remembers per-type config when switching card types (restored on switching back)
-- `getStubConfig()` returns `{}` so picker starts with empty type selection
-- README updated to new YAML format (`card_type: team` etc.)
+- Match Center + Team Form headers match Team card style (gradient comp-icon, status badge)
+- `scorers-editor.js`: fixed `import from 'lit'` → `'lit-element'`
+- 0 npm audit vulnerabilities
 
-## v3.8.3 (2026-06-17)
-- Fix: `_dispatch()` now always includes `type: custom:soccer-live-card` so HA never loses the wrapper identity
-
-## v3.8.2 (2026-06-17)
-- Card picker: short card_type values (`team`, `standings`, etc.) — long names still accepted for backward compat
-- Scorers and Live Commentary added to picker with editors
-- Switching type now preserves `entity`, `skin`, `language`, `show_event_toasts`
-- Emoji removed from type dropdown labels
-
-## v3.8.1 (2026-06-17)
-- Fix: `import from 'lit-element'` (was 'lit'), `{ type: Object }` property declarations
-- Fix: sub-card `setConfig` exceptions caught when entity not yet configured
-
-## v3.8.0 (2026-06-17)
-- Single card picker entry (`custom:soccer-live-card`) replaces 14 separate entries
-- `SoccerLiveCard` wrapper creates sub-card based on `card_type`
-- `SoccerLiveCardEditor`: type dropdown first, then sub-card editor embedded below
-- **Breaking change**: YAML now uses `type: custom:soccer-live-card` + `card_type: team`
-
-## v3.7.3 (2026-06-17)
-- Team card: `_toastTimer` cleared in `disconnectedCallback`
-- `banner.innerHTML` replaced with `createElement/textContent`
-
-## v3.7.2 (2026-06-17)
-- Team card: `_toastTimer` cleared in `disconnectedCallback`
-- Team card: `banner.innerHTML` replaced with `createElement/textContent` for style consistency
-- CHANGELOG caught up after version bumps
+### Breaking change (v3.8.0)
+YAML changed from `type: custom:soccer-live-team` to `type: custom:soccer-live-card` + `card_type: team`. Legacy long names still work for backward compatibility.
 
 ## v3.7.1 (2026-06-17)
 - Team card: all goal animation timeouts tracked in `_animationTimers`, cleared in `disconnectedCallback`

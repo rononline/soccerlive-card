@@ -44,7 +44,7 @@ class SoccerLiveTeamFormEditor extends LitElement {
           </select>
         </div>
         <div class="field">
-          <label class="field-label">Team name (used to determine W/D/L, leave empty to auto-detect)</label>
+          <label class="field-label">Team name — recommended; auto-detect may fail with 1 match or repeat opponents</label>
           <input type="text" data-config-value="team_name" .value=${this._config.team_name || ''} @change=${this._inputChanged} placeholder="e.g. Ajax">
         </div>
         <div class="option">

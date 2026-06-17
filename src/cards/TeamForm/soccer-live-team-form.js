@@ -100,7 +100,17 @@ class SoccerLiveTeamFormCard extends LitElement {
     // of previous_matches (the team appearing in every match is the tracked one).
     const team    = this._config.team_name || attrs.team_name || this._detectTeam(prev) || '';
     const tracked = team.toLowerCase();
-    const logo      = attrs.team_logo || next?.home_logo || '';
+    // Determine if tracked team is home or away in the next match for correct logo/standing
+    const trackedIsHome = tracked && next?.home_team?.toLowerCase().includes(tracked);
+    const trackedIsAway = tracked && next?.away_team?.toLowerCase().includes(tracked);
+    const logo = attrs.team_logo
+      || (trackedIsHome ? next?.home_logo : trackedIsAway ? next?.away_logo : null)
+      || next?.home_logo || '';
+    const standingSummary = trackedIsHome
+      ? (next?.home_standing_summary || '')
+      : trackedIsAway
+        ? (next?.away_standing_summary || '')
+        : (next?.home_standing_summary || '');
     const hideHeader = this._config.hide_header === true;
 
     // Compute W/D/L per previous match (oldest → newest)
@@ -143,8 +153,8 @@ class SoccerLiveTeamFormCard extends LitElement {
               </span>
               <span class="comp-name">${team || 'Team Form'}</span>
             </div>
-            ${next?.standing_summary || next?.home_standing_summary
-              ? html`<span class="standing-badge">${next.standing_summary || next.home_standing_summary}</span>`
+            ${standingSummary
+              ? html`<span class="standing-badge">${standingSummary}</span>`
               : ''}
           </div>
         ` : ''}
