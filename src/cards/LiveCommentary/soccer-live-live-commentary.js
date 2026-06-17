@@ -190,4 +190,6 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-live-commentary", SoccerLiveLiveCommentaryCard);
+if (!customElements.get("soccer-live-live-commentary")) {
+  customElements.define("soccer-live-live-commentary", SoccerLiveLiveCommentaryCard);
+}

@@ -1114,4 +1114,6 @@ class SoccerLiveStandingsCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-standings", SoccerLiveStandingsCard);
+if (!customElements.get("soccer-live-standings")) {
+  customElements.define("soccer-live-standings", SoccerLiveStandingsCard);
+}

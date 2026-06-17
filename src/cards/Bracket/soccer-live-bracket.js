@@ -884,4 +884,6 @@ class SoccerLiveBracketCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-bracket", SoccerLiveBracketCard);
+if (!customElements.get("soccer-live-bracket")) {
+  customElements.define("soccer-live-bracket", SoccerLiveBracketCard);
+}

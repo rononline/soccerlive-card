@@ -254,22 +254,33 @@ class SoccerLiveCardEditor extends LitElement {
     }));
   }
 
+  _haSelectChanged(e) {
+    // ha-select fires 'selected' on open too; ignore when value didn't change
+    const type = e.detail?.value;
+    if (!type || type === (this._config?.card_type || '')) return;
+    this._typeChanged({ target: { value: type } });
+  }
+
   render() {
     const raw = this._config?.card_type || '';
-    // Normalize legacy long names (soccer-live-team → team) for the dropdown
     const selected = CARD_TYPES.find(t => t.value === raw)
       ? raw
       : (Object.entries(TYPE_TO_ELEMENT).find(([, el]) => el === raw)?.[0] || raw);
     const meta = CARD_TYPES.find(t => t.value === selected);
     return html`
       <div class="picker-wrap">
-        <label class="picker-label">Card type</label>
-        <select class="picker-select" @change=${this._typeChanged}>
-          <option value="" ?selected=${!selected}>— Choose a card type —</option>
+        <ha-select
+          label="Card type"
+          .value=${selected}
+          @selected=${this._haSelectChanged}
+          @closed=${e => e.stopPropagation()}
+          fixedMenuPosition
+        >
+          <ha-list-item value="">— Choose a card type —</ha-list-item>
           ${CARD_TYPES.map(t => html`
-            <option value="${t.value}" ?selected=${t.value === selected}>${t.label}</option>
+            <ha-list-item value="${t.value}">${t.label}</ha-list-item>
           `)}
-        </select>
+        </ha-select>
         ${meta ? html`<p class="picker-desc">${meta.description}</p>` : ''}
       </div>
       <div id="sub-editor"></div>
@@ -283,24 +294,9 @@ class SoccerLiveCardEditor extends LitElement {
         border-bottom: 1px solid var(--divider-color, rgba(0,0,0,0.12));
         margin-bottom: 16px;
       }
-      .picker-label {
-        display: block;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--secondary-text-color);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 6px;
-      }
-      .picker-select {
+      ha-select {
         width: 100%;
-        padding: 8px 10px;
-        border: 1px solid var(--divider-color, #e0e0e0);
-        border-radius: 8px;
-        background: var(--card-background-color, #fff);
-        color: var(--primary-text-color);
-        font-size: 14px;
-        cursor: pointer;
+        display: block;
       }
       .picker-desc {
         margin: 6px 0 0;

@@ -272,4 +272,6 @@ class SoccerLiveNewsCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-news", SoccerLiveNewsCard);
+if (!customElements.get("soccer-live-news")) {
+  customElements.define("soccer-live-news", SoccerLiveNewsCard);
+}

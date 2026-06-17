@@ -926,4 +926,6 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-matches", SoccerLiveMatchesCard);
+if (!customElements.get("soccer-live-matches")) {
+  customElements.define("soccer-live-matches", SoccerLiveMatchesCard);
+}

@@ -327,4 +327,6 @@ class SoccerLiveLineupCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-lineup", SoccerLiveLineupCard);
+if (!customElements.get("soccer-live-lineup")) {
+  customElements.define("soccer-live-lineup", SoccerLiveLineupCard);
+}

@@ -290,4 +290,6 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-countdown", SoccerLiveCountdownCard);
+if (!customElements.get("soccer-live-countdown")) {
+  customElements.define("soccer-live-countdown", SoccerLiveCountdownCard);
+}

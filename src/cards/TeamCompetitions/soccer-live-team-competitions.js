@@ -177,4 +177,6 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-team-competitions", SoccerLiveTeamCompetitionsCard);
+if (!customElements.get("soccer-live-team-competitions")) {
+  customElements.define("soccer-live-team-competitions", SoccerLiveTeamCompetitionsCard);
+}

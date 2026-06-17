@@ -169,4 +169,6 @@ class SoccerLiveScorersCard extends LitElement {
   }
 }
 
-customElements.define('soccer-live-scorers', SoccerLiveScorersCard);
+if (!customElements.get('soccer-live-scorers')) {
+  customElements.define('soccer-live-scorers', SoccerLiveScorersCard);
+}

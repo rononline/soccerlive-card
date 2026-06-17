@@ -157,4 +157,6 @@ class SoccerLiveMultiTeamCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-multi-team", SoccerLiveMultiTeamCard);
+if (!customElements.get("soccer-live-multi-team")) {
+  customElements.define("soccer-live-multi-team", SoccerLiveMultiTeamCard);
+}

@@ -312,4 +312,6 @@ class SoccerLiveTimelineCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-timeline", SoccerLiveTimelineCard);
+if (!customElements.get("soccer-live-timeline")) {
+  customElements.define("soccer-live-timeline", SoccerLiveTimelineCard);
+}

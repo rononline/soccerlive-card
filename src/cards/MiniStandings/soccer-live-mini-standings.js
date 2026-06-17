@@ -147,4 +147,6 @@ class SoccerLiveMiniStandingsCard extends LitElement {
   }
 }
 
-customElements.define("soccer-live-mini-standings", SoccerLiveMiniStandingsCard);
+if (!customElements.get("soccer-live-mini-standings")) {
+  customElements.define("soccer-live-mini-standings", SoccerLiveMiniStandingsCard);
+}
