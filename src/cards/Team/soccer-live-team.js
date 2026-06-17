@@ -6,6 +6,7 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
+import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 
 /**
  * Soccer Live Team Card
@@ -612,26 +613,10 @@ class SoccerLiveTeamCard extends LitElement {
           }
         </div>
 
-        ${(broadcasts.length || hasAttendance || neutralSite || match.has_stats || match.has_commentary || (match.links && match.links.video)) ? html`
-          <div class="extras-row">
-            ${broadcasts.length ? html`
-              <div class="extra-chip broadcast">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-                <span>${broadcasts.join(' · ')}</span>
-              </div>
-            ` : ''}
-            ${hasAttendance ? html`
-              <div class="extra-chip attendance">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <span>${attendance.toLocaleString(resolveLang(this.hass, this._config))} ${this._t('team.spectators')}</span>
-              </div>
-            ` : ''}
-            ${neutralSite ? html`<div class="extra-chip neutral">⚖️ <span>${this._t('ui.neutral_site')}</span></div>` : ''}
-            ${match.has_stats && match.links && (match.links.stats || match.links.summary) ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.stats || match.links.summary, '_blank', 'noopener,noreferrer')}" title="${this._t('ui.open_stats')}">📊 <span>${this._t('card.stats')}</span></div>` : ''}
-            ${match.has_commentary && match.links && (match.links.commentary || match.links.summary) ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.commentary || match.links.summary, '_blank', 'noopener,noreferrer')}" title="${this._t('ui.open_commentary')}">💬 <span>${this._t('card.commentary')}</span></div>` : ''}
-            ${match.links && match.links.video ? html`<div class="extra-chip info clickable" @click="${() => window.open(match.links.video, '_blank', 'noopener,noreferrer')}" title="${this._t('ui.open_video')}">🎬 <span>${this._t('card.video')}</span></div>` : ''}
-          </div>
-        ` : ''}
+        ${renderMatchMeta(
+          { ...match, venue: '', venue_city: '' },
+          { lang: resolveLang(this.hass, this._config), t: k => this._t(k) }
+        )}
 
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
@@ -1032,7 +1017,7 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, spinnerStyles, weatherBadgeStyles, css`
+    return [skinStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
       /* ── Popup overlay (renders inside shadow DOM, position:fixed escapes the card) ── */
       .popup-overlay {
         position: fixed; inset: 0; z-index: 999999;
@@ -1498,40 +1483,7 @@ class SoccerLiveTeamCard extends LitElement {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .extras-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px 18px 12px;
-        background: var(--cl-card-2);
-        position: relative;
-        z-index: 2;
-      }
-      .extra-chip.clickable { cursor: pointer; }
-      .extra-chip.clickable:hover { opacity: 0.8; transform: scale(1.03); transition: all 0.15s; }
-      .extra-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 4px 10px;
-        background: rgba(var(--cl-accent-rgb),0.12);
-        border: 1px solid rgba(var(--cl-accent-rgb),0.25);
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--cl-accent);
-      }
-      .extra-chip svg { width: 12px; height: 12px; }
-      .extra-chip.broadcast {
-        background: rgba(var(--cl-accent-rgb),0.12);
-        border-color: rgba(var(--cl-accent-rgb),0.3);
-        color: var(--cl-accent);
-      }
-      .extra-chip.attendance {
-        background: rgba(16,185,129,0.12);
-        border-color: rgba(16,185,129,0.3);
-        color: var(--cl-green);
-      }
+      /* .extras-row / .extra-chip removed — now .smm-chips from matchMetaStyles */
       .meta-item {
         display: flex; align-items: center; gap: 6px;
         color: var(--cl-text-2);
@@ -1900,7 +1852,7 @@ class SoccerLiveTeamCard extends LitElement {
       ha-card.compact .standing-summary { display: none; }
       ha-card.compact .form-dots-row { display: none; }
       ha-card.compact .top-scorer-row { display: none; }
-      ha-card.compact .extras-row { display: none; }
+      ha-card.compact .smm-chips { display: none; }
       ha-card.compact .meta-row { padding: 8px 14px !important; }
     `];
   }
