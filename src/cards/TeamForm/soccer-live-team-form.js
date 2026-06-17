@@ -166,9 +166,9 @@ class SoccerLiveTeamFormCard extends LitElement {
             ${results.map(r => html`<span class="dot ${r.r.toLowerCase()}" title="${r.m.home_team} ${r.m.home_score}-${r.m.away_score} ${r.m.away_team}">${r.r}</span>`)}
           </div>
           <div class="wdl-row">
-            <span class="wdl w">${wins}W</span>
-            <span class="wdl d">${draws}D</span>
-            <span class="wdl l">${losses}V</span>
+            <span class="wdl w">${wins}${this._t('col.wins')}</span>
+            <span class="wdl d">${draws}${this._t('col.draws')}</span>
+            <span class="wdl l">${losses}${this._t('col.losses')}</span>
           </div>
         </div>
 

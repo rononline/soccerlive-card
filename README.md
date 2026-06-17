@@ -251,6 +251,29 @@ Real-time play-by-play commentary with event icons and score progression.
 
 > Requires a `soccer_live_commentary_*` sensor. Commentary availability depends on ESPN API support for the specific competition.
 
+### 🗂️ Match Center
+
+```yaml
+type: custom:soccer-live-card
+card_type: match-center
+entity: sensor.soccer_live_next_ned_1_ajax
+```
+
+Tabbed view of a single match. Tabs appear only when data is available: Stats and Timeline after kick-off, Lineup once ESPN publishes it.
+
+> Works best with a `next_*` or `all_mixed_*` sensor, which enriches the match with lineup, key events and H2H via the ESPN summary endpoint.
+
+### 👥 Team Form
+
+```yaml
+type: custom:soccer-live-card
+card_type: team-form
+entity: sensor.soccer_live_next_ned_1_ajax
+team_name: Ajax
+```
+
+> `team_name` is recommended. Without it the card tries to auto-detect the tracked team from `previous_matches`, but detection may be ambiguous with only one previous match or when the same opponent appears multiple times.
+
 ---
 
 ## 🔗 Integration version requirements
