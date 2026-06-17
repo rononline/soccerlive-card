@@ -76,7 +76,12 @@ class SoccerLiveTeamFormCard extends LitElement {
   _renderCard(attrs) {
     const prev      = attrs.previous_matches || [];
     const next      = (attrs.matches || [])[0];
-    const upcoming  = attrs.upcoming_matches || [];
+    // upcoming_matches in the sensor starts at index 1 (next match is already in matches[0]).
+    // Prepend matches[0] when it is a future or live match so nothing is skipped.
+    const upcomingRaw = attrs.upcoming_matches || [];
+    const upcoming = (next && (next.state === 'pre' || next.state === 'in'))
+      ? [next, ...upcomingRaw]
+      : upcomingRaw;
     const team      = this._config.team_name || attrs.team_name || next?.home_team || '';
     const tracked   = team.toLowerCase();
     const logo      = attrs.team_logo || next?.home_logo || '';
