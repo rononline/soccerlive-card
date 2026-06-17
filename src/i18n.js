@@ -184,7 +184,7 @@ const TRANSLATIONS = {
 
     // Months (short)
     'month.1': 'Jan', 'month.2': 'Feb', 'month.3': 'Mar', 'month.4': 'Apr',
-    'month.5': 'May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug',
+    'month.5': "May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug",
     'month.9': 'Sep', 'month.10': 'Oct', 'month.11': 'Nov', 'month.12': 'Dec',
 
     // Top scorers card
@@ -447,7 +447,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Geen gebeurtenissen beschikbaar',
 
     'month.1': 'Jan', 'month.2': 'Feb', 'month.3': 'Mrt', 'month.4': 'Apr',
-    'month.5': 'Mei', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug',
+    'month.5': "Mei', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug",
     'month.9': 'Sep', 'month.10': 'Okt', 'month.11': 'Nov', 'month.12': 'Dec',
 
     'scorers.goals': 'Doelpunten',
@@ -740,8 +740,8 @@ const TRANSLATIONS = {
     'ui.no_lineup_yet': 'Formazione non ancora disponibile',
     'ui.no_form_data': 'Nessun dato forma',
     'ui.no_form_hint': 'Nessuna partita precedente trovata',
-    'ui.sensor_unavailable_hint': 'Verifica che l'integrazione Soccer Live sia attiva',
-    'ui.restart_ha': 'Riavvia Home Assistant o controlla l'integrazione',
+    'ui.sensor_unavailable_hint': "Verifica che l'integrazione Soccer Live sia attiva",
+    'ui.restart_ha': "Riavvia Home Assistant o controlla l'integrazione",
     'ui.no_standings_data': 'Nessun dato classifica',
     'ui.no_standings_hint': 'Verifica se il campionato è iniziato',
     'ui.no_competition_data': 'Nessun dato competizione',
@@ -961,7 +961,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Aucun événement disponible',
 
     'month.1': 'Janv', 'month.2': 'Févr', 'month.3': 'Mars', 'month.4': 'Avr',
-    'month.5': 'Mai', 'month.6': 'Juin', 'month.7': 'Juil', 'month.8': 'Août',
+    'month.5': "Mai', 'month.6': 'Juin', 'month.7': 'Juil', 'month.8': 'Août",
     'month.9': 'Sept', 'month.10': 'Oct', 'month.11': 'Nov', 'month.12': 'Déc',
 
     'scorers.goals': 'Buts',
@@ -997,12 +997,12 @@ const TRANSLATIONS = {
     'ui.no_lineup_yet': 'Composition pas encore disponible',
     'ui.no_form_data': 'Pas de données de forme',
     'ui.no_form_hint': 'Aucun match précédent trouvé',
-    'ui.sensor_unavailable_hint': 'Vérifiez que l'intégration Soccer Live est active',
-    'ui.restart_ha': 'Redémarrez Home Assistant ou vérifiez l'intégration',
+    'ui.sensor_unavailable_hint': "Vérifiez que l'intégration Soccer Live est active",
+    'ui.restart_ha': "Redémarrez Home Assistant ou vérifiez l'intégration",
     'ui.no_standings_data': 'Pas de données de classement',
     'ui.no_standings_hint': 'Vérifiez si la compétition a commencé',
     'ui.no_competition_data': 'Pas de données de compétition',
-    'ui.no_competition_hint': 'Vérifiez si l'équipe a des matchs programmés',
+    'ui.no_competition_hint': "Vérifiez si l'équipe a des matchs programmés",
     'ui.not_available_competition': 'Non disponible pour cette compétition',
 
     'card.my_teams': 'Mes Équipes',
@@ -1218,7 +1218,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Sin eventos disponibles',
 
     'month.1': 'Ene', 'month.2': 'Feb', 'month.3': 'Mar', 'month.4': 'Abr',
-    'month.5': 'May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago',
+    'month.5': "May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago",
     'month.9': 'Sep', 'month.10': 'Oct', 'month.11': 'Nov', 'month.12': 'Dic',
 
     'scorers.goals': 'Goles',
@@ -1406,7 +1406,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': 'vor {n} Min.',
     'time.n_h_ago': 'vor {n} Std.',
     'time.n_d_ago': 'vor {n} T.',
-    'cd.days': 'Tage', 'cd.hrs': 'Std', 'cd.min': 'Min', 'cd.sec': 'Sek',
+    'cd.days': "Tage', 'cd.hrs': 'Std', 'cd.min': 'Min', 'cd.sec': 'Sek",
 
     'lineup.bench': 'Bank',
     'lineup.empty.title': 'Aufstellungen nicht verfügbar',
@@ -1458,7 +1458,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Keine Ereignisse verfügbar',
 
     'month.1': 'Jan', 'month.2': 'Feb', 'month.3': 'Mär', 'month.4': 'Apr',
-    'month.5': 'Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug',
+    'month.5': "Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug",
     'month.9': 'Sep', 'month.10': 'Okt', 'month.11': 'Nov', 'month.12': 'Dez',
 
     'scorers.goals': 'Tore',
@@ -1715,7 +1715,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Sem eventos disponíveis',
 
     'month.1': 'Jan', 'month.2': 'Fev', 'month.3': 'Mar', 'month.4': 'Abr',
-    'month.5': 'Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago',
+    'month.5': "Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago",
     'month.9': 'Set', 'month.10': 'Out', 'month.11': 'Nov', 'month.12': 'Dez',
 
     'scorers.goals': 'Gols',
