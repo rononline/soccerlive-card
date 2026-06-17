@@ -174,8 +174,15 @@ class SoccerLiveStandingsCard extends LitElement {
     }
   }
 
+  updated(changedProperties) {
+    if (changedProperties.has('hass') && this.hass && !this._eventSubscriptions?.length) {
+      this._subscribeToEvents();
+    }
+  }
+
   _subscribeToEvents() {
     if (!this.hass || !this.hass.connection) return;
+    if (this._eventSubscriptions && this._eventSubscriptions.length > 0) return;
 
     this._eventSubscriptions = [];
 
