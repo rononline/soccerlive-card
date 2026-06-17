@@ -28,6 +28,10 @@ import "./cards/TeamCompetitions/soccer-live-team-competitions.js";
 import "./cards/TeamCompetitions/soccer-live-team-competitions-editor.js";
 import "./cards/LiveCommentary/soccer-live-live-commentary.js";
 import "./cards/LiveCommentary/soccer-live-live-commentary-editor.js";
+import "./cards/MatchCenter/soccer-live-match-center.js";
+import "./cards/MatchCenter/soccer-live-match-center-editor.js";
+import "./cards/TeamForm/soccer-live-team-form.js";
+import "./cards/TeamForm/soccer-live-team-form-editor.js";
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -46,6 +50,8 @@ const CARD_REGISTRY = [
   { value: 'multi-team',        element: 'soccer-live-multi-team',        editor: 'soccer-live-multi-team-editor',        label: 'Multi Team',        description: 'Multiple teams in one compact card' },
   { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector' },
   { value: 'live-commentary',   element: 'soccer-live-live-commentary',   editor: 'soccer-live-live-commentary-editor',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary' },
+  { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H' },
+  { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split' },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)

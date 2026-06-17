@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.9.8 (2026-06-17)
+- Card type picker replaced with `ha-form` select (resolves ha-select event compatibility issues)
+- `ha-select` and related dead code removed
+
+## v3.9.5 (2026-06-17)
+- `ha-select` picker (visual HA dropdown) replaces native `<select>`
+- `customElements.define` guards added to all 14 sub-card files
+
+## v3.9.4 (2026-06-17)
+- CHANGELOG heading corrected to v3.9.3
+- README common-options table: blockquote moved below table so `language` and `skin` rows render correctly
+- `customElements.define` guards on wrapper elements (`soccer-live-card`, `soccer-live-card-editor`)
+- `_errorCard()` unicode icon removed from source
+
 ## v3.9.3 (2026-06-17)
 - Registry consolidated into single `CARD_REGISTRY` array; `TYPE_TO_ELEMENT`, `CARD_TYPES`, `CARD_EDITORS`, `LEGACY_ELEMENTS` all derived from it
 - Unknown `card_type` shows explicit error card ("Unknown card_type: ...") instead of placeholder
