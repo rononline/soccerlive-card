@@ -21,6 +21,7 @@ class SoccerLiveMatchesCard extends LitElement {
     super();
     this._recentEventMatches = new Map();
     this._eventSubscriptions = [];
+    this._cleanupTimers = [];
     this._toastMessage = '';
     this._toastVisible = false;
     this._toastVariant = 'goal';
@@ -73,6 +74,9 @@ class SoccerLiveMatchesCard extends LitElement {
       document.removeEventListener('keydown', this._escHandler);
       this._escHandler = null;
     }
+
+    this._cleanupTimers.forEach(t => clearTimeout(t));
+    this._cleanupTimers = [];
   }
 
   _subscribeToEvents() {
@@ -109,10 +113,10 @@ class SoccerLiveMatchesCard extends LitElement {
     const matchKey = `${eventData.home_team}_${eventData.away_team}`;
     this._recentEventMatches.set(matchKey, eventType === 'soccer_live_goal' ? 'goal' : 'card');
     this.requestUpdate();
-    setTimeout(() => {
+    this._cleanupTimers.push(setTimeout(() => {
       this._recentEventMatches.delete(matchKey);
       this.requestUpdate();
-    }, 5000);
+    }, 5000));
 
     if (eventType === 'soccer_live_goal') {
       requestAnimationFrame(() => this._triggerGoalCelebration());
@@ -480,7 +484,7 @@ class SoccerLiveMatchesCard extends LitElement {
 
   _renderPopup() {
     const m = this.activeMatch;
-    const score = s => (!s || s === 'N/A') ? '-' : s;
+    const score = s => (s == null || s === '' || s === 'N/A') ? '-' : s;
     const clock = (m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : '');
     const { goals, yellowCards, redCards } = this.separateEvents(m.match_details || []);
     const group = (title, items, cls) => items.length ? html`
