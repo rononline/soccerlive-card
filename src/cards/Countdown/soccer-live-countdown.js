@@ -6,6 +6,7 @@ import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 
 /**
  * Soccer Live Countdown Card
@@ -136,7 +137,7 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, spinnerStyles, weatherBadgeStyles, css`
+    return [skinStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -160,7 +161,7 @@ class SoccerLiveCountdownCard extends LitElement {
       .cd-label { font-size: 9px; color: var(--cl-text-2); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
       .cd-sep { font-size: 26px; font-weight: 900; color: var(--cl-text-2); align-self: flex-start; padding-top: 2px; }
       .vs-text { font-size: 20px; font-weight: 900; color: var(--cl-text-2); }
-      .meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--cl-text-2); }
+      /* .meta removed — now .smm-venue-row / .smm-chips from matchMetaStyles */
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
 
       @media (max-width: 600px) {
@@ -293,15 +294,11 @@ class SoccerLiveCountdownCard extends LitElement {
           </div>
         </div>
 
-        ${(venue || broadcasts.length) ? html`
-          <div class="meta">
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              ${venue ? html`<span>🏟 ${venue}${venueCity ? `, ${venueCity}` : ''}${neutralSite ? ' ⚖️' : ''}</span>` : ''}
-              ${broadcasts.length ? html`<span style="color:var(--cl-accent);">📺 ${broadcasts.join(' · ')}</span>` : ''}
-              ${this._weatherBadge ? this._weatherBadge : ''}
-            </div>
-          </div>
-        ` : ''}
+        ${renderMatchMeta(match, {
+          lang: resolveLang(this.hass, this._config),
+          t: k => this._t(k),
+          weatherBadge: this._weatherBadge || null,
+        })}
       </ha-card>
     `;
   }

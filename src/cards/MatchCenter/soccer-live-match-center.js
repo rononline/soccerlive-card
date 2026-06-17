@@ -5,6 +5,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 
 const TABS = [
   { id: 'overview',  label: 'Overview' },
@@ -155,11 +156,6 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderOverview(match) {
-    const venue      = match.venue     && match.venue     !== 'N/A' ? match.venue     : '';
-    const venueCity  = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
-    const broadcasts = Array.isArray(match.broadcasts) && match.broadcasts.length
-      ? match.broadcasts
-      : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : []);
     const homeRec = match.home_record_summary || match.home_record || '';
     const awayRec = match.away_record_summary || match.away_record || '';
     const homeStd = match.home_standing_summary || '';
@@ -181,10 +177,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
             <span class="ov-val right small">${awayStd || '—'}</span>
           </div>
         ` : ''}
-        ${venue ? html`<div class="ov-meta">🏟 ${venue}${venueCity ? `, ${venueCity}` : ''}${match.neutral_site ? ' (neutraal)' : ''}</div>` : ''}
-        ${broadcasts.length ? html`<div class="ov-meta">📺 ${broadcasts.join(' · ')}</div>` : ''}
-        ${match.week_label  ? html`<div class="ov-meta">📅 ${match.week_label}</div>` : ''}
+        ${match.week_label ? html`<div class="ov-meta">📅 ${match.week_label}</div>` : ''}
       </div>
+      ${renderMatchMeta(match, {
+        lang: resolveLang(this.hass, this._config),
+        t: k => this._t(k),
+      })}
     `;
   }
 
@@ -319,7 +317,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerHeaderStyles, matchMetaStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
       /* Scoreboard */
       .scoreboard { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; }

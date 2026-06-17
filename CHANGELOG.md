@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.14.0 (2026-06-17)
+
+### New: shared-match-meta.js
+- `renderMatchMeta(match, { lang, t, weatherBadge, showDate })` — venue row + broadcast/attendance/link chips in one component
+- `matchMetaStyles` — consistent CSS for all match meta across cards
+- Chip variants: broadcast (TV icon), attendance (people icon), stats/commentary/video (clickable, accent colour)
+
+### Click-through consistency
+- **MatchCenter** Overview tab: venue + broadcast/attendance/link chips via shared-match-meta
+- **Countdown**: own `.meta` row replaced by shared-match-meta; weather badge preserved; stats/commentary/video chips now available
+
 ## v3.13.1 (2026-06-17)
 - LiveCommentary: migrate to shared-header; add `hide_header` guard (was always showing)
 - TeamCompetitions: migrate `.card-header` to shared-header; remove dead CSS
