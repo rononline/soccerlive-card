@@ -521,9 +521,7 @@ class SoccerLiveTeamCard extends LitElement {
           : (match.season_info && match.season_info !== 'N/A' && this._shouldShowPhase(match.season_info)
               ? this._translatePhase(match.season_info)
               : ''));
-    const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
-    const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
-    const venueLabel = venue ? (venueCity ? `${venue}, ${venueCity}` : venue) : '—';
+
     const homeRgb = this._hexToRgb(match.home_color);
     const awayRgb = this._hexToRgb(match.away_color);
     const heroBgStyle = (homeRgb || awayRgb) ? `background:
