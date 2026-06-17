@@ -524,11 +524,6 @@ class SoccerLiveTeamCard extends LitElement {
     const venue = match.venue && match.venue !== 'N/A' ? match.venue : '';
     const venueCity = match.venue_city && match.venue_city !== 'N/A' ? match.venue_city : '';
     const venueLabel = venue ? (venueCity ? `${venue}, ${venueCity}` : venue) : '—';
-    const broadcast = match.broadcast && match.broadcast !== '' && match.broadcast !== 'N/A' ? match.broadcast : '';
-    const broadcasts = Array.isArray(match.broadcasts) && match.broadcasts.length ? match.broadcasts : (broadcast ? [broadcast] : []);
-    const neutralSite = match.neutral_site || false;
-    const attendance = parseInt(match.attendance, 10);
-    const hasAttendance = !isNaN(attendance) && attendance > 0;
     const homeRgb = this._hexToRgb(match.home_color);
     const awayRgb = this._hexToRgb(match.away_color);
     const heroBgStyle = (homeRgb || awayRgb) ? `background:
@@ -594,29 +589,17 @@ class SoccerLiveTeamCard extends LitElement {
 
         ${isLive ? this._renderStatsRow(match) : ''}
 
-        <div class="meta-row">
-          <div class="meta-item venue-item" style="flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 4px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span>${venueLabel}</span>
-            </div>
-            ${this._weatherBadge ? this._weatherBadge : ''}
+        ${renderMatchMeta(match, {
+          lang: resolveLang(this.hass, this._config),
+          t: k => this._t(k),
+          weatherBadge: this._weatherBadge || null,
+          showDate: !showScore,
+        })}
+        ${showScore ? html`
+          <div class="meta-row details-row">
+            <button class="info-btn" @click="${() => this.showDetails(match)}">${this._t('team.details')} ›</button>
           </div>
-          ${showScore
-            ? html`<button class="info-btn" @click="${() => this.showDetails(match)}">${this._t('team.details')} ›</button>`
-            : html`
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>${match.date || ''}</span>
-              </div>
-            `
-          }
-        </div>
-
-        ${renderMatchMeta(
-          { ...match, venue: '', venue_city: '' },
-          { lang: resolveLang(this.hass, this._config), t: k => this._t(k) }
-        )}
+        ` : ''}
 
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
@@ -1477,20 +1460,7 @@ class SoccerLiveTeamCard extends LitElement {
         border-top: 1px solid var(--cl-divider);
         background: var(--cl-card-2);
       }
-      .venue-item { min-width: 0; }
-      .venue-item span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      /* .extras-row / .extra-chip removed — now .smm-chips from matchMetaStyles */
-      .meta-item {
-        display: flex; align-items: center; gap: 6px;
-        color: var(--cl-text-2);
-        font-size: 11px;
-        font-weight: 600;
-      }
-      .meta-item svg { width: 14px; height: 14px; opacity: 0.7; }
+      /* .venue-item / .meta-item / .extras-row / .extra-chip removed — now .smm-* from matchMetaStyles */
       .info-btn {
         background: linear-gradient(135deg, var(--cl-accent), var(--cl-accent-2));
         color: white;
@@ -1844,7 +1814,7 @@ class SoccerLiveTeamCard extends LitElement {
         .team-name { font-size: 11px !important; max-width: 70px !important; }
         .event-icon { font-size: 12px !important; }
       }
-      /* Compact mode: smaller scoreboard, hide extras-row */
+      /* Compact mode: smaller scoreboard, hide chips and secondary sections */
       ha-card.compact .team-logo-big { width: 48px !important; height: 48px !important; }
       ha-card.compact .team-name-big { font-size: 12px !important; }
       ha-card.compact .scoreboard { padding: 12px 16px !important; }
