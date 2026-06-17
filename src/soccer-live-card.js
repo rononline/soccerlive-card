@@ -29,69 +29,35 @@ import "./cards/TeamCompetitions/soccer-live-team-competitions-editor.js";
 import "./cards/LiveCommentary/soccer-live-live-commentary.js";
 import "./cards/LiveCommentary/soccer-live-live-commentary-editor.js";
 
-// ─── Card type registry ───────────────────────────────────────────────────────
+// ─── Card type registry (single source of truth) ─────────────────────────────
 
-// Short card_type values used in YAML; mapped to the custom element name.
-// Long names (soccer-live-team etc.) are also accepted for backward compat.
-const TYPE_TO_ELEMENT = {
-  'team':              'soccer-live-team',
-  'standings':         'soccer-live-standings',
-  'matches':           'soccer-live-matches',
-  'countdown':         'soccer-live-countdown',
-  'live-match':        'soccer-live-live-match',
-  'news':              'soccer-live-news',
-  'lineup':            'soccer-live-lineup',
-  'timeline':          'soccer-live-timeline',
-  'bracket':           'soccer-live-bracket',
-  'mini-standings':    'soccer-live-mini-standings',
-  'scorers':           'soccer-live-scorers',
-  'multi-team':        'soccer-live-multi-team',
-  'team-competitions': 'soccer-live-team-competitions',
-  'live-commentary':   'soccer-live-live-commentary',
-};
+const CARD_REGISTRY = [
+  { value: 'team',              element: 'soccer-live-team',              editor: 'soccer-live-team-editor',              label: 'Team',              description: 'Live score, form, lineup, weather for one team' },
+  { value: 'standings',         element: 'soccer-live-standings',         editor: 'soccer-live-standings-editor',         label: 'Standings',         description: 'League table with coloured zones' },
+  { value: 'matches',           element: 'soccer-live-matches',           editor: 'soccer-live-matches-editor',           label: 'Matches',           description: 'Day-grouped match list with live highlighting' },
+  { value: 'countdown',         element: 'soccer-live-countdown',         editor: 'soccer-live-countdown-editor',         label: 'Countdown',         description: 'Countdown timer to next match with live score' },
+  { value: 'live-match',        element: 'soccer-live-live-match',        editor: 'soccer-live-live-match-editor',        label: 'Live Match',        description: 'Current match with events, possession and shots' },
+  { value: 'news',              element: 'soccer-live-news',              editor: 'soccer-live-news-editor',              label: 'News',              description: 'Article feed with images and timestamps' },
+  { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams' },
+  { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events' },
+  { value: 'bracket',           element: 'soccer-live-bracket',           editor: 'soccer-live-bracket-editor',           label: 'Bracket',           description: 'Knockout bracket (list or tournament tree)' },
+  { value: 'mini-standings',    element: 'soccer-live-mini-standings',    editor: 'soccer-live-mini-standings-editor',    label: 'Mini Standings',    description: 'Compact standings with configurable rows' },
+  { value: 'scorers',           element: 'soccer-live-scorers',           editor: 'soccer-live-scorers-editor',           label: 'Top Scorers',       description: 'Top scorers list with photo and goal tally' },
+  { value: 'multi-team',        element: 'soccer-live-multi-team',        editor: 'soccer-live-multi-team-editor',        label: 'Multi Team',        description: 'Multiple teams in one compact card' },
+  { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector' },
+  { value: 'live-commentary',   element: 'soccer-live-live-commentary',   editor: 'soccer-live-live-commentary-editor',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary' },
+];
 
-// All known legacy long element names (used in old YAML configs)
-const LEGACY_ELEMENTS = new Set(Object.values(TYPE_TO_ELEMENT));
+// Derived lookups (never edit these manually — edit CARD_REGISTRY above)
+const TYPE_TO_ELEMENT = Object.fromEntries(CARD_REGISTRY.map(c => [c.value, c.element]));
+const LEGACY_ELEMENTS = new Set(CARD_REGISTRY.map(c => c.element));
+const CARD_TYPES      = CARD_REGISTRY.map(({ value, label, description }) => ({ value, label, description }));
+const CARD_EDITORS    = Object.fromEntries(CARD_REGISTRY.filter(c => c.editor).map(c => [c.value, c.editor]));
 
 // Resolve card_type (short or known legacy long) → element name
 function resolveElement(cardType) {
   return TYPE_TO_ELEMENT[cardType] || (LEGACY_ELEMENTS.has(cardType) ? cardType : null);
 }
-
-const CARD_TYPES = [
-  { value: 'team',              label: 'Team',              description: 'Live score, form, lineup, weather for one team' },
-  { value: 'standings',         label: 'Standings',         description: 'League table with coloured zones' },
-  { value: 'matches',           label: 'Matches',           description: 'Day-grouped match list with live highlighting' },
-  { value: 'countdown',         label: 'Countdown',         description: 'Countdown timer to next match with live score' },
-  { value: 'live-match',        label: 'Live Match',        description: 'Current match with events, possession and shots' },
-  { value: 'news',              label: 'News',              description: 'Article feed with images and timestamps' },
-  { value: 'lineup',            label: 'Lineup',            description: 'Starting eleven for both teams' },
-  { value: 'timeline',          label: 'Timeline',          description: 'Minute-by-minute match events' },
-  { value: 'bracket',           label: 'Bracket',           description: 'Knockout bracket (list or tournament tree)' },
-  { value: 'mini-standings',    label: 'Mini Standings',    description: 'Compact standings with configurable rows' },
-  { value: 'scorers',           label: 'Top Scorers',       description: 'Top scorers list with photo and goal tally' },
-  { value: 'multi-team',        label: 'Multi Team',        description: 'Multiple teams in one compact card' },
-  { value: 'team-competitions', label: 'Team Competitions', description: 'All competitions for a team with tab selector' },
-  { value: 'live-commentary',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary' },
-];
-
-// Which card types have a visual editor (short key)
-const CARD_EDITORS = {
-  'team':              'soccer-live-team-editor',
-  'standings':         'soccer-live-standings-editor',
-  'matches':           'soccer-live-matches-editor',
-  'countdown':         'soccer-live-countdown-editor',
-  'live-match':        'soccer-live-live-match-editor',
-  'news':              'soccer-live-news-editor',
-  'lineup':            'soccer-live-lineup-editor',
-  'timeline':          'soccer-live-timeline-editor',
-  'bracket':           'soccer-live-bracket-editor',
-  'mini-standings':    'soccer-live-mini-standings-editor',
-  'scorers':           'soccer-live-scorers-editor',
-  'multi-team':        'soccer-live-multi-team-editor',
-  'team-competitions': 'soccer-live-team-competitions-editor',
-  'live-commentary':   'soccer-live-live-commentary-editor',
-};
 
 // Shared config fields preserved when switching card type
 const SHARED_FIELDS = ['entity', 'skin', 'language', 'show_event_toasts'];
@@ -122,7 +88,7 @@ class SoccerLiveCard extends HTMLElement {
     if (!element) {
       this._destroyChild();
       this.innerHTML = '';
-      this.appendChild(this._placeholder());
+      this.appendChild(type ? this._errorCard(`Unknown card_type: "${type}"`) : this._placeholder());
       return;
     }
 
@@ -154,6 +120,13 @@ class SoccerLiveCard extends HTMLElement {
     const el = document.createElement('ha-card');
     el.style.cssText = 'padding:24px;text-align:center;color:#94a3b8;font-size:13px;';
     el.textContent = 'Soccer Live — open the editor to choose a card type.';
+    return el;
+  }
+
+  _errorCard(message) {
+    const el = document.createElement('ha-card');
+    el.style.cssText = 'padding:24px;text-align:center;color:#ef4444;font-size:13px;border:1px solid rgba(239,68,68,0.3);';
+    el.textContent = `⚠️ ${message}`;
     return el;
   }
 

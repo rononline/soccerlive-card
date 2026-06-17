@@ -10,22 +10,26 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 
 ## ✨ Cards
 
-| Card | Type | Shows |
+All cards share the same wrapper — add one **Soccer Live Card** via the HA picker, then choose the type in the editor.
+
+| Card | `card_type` | Description |
 |---|---|---|
-| 🏅 **Standings** | `soccer-live-standings` | League table with coloured zones (CL / EL / relegation), gold for #1 |
-| ⚽ **Team** | `soccer-live-team` | Match: live score, form pills, season record, top scorer, TV channel, attendance, weather |
-| 📋 **Matches** | `soccer-live-matches` | Day-grouped matches with live highlighting and FT badge |
-| 📰 **News** | `soccer-live-news` | Article feed with images and relative timestamps |
-| 👥 **Lineup** | `soccer-live-lineup` | Starting eleven for both teams, formation, shirt numbers |
-| ⏱ **Timeline** | `soccer-live-timeline` | Minute-by-minute log (goals, cards, substitutions) |
-| 🏆 **Bracket** | `soccer-live-bracket` | Knockout bracket: list view or tournament tree with trophy |
-| 🥇 **Top Scorers** | `soccer-live-scorers` | Top scorers list with photo, team logo and goal tally |
-| ⏳ **Countdown** | `soccer-live-countdown` | Countdown timer to next match with live score display and weather |
-| 🏆 **Mini Standings** | `soccer-live-mini-standings` | Compact standings table with configurable rows and groups |
-| ⚽ **Live Match** | `soccer-live-live-match` | Current match with key events, possession, and shot stats |
-| 🔄 **Multi Team** | `soccer-live-multi-team` | Multiple teams' matches in one card |
-| 🗂️ **Team Competitions** | `soccer-live-team-competitions` | All team competitions with tab selector |
-| 💬 **Live Commentary** | `soccer-live-live-commentary` | Real-time play-by-play commentary with event icons |
+| Standings | `standings` | League table with coloured zones (CL / EL / relegation), gold for #1 |
+| Team | `team` | Live score, form pills, season record, top scorer, TV channel, attendance, weather |
+| Matches | `matches` | Day-grouped matches with live highlighting and FT badge |
+| News | `news` | Article feed with images and relative timestamps |
+| Lineup | `lineup` | Starting eleven for both teams, formation, shirt numbers |
+| Timeline | `timeline` | Minute-by-minute log (goals, cards, substitutions) |
+| Bracket | `bracket` | Knockout bracket: list view or tournament tree with trophy |
+| Top Scorers | `scorers` | Top scorers list with photo, team logo and goal tally |
+| Countdown | `countdown` | Countdown timer to next match with live score display and weather |
+| Mini Standings | `mini-standings` | Compact standings table with configurable rows and groups |
+| Live Match | `live-match` | Current match with key events, possession, and shot stats |
+| Multi Team | `multi-team` | Multiple teams' matches in one card |
+| Team Competitions | `team-competitions` | All team competitions with tab selector |
+| Live Commentary | `live-commentary` | Real-time play-by-play commentary with event icons |
+
+> **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 
 ### Features
 

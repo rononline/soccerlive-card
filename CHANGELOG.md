@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.9.2 (2026-06-17)
+- Registry consolidated into single `CARD_REGISTRY` array; `TYPE_TO_ELEMENT`, `CARD_TYPES`, `CARD_EDITORS`, `LEGACY_ELEMENTS` all derived from it
+- Unknown `card_type` shows explicit error card ("Unknown card_type: ...") instead of placeholder
+- `scorers-editor.js`: import fixed from `'lit'` to `'lit-element'`
+- `npm audit fix`: 0 vulnerabilities remaining
+- README table updated: `card_type` column replaces legacy element names; legacy note added
+- `_errorCard()` method implemented in wrapper
+
 ## v3.9.1 (2026-06-17)
 - Card picker: `resolveElement()` restricted to known legacy element names only (no more arbitrary `soccer-live-*` strings accepted)
 - Card picker: silent catch blocks now emit `console.warn` when entity is already set (easier debugging)
