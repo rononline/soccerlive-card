@@ -310,6 +310,7 @@ class SoccerLiveCountdownCard extends LitElement {
           lang: resolveLang(this.hass, this._config),
           t: k => this._t(k),
           weatherBadge: this._weatherBadge || null,
+          hideBroadcasts: this._config.hide_broadcasts === true,
         })}
       </ha-card>
     `;

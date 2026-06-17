@@ -278,6 +278,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
         ${renderMatchMeta(match, {
           lang: resolveLang(this.hass, this._config),
           t: k => this._t(k),
+          hideBroadcasts: this._config.hide_broadcasts === true,
         })}
       </ha-card>
     `;

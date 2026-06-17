@@ -13,7 +13,7 @@ import { html, css } from 'lit-element';
  *   @param {any}     opts.weatherBadge - Pre-rendered weather badge template, or null
  *   @param {boolean} opts.showDate     - Show date/time in the venue row (default false)
  */
-export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false } = {}) => {
+export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false, hideBroadcasts = false } = {}) => {
   if (!match) return html``;
 
   const venue       = match.venue      && match.venue      !== 'N/A' ? match.venue      : '';
@@ -21,9 +21,11 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
   const venueLabel  = venue ? (venueCity ? `${venue}, ${venueCity}` : venue) : '';
   const neutralSite = match.neutral_site || false;
 
-  const rawBroadcasts = Array.isArray(match.broadcasts) && match.broadcasts.length
-    ? match.broadcasts
-    : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : []);
+  const rawBroadcasts = hideBroadcasts ? [] : (
+    Array.isArray(match.broadcasts) && match.broadcasts.length
+      ? match.broadcasts
+      : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : [])
+  );
 
   const attendance  = parseInt(match.attendance, 10);
   const hasAttendance = !isNaN(attendance) && attendance > 0;

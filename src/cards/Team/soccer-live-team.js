@@ -592,6 +592,7 @@ class SoccerLiveTeamCard extends LitElement {
           t: k => this._t(k),
           weatherBadge: this._weatherBadge || null,
           showDate: !showScore,
+          hideBroadcasts: this._config.hide_broadcasts === true,
         })}
         ${showScore ? html`
           <div class="meta-row details-row">
