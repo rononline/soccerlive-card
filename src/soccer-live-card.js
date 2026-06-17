@@ -93,6 +93,8 @@ const CARD_EDITORS = {
 // Shared config fields preserved when switching card type
 const SHARED_FIELDS = ['entity', 'skin', 'language', 'show_event_toasts'];
 
+const WRAPPER_TYPE = 'custom:soccer-live-card';
+
 // ─── Wrapper card ─────────────────────────────────────────────────────────────
 
 class SoccerLiveCard extends HTMLElement {
@@ -161,7 +163,7 @@ class SoccerLiveCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return {};
+    return { card_type: 'team' };
   }
 }
 
@@ -250,8 +252,12 @@ class SoccerLiveCardEditor extends LitElement {
   }
 
   _dispatch(config) {
+    const nextConfig = {
+      ...config,
+      type: this._config?.type || WRAPPER_TYPE,  // always last — sub-editors must not override this
+    };
     this.dispatchEvent(new CustomEvent('config-changed', {
-      detail: { config },
+      detail: { config: nextConfig },
       bubbles: true,
       composed: true,
     }));
