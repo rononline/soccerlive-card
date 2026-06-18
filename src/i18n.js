@@ -184,7 +184,7 @@ const TRANSLATIONS = {
 
     // Months (short)
     'month.1': 'Jan', 'month.2': 'Feb', 'month.3': 'Mar', 'month.4': 'Apr',
-    'month.5': "May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug",
+    'month.5': 'May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug',
     'month.9': 'Sep', 'month.10': 'Oct', 'month.11': 'Nov', 'month.12': 'Dec',
 
     // Top scorers card
@@ -447,7 +447,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Geen gebeurtenissen beschikbaar',
 
     'month.1': 'Jan', 'month.2': 'Feb', 'month.3': 'Mrt', 'month.4': 'Apr',
-    'month.5': "Mei', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug",
+    'month.5': 'Mei', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug',
     'month.9': 'Sep', 'month.10': 'Okt', 'month.11': 'Nov', 'month.12': 'Dec',
 
     'scorers.goals': 'Doelpunten',
@@ -961,7 +961,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Aucun événement disponible',
 
     'month.1': 'Janv', 'month.2': 'Févr', 'month.3': 'Mars', 'month.4': 'Avr',
-    'month.5': "Mai', 'month.6': 'Juin', 'month.7': 'Juil', 'month.8': 'Août",
+    'month.5': 'Mai', 'month.6': 'Juin', 'month.7': 'Juil', 'month.8': 'Août',
     'month.9': 'Sept', 'month.10': 'Oct', 'month.11': 'Nov', 'month.12': 'Déc',
 
     'scorers.goals': 'Buts',
@@ -1218,7 +1218,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Sin eventos disponibles',
 
     'month.1': 'Ene', 'month.2': 'Feb', 'month.3': 'Mar', 'month.4': 'Abr',
-    'month.5': "May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago",
+    'month.5': 'May', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago',
     'month.9': 'Sep', 'month.10': 'Oct', 'month.11': 'Nov', 'month.12': 'Dic',
 
     'scorers.goals': 'Goles',
@@ -1458,7 +1458,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Keine Ereignisse verfügbar',
 
     'month.1': 'Jan', 'month.2': 'Feb', 'month.3': 'Mär', 'month.4': 'Apr',
-    'month.5': "Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug",
+    'month.5': 'Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Aug',
     'month.9': 'Sep', 'month.10': 'Okt', 'month.11': 'Nov', 'month.12': 'Dez',
 
     'scorers.goals': 'Tore',
@@ -1715,7 +1715,7 @@ const TRANSLATIONS = {
     'popup.no_events': 'Sem eventos disponíveis',
 
     'month.1': 'Jan', 'month.2': 'Fev', 'month.3': 'Mar', 'month.4': 'Abr',
-    'month.5': "Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago",
+    'month.5': 'Mai', 'month.6': 'Jun', 'month.7': 'Jul', 'month.8': 'Ago',
     'month.9': 'Set', 'month.10': 'Out', 'month.11': 'Nov', 'month.12': 'Dez',
 
     'scorers.goals': 'Gols',
