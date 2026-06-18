@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.18.3 (2026-06-18)
+- Standings: zone color border now set as inline style on `<td>` directly (was CSS custom property on `<tr>` — unreliable in shadow DOM / HA themes)
+- Standings: `legend-dot` gets `display: inline-block; flex-shrink: 0` so colored squares always render
+
+## v3.18.2 (2026-06-18)
+- Fix apostrophe syntax errors in IT/FR i18n values (sensor_unavailable_hint, restart_ha)
+
+## v3.18.1 (2026-06-18)
+- All card error/empty states via i18n in 7 languages: `ui.sensor_unavailable_hint`, `ui.restart_ha`, `ui.no_standings_data`, `ui.no_competition_data` + hints
+- MiniStandings, TeamCompetitions, Countdown, MatchCenter, TeamForm, Scorers, Team, LiveMatch, MultiTeam error messages fully translated
+
+## v3.18.0 (2026-06-18)
+- `ui.entity_not_found`, `ui.no_match_data`, `ui.no_stats_yet`, `ui.no_events_yet`, `ui.no_lineup_yet`, `ui.no_form_data` added in 7 languages
+- MatchCenter, TeamForm, Scorers: empty states via `_t()` instead of hardcoded English
+
 ## v3.17.5 (2026-06-17)
 - Remove duplicate `editor.max_stats` entries in EN and NL
 
