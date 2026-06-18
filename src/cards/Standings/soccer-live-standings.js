@@ -516,8 +516,8 @@ class SoccerLiveStandingsCard extends LitElement {
             const gdClass = gd === null ? '' : (gd > 0 ? 'gd-pos' : (gd < 0 ? 'gd-neg' : ''));
             const gdLabel = gd === null ? '-' : (gd > 0 ? `+${gd}` : `${gd}`);
             return html`
-              <tr class="${this._zoneClass(team.rank, total, team)} ${isHighlighted ? 'highlighted-team' : ''}" style="${team.zone_color ? `--cl-zone-espn:${team.zone_color}` : ''}">
-                <td><div class="rank-cell"><div class="rank-num">${team.rank}</div></div></td>
+              <tr class="${this._zoneClass(team.rank, total, team)} ${isHighlighted ? 'highlighted-team' : ''}">
+                <td style="${team.zone_color ? `border-left:3px solid ${team.zone_color};padding-left:11px` : ''}"><div class="rank-cell"><div class="rank-num">${team.rank}</div></div></td>
                 <td class="team-cell">
                   <img src="${team.team_logo}" alt="${team.team_name}" />
                   <div class="tname-group">
@@ -561,8 +561,8 @@ class SoccerLiveStandingsCard extends LitElement {
             const gdClass = gd === null ? '' : (gd > 0 ? 'gd-pos' : (gd < 0 ? 'gd-neg' : ''));
             const gdLabel = gd === null ? '-' : (gd > 0 ? `+${gd}` : `${gd}`);
             return html`
-              <tr class="${this._zoneClass(team.rank, total, team)}" style="${team.zone_color ? `--cl-zone-espn:${team.zone_color}` : ''}">
-                <td><div class="rank-cell"><div class="rank-num">${team.rank}</div></div></td>
+              <tr class="${this._zoneClass(team.rank, total, team)}">
+                <td style="${team.zone_color ? `border-left:3px solid ${team.zone_color};padding-left:11px` : ''}"><div class="rank-cell"><div class="rank-num">${team.rank}</div></div></td>
                 <td class="team-cell">
                   <img src="${team.team_logo}" alt="${team.team_name}" />
                   <span class="tname">${team.team_name}</span>
@@ -1059,6 +1059,7 @@ class SoccerLiveStandingsCard extends LitElement {
         letter-spacing: 0.04em;
       }
       .legend-dot {
+        display: inline-block; flex-shrink: 0;
         width: 10px; height: 10px; border-radius: 3px;
       }
       .legend-dot.cl { background: linear-gradient(135deg, var(--cl-cl), #4f46e5); }
