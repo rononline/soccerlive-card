@@ -236,6 +236,12 @@ const TRANSLATIONS = {
 
     // Match display
     'match.vs': 'vs',
+    'match.draw': 'D',
+    'tab.overview': 'Overview',
+    'tab.stats': 'Stats',
+    'tab.timeline': 'Timeline',
+    'tab.lineup': 'Lineup',
+    'tab.h2h': 'H2H',
 
     // Weather
     'weather.wind': 'Wind speed (Beaufort)',
@@ -494,6 +500,12 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mijn Teams',
 
     'match.vs': 'tegen',
+    'match.draw': 'G',
+    'tab.overview': 'Overzicht',
+    'tab.stats': 'Stats',
+    'tab.timeline': 'Tijdlijn',
+    'tab.lineup': 'Opstelling',
+    'tab.h2h': 'O.O.',
 
     'weather.wind': 'Windsnelheid (Beaufort)',
     // Editorlabels
@@ -751,6 +763,12 @@ const TRANSLATIONS = {
     'card.my_teams': 'I Miei Team',
 
     'match.vs': 'contro',
+    'match.draw': 'P',
+    'tab.overview': 'Panoramica',
+    'tab.stats': 'Statistiche',
+    'tab.timeline': 'Cronologia',
+    'tab.lineup': 'Formazione',
+    'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocità del vento (Beaufort)',
     // Editor labels
@@ -1008,6 +1026,12 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mes Équipes',
 
     'match.vs': 'contre',
+    'match.draw': 'N',
+    'tab.overview': 'Aperçu',
+    'tab.stats': 'Stats',
+    'tab.timeline': 'Chronologie',
+    'tab.lineup': 'Composition',
+    'tab.h2h': 'H2H',
 
     'weather.wind': 'Vitesse du vent (Beaufort)',
     // Editor labels
@@ -1265,6 +1289,12 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mis Equipos',
 
     'match.vs': 'vs',
+    'match.draw': 'E',
+    'tab.overview': 'Resumen',
+    'tab.stats': 'Stats',
+    'tab.timeline': 'Cronología',
+    'tab.lineup': 'Alineación',
+    'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocidad del viento (Beaufort)',
     // Editor labels
@@ -1505,6 +1535,12 @@ const TRANSLATIONS = {
     'card.my_teams': 'Meine Teams',
 
     'match.vs': 'gegen',
+    'match.draw': 'U',
+    'tab.overview': 'Übersicht',
+    'tab.stats': 'Statistiken',
+    'tab.timeline': 'Zeitlinie',
+    'tab.lineup': 'Aufstellung',
+    'tab.h2h': 'H2H',
 
     'weather.wind': 'Windgeschwindigkeit (Beaufort)',
     // Stat labels
@@ -1780,6 +1816,18 @@ const TRANSLATIONS = {
     'card.my_teams': 'Meus Times',
 
     'match.vs': 'contra',
+    'match.draw': 'E',
+    'tab.overview': 'Resumo',
+    'tab.stats': 'Estatísticas',
+    'tab.timeline': 'Cronologia',
+    'tab.lineup': 'Escalação',
+    'tab.h2h': 'H2H',
+    'match.draw': 'E',
+    'tab.overview': 'Resumen',
+    'tab.stats': 'Stats',
+    'tab.timeline': 'Cronología',
+    'tab.lineup': 'Alineación',
+    'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocidade do vento (Beaufort)',
     // Editor labels

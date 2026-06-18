@@ -8,13 +8,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 
-const TABS = [
-  { id: 'overview',  label: 'Overview' },
-  { id: 'stats',     label: 'Stats' },
-  { id: 'timeline',  label: 'Timeline' },
-  { id: 'lineup',    label: 'Lineup' },
-  { id: 'h2h',       label: 'H2H' },
-];
+const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
 class SoccerLiveMatchCenterCard extends LitElement {
   static get properties() {
@@ -91,13 +85,15 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const hasLineup   = (match.lineup_home || []).length > 0 || (match.lineup_away || []).length > 0;
     const hasH2H      = (match.head_to_head || []).length > 0;
 
-    const visibleTabs = TABS.filter(tab => {
-      if (tab.id === 'stats')    return hasStats;
-      if (tab.id === 'timeline') return hasTimeline;
-      if (tab.id === 'lineup')   return hasLineup;
-      if (tab.id === 'h2h')      return hasH2H;
-      return true;
-    });
+    const visibleTabs = TAB_IDS
+      .filter(id => {
+        if (id === 'stats')    return hasStats;
+        if (id === 'timeline') return hasTimeline;
+        if (id === 'lineup')   return hasLineup;
+        if (id === 'h2h')      return hasH2H;
+        return true;
+      })
+      .map(id => ({ id, label: this._t('tab.' + id) }));
 
     // Reset active tab if it's no longer visible
     if (!visibleTabs.find(t => t.id === this._activeTab)) {
