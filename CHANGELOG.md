@@ -1,5 +1,26 @@
 # Changelog
 
+## v3.19.3 (2026-06-18)
+- Scorers card: loading state via `_t('ui.loading')` (was hardcoded "Loading scorers...")
+- Scorers card: empty state via `_t('scorers.empty')` (was hardcoded "No data")
+- Scorers card: fallback header title via `_t('card.scorers')` (was hardcoded "Top Scorers")
+- MatchCenter + TeamForm: loading state via `_t('ui.loading')` (was hardcoded "Loading match..." / "Loading form...")
+
+## v3.19.2 (2026-06-18)
+- Fix PT: remove duplicate `match.draw` + Spanish tab labels (`Resumen`, `Cronología`, `Alineación`) that were accidentally inserted after the correct Portuguese set
+
+## v3.19.1 (2026-06-18)
+- Fix FR/IT apostrophe syntax errors in i18n values (`l'intégration`, `d'événements`, `l'integrazione` etc.)
+- Add missing ES `match.draw` and `tab.*` keys (were skipped during earlier ES block update)
+
+## v3.19.0 (2026-06-18)
+- `match.draw` key added in all 7 languages (was missing; Team card showed raw key)
+- `tab.overview/stats/timeline/lineup/h2h` keys added in all 7 languages
+- `standings.goals` key added in all 7 languages; Standings card no longer falls back to hardcoded "doelpunten"
+- MatchCenter: TABS constant replaced by `TAB_IDS` array; tab labels built dynamically via `_t('tab.' + id)`
+- `package.json` license corrected from `ISC` to `GPL-3.0-only`
+- `i18n.js` header comment updated to list all 7 supported languages
+
 ## v3.18.6 (2026-06-18)
 - DE: add 17 missing `stat.*` translation keys (lost during earlier `cd.days` corruption)
 - All 7 languages now at exactly 242 keys

@@ -81,7 +81,7 @@ class SoccerLiveTeamFormCard extends LitElement {
       attrs = s.attributes;
     }
 
-    if (this._isLoading && !attrs) return renderLoading('Loading form...');
+    if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
 
     const prev = attrs?.previous_matches || [];
     if (!prev.length) return renderInfoState('', this._t('ui.no_form_data'), this._t('ui.no_form_hint'), '');

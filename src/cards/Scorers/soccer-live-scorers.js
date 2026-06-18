@@ -66,7 +66,7 @@ class SoccerLiveScorersCard extends LitElement {
       attrs = stateObj.attributes;
     }
 
-    if (this._isLoading && !attrs) return renderLoading('Loading scorers...');
+    if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
     return this._renderCard(attrs || {});
   }
 
@@ -77,14 +77,14 @@ class SoccerLiveScorersCard extends LitElement {
     const visible = scorers.slice(0, max);
 
     if (!visible.length) {
-      return renderInfoState('🥇', 'No data', 'No top scorer data available', '');
+      return renderInfoState('🥇', this._t('scorers.empty'), '', '');
     }
 
     return html`
       <ha-card>
         ${!hideHeader ? renderSoccerHeader({
           logo: attrs.league_logo,
-          title: attrs.league_name || 'Top Scorers',
+          title: attrs.league_name || this._t('card.scorers'),
           badge: renderSoccerBadge(`${visible.length}`, 'neutral'),
           fallbackIcon: '🥇',
         }) : ''}

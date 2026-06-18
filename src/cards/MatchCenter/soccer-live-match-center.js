@@ -73,7 +73,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       attrs = s.attributes;
     }
 
-    if (this._isLoading && !attrs) return renderLoading('Loading match...');
+    if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
     const match = (attrs?.matches || [])[0];
     if (!match) return renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), '');
     return this._renderCard(match);
