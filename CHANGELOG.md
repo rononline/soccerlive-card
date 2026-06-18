@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.19.4 (2026-06-18)
+- All editor section headers (`<h3>Sensor</h3>`, `<h3>Settings</h3>`, `<h3>Appearance</h3>`, `<h3>Teams</h3>`) translated via `_t()` in 13 editors
+- `editor.teams` key added in all 7 languages (MultiTeam editor section header)
+- LiveMatch editor: "Team sensor" label via `_t('editor.sensor')`
+- MiniStandings editor: "Standings entity" label via `_t('editor.entity')`
+- LiveCommentary editor: redundant hardcoded hint removed
+
 ## v3.19.3 (2026-06-18)
 - Scorers card: loading state via `_t('ui.loading')` (was hardcoded "Loading scorers...")
 - Scorers card: empty state via `_t('scorers.empty')` (was hardcoded "No data")

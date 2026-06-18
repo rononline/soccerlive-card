@@ -59,7 +59,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
     const entities = this._config.entities || [];
     return html`
       <div class="card-config">
-        <h3>Teams</h3>
+        <h3>${this._t("editor.teams")}</h3>
         <p class="hint">Add one soccer_live_next_* or soccer_live_all_mixed_* sensor per team</p>
         <div class="entity-list">
           ${entities.map((e, i) => html`
@@ -74,7 +74,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
         </div>
         <button class="add-btn" @click=${this._addEntity}>+ Add team</button>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.card_title')}</label>
           <input type="text" .value=${this._config.title || ''} data-config-value="title" @input=${this._textChanged} placeholder="My Teams">
@@ -83,7 +83,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
         </div>
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

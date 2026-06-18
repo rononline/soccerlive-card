@@ -41,7 +41,7 @@ class SoccerLiveCountdownEditor extends LitElement {
     const inList = current && this.entities.includes(current);
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">Team match entity (soccer_live_next_*)</label>
           <select @change=${this._entityChanged}>
@@ -49,7 +49,7 @@ class SoccerLiveCountdownEditor extends LitElement {
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
           </select>
         </div>
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
@@ -62,7 +62,7 @@ class SoccerLiveCountdownEditor extends LitElement {
           <label>${this._t('editor.compact')}</label>
           <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>
         </div>
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

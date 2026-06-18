@@ -37,15 +37,15 @@ class SoccerLiveLiveMatchEditor extends LitElement {
     const inList = current && this.entities.includes(current);
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
-          <label class="field-label">Team sensor</label>
+          <label class="field-label">${this._t("editor.sensor")}</label>
           <select @change=${this._entityChanged}>
             ${!inList ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
           </select>
         </div>
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div class="option">
           <label>${this._t('editor.hide_broadcasts')}</label>
           <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._switchChanged}></ha-switch>
@@ -54,7 +54,7 @@ class SoccerLiveLiveMatchEditor extends LitElement {
           <label class="field-label">${this._t('editor.max_stats')}</label>
           <input type="number" min="0" max="10" .value=${this._config.max_stats ?? 4} data-config-value="max_stats" @change=${this._numberChanged}>
         </div>
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

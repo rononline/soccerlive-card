@@ -46,7 +46,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <p class="hint">Use a <strong>soccer_live_all_mixed_*</strong> sensor (contains all competitions for one team)</p>
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
@@ -56,7 +56,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
           </select>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.team_name')}</label>
           <input type="text" .value=${this._config.team_name || ''} data-config-value="team_name" @input=${this._textChanged} placeholder="e.g. Feyenoord Rotterdam">
@@ -70,7 +70,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
         </div>
 
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

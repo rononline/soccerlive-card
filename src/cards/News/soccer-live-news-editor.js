@@ -105,7 +105,7 @@ class SoccerLiveNewsEditor extends LitElement {
     const inList = cur && this.entities.includes(cur);
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">Entity (news sensor)</label>
           <select @change=${this._entityChanged}>
@@ -114,7 +114,7 @@ class SoccerLiveNewsEditor extends LitElement {
           </select>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch

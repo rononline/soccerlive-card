@@ -168,7 +168,7 @@ class SoccerLiveStandingsEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
@@ -179,7 +179,7 @@ class SoccerLiveStandingsEditor extends LitElement {
           </select>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">Group</label>
           <select @change=${this._groupChanged}>

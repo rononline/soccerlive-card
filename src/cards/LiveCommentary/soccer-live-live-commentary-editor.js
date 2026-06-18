@@ -44,8 +44,7 @@ class SoccerLiveLiveCommentaryEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
-        <p class="hint">Select a live commentary sensor</p>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
@@ -54,13 +53,13 @@ class SoccerLiveLiveCommentaryEditor extends LitElement {
           </select>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
         </div>
 
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>

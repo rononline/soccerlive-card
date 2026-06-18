@@ -92,7 +92,7 @@ class SoccerLiveBracketEditor extends LitElement {
     const inList = cur && this.entities.includes(cur);
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">Entity (bracket sensor — soccer_live_bracket_*)</label>
           <select @change=${this._entityChanged}>
@@ -102,7 +102,7 @@ class SoccerLiveBracketEditor extends LitElement {
           <div class="hint" style="margin-top: 4px;">Available for Champions League, Europa League, Conference League, FIFA World Cup and other cup competitions.</div>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.style')}</label>
           <select data-config-value="style" @change=${this._selectChanged}>

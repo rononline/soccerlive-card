@@ -92,7 +92,7 @@ class SoccerLiveTimelineEditor extends LitElement {
     const inList = cur && this.entities.includes(cur);
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">Entity (team_match sensor — soccer_live_next_*)</label>
           <select @change=${this._entityChanged}>
@@ -102,7 +102,7 @@ class SoccerLiveTimelineEditor extends LitElement {
           <div class="hint" style="margin-top: 4px;">Events are published during the match.</div>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch

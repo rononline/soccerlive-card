@@ -134,7 +134,7 @@ class SoccerLiveScorersEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
@@ -145,7 +145,7 @@ class SoccerLiveScorersEditor extends LitElement {
           </select>
         </div>
 
-        <h3>Settings</h3>
+        <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.max_items')}</label>
           <input type="number" min="1" max="25"
@@ -163,7 +163,7 @@ class SoccerLiveScorersEditor extends LitElement {
           </ha-switch>
         </div>
 
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
