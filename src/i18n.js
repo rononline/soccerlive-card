@@ -1,5 +1,5 @@
 // Translations for all Soccer Live cards.
-// Ondersteunde talen: en (standaard), nl, it, fr, es.
+// Ondersteunde talen: en (standaard), nl, it, fr, es, de, pt.
 // Taal wordt bepaald via hass.locale.language of hass.language;
 // kan worden overschreven met config.language op de kaart.
 
@@ -106,6 +106,7 @@ const TRANSLATIONS = {
     'form.home': 'Home',
     'form.away': 'Away',
     'standings.stats': 'matches played · goals',
+    'standings.goals': 'goals',
     'standings.pos_label': 'Position',
     'standings.compact_hidden': 'teams hidden',
     'team.in': 'In',
@@ -384,6 +385,7 @@ const TRANSLATIONS = {
     'form.home': 'Thuis',
     'form.away': 'Uit',
     'standings.stats': 'wedstrijden gespeeld · doelpunten',
+    'standings.goals': 'doelpunten',
     'standings.pos_label': 'Positie',
     'standings.compact_hidden': 'ploegen',
     'team.in': 'Over',
@@ -651,6 +653,7 @@ const TRANSLATIONS = {
     'form.home': 'Casa',
     'form.away': 'Trasferta',
     'standings.stats': 'partite giocate · gol',
+    'standings.goals': 'gol',
     'standings.pos_label': 'Posizione',
     'standings.compact_hidden': 'squadre nascoste',
 
@@ -914,6 +917,7 @@ const TRANSLATIONS = {
     'form.home': 'Domicile',
     'form.away': 'Extérieur',
     'standings.stats': 'matchs joués · buts',
+    'standings.goals': 'buts',
     'standings.pos_label': 'Position',
     'standings.compact_hidden': 'équipes masquées',
 
@@ -1177,6 +1181,7 @@ const TRANSLATIONS = {
     'form.home': 'Local',
     'form.away': 'Visitante',
     'standings.stats': 'partidos jugados · goles',
+    'standings.goals': 'goles',
     'standings.pos_label': 'Posición',
     'standings.compact_hidden': 'equipos ocultos',
 
@@ -1423,6 +1428,7 @@ const TRANSLATIONS = {
     'team.off_season': 'Neue Saison beginnt bald',
     'team.unknown_entity': 'Unbekannte Entität',
     'standings.stats': 'Spiele · Tore',
+    'standings.goals': 'Tore',
     'standings.pos_label': 'Position',
     'standings.compact_hidden': 'Teams ausgeblendet',
 
@@ -1704,6 +1710,7 @@ const TRANSLATIONS = {
     'team.off_season': 'Nova temporada em breve',
     'team.unknown_entity': 'Entidade desconhecida',
     'standings.stats': 'jogos disputados · gols',
+    'standings.goals': 'gols',
     'standings.pos_label': 'Posição',
     'standings.compact_hidden': 'times ocultos',
 

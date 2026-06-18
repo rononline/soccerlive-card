@@ -453,7 +453,7 @@ class SoccerLiveStandingsCard extends LitElement {
           <div class="season-stats">
             <span>${totalGames} ${this._t('standings.stats').split('·')[0].trim()}</span>
             <span class="stats-dot">·</span>
-            <span>${totalGoals} ${this._t('standings.stats').split('·')[1]?.trim() || 'doelpunten'}</span>
+            <span>${totalGoals} ${this._t('standings.goals')}</span>
           </div>
         ` : ''}
 
