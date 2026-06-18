@@ -1406,7 +1406,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': 'vor {n} Min.',
     'time.n_h_ago': 'vor {n} Std.',
     'time.n_d_ago': 'vor {n} T.',
-    'cd.days': "Tage', 'cd.hrs': 'Std', 'cd.min': 'Min', 'cd.sec': 'Sek",
+    'cd.days': 'Tage', 'cd.hrs': 'Std', 'cd.min': 'Min', 'cd.sec': 'Sek',
 
     'lineup.bench': 'Bank',
     'lineup.empty.title': 'Aufstellungen nicht verfügbar',
