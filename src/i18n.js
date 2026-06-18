@@ -1829,12 +1829,6 @@ const TRANSLATIONS = {
     'tab.timeline': 'Cronologia',
     'tab.lineup': 'Escalação',
     'tab.h2h': 'H2H',
-    'match.draw': 'E',
-    'tab.overview': 'Resumen',
-    'tab.stats': 'Stats',
-    'tab.timeline': 'Cronología',
-    'tab.lineup': 'Alineación',
-    'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocidade do vento (Beaufort)',
     // Editor labels
