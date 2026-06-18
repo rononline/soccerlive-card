@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.18.6 (2026-06-18)
+- DE: add 17 missing `stat.*` translation keys (lost during earlier `cd.days` corruption)
+- All 7 languages now at exactly 242 keys
+
+## v3.18.5 (2026-06-18)
+- Fix corrupted DE `cd.days`/`hrs`/`min`/`sec` keys (same apostrophe-fixer bug as month.5-8)
+
+## v3.18.4 (2026-06-18)
+- Fix corrupted `month.5–8` keys in EN/NL/FR/ES/DE/PT: apostrophe-fixer had merged 4 keys into one string value, causing raw key strings to appear in date headers
+
 ## v3.18.3 (2026-06-18)
 - Standings: zone color border now set as inline style on `<td>` directly (was CSS custom property on `<tr>` — unreliable in shadow DOM / HA themes)
 - Standings: `legend-dot` gets `display: inline-block; flex-shrink: 0` so colored squares always render
