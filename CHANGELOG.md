@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.19.8 (2026-06-19)
+- All 13 skins now available in every editor (Countdown, LiveMatch, MiniStandings, Scorers, MultiTeam, TeamCompetitions, LiveCommentary were missing orange, blue, black-white, feyenoord, arsenal, barcelona, real-madrid)
+- `SKIN_OPTIONS` exported from `skins.js` as single source of truth for all editor dropdowns
+
 ## v3.19.7 (2026-06-19)
 - Remove unused `renderSelector`, `renderToggle`, `renderFieldGroup`, `renderSection` imports from Team and Countdown editors
 

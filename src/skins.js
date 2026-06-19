@@ -385,6 +385,23 @@ const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold', 'o
 // Aliases: user-facing name -> internal data-skin value
 const SKIN_ALIASES = { 'feyenoord': 'red-white' };
 
+// Full list for editor dropdowns: [value, label]
+export const SKIN_OPTIONS = [
+  ['dark',        'Dark'],
+  ['light',       'Light'],
+  ['red-white',   'Red & White'],
+  ['classic',     'Classic'],
+  ['neon',        'Neon'],
+  ['gold',        'Gold'],
+  ['orange',      'Orange (Netherlands)'],
+  ['blue',        'Blue (Chelsea / PSG / Inter)'],
+  ['black-white', 'Black & White (Juventus)'],
+  ['feyenoord',   'Feyenoord'],
+  ['arsenal',     'Arsenal'],
+  ['barcelona',   'Barcelona'],
+  ['real-madrid', 'Real Madrid'],
+];
+
 export function resolveSkin(config) {
   const s = config && typeof config.skin === 'string' ? config.skin.toLowerCase() : 'dark';
   if (SKIN_ALIASES[s]) return SKIN_ALIASES[s];
