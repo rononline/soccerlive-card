@@ -80,31 +80,13 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderCard(match) {
-    const hasStats    = match.home_statistics && Object.keys(match.home_statistics).length > 0;
-    const hasTimeline = (match.key_events || []).length > 0;
-    const hasLineup   = (match.lineup_home || []).length > 0 || (match.lineup_away || []).length > 0;
-    const hasH2H      = (match.head_to_head || []).length > 0;
-
-    const visibleTabs = TAB_IDS
-      .filter(id => {
-        if (id === 'stats')    return hasStats;
-        if (id === 'timeline') return hasTimeline;
-        if (id === 'lineup')   return hasLineup;
-        if (id === 'h2h')      return hasH2H;
-        return true;
-      })
-      .map(id => ({ id, label: this._t('tab.' + id) }));
-
-    // Reset active tab if it's no longer visible
-    if (!visibleTabs.find(t => t.id === this._activeTab)) {
-      this._activeTab = 'overview';
-    }
+    const tabs = TAB_IDS.map(id => ({ id, label: this._t('tab.' + id) }));
 
     return html`
       <ha-card>
         ${this._config.hide_header !== true ? this._renderHero(match) : ''}
         <div class="tab-bar">
-          ${visibleTabs.map(tab => html`
+          ${tabs.map(tab => html`
             <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
               @click=${() => { this._activeTab = tab.id; }}>
               ${tab.label}
@@ -257,7 +239,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ${(match.formation_home || match.formation_away) ? html`
           <div class="lu-formation">
             <span>${match.formation_home || '—'}</span>
-            <span class="lu-form-label">Formation</span>
+            <span class="lu-form-label">${this._t('match.formation')}</span>
             <span>${match.formation_away || '—'}</span>
           </div>
         ` : ''}
@@ -289,7 +271,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   _renderH2H(match) {
     const h2h = match.head_to_head || [];
-    if (!h2h.length) return html`<p class="empty">No H2H data available</p>`;
+    if (!h2h.length) return html`<p class="empty">${this._t('ui.no_h2h_yet')}</p>`;
     return html`
       <div class="h2h-list">
         ${h2h.map(m => {

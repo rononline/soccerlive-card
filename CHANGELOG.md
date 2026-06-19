@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.20.0 (2026-06-19)
+- MatchCenter: all 5 tabs (Overview, Stats, Timeline, Lineup, H2H) always visible — empty state shown instead of hiding tabs pre-match
+- MatchCenter: "Formation" label via `_t('match.formation')` in 7 languages
+- MatchCenter: "No H2H data" via `_t('ui.no_h2h_yet')` in 7 languages
+- `match.formation` + `ui.no_h2h_yet` added in all 7 languages (256 keys total)
+
 ## v3.19.9 (2026-06-19)
 - TeamCompetitions card fully rewritten: per competition tab now shows featured match (score/date), form dots (W/D/L last 5), standing summary, previous result and next match — instead of one compact match row
 - Tab logos added to competition tabs
