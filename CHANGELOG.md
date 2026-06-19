@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.7 (2026-06-19)
+- Add shared card shell styles for consistent skin depth, radius, shadow and hero gradients across cards
+- Countdown, LiveMatch, MatchCenter, TeamCompetitions, TeamForm, LiveCommentary, MultiTeam, MiniStandings and Scorers now use the shared visual shell
+- Existing hero cards now import the shared shell base to keep skin rendering more consistent
+
 ## v3.21.6 (2026-06-19)
 - Team card: align match details popup with the Matches card body-level native `<dialog>` portal
 

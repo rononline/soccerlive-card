@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 
 class SoccerLiveTeamCompetitionsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedComp: { type: String } }; }
@@ -144,6 +145,8 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
     return html`
       <ha-card>
+        ${renderCardHero(featured.home_logo, featured.away_logo)}
+        <div class="card-content">
         ${!this._config.hide_header ? renderSoccerHeader({
           logo: teamLogo,
           title: teamName || 'Team',
@@ -185,13 +188,14 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
             ${this._renderMatch(nextMatch, this._t('team.next_match'))}
           ` : ''}
         </div>
+        </div>
       </ha-card>
     `;
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
-      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; border-radius: 12px; overflow: hidden; }
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
+      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; border-radius: 20px; overflow: hidden; }
 
       .comp-tabs {
         display: flex; gap: 4px; padding: 8px 12px;

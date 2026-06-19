@@ -7,6 +7,7 @@ import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { translateStatKey } from '../shared-stat-labels.js';
+import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
@@ -91,6 +92,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
     return html`
       <ha-card>
+        ${renderCardHero(match.home_logo, match.away_logo)}
+        <div class="card-content">
         ${this._config.hide_header !== true ? this._renderHero(match) : ''}
         <div class="tab-bar">
           ${tabs.map(tab => html`
@@ -106,6 +109,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
           ${this._activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
           ${this._activeTab === 'lineup'    ? this._renderLineup(match)   : ''}
           ${this._activeTab === 'h2h'       ? this._renderH2H(match)      : ''}
+        </div>
         </div>
       </ha-card>
     `;
@@ -307,8 +311,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, matchMetaStyles, css`
-      ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, css`
+      ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Scoreboard */
       .scoreboard { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; }
       .mc-team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }

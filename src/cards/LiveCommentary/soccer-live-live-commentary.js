@@ -3,6 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 
 class SoccerLiveLiveCommentaryCard extends LitElement {
   static get properties() { return { hass: {}, _config: {} }; }
@@ -19,12 +20,12 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   static getStubConfig() { return { entity: "sensor.soccer_live_commentary_" }; }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
         padding: 0;
-        border-radius: 12px;
+        border-radius: 20px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -143,6 +144,8 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
 
     return html`
       <ha-card>
+        ${renderCardHero(homeLogo, awayLogo)}
+        <div class="card-content">
         ${!this._config.hide_header ? renderSoccerHeader({
           logo: liveMatch?.competition_logo || liveMatch?.league_logo || stateObj.attributes.league_logo || null,
           title: leagueName || this._t('card.live_commentary'),
@@ -190,6 +193,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
         ` : html`
           <div class="no-commentary">${this._t('commentary.empty')}</div>
         `}
+        </div>
       </ha-card>
     `;
   }

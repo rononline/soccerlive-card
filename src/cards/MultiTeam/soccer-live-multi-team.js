@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
+import { soccerCardShellStyles } from "../card-shell.js";
 
 /**
  * Soccer Live Multi Team Card
@@ -75,10 +76,10 @@ class SoccerLiveMultiTeamCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, spinnerStyles, css`
-      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 12px; border-radius: 12px; }
+    return [skinStyles, soccerCardShellStyles, spinnerStyles, css`
+      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 12px; border-radius: 20px; overflow: hidden; }
       .title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cl-text-2); margin-bottom: 10px; }
-      .match-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.07)); gap: 8px; }
+      .match-row { position: relative; z-index: 1; display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--divider-color, rgba(255,255,255,0.07)); gap: 8px; }
       .match-row:last-child { border-bottom: none; }
       .team-block { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
       .team-block.right { flex-direction: row-reverse; }
@@ -150,8 +151,11 @@ class SoccerLiveMultiTeamCard extends LitElement {
 
     return html`
       <ha-card>
+        <div class="hero-bg"></div>
+        <div class="card-content">
         ${!this._config.hide_header ? html`<div class="title">${this._config.title || this._t('card.my_teams')}</div>` : ''}
         ${entities.map(e => this._renderMatch(e))}
+        </div>
       </ha-card>
     `;
   }

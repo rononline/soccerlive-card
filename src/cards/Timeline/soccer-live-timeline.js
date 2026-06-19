@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveTimelineCard extends LitElement {
   static get properties() {
@@ -116,7 +117,7 @@ class SoccerLiveTimelineCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;

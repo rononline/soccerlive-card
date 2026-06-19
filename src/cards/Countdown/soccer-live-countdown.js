@@ -7,6 +7,7 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 
 /**
  * Soccer Live Countdown Card
@@ -137,12 +138,12 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
         padding: 0;
-        border-radius: 12px;
+        border-radius: 20px;
         overflow: hidden;
       }
       .cd-body { padding: 16px; }
@@ -254,6 +255,8 @@ class SoccerLiveCountdownCard extends LitElement {
 
     return html`
       <ha-card class="${this._config.compact ? 'compact' : ''}">
+        ${renderCardHero(match.home_logo, match.away_logo)}
+        <div class="card-content">
         ${!this._config.hide_header ? renderSoccerHeader({
           logo: compLogo || null,
           title: compName,
@@ -311,6 +314,7 @@ class SoccerLiveCountdownCard extends LitElement {
           weatherBadge: this._weatherBadge || null,
           hideBroadcasts: this._config.hide_broadcasts === true,
         })}
+        </div>
       </ha-card>
     `;
   }

@@ -5,6 +5,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 
 class SoccerLiveTeamFormCard extends LitElement {
   static get properties() {
@@ -146,6 +147,8 @@ class SoccerLiveTeamFormCard extends LitElement {
 
     return html`
       <ha-card>
+        ${renderCardHero(next?.home_logo, next?.away_logo)}
+        <div class="card-content">
         ${!hideHeader ? renderSoccerHeader({
           logo,
           title: team || this._t('card.team_form'),
@@ -246,6 +249,7 @@ class SoccerLiveTeamFormCard extends LitElement {
             `)}
           </div>
         ` : ''}
+        </div>
       </ha-card>
     `;
   }
@@ -260,8 +264,8 @@ class SoccerLiveTeamFormCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
-      ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
+      ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       .section { padding: 12px 16px 4px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
       .section:last-child { border-bottom: none; }
       .section-label { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }

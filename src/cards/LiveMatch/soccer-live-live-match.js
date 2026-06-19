@@ -6,6 +6,7 @@ import { renderCardError, renderInfoState, validateEntity } from "../card-error.
 import { OfflineCache } from "../offline-cache.js";
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { translateStatKey } from '../shared-stat-labels.js';
+import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 
 /**
  * Soccer Live Match Card
@@ -74,12 +75,9 @@ class SoccerLiveLiveMatchCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, matchMetaStyles, spinnerStyles, css`
-      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; overflow: hidden; border-radius: 12px; }
+    return [skinStyles, soccerCardShellStyles, matchMetaStyles, spinnerStyles, css`
+      ha-card { background: var(--cl-bg); color: var(--cl-text); padding: 0; overflow: hidden; border-radius: 20px; }
       .hero { position: relative; padding: 20px 16px 16px; }
-      .bg-logo { position: absolute; opacity: 0.06; width: 110px; height: 110px; object-fit: contain; top: 0; }
-      .bg-logo.home { left: -10px; }
-      .bg-logo.away { right: -10px; }
       .comp-row { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 14px; }
       .comp-logo { width: 16px; height: 16px; object-fit: contain; }
       .comp-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cl-text-2); font-weight: 600; }
@@ -195,10 +193,9 @@ class SoccerLiveLiveMatchCard extends LitElement {
 
     return html`
       <ha-card>
+        ${renderCardHero(match.home_logo, match.away_logo)}
+        <div class="card-content">
         <div class="hero">
-          ${match.home_logo ? html`<img class="bg-logo home" src="${match.home_logo}" alt="">` : ''}
-          ${match.away_logo ? html`<img class="bg-logo away" src="${match.away_logo}" alt="">` : ''}
-
           ${compName ? html`
             <div class="comp-row">
               ${compLogo ? html`<img class="comp-logo" src="${compLogo}" alt="">` : ''}
@@ -276,6 +273,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
           t: k => this._t(k),
           hideBroadcasts: this._config.hide_broadcasts === true,
         })}
+        </div>
       </ha-card>
     `;
   }

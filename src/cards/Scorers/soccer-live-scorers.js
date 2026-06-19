@@ -5,6 +5,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { soccerCardShellStyles } from '../card-shell.js';
 
 class SoccerLiveScorersCard extends LitElement {
   static get properties() {
@@ -82,6 +83,8 @@ class SoccerLiveScorersCard extends LitElement {
 
     return html`
       <ha-card>
+        <div class="hero-bg"></div>
+        <div class="card-content">
         ${!hideHeader ? renderSoccerHeader({
           logo: attrs.league_logo,
           title: attrs.league_name || this._t('card.scorers'),
@@ -106,6 +109,7 @@ class SoccerLiveScorersCard extends LitElement {
             </div>
           `)}
         </div>
+        </div>
       </ha-card>
     `;
   }
@@ -119,10 +123,10 @@ class SoccerLiveScorersCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg); color: var(--cl-text);
-        border-radius: 16px; overflow: hidden; padding: 0;
+        border-radius: 20px; overflow: hidden; padding: 0;
       }
       .slc-list { padding: 4px 0; }
       .slc-row {

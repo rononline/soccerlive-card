@@ -3,6 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveMiniStandingsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedGroup: { type: String } }; }
@@ -25,12 +26,13 @@ class SoccerLiveMiniStandingsCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
         padding: 12px;
-        border-radius: 12px;
+        border-radius: 20px;
+        overflow: hidden;
       }
       /* .header / .league-logo / .title removed — now from soccerHeaderStyles */
       .groups { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
@@ -94,6 +96,8 @@ class SoccerLiveMiniStandingsCard extends LitElement {
 
     return html`
       <ha-card>
+        <div class="hero-bg"></div>
+        <div class="card-content">
         ${!this._config.hide_header ? html`
           ${renderSoccerHeader({
             logo: leagueLogo || null,
@@ -142,6 +146,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
             `;
           })}
         </table>
+        </div>
       </ha-card>
     `;
   }
