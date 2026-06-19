@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.20.5 (2026-06-19)
+- Countdown: remove `padding: 16px` from `ha-card` (was offsetting the header 16px too far inward); body content now in `.cd-body` wrapper with the same 16px padding
+- MatchCenter: use `attrs.league_info[0].logo_href` as icon fallback — `team_match` sensors don't have `league_logo` as a top-level attribute but do have `league_info`
+
 ## v3.20.4 (2026-06-19)
 - Lineup + Timeline: add `stateObj.attributes.league_logo/name` as fallback so header icon is always shown
 - LiveCommentary: header logo fallback chain added; league name uses full `name` instead of `abbreviation`; `'Live Commentary'` via `_t('card.live_commentary')`

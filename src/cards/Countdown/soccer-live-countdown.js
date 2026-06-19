@@ -141,12 +141,14 @@ class SoccerLiveCountdownCard extends LitElement {
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
-        padding: 16px;
+        padding: 0;
         border-radius: 12px;
+        overflow: hidden;
       }
+      .cd-body { padding: 16px; }
       /* .top-bar / .competition / .comp-icon from soccerHeaderStyles */
       /* Compact mode */
-      ha-card.compact { padding: 10px 14px !important; }
+      ha-card.compact .cd-body { padding: 10px 14px; }
       ha-card.compact .team-logo { width: 32px !important; height: 32px !important; }
       ha-card.compact .team-name { font-size: 11px !important; }
       ha-card.compact .cd-num { font-size: 22px !important; }
@@ -262,6 +264,7 @@ class SoccerLiveCountdownCard extends LitElement {
               : renderSoccerBadge(match.date || '', 'date'),
         }) : ''}
 
+        <div class="cd-body">
         <div class="teams">
           <div class="team">
             ${match.home_logo ? html`<img class="team-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
@@ -301,6 +304,7 @@ class SoccerLiveCountdownCard extends LitElement {
           </div>
         </div>
 
+        </div>
         ${renderMatchMeta(match, {
           lang: resolveLang(this.hass, this._config),
           t: k => this._t(k),

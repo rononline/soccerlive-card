@@ -77,10 +77,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const rawMatch = (attrs?.matches || [])[0];
     if (!rawMatch) return renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), '');
     // Inject sensor-level logo/name as fallback (parser stores these on attrs, not per-match)
+    const leagueInfo = (attrs.league_info || [])[0] || {};
     const match = {
       ...rawMatch,
-      league_logo: rawMatch.league_logo || attrs.league_logo || null,
-      league_name: rawMatch.league_name || attrs.league_name || '',
+      league_logo: rawMatch.league_logo || leagueInfo.logo_href || attrs.league_logo || null,
+      league_name: rawMatch.league_name || leagueInfo.name || leagueInfo.abbreviation || attrs.league_name || '',
     };
     return this._renderCard(match);
   }
