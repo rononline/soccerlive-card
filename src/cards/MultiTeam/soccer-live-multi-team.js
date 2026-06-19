@@ -119,7 +119,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
             ? html`<div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>`
             : html`<div class="status">${dateStr || this._t('match.vs')}</div>`
           }
-          ${isFinished ? html`<div class="status">FT</div>` : ''}
+          ${isFinished ? html`<div class="status">${this._t('status.full_time')}</div>` : ''}
         </div>
 
         <div class="team-block right">
