@@ -14,7 +14,11 @@ export const renderSoccerHeader = ({ logo, title, badge = null, fallbackIcon = '
   <div class="top-bar">
     <div class="competition">
       <span class="comp-icon">
-        ${validLogo ? html`<img src="${validLogo}" alt="" @error=${e => e.target.style.display='none'}>` : fallbackIcon}
+        ${validLogo ? html`
+          <img src="${validLogo}" alt=""
+            @error=${e => { e.target.style.display = 'none'; e.target.nextElementSibling && (e.target.nextElementSibling.style.display = ''); }}>
+          <span style="display:none">${fallbackIcon}</span>
+        ` : fallbackIcon}
       </span>
       <span class="comp-name">${title || ' '}</span>
     </div>

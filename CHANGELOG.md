@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.20.8 (2026-06-19)
+- shared-header: when logo image fails to load, fallback emoji is now shown instead of leaving an empty orange box
+
 ## v3.20.7 (2026-06-19)
 - MiniStandings, Bracket, News: add `league_info[0].logo_href` as fallback logo source
 - All cards now consistently resolve icons via `league_logo` → `league_info.logo_href` → fallback emoji
