@@ -482,7 +482,7 @@ class SoccerLiveTeamCard extends LitElement {
     if (!stateObj) {
       const cached = OfflineCache.get(entityId);
       if (cached) {
-        return renderCardError('⏱', 'Offline - showing cached data', 'Last update: ' + new Date(cached.data.timestamp || Date.now()).toLocaleTimeString(), 'Waiting for integration to come online');
+        return renderCardError('⏱', this._t('ui.offline_cached'), 'Last update: ' + new Date(cached.data.timestamp || Date.now()).toLocaleTimeString(), this._t('ui.waiting_integration'));
       }
       return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${entityId}`, this._t('ui.check_entity_config'));
     }

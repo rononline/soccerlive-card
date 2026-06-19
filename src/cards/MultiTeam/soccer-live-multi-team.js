@@ -133,7 +133,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
   render() {
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const entities = this._config.entities || [];
-    if (!entities.length) return renderCardError('⚽', 'No entities', 'No entities configured', 'Add at least one team entity');
+    if (!entities.length) return renderCardError('⚽', this._t('ui.no_entities_configured'), '', this._t('ui.add_team_entity'));
     if (this._isLoading) {
       if (Date.now() - this._loadingStarted > 10000)
         return renderCardError('⏱', this._t('ui.loading_timeout'), this._t('ui.entity_not_responding'), this._t('ui.check_integration'));
@@ -144,7 +144,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
     const hasAnyUnavailable = entities.some(e => this.hass.states[e]?.state === 'unavailable');
     if (missingEntities.length > 0 && !hasAnyUnavailable) {
       const cached = OfflineCache.get(entities[0]);
-      if (cached) return renderCardError('⏱', 'Offline - showing cached data', 'Last update: ' + new Date().toLocaleTimeString(), 'Waiting for integration');
+      if (cached) return renderCardError('⏱', this._t('ui.offline_cached'), 'Last update: ' + new Date().toLocaleTimeString(), this._t('ui.waiting_integration'));
       return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${missingEntities[0]}`, this._t('ui.check_entity_config'));
     }
 

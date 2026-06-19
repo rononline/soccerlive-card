@@ -231,6 +231,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'No competition data',
     'ui.no_competition_hint': 'Check if the team has scheduled matches',
     'ui.not_available_competition': 'Not available for this competition',
+    'ui.offline_cached': 'Offline — showing cached data',
+    'ui.waiting_integration': 'Waiting for integration to come online',
+    'ui.no_entities_configured': 'No entities configured',
+    'ui.add_team_entity': 'Add at least one team entity',
 
     // Multi Team card
     'card.my_teams': 'My Teams',
@@ -499,6 +503,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'Geen competitiedata',
     'ui.no_competition_hint': 'Controleer of het team wedstrijden heeft gepland',
     'ui.not_available_competition': 'Niet beschikbaar voor dit toernooi',
+    'ui.offline_cached': 'Offline — gecachede data',
+    'ui.waiting_integration': 'Wacht op de integratie',
+    'ui.no_entities_configured': 'Geen entiteiten ingesteld',
+    'ui.add_team_entity': 'Voeg minimaal één team-entiteit toe',
 
     'card.my_teams': 'Mijn Teams',
 
@@ -764,6 +772,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'Nessun dato competizione',
     'ui.no_competition_hint': 'Verifica se la squadra ha partite programmate',
     'ui.not_available_competition': 'Non disponibile per questa competizione',
+    'ui.offline_cached': 'Offline — dati in cache',
+    'ui.waiting_integration': 'In attesa dell\'integrazione',
+    'ui.no_entities_configured': 'Nessuna entità configurata',
+    'ui.add_team_entity': 'Aggiungi almeno un\'entità squadra',
 
     'card.my_teams': 'I Miei Team',
 
@@ -1029,6 +1041,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'Pas de données de compétition',
     'ui.no_competition_hint': "Vérifiez si l'équipe a des matchs programmés",
     'ui.not_available_competition': 'Non disponible pour cette compétition',
+    'ui.offline_cached': 'Hors ligne — données en cache',
+    'ui.waiting_integration': "En attente de l'intégration",
+    'ui.no_entities_configured': 'Aucune entité configurée',
+    'ui.add_team_entity': 'Ajoutez au moins une entité équipe',
 
     'card.my_teams': 'Mes Équipes',
 
@@ -1294,6 +1310,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'Sin datos de competición',
     'ui.no_competition_hint': 'Comprueba si el equipo tiene partidos programados',
     'ui.not_available_competition': 'No disponible para esta competición',
+    'ui.offline_cached': 'Sin conexión — datos en caché',
+    'ui.waiting_integration': 'Esperando la integración',
+    'ui.no_entities_configured': 'No hay entidades configuradas',
+    'ui.add_team_entity': 'Añade al menos una entidad de equipo',
 
     'card.my_teams': 'Mis Equipos',
 
@@ -1542,6 +1562,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'Keine Wettbewerbsdaten',
     'ui.no_competition_hint': 'Prüfe ob das Team Spiele geplant hat',
     'ui.not_available_competition': 'Nicht verfügbar für diesen Wettbewerb',
+    'ui.offline_cached': 'Offline — zwischengespeicherte Daten',
+    'ui.waiting_integration': 'Warten auf die Integration',
+    'ui.no_entities_configured': 'Keine Entitäten konfiguriert',
+    'ui.add_team_entity': 'Mindestens eine Team-Entität hinzufügen',
 
     'card.my_teams': 'Meine Teams',
 
@@ -1825,6 +1849,10 @@ const TRANSLATIONS = {
     'ui.no_competition_data': 'Sem dados de competição',
     'ui.no_competition_hint': 'Verifique se a equipa tem jogos agendados',
     'ui.not_available_competition': 'Não disponível para esta competição',
+    'ui.offline_cached': 'Offline — dados em cache',
+    'ui.waiting_integration': 'À espera da integração',
+    'ui.no_entities_configured': 'Nenhuma entidade configurada',
+    'ui.add_team_entity': 'Adicione pelo menos uma entidade de equipa',
 
     'card.my_teams': 'Meus Times',
 
