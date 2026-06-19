@@ -75,7 +75,7 @@ All cards share these common options:
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `skin` | `dark` | `dark`, `light`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `feyenoord`, `arsenal`, `barcelona`, `real-madrid` |
 | `hide_header` | `false` | Hide the top bar with competition logo and name |
-| `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, LiveMatch, MatchCenter |
+| `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, LiveMatch, MatchCenter, Matches |
 | `compact` | `false` | Dense layout: smaller scoreboard, hides form/H2H/previous — applies to Team and Countdown |
 
 > **Entity IDs:** Examples in this README use simplified IDs like `sensor.soccer_live_standings_ned_1`. Your actual entity IDs may be longer (e.g. `sensor.soccer_live_ned_1_soccerlive_standings_dutch_eredivisie`). Use the visual editor to pick the correct sensor.
@@ -293,6 +293,8 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Neutral venue flag (`neutral_site`) | v3.4.0 |
 | News byline, tags, premium flag | v3.4.0 |
 | Season form from summary (`last_five_home/away`) | v3.4.0 |
+| Countdown competition name from `league_info.name` | v3.6.5 |
+| URL-based shared fetch cache (sensors on same endpoint share one request) | v3.6.3 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -300,7 +302,7 @@ Cards degrade gracefully when older integration versions are used — features s
 
 ## 🌍 Multi-language
 
-All UI text is translated via `src/i18n.js` with **100+ keys** in seven languages.
+All UI text is translated via `src/i18n.js` with **250 keys** in seven languages.
 
 | Key | EN | NL | DE | PT | FR | ES | IT |
 |---|---|---|---|---|---|---|---|

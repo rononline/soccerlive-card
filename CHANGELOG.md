@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.19.5 (2026-06-19)
+- README: i18n key count updated to 250; `hide_broadcasts` coverage includes Matches card; integration version requirements table extended with v3.6.3/v3.6.5 entries
+
 ## v3.19.4 (2026-06-18)
 - All editor section headers (`<h3>Sensor</h3>`, `<h3>Settings</h3>`, `<h3>Appearance</h3>`, `<h3>Teams</h3>`) translated via `_t()` in 13 editors
 - `editor.teams` key added in all 7 languages (MultiTeam editor section header)
