@@ -240,6 +240,8 @@ const TRANSLATIONS = {
 
     // Multi Team card
     'card.my_teams': 'My Teams',
+    'card.team_form': 'Team Form',
+    'card.live_commentary': 'Live Commentary',
 
     // Match display
     'match.vs': 'vs',
@@ -513,6 +515,8 @@ const TRANSLATIONS = {
     'ui.add_team_entity': 'Voeg minimaal één team-entiteit toe',
 
     'card.my_teams': 'Mijn Teams',
+    'card.team_form': 'Teamvorm',
+    'card.live_commentary': 'Live commentaar',
 
     'match.vs': 'tegen',
     'match.draw': 'G',
@@ -784,6 +788,8 @@ const TRANSLATIONS = {
     'ui.add_team_entity': 'Aggiungi almeno un\'entità squadra',
 
     'card.my_teams': 'I Miei Team',
+    'card.team_form': 'Forma squadra',
+    'card.live_commentary': 'Telecronaca live',
 
     'match.vs': 'contro',
     'match.draw': 'P',
@@ -1055,6 +1061,8 @@ const TRANSLATIONS = {
     'ui.add_team_entity': 'Ajoutez au moins une entité équipe',
 
     'card.my_teams': 'Mes Équipes',
+    'card.team_form': 'Forme équipe',
+    'card.live_commentary': 'Commentaire live',
 
     'match.vs': 'contre',
     'match.draw': 'N',
@@ -1326,6 +1334,8 @@ const TRANSLATIONS = {
     'ui.add_team_entity': 'Añade al menos una entidad de equipo',
 
     'card.my_teams': 'Mis Equipos',
+    'card.team_form': 'Forma del equipo',
+    'card.live_commentary': 'Comentario en directo',
 
     'match.vs': 'vs',
     'match.draw': 'E',
@@ -1580,6 +1590,8 @@ const TRANSLATIONS = {
     'ui.add_team_entity': 'Mindestens eine Team-Entität hinzufügen',
 
     'card.my_teams': 'Meine Teams',
+    'card.team_form': 'Teamform',
+    'card.live_commentary': 'Live-Kommentar',
 
     'match.vs': 'gegen',
     'match.draw': 'U',
@@ -1869,6 +1881,8 @@ const TRANSLATIONS = {
     'ui.add_team_entity': 'Adicione pelo menos uma entidade de equipa',
 
     'card.my_teams': 'Meus Times',
+    'card.team_form': 'Forma da equipa',
+    'card.live_commentary': 'Comentário ao vivo',
 
     'match.vs': 'contra',
     'match.draw': 'E',

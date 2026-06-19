@@ -148,7 +148,7 @@ class SoccerLiveTeamFormCard extends LitElement {
       <ha-card>
         ${!hideHeader ? renderSoccerHeader({
           logo,
-          title: team || 'Team Form',
+          title: team || this._t('card.team_form'),
           badge: standingSummary ? renderSoccerBadge(standingSummary, 'neutral') : null,
         }) : ''}
 

@@ -133,7 +133,8 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
     const homeScore = liveMatch?.home_score ?? stateObj.attributes.home_score ?? 0;
     const awayScore = liveMatch?.away_score ?? stateObj.attributes.away_score ?? 0;
     const matchStatus = stateObj.attributes.match_status || '';
-    const leagueName = (stateObj.attributes.league_info || [{}])[0].abbreviation || '';
+    const leagueInfo = (stateObj.attributes.league_info || [{}])[0];
+    const leagueName = leagueInfo.name || leagueInfo.abbreviation || stateObj.attributes.league_name || '';
 
     const isLive = matchStatus === 'in' || (liveMatch && liveMatch.state === 'in');
     const clock = liveMatch ? liveMatch.clock : '';
@@ -143,8 +144,8 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
     return html`
       <ha-card>
         ${!this._config.hide_header ? renderSoccerHeader({
-          logo: liveMatch?.competition_logo || null,
-          title: leagueName || 'Live Commentary',
+          logo: liveMatch?.competition_logo || liveMatch?.league_logo || stateObj.attributes.league_logo || null,
+          title: leagueName || this._t('card.live_commentary'),
           badge: isLive
             ? renderSoccerBadge(`${clock ? clock + "' " : ''}LIVE`, 'live')
             : renderSoccerBadge(`${homeScore}–${awayScore}`, 'ft'),

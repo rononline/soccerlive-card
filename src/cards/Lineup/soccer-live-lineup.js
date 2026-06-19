@@ -90,8 +90,8 @@ class SoccerLiveLineupCard extends LitElement {
         <div class="hero-bg"></div>
         ${!this.hideHeader ? html`
           ${renderSoccerHeader({
-            logo: m.competition_logo || m.league_logo || null,
-            title: m.competition_name || m.league_name || this._t('card.lineup'),
+            logo: m.competition_logo || m.league_logo || stateObj.attributes.league_logo || null,
+            title: m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.lineup'),
             badge: renderSoccerBadge(`${m.home_team} – ${m.away_team}`, 'neutral'),
             fallbackIcon: '👥',
           })}

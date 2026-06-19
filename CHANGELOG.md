@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.20.4 (2026-06-19)
+- Lineup + Timeline: add `stateObj.attributes.league_logo/name` as fallback so header icon is always shown
+- LiveCommentary: header logo fallback chain added; league name uses full `name` instead of `abbreviation`; `'Live Commentary'` via `_t('card.live_commentary')`
+- TeamForm: `'Team Form'` fallback via `_t('card.team_form')`
+- `card.team_form` + `card.live_commentary` added in all 7 languages (258 keys total)
+
 ## v3.20.3 (2026-06-19)
 - shared-header: `sh-badge.date` and `.ft` now use `var(--cl-text)` (white) on dark background — consistent with Team card's status badge
 - MatchCenter: inject `attrs.league_logo` / `attrs.league_name` into match before rendering so the header icon is always populated
