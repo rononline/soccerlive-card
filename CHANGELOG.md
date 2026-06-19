@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.19.9 (2026-06-19)
+- TeamCompetitions card fully rewritten: per competition tab now shows featured match (score/date), form dots (W/D/L last 5), standing summary, previous result and next match — instead of one compact match row
+- Tab logos added to competition tabs
+- Offline cache support added (was missing)
+
 ## v3.19.8 (2026-06-19)
 - All 13 skins now available in every editor (Countdown, LiveMatch, MiniStandings, Scorers, MultiTeam, TeamCompetitions, LiveCommentary were missing orange, blue, black-white, feyenoord, arsenal, barcelona, real-madrid)
 - `SKIN_OPTIONS` exported from `skins.js` as single source of truth for all editor dropdowns
