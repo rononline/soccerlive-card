@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.20.9 (2026-06-19)
+- MatchCenter: `"vs"` → `_t('match.vs')` for pre-match score placeholder
+- TeamForm: `"vs"` → `_t('match.vs')` in previous match rows
+- Matches: `"LIVE"` → `_t('status.live')`, `"FT"` → `_t('status.full_time')`
+
 ## v3.20.8 (2026-06-19)
 - shared-header: when logo image fails to load, fallback emoji is now shown instead of leaving an empty orange box
 

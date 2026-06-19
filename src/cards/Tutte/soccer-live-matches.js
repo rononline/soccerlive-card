@@ -201,8 +201,8 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _matchTimeLabel(match) {
-    if (match.state === 'in') return match.clock && match.clock !== 'N/A' ? match.clock : 'LIVE';
-    if (match.state === 'post') return 'FT';
+    if (match.state === 'in') return match.clock && match.clock !== 'N/A' ? match.clock : this._t('status.live');
+    if (match.state === 'post') return this._t('status.full_time');
     if (match.date) {
       const parts = match.date.split(' ');
       return parts[1] || parts[0];

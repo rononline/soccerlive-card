@@ -134,7 +134,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         <div class="mc-score">
           ${isLive || isFinished
             ? html`<span class="mc-num">${match.home_score ?? 0} – ${match.away_score ?? 0}</span>`
-            : html`<span class="mc-vs">vs</span>`}
+            : html`<span class="mc-vs">${this._t('match.vs')}</span>`}
         </div>
         <div class="mc-team away">
           <span class="mc-name">${match.away_team || '?'}</span>

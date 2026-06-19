@@ -239,7 +239,7 @@ class SoccerLiveTeamFormCard extends LitElement {
                 <span class="pm-date">${(m.date || '').split(' ')[0]}</span>
                 <img class="pm-logo" src="${m.home_logo || ''}" alt="" @error=${e => e.target.style.display='none'}>
                 <span class="pm-team">${m.home_abbrev || m.home_team || '?'}</span>
-                <span class="pm-score draw">vs</span>
+                <span class="pm-score draw">${this._t('match.vs')}</span>
                 <span class="pm-team right">${m.away_abbrev || m.away_team || '?'}</span>
                 <img class="pm-logo" src="${m.away_logo || ''}" alt="" @error=${e => e.target.style.display='none'}>
               </div>
