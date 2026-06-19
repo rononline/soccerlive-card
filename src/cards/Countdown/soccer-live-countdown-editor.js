@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from '../../i18n.js';
-import { editorStyles, renderSelector, renderToggle } from '../editor-helper.js';
+import { editorStyles } from '../editor-helper.js';
 
 const SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold'];
 const LANGS = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];

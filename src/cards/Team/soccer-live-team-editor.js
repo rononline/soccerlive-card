@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { editorStyles, renderSelector, renderToggle, renderFieldGroup, renderSection } from '../editor-helper.js';
+import { editorStyles } from '../editor-helper.js';
 import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveTeamCardEditor extends LitElement {

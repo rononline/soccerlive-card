@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.19.7 (2026-06-19)
+- Remove unused `renderSelector`, `renderToggle`, `renderFieldGroup`, `renderSection` imports from Team and Countdown editors
+
 ## v3.19.6 (2026-06-19)
 - Offline error state in Team, Countdown, LiveMatch, MultiTeam via `_t('ui.offline_cached')` + `_t('ui.waiting_integration')`
 - MultiTeam no-entities error via `_t('ui.no_entities_configured')` + `_t('ui.add_team_entity')`
