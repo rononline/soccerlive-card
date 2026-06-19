@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.20.7 (2026-06-19)
+- MiniStandings, Bracket, News: add `league_info[0].logo_href` as fallback logo source
+- All cards now consistently resolve icons via `league_logo` → `league_info.logo_href` → fallback emoji
+
 ## v3.20.6 (2026-06-19)
 - shared-header: filter out `"N/A"` as logo URL (parser fallback) so the fallback emoji shows instead of a broken/empty icon box
 - Countdown: `@media (max-width: 600px)` now sets `cd-body { padding: 12px }` instead of `ha-card { padding: 12px }` — fix for icon still offset on narrow screens

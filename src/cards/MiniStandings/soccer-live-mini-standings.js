@@ -87,7 +87,8 @@ class SoccerLiveMiniStandingsCard extends LitElement {
     const maxRows = this._config.max_rows || standings.length;
     const myTeam = (this._config.highlight_team || '').toLowerCase();
     const leagueName = stateObj.attributes.league_name || stateObj.attributes.league_abbreviation || '';
-    const leagueLogo = stateObj.attributes.league_logo || '';
+    const _li = (stateObj.attributes.league_info || [])[0] || {};
+    const leagueLogo = stateObj.attributes.league_logo || _li.logo_href || '';
     const rows = standings.slice(0, maxRows);
     const multiGroup = groups.length > 1;
 

@@ -318,7 +318,7 @@ class SoccerLiveBracketCard extends LitElement {
         <div class="hero-bg"></div>
         ${!this.hideHeader ? html`
           ${renderSoccerHeader({
-            logo: stateObj.attributes.league_logo || null,
+            logo: stateObj.attributes.league_logo || (stateObj.attributes.league_info || [])[0]?.logo_href || null,
             title: stateObj.attributes.league_name || this._t('card.bracket'),
             badge: renderSoccerBadge(stateObj.state, 'neutral'),
             fallbackIcon: '🏆',

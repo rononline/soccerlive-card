@@ -70,7 +70,7 @@ class SoccerLiveNewsCard extends LitElement {
       <ha-card>
         <div class="hero-bg"></div>
         ${!this.hideHeader ? renderSoccerHeader({
-          logo: stateObj.attributes.league_logo || null,
+          logo: stateObj.attributes.league_logo || (stateObj.attributes.league_info || [])[0]?.logo_href || null,
           title: stateObj.attributes.league_name || this._t('card.news'),
           badge: renderSoccerBadge(stateObj.state, 'neutral'),
           fallbackIcon: '📰',
