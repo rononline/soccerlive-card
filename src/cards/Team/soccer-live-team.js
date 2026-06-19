@@ -845,16 +845,39 @@ class SoccerLiveTeamCard extends LitElement {
   _renderPopupPortal() {
     if (!this.activeMatch) return;
     if (!this._popupPortal) {
-      this._popupPortal = document.createElement('div');
+      this._popupPortal = document.createElement('dialog');
       this._popupPortal.className = 'soccer-live-popup-portal';
+      this._popupPortal.addEventListener('cancel', this._popupCancelHandler = e => {
+        e.preventDefault();
+        this.showPopup = false;
+      });
+      this._popupPortal.addEventListener('click', this._popupClickHandler = e => {
+        if (e.target === this._popupPortal) this.showPopup = false;
+      });
       document.body.appendChild(this._popupPortal);
     }
     this._copyPopupThemeVars(this._popupPortal);
     render(html`${this._renderPopupPortalStyles()}${this._renderPopup()}`, this._popupPortal);
+    if (!this._popupPortal.open) {
+      try {
+        this._popupPortal.showModal();
+      } catch (e) {
+        this._popupPortal.setAttribute('open', '');
+      }
+    }
   }
 
   _removePopupPortal() {
     if (!this._popupPortal) return;
+    if (this._popupPortal.open) this._popupPortal.close();
+    if (this._popupCancelHandler) {
+      this._popupPortal.removeEventListener('cancel', this._popupCancelHandler);
+      this._popupCancelHandler = null;
+    }
+    if (this._popupClickHandler) {
+      this._popupPortal.removeEventListener('click', this._popupClickHandler);
+      this._popupClickHandler = null;
+    }
     render(html``, this._popupPortal);
     this._popupPortal.remove();
     this._popupPortal = null;
@@ -873,10 +896,7 @@ class SoccerLiveTeamCard extends LitElement {
   _renderPopup() {
     const m = this.activeMatch;
     return html`
-      <div
-        class="popup-overlay"
-        @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}"
-      >
+      <div class="popup-overlay">
         <div class="popup-box" @click="${e => e.stopPropagation()}">
           <h3 class="popup-title">${this._t('popup.match_details')}</h3>
           <div class="popup-score-row">
@@ -904,6 +924,22 @@ class SoccerLiveTeamCard extends LitElement {
   _renderPopupPortalStyles() {
     return html`
       <style>
+        .soccer-live-popup-portal {
+          border: 0;
+          padding: 0;
+          margin: 0;
+          width: 100vw;
+          height: 100dvh;
+          max-width: none;
+          max-height: none;
+          background: transparent;
+          color: inherit;
+          overflow: visible;
+        }
+        .soccer-live-popup-portal::backdrop {
+          background: rgba(0,0,0,0.72);
+          backdrop-filter: blur(8px);
+        }
         .popup-overlay {
           position: fixed;
           inset: 0;

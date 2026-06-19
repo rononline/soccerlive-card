@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.4 (2026-06-19)
+- Team card: render match details popup as a body-level native `<dialog>` portal to force browser top-layer stacking above Lovelace/simple-tabs cards
+
 ## v3.21.3 (2026-06-19)
 - Team card: render match details popup through a `document.body` portal so it is no longer trapped behind Lovelace/simple-tabs stacking contexts
 
