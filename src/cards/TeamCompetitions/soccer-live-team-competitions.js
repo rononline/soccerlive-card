@@ -73,7 +73,8 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     if (!m || !teamName) return '';
     const tn = teamName.toLowerCase();
     const isHome = m.home_team?.toLowerCase().includes(tn);
-    return isHome ? m.home_standing_summary : m.away_standing_summary;
+    const standing = isHome ? m.home_standing_summary : m.away_standing_summary;
+    return standing && standing !== 'N/A' ? standing : '';
   }
 
   _renderForm(form) {

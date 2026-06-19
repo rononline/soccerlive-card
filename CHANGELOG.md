@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.8 (2026-06-19)
+- TeamCompetitions: hide `N/A` standing summaries instead of rendering them as badges
+
 ## v3.21.7 (2026-06-19)
 - Add shared card shell styles for consistent skin depth, radius, shadow and hero gradients across cards
 - Countdown, LiveMatch, MatchCenter, TeamCompetitions, TeamForm, LiveCommentary, MultiTeam, MiniStandings and Scorers now use the shared visual shell
