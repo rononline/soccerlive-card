@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.20.1 (2026-06-19)
+- MatchCenter editor: add skin/language dropdowns, section headers via `_t()`, entity label via `_t()`
+- TeamForm editor: add skin/language dropdowns, section headers via `_t()`, replace `<input checkbox>` with `ha-switch`
+
 ## v3.20.0 (2026-06-19)
 - MatchCenter: all 5 tabs (Overview, Stats, Timeline, Lineup, H2H) always visible — empty state shown instead of hiding tabs pre-match
 - MatchCenter: "Formation" label via `_t('match.formation')` in 7 languages

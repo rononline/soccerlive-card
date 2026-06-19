@@ -1,34 +1,30 @@
 import { LitElement, html, css } from 'lit-element';
+import { SKIN_OPTIONS } from '../../skins.js';
 import { t, resolveLang } from '../../i18n.js';
+import { editorStyles } from '../editor-helper.js';
+
+const LANGS = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
 
 class SoccerLiveTeamFormEditor extends LitElement {
   static get properties() {
     return { _config: { type: Object }, hass: { type: Object } };
   }
 
+  static get styles() { return [editorStyles, css`.option{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;}`]; }
+
   setConfig(config) { this._config = config; }
   _t(key) { return t(key, resolveLang(this.hass, this._config)); }
 
-
   _fire(config) {
+    this._config = config;
     this.dispatchEvent(new CustomEvent('config-changed', { detail: { config }, bubbles: true, composed: true }));
+    this.requestUpdate();
   }
 
-  _entityChanged(e) {
-    const value = e.target.value;
-    if (value === this._config.entity) return;
-    this._fire({ ...this._config, entity: value });
-  }
-
-  _inputChanged(e) {
-    const key = e.target.dataset.configValue;
-    this._fire({ ...this._config, [key]: e.target.value });
-  }
-
-  _toggleChanged(e) {
-    const key = e.target.dataset.configValue;
-    this._fire({ ...this._config, [key]: e.target.checked });
-  }
+  _entityChanged(e) { this._fire({ ...this._config, entity: e.target.value }); }
+  _selectChanged(e) { this._fire({ ...this._config, [e.target.dataset.configValue]: e.target.value }); }
+  _inputChanged(e)  { this._fire({ ...this._config, [e.target.dataset.configValue]: e.target.value }); }
+  _toggleChanged(e) { this._fire({ ...this._config, [e.target.dataset.configValue]: e.target.checked }); }
 
   render() {
     if (!this._config || !this.hass) return html``;
@@ -39,31 +35,40 @@ class SoccerLiveTeamFormEditor extends LitElement {
     const current = this._config.entity || '';
     return html`
       <div class="card-config">
-        <div class="field">
-          <label class="field-label">Entity (next_* or all_mixed_* sensor)</label>
+        <h3>${this._t('editor.sensor')}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!entities.includes(current) ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
             ${entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
           </select>
         </div>
-        <div class="field">
-          <label class="field-label">Team name — recommended; auto-detect may fail with 1 match or repeat opponents</label>
-          <input type="text" data-config-value="team_name" .value=${this._config.team_name || ''} @change=${this._inputChanged} placeholder="e.g. Ajax">
+
+        <h3>${this._t('editor.settings')}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.team_name')}</label>
+          <label class="field-hint">${this._t('editor.my_team_hint')}</label>
+          <input type="text" data-config-value="team_name" .value=${this._config.team_name || ''} @input=${this._inputChanged} placeholder="e.g. Ajax">
         </div>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
-          <input type="checkbox" data-config-value="hide_header" ?checked=${this._config.hide_header === true} @change=${this._toggleChanged}>
+          <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._toggleChanged}></ha-switch>
+        </div>
+
+        <h3>${this._t('editor.appearance')}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.theme')}</label>
+          <select data-config-value="skin" @change=${this._selectChanged}>
+            ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${(this._config.skin || 'dark') === val}>${label}</option>`)}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.language')}</label>
+          <select data-config-value="language" @change=${this._selectChanged}>
+            ${LANGS.map(l => html`<option value="${l === 'auto' ? '' : l}" ?selected=${(this._config.language || '') === (l === 'auto' ? '' : l)}>${l}</option>`)}
+          </select>
         </div>
       </div>
-    `;
-  }
-
-  static get styles() {
-    return css`
-      .card-config { display: flex; flex-direction: column; gap: 14px; }
-      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); font-weight: 600; margin-bottom: 4px; }
-      select, input[type="text"] { width: 100%; padding: 8px 10px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color); box-sizing: border-box; }
-      .option { display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
     `;
   }
 }
