@@ -78,7 +78,7 @@ export const soccerHeaderStyles = css`
     letter-spacing: 0.06em;
   }
   .sh-badge.live    { background: #e53935; color: #fff; }
-  .sh-badge.ft      { background: var(--cl-surface, rgba(255,255,255,0.08)); color: var(--cl-text-2, #94a3b8); }
-  .sh-badge.date    { background: var(--cl-surface, rgba(255,255,255,0.06)); color: var(--cl-text-2, #94a3b8); }
-  .sh-badge.neutral { background: var(--cl-surface, rgba(255,255,255,0.06)); color: var(--cl-text-2, #94a3b8); }
+  .sh-badge.ft      { background: var(--cl-card-2, rgba(0,0,0,0.35)); border: 1px solid var(--cl-glass-border, rgba(255,255,255,0.1)); color: var(--cl-text, #fff); }
+  .sh-badge.date    { background: var(--cl-card-2, rgba(0,0,0,0.35)); border: 1px solid var(--cl-glass-border, rgba(255,255,255,0.1)); color: var(--cl-text, #fff); }
+  .sh-badge.neutral { background: var(--cl-surface, rgba(255,255,255,0.08)); color: var(--cl-text-2, #94a3b8); }
 `;

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.20.3 (2026-06-19)
+- shared-header: `sh-badge.date` and `.ft` now use `var(--cl-text)` (white) on dark background — consistent with Team card's status badge
+- MatchCenter: inject `attrs.league_logo` / `attrs.league_name` into match before rendering so the header icon is always populated
+
 ## v3.20.2 (2026-06-19)
 - MatchCenter, Lineup, Timeline: competition name/logo fallback to `match.league_name` / `match.league_logo` — parser stores the name in `league_name`, not `competition_name`, so the header was showing blank
 
