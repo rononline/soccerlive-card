@@ -115,9 +115,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const isLive     = match.state === 'in';
     const isFinished = match.state === 'post';
     const badge = isLive
-      ? renderSoccerBadge(`${match.clock ? match.clock + "' " : ''}LIVE`, 'live')
+      ? renderSoccerBadge(`${match.clock ? match.clock + "' " : ''}${this._t('status.live')}`, 'live')
       : isFinished
-        ? renderSoccerBadge('FT', 'ft')
+        ? renderSoccerBadge(this._t('status.full_time'), 'ft')
         : renderSoccerBadge(match.date || '', 'date');
 
     const compName = match.competition_name || match.league_name || '';

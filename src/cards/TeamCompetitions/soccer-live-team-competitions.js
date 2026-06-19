@@ -94,7 +94,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
             <span class="tm-name">${m.home_team || '?'}</span>
           </div>
           <div class="match-score">
-            ${isLive ? html`<span class="live-badge"><span class="live-dot"></span>${m.clock || 'LIVE'}</span>` : ''}
+            ${isLive ? html`<span class="live-badge"><span class="live-dot"></span>${m.clock || this._t('status.live')}</span>` : ''}
             ${isLive || isFt
               ? html`<span class="score-text">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
               : html`<span class="date-text">${m.date || this._t('match.vs')}</span>`}

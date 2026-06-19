@@ -375,7 +375,7 @@ class SoccerLiveMatchesCard extends LitElement {
 
         ${this.showLiveTicker && liveMatches.length > 0 ? html`
           <div class="live-ticker">
-            <span class="ticker-badge">LIVE</span>
+            <span class="ticker-badge">${this._t('status.live')}</span>
             <div class="ticker-track">
               <span class="ticker-content">${tickerText}</span>
               <span class="ticker-content" aria-hidden="true">${tickerText}</span>
@@ -390,7 +390,7 @@ class SoccerLiveMatchesCard extends LitElement {
           const _finished = stateObj.attributes.finished_matches_count
             ?? (stateObj.attributes.matches || []).filter(m => m.state === 'post').length;
           const _badgeText = liveCount > 0
-            ? `${liveCount} LIVE`
+            ? `${liveCount} ${this._t('status.live')}`
             : _total > 0 ? `${_finished} / ${_total}` : '';
           return renderSoccerHeader({
             logo: _logo,

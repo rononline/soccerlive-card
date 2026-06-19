@@ -112,7 +112,7 @@ class SoccerLiveBracketCard extends LitElement {
           </span>
         </div>
         <div class="tie-foot">
-          ${isLive ? html`<span class="live-badge"><span class="dot"></span>LIVE</span>` : ''}
+          ${isLive ? html`<span class="live-badge"><span class="dot"></span>${this._t('status.live')}</span>` : ''}
           ${tie.aggregate ? html`<span class="agg">${this._t('bracket.agg')} ${tie.aggregate}</span>` : ''}
           ${tie.tied ? html`<span class="agg tied">${this._t('bracket.tied_agg')}</span>` : ''}
           ${!tie.completed && !isLive && tie.first_leg_date ? html`<span class="date">${this._formatDate(tie.first_leg_date)}</span>` : ''}

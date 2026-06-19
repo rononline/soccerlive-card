@@ -147,7 +147,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
           logo: liveMatch?.competition_logo || liveMatch?.league_logo || stateObj.attributes.league_logo || null,
           title: leagueName || this._t('card.live_commentary'),
           badge: isLive
-            ? renderSoccerBadge(`${clock ? clock + "' " : ''}LIVE`, 'live')
+            ? renderSoccerBadge(`${clock ? clock + "' " : ''}${this._t('status.live')}`, 'live')
             : renderSoccerBadge(`${homeScore}–${awayScore}`, 'ft'),
           fallbackIcon: '🎙️',
         }) : ''}

@@ -258,7 +258,7 @@ class SoccerLiveCountdownCard extends LitElement {
           logo: compLogo || null,
           title: compName,
           badge: isLive
-            ? renderSoccerBadge(`${match.clock || ''} LIVE`, 'live')
+            ? renderSoccerBadge(`${match.clock ? match.clock + ` ` : ''}${this._t('status.live')}`, 'live')
             : isFinished
               ? renderSoccerBadge(this._t('status.full_time'), 'ft')
               : renderSoccerBadge(match.date || '', 'date'),
@@ -273,7 +273,7 @@ class SoccerLiveCountdownCard extends LitElement {
 
           <div class="center">
             ${isLive ? html`
-              <div class="live-badge">LIVE</div>
+              <div class="live-badge">${this._t('status.live')}</div>
               <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
               ${match.clock ? html`<div class="minute">${match.clock}</div>` : ''}
             ` : isFinished ? html`

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.0 (2026-06-19)
+- Team: `"tegen"` → `_t('match.vs')` (Dutch hardcode removed)
+- Bracket, Countdown, LiveCommentary, MatchCenter, MultiTeam, TeamCompetitions, Matches: all remaining hardcoded `"LIVE"` and `"FT"` replaced with `_t('status.live')` / `_t('status.full_time')`
+
 ## v3.20.9 (2026-06-19)
 - MatchCenter: `"vs"` → `_t('match.vs')` for pre-match score placeholder
 - TeamForm: `"vs"` → `_t('match.vs')` in previous match rows
