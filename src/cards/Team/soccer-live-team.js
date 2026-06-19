@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
@@ -126,6 +126,7 @@ class SoccerLiveTeamCard extends LitElement {
       document.removeEventListener('keydown', this._escHandler);
       this._escHandler = null;
     }
+    this._removePopupPortal();
 
     clearTimeout(this._toastTimer);
     this._toastTimer = null;
@@ -605,7 +606,6 @@ class SoccerLiveTeamCard extends LitElement {
         ${!this.compact ? this._renderH2H(match.head_to_head, match.home_team) : ''}
         ${!this.compact ? this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
       </ha-card>
-      ${this.showPopup && this.activeMatch ? this._renderPopup() : ''}
     `;
   }
 
@@ -789,22 +789,15 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   updated(changedProperties) {
-    if (changedProperties.has('showPopup')) {
-      const dialog = this.renderRoot?.querySelector('.popup-dialog');
+    if (changedProperties.has('showPopup') || changedProperties.has('activeMatch')) {
       if (this.showPopup) {
-        if (dialog && !dialog.open) {
-          try {
-            dialog.showModal();
-          } catch (e) {
-            dialog.setAttribute('open', '');
-          }
-        }
+        this._renderPopupPortal();
         if (!this._escHandler) {
           this._escHandler = e => { if (e.key === 'Escape') this.showPopup = false; };
           document.addEventListener('keydown', this._escHandler);
         }
       } else {
-        if (dialog?.open) dialog.close();
+        this._removePopupPortal();
         if (this._escHandler) {
           document.removeEventListener('keydown', this._escHandler);
           this._escHandler = null;
@@ -834,6 +827,39 @@ class SoccerLiveTeamCard extends LitElement {
     }
   }
 
+  _copyPopupThemeVars(target) {
+    const styles = getComputedStyle(this);
+    [
+      '--cl-bg',
+      '--cl-text',
+      '--cl-text-2',
+      '--cl-divider',
+      '--cl-accent',
+      '--cl-accent-2',
+    ].forEach(name => {
+      const value = styles.getPropertyValue(name);
+      if (value) target.style.setProperty(name, value);
+    });
+  }
+
+  _renderPopupPortal() {
+    if (!this.activeMatch) return;
+    if (!this._popupPortal) {
+      this._popupPortal = document.createElement('div');
+      this._popupPortal.className = 'soccer-live-popup-portal';
+      document.body.appendChild(this._popupPortal);
+    }
+    this._copyPopupThemeVars(this._popupPortal);
+    render(html`${this._renderPopupPortalStyles()}${this._renderPopup()}`, this._popupPortal);
+  }
+
+  _removePopupPortal() {
+    if (!this._popupPortal) return;
+    render(html``, this._popupPortal);
+    this._popupPortal.remove();
+    this._popupPortal = null;
+  }
+
   async _loadWeather(venue, venue_lat = null, venue_lon = null) {
     this._lastWeatherVenue = venue;
     try {
@@ -847,9 +873,8 @@ class SoccerLiveTeamCard extends LitElement {
   _renderPopup() {
     const m = this.activeMatch;
     return html`
-      <dialog
-        class="popup-dialog"
-        @cancel="${e => { e.preventDefault(); this.showPopup = false; }}"
+      <div
+        class="popup-overlay"
         @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}"
       >
         <div class="popup-box" @click="${e => e.stopPropagation()}">
@@ -872,7 +897,127 @@ class SoccerLiveTeamCard extends LitElement {
           ${this._renderPopupH2H(m)}
           <button class="popup-close-btn" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
-      </dialog>
+      </div>
+    `;
+  }
+
+  _renderPopupPortalStyles() {
+    return html`
+      <style>
+        .popup-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 2147483647;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: rgba(0,0,0,0.72);
+          backdrop-filter: blur(8px);
+          overflow: auto;
+          padding: 16px;
+          box-sizing: border-box;
+          font-family: var(--primary-font-family, sans-serif);
+        }
+        .popup-box {
+          background: var(--cl-bg, #1a1f2e);
+          border: 1px solid var(--cl-divider, rgba(255,255,255,0.08));
+          border-radius: 20px;
+          box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+          color: var(--cl-text, #f8fafc);
+          max-height: 85vh;
+          max-width: 560px;
+          width: 100%;
+          overflow-y: auto;
+          padding: 24px;
+          margin: auto;
+          box-sizing: border-box;
+        }
+        .popup-title {
+          margin: 0 0 20px;
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .popup-score-row { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 24px; }
+        .popup-logo { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+        .popup-score-center { text-align: center; }
+        .popup-score { font-size: 42px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+        .popup-score-sep { opacity: 0.4; }
+        .popup-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 8px; font-weight: 600; }
+        .popup-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+        .popup-stat-box { background: rgba(255,255,255,0.04); padding: 14px; border-radius: 14px; }
+        .popup-stat-team { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cl-text-2, #94a3b8); font-weight: 700; margin-bottom: 6px; }
+        .popup-stat-row { font-size: 13px; margin-bottom: 2px; }
+        .popup-stat-row span { color: var(--cl-text-2, #94a3b8); }
+        .popup-event-group { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
+        .popup-event-group.goal { background: rgba(99,102,241,0.1); border-color: #6366f1; }
+        .popup-event-group.yellow { background: rgba(245,158,11,0.1); border-color: #f59e0b; }
+        .popup-event-group.red { background: rgba(239,68,68,0.1); border-color: #ef4444; }
+        .popup-event-title { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+        .popup-event-group.goal .popup-event-title { color: #6366f1; }
+        .popup-event-group.yellow .popup-event-title { color: #f59e0b; }
+        .popup-event-group.red .popup-event-title { color: #ef4444; }
+        .popup-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
+        .popup-event-list li { margin: 4px 0; }
+        .popup-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
+        .popup-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
+        .popup-section-timeline { background: rgba(251,191,36,0.08); border-color: #fbbf24; }
+        .popup-section-h2h { background: rgba(99,102,241,0.08); border-color: var(--cl-accent, #6366f1); }
+        .popup-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+        .popup-section-title.lineup { color: #10b981; }
+        .popup-section-title.timeline { color: #fbbf24; }
+        .popup-section-title.h2h { color: var(--cl-accent, #6366f1); }
+        .popup-lineup-team { margin-bottom: 8px; }
+        .popup-lineup-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .popup-lineup-header span:first-child { font-size: 12px; font-weight: 800; color: #fff; }
+        .popup-formation { font-size: 10px; font-weight: 700; color: var(--cl-accent, #6366f1); letter-spacing: 0.1em; }
+        .popup-lineup-players { font-size: 12px; color: #cbd5e1; line-height: 1.7; }
+        .popup-player { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin: 2px; }
+        .popup-jersey { color: #fbbf24; }
+        .popup-timeline-list { margin: 0; padding: 0; list-style: none; }
+        .popup-timeline-item { display: grid; grid-template-columns: 36px 24px 1fr; gap: 8px; align-items: start; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
+        .popup-timeline-item:last-child { border-bottom: none; }
+        .popup-tl-clock { text-align: right; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; }
+        .popup-tl-icon { text-align: center; }
+        .popup-tl-text strong { color: #fff; }
+        .popup-tl-team { color: #94a3b8; font-size: 11px; }
+        .popup-h2h-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: #cbd5e1; }
+        .popup-h2h-num { color: #fff; font-size: 18px; font-weight: 800; }
+        .popup-h2h-draw { color: #94a3b8; }
+        .popup-h2h-bar { display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+        .popup-h2h-seg.home { background: var(--cl-accent, #6366f1); border-radius: 3px 0 0 3px; }
+        .popup-h2h-seg.draw { background: #94a3b8; }
+        .popup-h2h-seg.away { background: var(--cl-accent-2, #ec4899); border-radius: 0 3px 3px 0; }
+        .popup-h2h-list { margin: 0; padding: 0; list-style: none; }
+        .popup-h2h-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+        .popup-h2h-team { color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
+        .popup-h2h-team.away { text-align: left; }
+        .popup-h2h-team.winner { color: #fff; font-weight: 800; }
+        .popup-h2h-score { font-weight: 700; color: #cbd5e1; white-space: nowrap; text-align: center; }
+        .popup-h2h-date { text-align: center; padding: 2px 0; font-size: 10px; color: #475569; border-bottom: 1px solid rgba(255,255,255,0.04); list-style: none; }
+        .popup-close-btn {
+          background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
+          color: white;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 12px;
+          cursor: pointer;
+          margin-top: 20px;
+          font-weight: 800;
+          width: 100%;
+          font-size: 14px;
+        }
+        @media (max-width: 600px) {
+          .popup-box { padding: 16px; }
+          .popup-logo { width: 52px; height: 52px; }
+          .popup-score { font-size: 32px; }
+          .popup-stats-grid { grid-template-columns: 1fr; }
+        }
+      </style>
     `;
   }
 
@@ -1015,111 +1160,6 @@ class SoccerLiveTeamCard extends LitElement {
 
   static get styles() {
     return [skinStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
-      /* Native dialog uses the browser top layer, so it is not trapped behind Lovelace/stack card stacking contexts. */
-      .popup-dialog {
-        border: 0;
-        padding: 16px;
-        margin: 0;
-        width: 100vw;
-        height: 100dvh;
-        max-width: none;
-        max-height: none;
-        background: transparent;
-        color: inherit;
-        overflow: auto;
-        box-sizing: border-box;
-      }
-      .popup-dialog[open] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .popup-dialog::backdrop {
-        background: rgba(0,0,0,0.72);
-        backdrop-filter: blur(8px);
-      }
-      .popup-box {
-        background: var(--cl-bg, #1a1f2e);
-        border: 1px solid var(--cl-divider, rgba(255,255,255,0.08));
-        border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-        color: var(--cl-text, #f8fafc);
-        max-height: 85vh; max-width: 560px; width: 100%;
-        overflow-y: auto; padding: 24px; margin: auto;
-      }
-      .popup-title {
-        margin: 0 0 20px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
-        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-      }
-      .popup-score-row { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 24px; }
-      .popup-logo { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
-      .popup-score-center { text-align: center; }
-      .popup-score { font-size: 42px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
-      .popup-score-sep { opacity: 0.4; }
-      .popup-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 8px; font-weight: 600; }
-      .popup-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
-      .popup-stat-box { background: rgba(255,255,255,0.04); padding: 14px; border-radius: 14px; }
-      .popup-stat-team { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cl-text-2, #94a3b8); font-weight: 700; margin-bottom: 6px; }
-      .popup-stat-row { font-size: 13px; margin-bottom: 2px; }
-      .popup-stat-row span { color: var(--cl-text-2, #94a3b8); }
-      .popup-event-group { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
-      .popup-event-group.goal { background: rgba(99,102,241,0.1); border-color: #6366f1; }
-      .popup-event-group.yellow { background: rgba(245,158,11,0.1); border-color: #f59e0b; }
-      .popup-event-group.red { background: rgba(239,68,68,0.1); border-color: #ef4444; }
-      .popup-event-title { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
-      .popup-event-group.goal .popup-event-title { color: #6366f1; }
-      .popup-event-group.yellow .popup-event-title { color: #f59e0b; }
-      .popup-event-group.red .popup-event-title { color: #ef4444; }
-      .popup-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
-      .popup-event-list li { margin: 4px 0; }
-      .popup-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
-      .popup-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
-      .popup-section-timeline { background: rgba(251,191,36,0.08); border-color: #fbbf24; }
-      .popup-section-h2h { background: rgba(99,102,241,0.08); border-color: var(--cl-accent, #6366f1); }
-      .popup-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
-      .popup-section-title.lineup { color: #10b981; }
-      .popup-section-title.timeline { color: #fbbf24; }
-      .popup-section-title.h2h { color: var(--cl-accent, #6366f1); }
-      .popup-lineup-team { margin-bottom: 8px; }
-      .popup-lineup-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-      .popup-lineup-header span:first-child { font-size: 12px; font-weight: 800; color: #fff; }
-      .popup-formation { font-size: 10px; font-weight: 700; color: var(--cl-accent, #6366f1); letter-spacing: 0.1em; }
-      .popup-lineup-players { font-size: 12px; color: #cbd5e1; line-height: 1.7; }
-      .popup-player { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin: 2px; }
-      .popup-jersey { color: #fbbf24; }
-      .popup-timeline-list { margin: 0; padding: 0; list-style: none; }
-      .popup-timeline-item { display: grid; grid-template-columns: 36px 24px 1fr; gap: 8px; align-items: start; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
-      .popup-timeline-item:last-child { border-bottom: none; }
-      .popup-tl-clock { text-align: right; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; }
-      .popup-tl-icon { text-align: center; }
-      .popup-tl-text strong { color: #fff; }
-      .popup-tl-team { color: #94a3b8; font-size: 11px; }
-      .popup-h2h-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: #cbd5e1; }
-      .popup-h2h-num { color: #fff; font-size: 18px; font-weight: 800; }
-      .popup-h2h-draw { color: #94a3b8; }
-      .popup-h2h-bar { display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
-      .popup-h2h-seg.home { background: var(--cl-accent, #6366f1); border-radius: 3px 0 0 3px; }
-      .popup-h2h-seg.draw { background: #94a3b8; }
-      .popup-h2h-seg.away { background: var(--cl-accent-2, #ec4899); border-radius: 0 3px 3px 0; }
-      .popup-h2h-list { margin: 0; padding: 0; list-style: none; }
-      .popup-h2h-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
-      .popup-h2h-team { color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
-      .popup-h2h-team.away { text-align: left; }
-      .popup-h2h-team.winner { color: #fff; font-weight: 800; }
-      .popup-h2h-score { font-weight: 700; color: #cbd5e1; white-space: nowrap; text-align: center; }
-      .popup-h2h-date { text-align: center; padding: 2px 0; font-size: 10px; color: #475569; border-bottom: 1px solid rgba(255,255,255,0.04); list-style: none; }
-      .popup-close-btn {
-        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
-        color: white; padding: 12px 20px; border: none; border-radius: 12px;
-        cursor: pointer; margin-top: 20px; font-weight: 800; width: 100%; font-size: 14px;
-      }
-      @media (max-width: 600px) {
-        .popup-box { padding: 16px; }
-        .popup-logo { width: 52px; height: 52px; }
-        .popup-score { font-size: 32px; }
-        .popup-stats-grid { grid-template-columns: 1fr; }
-      }
-
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;
