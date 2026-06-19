@@ -790,14 +790,25 @@ class SoccerLiveTeamCard extends LitElement {
 
   updated(changedProperties) {
     if (changedProperties.has('showPopup')) {
+      const dialog = this.renderRoot?.querySelector('.popup-dialog');
       if (this.showPopup) {
+        if (dialog && !dialog.open) {
+          try {
+            dialog.showModal();
+          } catch (e) {
+            dialog.setAttribute('open', '');
+          }
+        }
         if (!this._escHandler) {
           this._escHandler = e => { if (e.key === 'Escape') this.showPopup = false; };
           document.addEventListener('keydown', this._escHandler);
         }
-      } else if (this._escHandler) {
-        document.removeEventListener('keydown', this._escHandler);
-        this._escHandler = null;
+      } else {
+        if (dialog?.open) dialog.close();
+        if (this._escHandler) {
+          document.removeEventListener('keydown', this._escHandler);
+          this._escHandler = null;
+        }
       }
     }
     if (changedProperties.has('activeMatch') && this.activeMatch) {
@@ -836,8 +847,12 @@ class SoccerLiveTeamCard extends LitElement {
   _renderPopup() {
     const m = this.activeMatch;
     return html`
-      <div class="popup-overlay" @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}">
-        <div class="popup-box">
+      <dialog
+        class="popup-dialog"
+        @cancel="${e => { e.preventDefault(); this.showPopup = false; }}"
+        @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}"
+      >
+        <div class="popup-box" @click="${e => e.stopPropagation()}">
           <h3 class="popup-title">${this._t('popup.match_details')}</h3>
           <div class="popup-score-row">
             <img class="popup-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
@@ -857,7 +872,7 @@ class SoccerLiveTeamCard extends LitElement {
           ${this._renderPopupH2H(m)}
           <button class="popup-close-btn" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
-      </div>
+      </dialog>
     `;
   }
 
@@ -1000,12 +1015,28 @@ class SoccerLiveTeamCard extends LitElement {
 
   static get styles() {
     return [skinStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
-      /* ── Popup overlay (renders inside shadow DOM, position:fixed escapes the card) ── */
-      .popup-overlay {
-        position: fixed; inset: 0; z-index: 999999;
-        display: flex; justify-content: center; align-items: center;
-        background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
-        overflow: auto; padding: 16px;
+      /* Native dialog uses the browser top layer, so it is not trapped behind Lovelace/stack card stacking contexts. */
+      .popup-dialog {
+        border: 0;
+        padding: 16px;
+        margin: 0;
+        width: 100vw;
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+        background: transparent;
+        color: inherit;
+        overflow: auto;
+        box-sizing: border-box;
+      }
+      .popup-dialog[open] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .popup-dialog::backdrop {
+        background: rgba(0,0,0,0.72);
+        backdrop-filter: blur(8px);
       }
       .popup-box {
         background: var(--cl-bg, #1a1f2e);

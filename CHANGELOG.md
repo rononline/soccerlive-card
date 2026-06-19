@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.2 (2026-06-19)
+- Team card: render match details popup with native `<dialog>.showModal()` so it opens in the browser top layer above stack/tab cards
+
 ## v3.21.1 (2026-06-19)
 - LiveMatch, MultiTeam, TeamCompetitions: replace final remaining hardcoded `LIVE`/`FT` labels with `_t('status.live')` / `_t('status.full_time')`
 
