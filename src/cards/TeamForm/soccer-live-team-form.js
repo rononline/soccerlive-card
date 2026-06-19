@@ -108,11 +108,12 @@ class SoccerLiveTeamFormCard extends LitElement {
     const logo = attrs.team_logo
       || (trackedIsHome ? next?.home_logo : trackedIsAway ? next?.away_logo : null)
       || next?.home_logo || '';
-    const standingSummary = trackedIsHome
+    const rawStandingSummary = trackedIsHome
       ? (next?.home_standing_summary || '')
       : trackedIsAway
         ? (next?.away_standing_summary || '')
         : (next?.home_standing_summary || '');
+    const standingSummary = rawStandingSummary && rawStandingSummary !== 'N/A' ? rawStandingSummary : '';
     const hideHeader = this._config.hide_header === true;
 
     // Compute W/D/L per previous match (oldest → newest)

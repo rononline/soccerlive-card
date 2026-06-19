@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.9 (2026-06-19)
+- Team, TeamForm and MatchCenter: hide `N/A` standing/record summaries instead of rendering them in card bodies or badges
+
 ## v3.21.8 (2026-06-19)
 - TeamCompetitions: hide `N/A` standing summaries instead of rendering them as badges
 

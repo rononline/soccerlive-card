@@ -398,6 +398,10 @@ class SoccerLiveTeamCard extends LitElement {
     return html`<div class="record"><span class="rec">${record}</span></div>`;
   }
 
+  _renderStandingSummary(summary) {
+    return summary && summary !== 'N/A' ? html`<div class="standing-summary">${summary}</div>` : '';
+  }
+
   _hexToRgb(hex) {
     if (!hex || hex === 'N/A') return null;
     const h = String(hex).replace('#', '');
@@ -560,7 +564,7 @@ class SoccerLiveTeamCard extends LitElement {
               <img class="team-logo-big" src="${match.home_logo}" alt="${match.home_team}" />
             </div>
             <div class="team-name-big ${homeIsMyTeam ? 'my-team' : ''}">${match.home_team}</div>
-            ${!isLive && match.home_standing_summary ? html`<div class="standing-summary">${match.home_standing_summary}</div>` : ''}
+            ${!isLive ? this._renderStandingSummary(match.home_standing_summary) : ''}
             ${this._renderRecord(match.home_record)}
             ${!isLive ? (this._renderForm(match.last_five_home) || this._renderForm(match.home_form)) : this._renderForm(match.home_form)}
             ${!isLive ? this._renderTopScorer(match.home_top_scorer) : ''}
@@ -579,7 +583,7 @@ class SoccerLiveTeamCard extends LitElement {
               <img class="team-logo-big" src="${match.away_logo}" alt="${match.away_team}" />
             </div>
             <div class="team-name-big ${awayIsMyTeam ? 'my-team' : ''}">${match.away_team}</div>
-            ${!isLive && match.away_standing_summary ? html`<div class="standing-summary">${match.away_standing_summary}</div>` : ''}
+            ${!isLive ? this._renderStandingSummary(match.away_standing_summary) : ''}
             ${this._renderRecord(match.away_record)}
             ${!isLive ? (this._renderForm(match.last_five_away) || this._renderForm(match.away_form)) : this._renderForm(match.away_form)}
             ${!isLive ? this._renderTopScorer(match.away_top_scorer) : ''}

@@ -149,10 +149,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderOverview(match) {
-    const homeRec = match.home_record_summary || match.home_record || '';
-    const awayRec = match.away_record_summary || match.away_record || '';
-    const homeStd = match.home_standing_summary || '';
-    const awayStd = match.away_standing_summary || '';
+    const clean = value => value && value !== 'N/A' ? value : '';
+    const homeRec = clean(match.home_record_summary || match.home_record);
+    const awayRec = clean(match.away_record_summary || match.away_record);
+    const homeStd = clean(match.home_standing_summary);
+    const awayStd = clean(match.away_standing_summary);
 
     return html`
       <div class="ov-section">
