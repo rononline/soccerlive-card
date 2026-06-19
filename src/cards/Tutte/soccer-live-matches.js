@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
@@ -75,6 +75,8 @@ class SoccerLiveMatchesCard extends LitElement {
       document.removeEventListener('keydown', this._escHandler);
       this._escHandler = null;
     }
+
+    this._removePopupPortal();
 
     this._cleanupTimers.forEach(t => clearTimeout(t));
     this._cleanupTimers = [];
@@ -453,7 +455,6 @@ class SoccerLiveMatchesCard extends LitElement {
           `)}
         </div>
       </ha-card>
-      ${this.showPopup && this.activeMatch ? this._renderPopup() : ''}
     `;
   }
 
@@ -461,17 +462,155 @@ class SoccerLiveMatchesCard extends LitElement {
     if (changedProperties.has('hass') && this.hass && !this._eventSubscriptions?.length) {
       this._subscribeToEvents();
     }
-    if (changedProperties.has('showPopup')) {
+
+    if (changedProperties.has('showPopup') || changedProperties.has('activeMatch')) {
       if (this.showPopup) {
+        this._renderPopupPortal();
         if (!this._escHandler) {
           this._escHandler = e => { if (e.key === 'Escape') this.showPopup = false; };
           document.addEventListener('keydown', this._escHandler);
         }
-      } else if (this._escHandler) {
-        document.removeEventListener('keydown', this._escHandler);
-        this._escHandler = null;
+      } else {
+        this._removePopupPortal();
+        if (this._escHandler) {
+          document.removeEventListener('keydown', this._escHandler);
+          this._escHandler = null;
+        }
       }
     }
+  }
+
+  _copyPopupThemeVars(target) {
+    const computed = getComputedStyle(this);
+    [
+      '--cl-bg',
+      '--cl-text',
+      '--cl-text-2',
+      '--cl-divider',
+      '--cl-accent',
+      '--cl-accent-2',
+      '--cl-accent-rgb',
+      '--cl-accent-2-rgb',
+    ].forEach(name => {
+      const value = computed.getPropertyValue(name);
+      if (value) target.style.setProperty(name, value);
+    });
+  }
+
+  _renderPopupPortal() {
+    if (!this.activeMatch) return;
+
+    if (!this._popupPortal) {
+      this._popupPortal = document.createElement('dialog');
+      this._popupPortal.className = 'soccer-live-matches-popup-portal';
+
+      this._popupCancelHandler = event => {
+        event.preventDefault();
+        this.showPopup = false;
+      };
+      this._popupClickHandler = event => {
+        if (event.target === this._popupPortal) this.showPopup = false;
+      };
+
+      this._popupPortal.addEventListener('cancel', this._popupCancelHandler);
+      this._popupPortal.addEventListener('click', this._popupClickHandler);
+      document.body.appendChild(this._popupPortal);
+    }
+
+    this._copyPopupThemeVars(this._popupPortal);
+    render(html`${this._renderPopupPortalStyles()}${this._renderPopup()}`, this._popupPortal);
+
+    if (!this._popupPortal.open) {
+      try {
+        this._popupPortal.showModal();
+      } catch (err) {
+        this._popupPortal.setAttribute('open', '');
+      }
+    }
+  }
+
+  _removePopupPortal() {
+    if (!this._popupPortal) return;
+
+    if (this._popupPortal.open) {
+      this._popupPortal.close();
+    }
+    if (this._popupCancelHandler) {
+      this._popupPortal.removeEventListener('cancel', this._popupCancelHandler);
+      this._popupCancelHandler = null;
+    }
+    if (this._popupClickHandler) {
+      this._popupPortal.removeEventListener('click', this._popupClickHandler);
+      this._popupClickHandler = null;
+    }
+
+    render(html``, this._popupPortal);
+    this._popupPortal.remove();
+    this._popupPortal = null;
+  }
+
+  _renderPopupPortalStyles() {
+    return html`
+      <style>
+        .soccer-live-matches-popup-portal {
+          border: 0;
+          padding: 0;
+          margin: auto;
+          max-width: none;
+          max-height: none;
+          width: 100vw;
+          height: 100vh;
+          background: transparent;
+          color: inherit;
+          overflow: hidden;
+        }
+        .soccer-live-matches-popup-portal::backdrop {
+          background: rgba(0,0,0,0.72);
+          backdrop-filter: blur(8px);
+        }
+        .mp-overlay {
+          position: fixed; inset: 0;
+          display: flex; justify-content: center; align-items: center;
+          overflow: auto; padding: 16px;
+        }
+        .mp-box {
+          background: var(--cl-bg, #1a1f2e);
+          border: 1px solid var(--cl-divider, rgba(255,255,255,0.08));
+          border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+          color: var(--cl-text, #f8fafc);
+          max-height: 85vh; max-width: 560px; width: 100%;
+          overflow-y: auto; padding: 24px; margin: auto;
+        }
+        .mp-title {
+          margin: 0 0 20px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+          background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
+          -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .mp-score-row { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 16px; }
+        .mp-logo { width: 64px; height: 64px; object-fit: contain; }
+        .mp-score-center { text-align: center; }
+        .mp-score { font-size: 38px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+        .mp-sep { opacity: 0.4; }
+        .mp-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 6px; font-weight: 600; }
+        .mp-teams { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 14px; margin: 0 0 20px; }
+        .mp-event-group { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
+        .mp-event-group.goal { background: rgba(99,102,241,0.1); border-color: #6366f1; }
+        .mp-event-group.yellow { background: rgba(245,158,11,0.1); border-color: #f59e0b; }
+        .mp-event-group.red { background: rgba(239,68,68,0.1); border-color: #ef4444; }
+        .mp-event-title { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+        .mp-event-group.goal .mp-event-title { color: #6366f1; }
+        .mp-event-group.yellow .mp-event-title { color: #f59e0b; }
+        .mp-event-group.red .mp-event-title { color: #ef4444; }
+        .mp-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
+        .mp-event-list li { margin: 4px 0; }
+        .mp-no-events { text-align: center; color: #94a3b8; font-size: 13px; }
+        .mp-close {
+          background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
+          color: white; padding: 12px 20px; border: none; border-radius: 12px;
+          cursor: pointer; margin-top: 20px; font-weight: 800; width: 100%; font-size: 14px;
+        }
+      </style>
+    `;
   }
 
   _renderPopup() {
@@ -487,7 +626,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const hasEvents = goals.length || yellowCards.length || redCards.length;
     return html`
       <div class="mp-overlay" @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}">
-        <div class="mp-box">
+        <div class="mp-box" @click="${e => e.stopPropagation()}">
           <h3 class="mp-title">${this._t('popup.match_details')}</h3>
           <div class="mp-score-row">
             <img class="mp-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
@@ -535,48 +674,6 @@ class SoccerLiveMatchesCard extends LitElement {
         padding: 24px;
         text-align: center;
         color: var(--cl-text-2);
-      }
-      .mp-overlay {
-        position: fixed; inset: 0; z-index: 999999;
-        display: flex; justify-content: center; align-items: center;
-        background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
-        overflow: auto; padding: 16px;
-      }
-      .mp-box {
-        background: var(--cl-bg, #1a1f2e);
-        border: 1px solid var(--cl-divider, rgba(255,255,255,0.08));
-        border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-        color: var(--cl-text, #f8fafc);
-        max-height: 85vh; max-width: 560px; width: 100%;
-        overflow-y: auto; padding: 24px; margin: auto;
-      }
-      .mp-title {
-        margin: 0 0 20px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
-        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-      }
-      .mp-score-row { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 16px; }
-      .mp-logo { width: 64px; height: 64px; object-fit: contain; }
-      .mp-score-center { text-align: center; }
-      .mp-score { font-size: 38px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
-      .mp-sep { opacity: 0.4; }
-      .mp-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 6px; font-weight: 600; }
-      .mp-teams { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 14px; margin: 0 0 20px; }
-      .mp-event-group { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
-      .mp-event-group.goal { background: rgba(99,102,241,0.1); border-color: #6366f1; }
-      .mp-event-group.yellow { background: rgba(245,158,11,0.1); border-color: #f59e0b; }
-      .mp-event-group.red { background: rgba(239,68,68,0.1); border-color: #ef4444; }
-      .mp-event-title { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
-      .mp-event-group.goal .mp-event-title { color: #6366f1; }
-      .mp-event-group.yellow .mp-event-title { color: #f59e0b; }
-      .mp-event-group.red .mp-event-title { color: #ef4444; }
-      .mp-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
-      .mp-event-list li { margin: 4px 0; }
-      .mp-no-events { text-align: center; color: #94a3b8; font-size: 13px; }
-      .mp-close {
-        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
-        color: white; padding: 12px 20px; border: none; border-radius: 12px;
-        cursor: pointer; margin-top: 20px; font-weight: 800; width: 100%; font-size: 14px;
       }
       .hero-bg {
         position: absolute;
