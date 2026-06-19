@@ -8,17 +8,20 @@ import { html, css } from 'lit-element';
  * @param {TemplateResult|null} badge - Optional right-side badge (use renderSoccerBadge)
  * @param {string}      fallbackIcon - Emoji shown when logo is absent (default '⚽')
  */
-export const renderSoccerHeader = ({ logo, title, badge = null, fallbackIcon = '⚽' }) => html`
+export const renderSoccerHeader = ({ logo, title, badge = null, fallbackIcon = '⚽' }) => {
+  const validLogo = logo && logo !== 'N/A' ? logo : null;
+  return html`
   <div class="top-bar">
     <div class="competition">
       <span class="comp-icon">
-        ${logo ? html`<img src="${logo}" alt="" @error=${e => e.target.style.display = 'none'}>` : fallbackIcon}
+        ${validLogo ? html`<img src="${validLogo}" alt="" @error=${e => e.target.style.display='none'}>` : fallbackIcon}
       </span>
       <span class="comp-name">${title || ' '}</span>
     </div>
     ${badge || ''}
   </div>
 `;
+};
 
 /**
  * Standard badge variants: 'live' | 'ft' | 'date' | 'neutral'

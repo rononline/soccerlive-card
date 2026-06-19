@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.20.6 (2026-06-19)
+- shared-header: filter out `"N/A"` as logo URL (parser fallback) so the fallback emoji shows instead of a broken/empty icon box
+- Countdown: `@media (max-width: 600px)` now sets `cd-body { padding: 12px }` instead of `ha-card { padding: 12px }` — fix for icon still offset on narrow screens
+
 ## v3.20.5 (2026-06-19)
 - Countdown: remove `padding: 16px` from `ha-card` (was offsetting the header 16px too far inward); body content now in `.cd-body` wrapper with the same 16px padding
 - MatchCenter: use `attrs.league_info[0].logo_href` as icon fallback — `team_match` sensors don't have `league_logo` as a top-level attribute but do have `league_info`

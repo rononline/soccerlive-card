@@ -178,7 +178,7 @@ class SoccerLiveCountdownCard extends LitElement {
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
 
       @media (max-width: 600px) {
-        ha-card { padding: 12px !important; }
+        .cd-body { padding: 12px !important; }
         .team-logo { width: 40px !important; height: 40px !important; }
         .team-name { font-size: 12px !important; }
         .score { font-size: 32px !important; letter-spacing: 4px !important; }
