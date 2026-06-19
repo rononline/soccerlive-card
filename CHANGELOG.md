@@ -4,7 +4,6 @@
 - Offline error state in Team, Countdown, LiveMatch, MultiTeam via `_t('ui.offline_cached')` + `_t('ui.waiting_integration')`
 - MultiTeam no-entities error via `_t('ui.no_entities_configured')` + `_t('ui.add_team_entity')`
 - 4 new `ui.*` keys added in all 7 languages (254 total)
-- `bracket.py`: remove dead `round_name_nl`/`name_nl` Dutch fields; simplify slug/canonical tuples to plain strings; translate Italian docstrings
 
 ## v3.19.5 (2026-06-19)
 - README: i18n key count updated to 250; `hide_broadcasts` coverage includes Matches card; integration version requirements table extended with v3.6.3/v3.6.5 entries
