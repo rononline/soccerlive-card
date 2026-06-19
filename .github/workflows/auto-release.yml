@@ -1,6 +1,7 @@
 name: Auto Release
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -25,10 +26,12 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Check if tag already exists
+      - name: Check if release already exists
         id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git rev-parse "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+          if gh release view "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
@@ -69,6 +72,15 @@ jobs:
             echo "$NOTE"
             echo 'EOF_NOTES'
           } >> "$GITHUB_OUTPUT"
+
+      - name: Ensure tag exists
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          if ! git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
 
       - name: Create tag and release
         if: steps.check.outputs.exists == 'false'
