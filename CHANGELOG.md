@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.20.2 (2026-06-19)
+- MatchCenter, Lineup, Timeline: competition name/logo fallback to `match.league_name` / `match.league_logo` — parser stores the name in `league_name`, not `competition_name`, so the header was showing blank
+
 ## v3.20.1 (2026-06-19)
 - MatchCenter editor: add skin/language dropdowns, section headers via `_t()`, entity label via `_t()`
 - TeamForm editor: add skin/language dropdowns, section headers via `_t()`, replace `<input checkbox>` with `ha-switch`

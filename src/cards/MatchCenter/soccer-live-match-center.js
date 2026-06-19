@@ -113,8 +113,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ? renderSoccerBadge('FT', 'ft')
         : renderSoccerBadge(match.date || '', 'date');
 
+    const compName = match.competition_name || match.league_name || '';
+    const compLogo = match.competition_logo || match.league_logo || null;
+
     return html`
-      ${renderSoccerHeader({ logo: match.competition_logo, title: match.competition_name, badge })}
+      ${renderSoccerHeader({ logo: compLogo, title: compName, badge })}
 
       <div class="scoreboard">
         <div class="mc-team">

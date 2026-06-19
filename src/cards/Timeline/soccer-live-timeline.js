@@ -75,8 +75,8 @@ class SoccerLiveTimelineCard extends LitElement {
         <div class="hero-bg"></div>
         ${!this.hideHeader ? html`
           ${renderSoccerHeader({
-            logo: m.competition_logo || null,
-            title: m.competition_name || this._t('card.timeline'),
+            logo: m.competition_logo || m.league_logo || null,
+            title: m.competition_name || m.league_name || this._t('card.timeline'),
             badge: (m.state === 'in' || m.state === 'post')
               ? renderSoccerBadge(`${m.home_score ?? 0}–${m.away_score ?? 0}`, m.state === 'in' ? 'live' : 'ft')
               : renderSoccerBadge(m.date || '', 'date'),
