@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { SKIN_OPTIONS } from '../../skins.js';
+import { SKIN_OPTIONS, resolveSkin } from '../../skins.js';
 import { t, resolveLang } from '../../i18n.js';
 
 const LANGS  = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
@@ -167,7 +167,7 @@ class SoccerLiveScorersEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
-            ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${(this._config.skin || 'dark') === val}>${label}</option>`)}
+            ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
           </select>
         </div>
 

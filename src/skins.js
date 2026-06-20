@@ -1,7 +1,6 @@
 import { css } from "lit-element";
 
-// Beschikbare themes: dark (standaard), light, feyenoord, classic, neon, gold
-// Gebruik: skin: feyenoord  in de kaart-YAML
+// Available skins. `feyenoord` remains a backwards-compatible alias for `red-white`.
 
 export const skinStyles = css`
   :host {
@@ -396,7 +395,6 @@ export const SKIN_OPTIONS = [
   ['orange',      'Orange (Netherlands)'],
   ['blue',        'Blue (Chelsea / PSG / Inter)'],
   ['black-white', 'Black & White (Juventus)'],
-  ['feyenoord',   'Feyenoord'],
   ['arsenal',     'Arsenal'],
   ['barcelona',   'Barcelona'],
   ['real-madrid', 'Real Madrid'],

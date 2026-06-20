@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.12 (2026-06-20)
+- Editors: use the shared skin option list consistently across all card editors
+- Skins: keep `feyenoord` as a backwards-compatible alias for `red-white`, but remove it from editor dropdowns to avoid duplicate skin choices
+
 ## v3.21.11 (2026-06-20)
 - LiveMatch and MatchCenter: show `—` instead of `N/A` for missing statistic values
 - Timeline, Countdown, MultiTeam and LiveCommentary: replace remaining visible English editor/fallback strings with existing i18n labels

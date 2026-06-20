@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from '../../i18n.js';
 import { editorStyles } from '../editor-helper.js';
+import { SKIN_OPTIONS, resolveSkin } from '../../skins.js';
 
 class SoccerLiveStandingsEditor extends LitElement {
   static get properties() {
@@ -256,19 +257,7 @@ class SoccerLiveStandingsEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
-            <option value="dark"       ?selected=${(this._config.skin || 'dark') === 'dark'}>Dark (standaard)</option>
-            <option value="light"      ?selected=${this._config.skin === 'light'}>Light</option>
-            <option value="red-white"  ?selected=${this._config.skin === 'red-white'}>Red & White</option>
-            <option value="classic"    ?selected=${this._config.skin === 'classic'}>Classic (groen)</option>
-            <option value="neon"       ?selected=${this._config.skin === 'neon'}>Neon</option>
-            <option value="gold"        ?selected=${this._config.skin === 'gold'}>Gold</option>
-            <option value="orange"     ?selected=${this._config.skin === 'orange'}>Orange (Netherlands)</option>
-            <option value="blue"       ?selected=${this._config.skin === 'blue'}>Blue (Chelsea / PSG / Inter)</option>
-            <option value="black-white" ?selected=${this._config.skin === 'black-white'}>Black &amp; White (Juventus)</option>
-            <option value="feyenoord"  ?selected=${this._config.skin === 'feyenoord'}>Feyenoord (red/white)</option>
-            <option value="arsenal"    ?selected=${this._config.skin === 'arsenal'}>Arsenal</option>
-            <option value="barcelona"  ?selected=${this._config.skin === 'barcelona'}>Barcelona</option>
-            <option value="real-madrid" ?selected=${this._config.skin === 'real-madrid'}>Real Madrid</option>
+            ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
           </select>
         </div>
         <div>
