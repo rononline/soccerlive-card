@@ -27,16 +27,16 @@ class SoccerLiveTickerCard extends LitElement {
           ${m.home_logo ? html`<img class="tick-logo" src="${m.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
           <span class="tick-name">${m.home_team || '?'}</span>
         </div>
-        <div class="tick-score">
+        <div class="tick-mid">
           ${isLive ? html`<span class="tick-live"><span class="live-dot"></span>${m.clock || ''}</span>` : ''}
           ${isLive || isFt
-            ? html`<span class="tick-num">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
+            ? html`<span class="tick-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
             : html`<span class="tick-time">${m.date || 'vs'}</span>`}
           ${isFt ? html`<span class="tick-ft">${this._t('status.full_time')}</span>` : ''}
         </div>
-        <div class="tick-team right">
-          <span class="tick-name">${m.away_team || '?'}</span>
+        <div class="tick-team">
           ${m.away_logo ? html`<img class="tick-logo" src="${m.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
+          <span class="tick-name">${m.away_team || '?'}</span>
         </div>
       </div>
     `;
@@ -126,42 +126,46 @@ class SoccerLiveTickerCard extends LitElement {
       }
       .tick-item {
         display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 10px;
+        flex-direction: column;
+        gap: 3px;
+        padding: 8px 12px;
         background: var(--cl-surface);
         border: 1px solid var(--cl-divider);
         border-radius: 12px;
-        min-width: 170px;
+        width: 160px;
         flex-shrink: 0;
+        box-sizing: border-box;
       }
       .tick-item.live {
         border-color: rgba(239,68,68,0.5);
         background: rgba(239,68,68,0.07);
       }
       .tick-team {
-        display: flex; align-items: center; gap: 4px;
+        display: flex; align-items: center; gap: 6px;
+        min-width: 0;
+      }
+      .tick-logo { width: 16px; height: 16px; object-fit: contain; flex-shrink: 0; }
+      .tick-name {
+        font-size: 12px; font-weight: 700;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         flex: 1; min-width: 0;
       }
-      .tick-team.right { flex-direction: row-reverse; }
-      .tick-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-      .tick-name {
-        font-size: 11px; font-weight: 700;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      .tick-mid {
+        display: flex; align-items: center; gap: 5px;
+        padding: 1px 0;
       }
       .tick-score {
-        display: flex; flex-direction: column; align-items: center;
-        min-width: 48px; flex-shrink: 0; gap: 1px;
+        font-size: 14px; font-weight: 900; letter-spacing: 0.5px;
+        color: var(--cl-text);
       }
-      .tick-num { font-size: 15px; font-weight: 900; letter-spacing: 0.5px; }
-      .tick-time { font-size: 10px; color: var(--cl-text-2); text-align: center; }
-      .tick-ft { font-size: 8px; font-weight: 700; color: var(--cl-text-2); text-transform: uppercase; }
+      .tick-time { font-size: 10px; color: var(--cl-text-2); }
+      .tick-ft { font-size: 9px; font-weight: 700; color: var(--cl-text-2); text-transform: uppercase; }
       .tick-live {
-        font-size: 8px; font-weight: 700; color: var(--cl-live, #ef4444);
-        display: flex; align-items: center; gap: 2px;
+        font-size: 9px; font-weight: 700; color: var(--cl-live, #ef4444);
+        display: flex; align-items: center; gap: 3px;
       }
       .live-dot {
-        width: 4px; height: 4px;
+        width: 5px; height: 5px;
         background: var(--cl-live, #ef4444);
         border-radius: 50%;
         animation: pulse 1s infinite;

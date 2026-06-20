@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.21 (2026-06-20)
+- Ticker: redesign match items to vertical layout (home top, score/time middle, away bottom) for better readability; fixed width 160px per item
+
 ## v3.21.20 (2026-06-20)
 - Ticker: add auto-scroll option with seamless loop and configurable speed (slow/normal/fast); scrolling pauses on hover
 
