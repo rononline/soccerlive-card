@@ -223,26 +223,29 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _renderTimeline(match) {
     const events = match.key_events || [];
     if (!events.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
-    const icon = type => {
+    const badge = type => {
       const s = (type || '').toLowerCase();
-      if (s.includes('goal'))   return '⚽';
-      if (s.includes('yellow')) return '🟨';
-      if (s.includes('red'))    return '🟥';
-      if (s.includes('sub'))    return '🔄';
-      return '📋';
+      if (s.includes('goal'))   return html`<span class="tl-badge goal">${this._t('event.goal')}</span>`;
+      if (s.includes('yellow')) return html`<span class="tl-badge yellow">${this._t('event.yellow_card')}</span>`;
+      if (s.includes('red'))    return html`<span class="tl-badge red">${this._t('event.red_card')}</span>`;
+      if (s.includes('sub'))    return html`<span class="tl-badge sub">${this._t('event.substitution')}</span>`;
+      return html`<span class="tl-badge other">${type || '—'}</span>`;
     };
     return html`
       <div class="tl-list">
-        ${events.map(ev => html`
-          <div class="tl-row">
-            <span class="tl-min">${ev.clock || ev.minute ? `${ev.clock || ev.minute}'` : ''}</span>
-            <span class="tl-icon">${icon(ev.type)}</span>
-            <div class="tl-text">
-              <div>${ev.player_name || ev.player || ev.text || ''}</div>
-              ${ev.team ? html`<div class="tl-team">${ev.team}</div>` : ''}
+        ${events.map(ev => {
+          const player = (ev.athletes || []).join(', ') || ev.short_text || ev.type_text || '';
+          return html`
+            <div class="tl-row">
+              <span class="tl-min">${ev.clock || ev.minute ? `${ev.clock || ev.minute}'` : ''}</span>
+              ${badge(ev.type)}
+              <div class="tl-text">
+                <div>${player}</div>
+                ${ev.team ? html`<div class="tl-team">${ev.team}</div>` : ''}
+              </div>
             </div>
-          </div>
-        `)}
+          `;
+        })}
       </div>
     `;
   }
@@ -362,10 +365,16 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .stat-bar.home { background: var(--cl-accent, #6366f1); }
       .stat-bar.away { background: var(--cl-text-2, #94a3b8); opacity: 0.4; }
       /* Timeline */
+      .tab-content { min-height: 80px; max-height: 380px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
       .tl-list { padding: 4px 16px; }
-      .tl-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
-      .tl-min { min-width: 30px; font-size: 11px; font-weight: 700; color: var(--cl-text-2, #94a3b8); padding-top: 1px; }
-      .tl-icon { font-size: 15px; }
+      .tl-row { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
+      .tl-min { min-width: 28px; font-size: 11px; font-weight: 700; color: var(--cl-text-2, #94a3b8); padding-top: 2px; }
+      .tl-badge { display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; line-height: 15px; white-space: nowrap; }
+      .tl-badge.goal   { background: rgba(99,102,241,0.18); color: var(--cl-accent, #6366f1); }
+      .tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
+      .tl-badge.red    { background: rgba(239,68,68,0.18); color: #ef4444; }
+      .tl-badge.sub    { background: rgba(148,163,184,0.12); color: var(--cl-text-2, #94a3b8); }
+      .tl-badge.other  { background: rgba(148,163,184,0.08); color: var(--cl-text-2, #94a3b8); }
       .tl-text { flex: 1; font-size: 12px; }
       .tl-team { font-size: 10px; color: var(--cl-text-2, #94a3b8); margin-top: 2px; }
       /* Lineup */

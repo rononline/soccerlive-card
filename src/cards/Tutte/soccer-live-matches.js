@@ -598,7 +598,8 @@ class SoccerLiveMatchesCard extends LitElement {
           border-radius: 20px; box-shadow: 0 24px 64px rgba(0,0,0,0.6);
           color: var(--cl-text, #f8fafc);
           max-height: 85vh; max-width: 560px; width: 100%;
-          overflow-y: auto; padding: 24px; margin: auto;
+          overflow-y: auto; -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain; padding: 24px; margin: auto;
         }
         .mp-title {
           margin: 0 0 20px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
