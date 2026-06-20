@@ -23,15 +23,19 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
   _selectComp(key) { this._selectedComp = key; this.requestUpdate(); }
 
+  _validText(value) {
+    return value && value !== 'N/A' ? value : '';
+  }
+
   _groupByCompetition(matches) {
     const groups = {};
     for (const m of matches) {
-      const key = m.league_name || m.competition_name || 'Other';
+      const key = this._validText(m.league_name) || this._validText(m.competition_name) || 'Other';
       if (!groups[key]) {
         groups[key] = {
           key,
           name: key,
-          logo: m.league_logo || m.competition_logo || '',
+          logo: this._validText(m.league_logo) || this._validText(m.competition_logo),
           all: [],
         };
       }
@@ -167,11 +171,13 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
         ` : ''}
 
         <div class="comp-body">
-          <div class="comp-header">
-            ${active.logo ? html`<img class="comp-icon" src="${active.logo}" alt="">` : ''}
-            <span class="comp-name">${active.name}</span>
-            ${standing ? html`<span class="standing-pill">${standing}</span>` : ''}
-          </div>
+          ${active.name !== 'Other' || active.logo || standing ? html`
+            <div class="comp-header">
+              ${active.logo ? html`<img class="comp-icon" src="${active.logo}" alt="">` : ''}
+              ${active.name !== 'Other' ? html`<span class="comp-name">${active.name}</span>` : ''}
+              ${standing ? html`<span class="standing-pill">${standing}</span>` : ''}
+            </div>
+          ` : ''}
 
           ${featured.state === 'in' || featured.state === 'post'
             ? this._renderMatch(featured, null)

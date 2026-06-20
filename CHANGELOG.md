@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.10 (2026-06-20)
+- TeamCompetitions: hide `N/A` competition/group names and omit the competition header when no real competition metadata is available
+
 ## v3.21.9 (2026-06-19)
 - Team, TeamForm and MatchCenter: hide `N/A` standing/record summaries instead of rendering them in card bodies or badges
 
