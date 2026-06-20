@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.13 (2026-06-20)
+- Skins: add generic `red-gold`, `blue-red` and `white-gold` palettes with legacy aliases for `arsenal`, `barcelona` and `real-madrid`
+- Skins: add `custom` and `auto` skin support with YAML color overrides
+- Light skin: improve contrast, accent colors and surface depth
+- Docs: update the shared skin list and add custom skin examples
+
 ## v3.21.12 (2026-06-20)
 - Editors: use the shared skin option list consistently across all card editors
 - Skins: keep `feyenoord` as a backwards-compatible alias for `red-white`, but remove it from editor dropdowns to avoid duplicate skin choices

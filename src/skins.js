@@ -1,6 +1,7 @@
 import { css } from "lit-element";
 
-// Available skins. `feyenoord` remains a backwards-compatible alias for `red-white`.
+// Available skins. Club-specific legacy names remain backwards-compatible aliases
+// for the generic palette names shown in the editor.
 
 export const skinStyles = css`
   :host {
@@ -44,21 +45,31 @@ export const skinStyles = css`
 
   /* ---------- LIGHT ---------- */
   :host([data-skin="light"]) {
-    --cl-bg: #ffffff;
-    --cl-surface: rgba(15,23,42,0.04);
-    --cl-surface-2: rgba(15,23,42,0.07);
-    --cl-card-2: rgba(15,23,42,0.04);
-    --cl-divider: rgba(15,23,42,0.10);
-    --cl-glass-border: rgba(15,23,42,0.10);
-    --cl-text: #14182a;
-    --cl-text-2: #5b6577;
-    --cl-shadow: rgba(15,23,42,0.12);
+    --cl-accent: #2563eb;
+    --cl-accent-2: #f97316;
+    --cl-accent-rgb: 37,99,235;
+    --cl-accent-2-rgb: 249,115,22;
+    --cl-live: #dc2626;
+    --cl-live-glow: rgba(220,38,38,0.32);
+    --cl-cl: #2563eb;
+    --cl-el: #f97316;
+    --cl-rel: #dc2626;
+    --cl-conf: #7c3aed;
+    --cl-bg: #f8fafc;
+    --cl-surface: rgba(15,23,42,0.055);
+    --cl-surface-2: rgba(37,99,235,0.09);
+    --cl-card-2: rgba(255,255,255,0.72);
+    --cl-divider: rgba(15,23,42,0.12);
+    --cl-glass-border: rgba(37,99,235,0.16);
+    --cl-text: #0f172a;
+    --cl-text-2: #64748b;
+    --cl-shadow: rgba(15,23,42,0.14);
     --cl-overlay-strong: rgba(0,0,0,0.45);
-    --cl-overlay-soft: rgba(0,0,0,0.18);
-    --cl-chip-bg: rgba(15,23,42,0.06);
-    --cl-chip-border: rgba(15,23,42,0.12);
-    --cl-toast-bg: #1a1f33;
-    --cl-num-bg: #1a1f33;
+    --cl-overlay-soft: rgba(15,23,42,0.10);
+    --cl-chip-bg: rgba(37,99,235,0.08);
+    --cl-chip-border: rgba(37,99,235,0.18);
+    --cl-toast-bg: #0f172a;
+    --cl-num-bg: #ffffff;
   }
 
   /* ---------- FEYENOORD (rood/zwart) ---------- */
@@ -282,8 +293,8 @@ export const skinStyles = css`
     --cl-num-bg: #000000;
   }
 
-  /* ---------- ARSENAL (cannon red / gold) ---------- */
-  :host([data-skin="arsenal"]) {
+  /* ---------- RED-GOLD ---------- */
+  :host([data-skin="red-gold"]) {
     --cl-accent: #ef0107;
     --cl-accent-2: #c8a232;
     --cl-accent-rgb: 239,1,7;
@@ -314,8 +325,8 @@ export const skinStyles = css`
     --cl-num-bg: #050000;
   }
 
-  /* ---------- BARCELONA (blaugrana) ---------- */
-  :host([data-skin="barcelona"]) {
+  /* ---------- BLUE-RED ---------- */
+  :host([data-skin="blue-red"]) {
     --cl-accent: #004d98;
     --cl-accent-2: #a50044;
     --cl-accent-rgb: 0,77,152;
@@ -346,8 +357,8 @@ export const skinStyles = css`
     --cl-num-bg: #000308;
   }
 
-  /* ---------- REAL MADRID (los blancos) ---------- */
-  :host([data-skin="real-madrid"]) {
+  /* ---------- WHITE-GOLD ---------- */
+  :host([data-skin="white-gold"]) {
     --cl-accent: #f5f5f5;
     --cl-accent-2: #c8a951;
     --cl-accent-rgb: 245,245,245;
@@ -377,27 +388,72 @@ export const skinStyles = css`
     --cl-toast-bg: #030410;
     --cl-num-bg: #030410;
   }
+
+  /* ---------- CUSTOM / AUTO ----------
+   * These skins inherit dark defaults. applySkin() can override individual
+   * CSS variables from config keys such as accent_color and background_color.
+   */
+  :host([data-skin="custom"]),
+  :host([data-skin="auto"]) {
+    --cl-bg: #10131f;
+    --cl-surface: rgba(var(--cl-accent-rgb),0.07);
+    --cl-surface-2: rgba(var(--cl-accent-rgb),0.12);
+    --cl-card-2: rgba(var(--cl-accent-rgb),0.07);
+    --cl-divider: rgba(var(--cl-accent-rgb),0.18);
+    --cl-glass-border: rgba(var(--cl-accent-rgb),0.22);
+    --cl-text: #f8fafc;
+    --cl-text-2: #a8b3c7;
+    --cl-shadow: rgba(0,0,0,0.42);
+    --cl-overlay-strong: rgba(0,0,0,0.62);
+    --cl-overlay-soft: rgba(0,0,0,0.28);
+    --cl-chip-bg: rgba(var(--cl-accent-rgb),0.11);
+    --cl-chip-border: rgba(var(--cl-accent-rgb),0.26);
+    --cl-toast-bg: #070a12;
+    --cl-num-bg: #070a12;
+  }
 `;
 
-const VALID_SKINS = ['dark', 'light', 'red-white', 'classic', 'neon', 'gold', 'orange', 'blue', 'black-white', 'arsenal', 'barcelona', 'real-madrid'];
+const VALID_SKINS = [
+  'dark',
+  'light',
+  'red-white',
+  'classic',
+  'neon',
+  'gold',
+  'orange',
+  'blue',
+  'black-white',
+  'red-gold',
+  'blue-red',
+  'white-gold',
+  'custom',
+  'auto',
+];
 
 // Aliases: user-facing name -> internal data-skin value
-const SKIN_ALIASES = { 'feyenoord': 'red-white' };
+const SKIN_ALIASES = {
+  'feyenoord': 'red-white',
+  'arsenal': 'red-gold',
+  'barcelona': 'blue-red',
+  'real-madrid': 'white-gold',
+};
 
 // Full list for editor dropdowns: [value, label]
 export const SKIN_OPTIONS = [
   ['dark',        'Dark'],
   ['light',       'Light'],
+  ['auto',        'Auto'],
+  ['custom',      'Custom'],
   ['red-white',   'Red & White'],
+  ['red-gold',    'Red & Gold'],
+  ['blue-red',    'Blue & Red'],
+  ['white-gold',  'White & Gold'],
   ['classic',     'Classic'],
   ['neon',        'Neon'],
   ['gold',        'Gold'],
   ['orange',      'Orange (Netherlands)'],
   ['blue',        'Blue (Chelsea / PSG / Inter)'],
   ['black-white', 'Black & White (Juventus)'],
-  ['arsenal',     'Arsenal'],
-  ['barcelona',   'Barcelona'],
-  ['real-madrid', 'Real Madrid'],
 ];
 
 export function resolveSkin(config) {
@@ -408,6 +464,76 @@ export function resolveSkin(config) {
 
 export function applySkin(el, config) {
   const skin = resolveSkin(config);
-  if (el && el.setAttribute) el.setAttribute('data-skin', skin);
+  if (el && el.setAttribute) {
+    el.setAttribute('data-skin', skin);
+    applyCustomSkinVars(el, config, skin);
+  }
   return skin;
+}
+
+const CUSTOM_COLOR_KEYS = [
+  ['accent_color', '--cl-accent', '--cl-accent-rgb'],
+  ['accent_2_color', '--cl-accent-2', '--cl-accent-2-rgb'],
+  ['secondary_color', '--cl-accent-2', '--cl-accent-2-rgb'],
+  ['live_color', '--cl-live', null],
+  ['gold_color', '--cl-gold', null],
+  ['background_color', '--cl-bg', null],
+  ['surface_color', '--cl-surface', null],
+  ['surface_2_color', '--cl-surface-2', null],
+  ['card_color', '--cl-card-2', null],
+  ['text_color', '--cl-text', null],
+  ['secondary_text_color', '--cl-text-2', null],
+  ['divider_color', '--cl-divider', null],
+  ['chip_color', '--cl-chip-bg', null],
+  ['chip_border_color', '--cl-chip-border', null],
+];
+
+const CUSTOM_COLOR_VARS = new Set(CUSTOM_COLOR_KEYS.flatMap(([, colorVar, rgbVar]) => rgbVar ? [colorVar, rgbVar] : [colorVar]));
+
+function applyCustomSkinVars(el, config, skin) {
+  for (const cssVar of CUSTOM_COLOR_VARS) el.style.removeProperty(cssVar);
+  if (!config || (skin !== 'custom' && skin !== 'auto')) return;
+
+  const autoColors = skin === 'auto' ? getAutoColors(config) : {};
+  const mergedConfig = { ...autoColors, ...config };
+
+  for (const [key, colorVar, rgbVar] of CUSTOM_COLOR_KEYS) {
+    const color = normalizeCssColor(mergedConfig[key]);
+    if (!color) continue;
+
+    el.style.setProperty(colorVar, color);
+    const rgb = rgbVar ? hexToRgbTriplet(color) : null;
+    if (rgb) el.style.setProperty(rgbVar, rgb);
+  }
+}
+
+function getAutoColors(config) {
+  const colors = Array.isArray(config.team_colors)
+    ? config.team_colors
+    : [config.team_color, config.home_color, config.away_color, config.primary_color, config.secondary_color];
+  const validColors = colors.map(normalizeCssColor).filter(Boolean);
+  return {
+    accent_color: validColors[0],
+    accent_2_color: validColors[1] || validColors[0],
+  };
+}
+
+function normalizeCssColor(value) {
+  if (typeof value !== 'string') return null;
+  const color = value.trim();
+  if (/^#[0-9a-f]{3}$/i.test(color)) {
+    return `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`.toLowerCase();
+  }
+  if (/^#[0-9a-f]{6}$/i.test(color)) return color.toLowerCase();
+  if (/^[0-9a-f]{6}$/i.test(color)) return `#${color.toLowerCase()}`;
+  if (/^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)$/i.test(color)) return color;
+  return null;
+}
+
+function hexToRgbTriplet(color) {
+  if (!/^#[0-9a-f]{6}$/i.test(color)) return null;
+  const r = parseInt(color.slice(1, 3), 16);
+  const g = parseInt(color.slice(3, 5), 16);
+  const b = parseInt(color.slice(5, 7), 16);
+  return `${r},${g},${b}`;
 }

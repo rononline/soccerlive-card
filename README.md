@@ -39,7 +39,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🎨 **Animations** — live pulse, score pop, goal confetti + banner
 - 🔔 **In-card toasts** — optional on goals and cards, no notification spam
 - 🏆 **Bracket** — list style or tournament tree with SVG connector lines
-- 🎨 **Themes** — `dark`, `light`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `feyenoord`, `arsenal`, `barcelona`, `real-madrid`
+- 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
 - 🌦️ **Weather** — current conditions at the match venue (Team and Countdown cards)
@@ -73,10 +73,26 @@ All cards share these common options:
 |---|---|---|
 | `entity` | required | The Soccer Live sensor entity ID |
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
-| `skin` | `dark` | `dark`, `light`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `feyenoord`, `arsenal`, `barcelona`, `real-madrid` |
+| `skin` | `dark` | `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white` |
 | `hide_header` | `false` | Hide the top bar with competition logo and name |
 | `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, LiveMatch, MatchCenter, Matches |
 | `compact` | `false` | Dense layout: smaller scoreboard, hides form/H2H/previous — applies to Team and Countdown |
+
+Legacy skin names still work: `feyenoord` maps to `red-white`, `arsenal` to `red-gold`, `barcelona` to `blue-red`, and `real-madrid` to `white-gold`.
+
+Custom skins support these optional color keys: `accent_color`, `accent_2_color`, `background_color`, `surface_color`, `card_color`, `text_color`, `secondary_text_color`, `divider_color`, `chip_color`, `chip_border_color`, `live_color`, `gold_color`.
+
+```yaml
+type: custom:soccer-live-card
+card_type: team
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
+skin: custom
+accent_color: "#ff6b00"
+accent_2_color: "#2563eb"
+background_color: "#090909"
+```
+
+`skin: auto` can use `team_colors`, `team_color`, `home_color` and `away_color` from YAML as accent inputs.
 
 > **Entity IDs:** Examples in this README use simplified IDs like `sensor.soccer_live_standings_ned_1`. Your actual entity IDs may be longer (e.g. `sensor.soccer_live_ned_1_soccerlive_standings_dutch_eredivisie`). Use the visual editor to pick the correct sensor.
 
