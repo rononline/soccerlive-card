@@ -41,11 +41,11 @@ class SoccerLiveTickerCard extends LitElement {
     this._sel = this._isSel(m) ? null : m;
   }
 
-  _renderItem(m, showLeague) {
+  _renderItem(m) {
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
     const sel    = this._isSel(m);
-    const league = showLeague && m.league_name && m.league_name !== 'N/A' ? m.league_name : null;
+    const league = m.league_name && m.league_name !== 'N/A' ? m.league_name : null;
     return html`
       <div class="tick-item ${isLive ? 'live' : ''} ${isFt ? 'ft' : ''} ${sel ? 'selected' : ''}"
            @click=${() => this._toggleSel(m)}>
@@ -136,9 +136,6 @@ class SoccerLiveTickerCard extends LitElement {
 
     if (!visible.length) return html`<ha-card><div class="empty">${this._t('ui.no_live_match')}</div></ha-card>`;
 
-    const uniqueLeagues = new Set(visible.map(m => m.league_name).filter(l => l && l !== 'N/A'));
-    const showLeague = uniqueLeagues.size > 1;
-
     const autoScroll = this._config.auto_scroll && visible.length > 1;
     const speed = this._config.scroll_speed || 'normal';
     const pxPerSec = { slow: 28, normal: 55, fast: 110 }[speed] ?? 55;
@@ -149,7 +146,7 @@ class SoccerLiveTickerCard extends LitElement {
       <ha-card>
         <div class="ticker-wrap ${autoScroll ? 'auto' : ''} ${this._sel ? 'paused' : ''}">
           <div class="ticker-scroll" style="${autoScroll ? `animation-duration:${duration}s` : ''}">
-            ${items.map(m => this._renderItem(m, showLeague))}
+            ${items.map(m => this._renderItem(m))}
           </div>
         </div>
         ${this._renderDetail()}
