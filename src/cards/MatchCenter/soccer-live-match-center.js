@@ -251,6 +251,22 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const home = match.lineup_home || [];
     const away = match.lineup_away || [];
     if (!home.length && !away.length) return html`<p class="empty">${this._t('ui.no_lineup_yet')}</p>`;
+
+    const hasFlags = arr => arr.some(p => p.starter === true || p.starter === false);
+    const homeStarters = hasFlags(home) ? home.filter(p => p.starter === true)  : home;
+    const homeBench    = hasFlags(home) ? home.filter(p => p.starter === false) : [];
+    const awayStarters = hasFlags(away) ? away.filter(p => p.starter === true)  : away;
+    const awayBench    = hasFlags(away) ? away.filter(p => p.starter === false) : [];
+
+    const playerRow = (p, isRight = false, isBench = false) => html`
+      <div class="lu-player ${isBench ? 'bench' : ''}">
+        ${!isRight ? html`<span class="lu-shirt">${p.jersey || p.number || ''}</span>` : ''}
+        <span class="lu-name">${p.name || p.display_name || ''}</span>
+        ${p.position ? html`<span class="lu-pos">${p.position}</span>` : ''}
+        ${isRight ? html`<span class="lu-shirt">${p.jersey || p.number || ''}</span>` : ''}
+      </div>
+    `;
+
     return html`
       <div class="lu-wrap">
         ${(match.formation_home || match.formation_away) ? html`
@@ -263,23 +279,19 @@ class SoccerLiveMatchCenterCard extends LitElement {
         <div class="lu-cols">
           <div class="lu-col">
             <div class="lu-header">${match.home_team || 'Home'}</div>
-            ${home.map(p => html`
-              <div class="lu-player">
-                <span class="lu-shirt">${p.jersey || p.number || ''}</span>
-                <span class="lu-name">${p.name || p.display_name || ''}</span>
-                ${p.position ? html`<span class="lu-pos">${p.position}</span>` : ''}
-              </div>
-            `)}
+            ${homeStarters.map(p => playerRow(p, false))}
+            ${homeBench.length ? html`
+              <div class="lu-bench-label">${this._t('lineup.bench')}</div>
+              ${homeBench.map(p => playerRow(p, false, true))}
+            ` : ''}
           </div>
           <div class="lu-col right">
             <div class="lu-header">${match.away_team || 'Away'}</div>
-            ${away.map(p => html`
-              <div class="lu-player">
-                ${p.position ? html`<span class="lu-pos">${p.position}</span>` : ''}
-                <span class="lu-name">${p.name || p.display_name || ''}</span>
-                <span class="lu-shirt">${p.jersey || p.number || ''}</span>
-              </div>
-            `)}
+            ${awayStarters.map(p => playerRow(p, true))}
+            ${awayBench.length ? html`
+              <div class="lu-bench-label">${this._t('lineup.bench')}</div>
+              ${awayBench.map(p => playerRow(p, true, true))}
+            ` : ''}
           </div>
         </div>
       </div>
@@ -365,8 +377,18 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .lu-col.right .lu-player { flex-direction: row-reverse; }
       .lu-header { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
       .lu-player { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 11px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04)); }
+      .lu-player.bench { opacity: 0.65; font-size: 10.5px; }
       .lu-shirt { font-size: 10px; font-weight: 800; color: var(--cl-accent, #6366f1); min-width: 16px; }
       .lu-pos { font-size: 9px; color: var(--cl-text-2, #94a3b8); }
+      .lu-bench-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+        color: var(--cl-text-2, #94a3b8); margin: 8px 0 2px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .lu-bench-label::after {
+        content: ''; flex: 1; height: 1px;
+        background: linear-gradient(90deg, var(--cl-divider, rgba(255,255,255,0.08)), transparent);
+      }
       /* H2H */
       .h2h-list { padding: 4px 16px; }
       .h2h-row { display: flex; align-items: center; gap: 6px; padding: 8px 0; font-size: 12px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
