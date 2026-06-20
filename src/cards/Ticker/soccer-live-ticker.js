@@ -118,15 +118,13 @@ class SoccerLiveTickerCard extends LitElement {
       .ticker-wrap {
         overflow-x: auto;
         scrollbar-width: none;
-        padding: 6px 8px;
+        padding: 5px 6px;
       }
       .ticker-wrap::-webkit-scrollbar { display: none; }
-      .ticker-wrap.auto {
-        overflow-x: hidden;
-      }
+      .ticker-wrap.auto { overflow-x: hidden; }
       .ticker-scroll {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         width: max-content;
       }
       .ticker-wrap.auto .ticker-scroll {
@@ -142,12 +140,12 @@ class SoccerLiveTickerCard extends LitElement {
       .tick-item {
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        padding: 7px 10px;
+        gap: 1px;
+        padding: 5px 8px;
         background: var(--cl-surface);
         border: 1px solid var(--cl-divider);
-        border-radius: 12px;
-        width: 168px;
+        border-radius: 10px;
+        width: 155px;
         flex-shrink: 0;
         box-sizing: border-box;
       }
@@ -155,41 +153,39 @@ class SoccerLiveTickerCard extends LitElement {
         border-color: rgba(239,68,68,0.5);
         background: rgba(239,68,68,0.07);
       }
-      .tick-item.ft {
-        opacity: 0.75;
-      }
+      .tick-item.ft { opacity: 0.72; }
       .tick-team {
-        display: flex; align-items: center; gap: 6px;
+        display: flex; align-items: center; gap: 5px;
         min-width: 0;
       }
-      .tick-logo { width: 16px; height: 16px; object-fit: contain; flex-shrink: 0; }
+      .tick-logo { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; }
       .tick-name {
-        font-size: 12px; font-weight: 700;
+        font-size: 11px; font-weight: 700;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         flex: 1; min-width: 0;
       }
       .tick-mid {
-        display: flex; align-items: center; justify-content: center; gap: 5px;
-        padding: 2px 0;
+        display: flex; align-items: center; justify-content: center; gap: 4px;
+        padding: 1px 0;
       }
       .tick-score {
-        font-size: 15px; font-weight: 900; letter-spacing: 1px;
+        font-size: 13px; font-weight: 900; letter-spacing: 0.5px;
         color: var(--cl-text);
       }
       .tick-item.live .tick-score { color: var(--cl-live, #ef4444); }
-      .tick-time { font-size: 11px; font-weight: 600; color: var(--cl-accent, #60a5fa); }
+      .tick-time { font-size: 10px; font-weight: 600; color: var(--cl-accent, #60a5fa); }
       .tick-ft {
-        font-size: 9px; font-weight: 700; color: var(--cl-text-2);
+        font-size: 8px; font-weight: 700; color: var(--cl-text-2);
         text-transform: uppercase; letter-spacing: 0.5px;
         border: 1px solid var(--cl-divider); border-radius: 3px;
-        padding: 0 3px;
+        padding: 0 2px;
       }
       .tick-live {
-        font-size: 9px; font-weight: 700; color: var(--cl-live, #ef4444);
-        display: flex; align-items: center; gap: 3px;
+        font-size: 8px; font-weight: 700; color: var(--cl-live, #ef4444);
+        display: flex; align-items: center; gap: 2px;
       }
       .live-dot {
-        width: 5px; height: 5px;
+        width: 4px; height: 4px;
         background: var(--cl-live, #ef4444);
         border-radius: 50%;
         animation: pulse 1s infinite;
