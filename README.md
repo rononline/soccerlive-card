@@ -31,6 +31,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Match Center | `match-center` | Tabbed match view: Overview, Stats, Timeline, Lineup, H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
+| Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
 
 > **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 

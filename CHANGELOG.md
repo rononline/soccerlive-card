@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.18 (2026-06-20)
+- Add Ticker card: horizontal scrollable strip of matches with live scores, upcoming times and FT results; supports `all_matches_today`, `team_matches` and `team_matches_mixed` sensors; `filter: live` shows only live matches
+
 ## v3.21.17 (2026-06-20)
 - Add Diagnostics card for Soccer Live sensor health and schedule counters
 - Add example Lovelace dashboards for team, competition and mobile layouts
