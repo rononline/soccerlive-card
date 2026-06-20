@@ -1,0 +1,26 @@
+# Compact example for a mobile dashboard.
+# Replace entity IDs with the ones created in your Home Assistant instance.
+
+title: Soccer
+views:
+  - title: Soccer
+    path: soccer
+    icon: mdi:soccer
+    cards:
+      - type: custom:soccer-live-card
+        card_type: diagnostics
+        entity: sensor.soccer_live_ned_1_soccerlive_all_mixed_feyenoord_rotterdam
+        skin: dark
+
+      - type: custom:soccer-live-card
+        card_type: countdown
+        entity: sensor.soccer_live_ned_1_soccerlive_next_ned_1_feyenoord_rotterdam
+        skin: auto
+        compact: true
+
+      - type: custom:soccer-live-card
+        card_type: matches
+        entity: sensor.soccer_live_ned_1_soccerlive_all_mixed_feyenoord_rotterdam
+        skin: auto
+        compact: true
+

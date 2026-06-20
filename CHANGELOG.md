@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.17 (2026-06-20)
+- Add Diagnostics card for Soccer Live sensor health and schedule counters
+- Add example Lovelace dashboards for team, competition and mobile layouts
+
 ## v3.21.16 (2026-06-20)
 - Docs: document sensor-driven `auto` skin behavior and editor guidance
 

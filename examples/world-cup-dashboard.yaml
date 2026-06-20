@@ -1,0 +1,46 @@
+# Example Lovelace dashboard for a competition.
+# Replace entity IDs with the ones created in your Home Assistant instance.
+
+title: FIFA World Cup
+views:
+  - title: World Cup
+    path: world-cup
+    icon: mdi:trophy
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: custom:soccer-live-card
+            card_type: diagnostics
+            entity: sensor.soccer_live_fifa_world_soccerlive_all_fifa_world_cup
+            skin: gold
+
+          - type: custom:soccer-live-card
+            card_type: live-match
+            entity: sensor.soccer_live_fifa_world_soccerlive_all_fifa_world_cup
+            skin: gold
+
+      - type: grid
+        cards:
+          - type: custom:soccer-live-card
+            card_type: standings
+            entity: sensor.soccer_live_fifa_world_soccerlive_standings_fifa_world_cup
+            skin: gold
+
+          - type: custom:soccer-live-card
+            card_type: bracket
+            entity: sensor.soccer_live_fifa_world_soccerlive_bracket_fifa_world_cup
+            skin: gold
+
+      - type: grid
+        cards:
+          - type: custom:soccer-live-card
+            card_type: matches
+            entity: sensor.soccer_live_fifa_world_soccerlive_all_fifa_world_cup
+            skin: gold
+
+          - type: custom:soccer-live-card
+            card_type: scorers
+            entity: sensor.soccer_live_fifa_world_soccerlive_scorers_fifa_world_cup
+            skin: gold
+

@@ -30,6 +30,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Live Commentary | `live-commentary` | Real-time play-by-play commentary with event icons |
 | Match Center | `match-center` | Tabbed match view: Overview, Stats, Timeline, Lineup, H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
+| Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
 
 > **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 
@@ -62,6 +63,9 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 3. Restart Home Assistant and do a hard refresh of the dashboard (`Ctrl+F5` / `Cmd+Shift+R`)
 
 > Make sure the [Soccer Live integration](https://github.com/rononline/soccerlive) is installed first.
+
+Example dashboards are available in [`examples/`](examples/):
+`feyenoord-dashboard.yaml`, `world-cup-dashboard.yaml` and `mobile-minimal-dashboard.yaml`.
 
 ---
 

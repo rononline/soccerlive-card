@@ -1,0 +1,39 @@
+# Example Lovelace dashboard for one team across multiple competitions.
+# Replace entity IDs with the ones created in your Home Assistant instance.
+
+title: Feyenoord
+views:
+  - title: Feyenoord
+    path: feyenoord
+    icon: mdi:soccer
+    type: masonry
+    cards:
+      - type: custom:soccer-live-card
+        card_type: diagnostics
+        entity: sensor.soccer_live_ned_1_soccerlive_all_mixed_feyenoord_rotterdam
+        skin: auto
+
+      - type: custom:soccer-live-card
+        card_type: team-competitions
+        entity: sensor.soccer_live_ned_1_soccerlive_all_mixed_feyenoord_rotterdam
+        skin: auto
+
+      - type: custom:soccer-live-card
+        card_type: team
+        entity: sensor.soccer_live_ned_1_soccerlive_next_ned_1_feyenoord_rotterdam
+        skin: auto
+        show_event_toasts: true
+        show_form_trend: true
+        show_previous_matches: true
+
+      - type: custom:soccer-live-card
+        card_type: matches
+        entity: sensor.soccer_live_ned_1_soccerlive_all_mixed_feyenoord_rotterdam
+        skin: auto
+        group_by_day: true
+
+      - type: custom:soccer-live-card
+        card_type: countdown
+        entity: sensor.soccer_live_ned_1_soccerlive_next_ned_1_feyenoord_rotterdam
+        skin: auto
+

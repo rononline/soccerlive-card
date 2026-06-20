@@ -32,6 +32,8 @@ import "./cards/MatchCenter/soccer-live-match-center.js";
 import "./cards/MatchCenter/soccer-live-match-center-editor.js";
 import "./cards/TeamForm/soccer-live-team-form.js";
 import "./cards/TeamForm/soccer-live-team-form-editor.js";
+import "./cards/Diagnostics/soccer-live-diagnostics.js";
+import "./cards/Diagnostics/soccer-live-diagnostics-editor.js";
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -52,6 +54,7 @@ const CARD_REGISTRY = [
   { value: 'live-commentary',   element: 'soccer-live-live-commentary',   editor: 'soccer-live-live-commentary-editor',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary', sensorTypes: ['commentary'] },
   { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H', sensorTypes: ['team_match'] },
   { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
+  { value: 'diagnostics',       element: 'soccer-live-diagnostics',       editor: 'soccer-live-diagnostics-editor',       label: 'Diagnostics',       description: 'Sensor health, update status and schedule counters', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today', 'standings', 'top_scorers', 'bracket', 'news', 'commentary'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)
