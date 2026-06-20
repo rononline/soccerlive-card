@@ -72,12 +72,12 @@ class SoccerLiveMultiTeamEditor extends LitElement {
             </div>
           `)}
         </div>
-        <button class="add-btn" @click=${this._addEntity}>+ Add team</button>
+        <button class="add-btn" @click=${this._addEntity}>+ ${this._t('editor.teams')}</button>
 
         <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.card_title')}</label>
-          <input type="text" .value=${this._config.title || ''} data-config-value="title" @input=${this._textChanged} placeholder="My Teams">
+          <input type="text" .value=${this._config.title || ''} data-config-value="title" @input=${this._textChanged} placeholder="${this._t('card.my_teams')}">
         </div>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>

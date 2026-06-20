@@ -182,7 +182,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
                 <span class="event-min">${ev.clock || '—'}'</span>
                 <span class="event-icon">${this._getEventIcon(ev.type)}</span>
                 <div class="event-content">
-                  <div class="event-text">${ev.text || ev.description || 'Event'}</div>
+                  <div class="event-text">${ev.text || ev.description || this._t('timeline.event')}</div>
                   ${ev.home_score !== undefined && ev.away_score !== undefined ? html`
                     <div class="event-desc">${ev.home_score}-${ev.away_score}</div>
                   ` : ''}

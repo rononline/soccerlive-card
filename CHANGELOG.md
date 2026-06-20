@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.11 (2026-06-20)
+- LiveMatch and MatchCenter: show `—` instead of `N/A` for missing statistic values
+- Timeline, Countdown, MultiTeam and LiveCommentary: replace remaining visible English editor/fallback strings with existing i18n labels
+
 ## v3.21.10 (2026-06-20)
 - TeamCompetitions: hide `N/A` competition/group names and omit the competition header when no real competition metadata is available
 

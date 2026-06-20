@@ -94,12 +94,12 @@ class SoccerLiveTimelineEditor extends LitElement {
       <div class="card-config">
         <h3>${this._t("editor.sensor")}</h3>
         <div>
-          <label class="field-label">Entity (team_match sensor — soccer_live_next_*)</label>
+          <label class="field-label">${this._t('editor.entity')} (soccer_live_next_*)</label>
           <select @change=${this._entityChanged}>
             ${!inList ? html`<option value="${cur}" selected>${cur || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === cur}>${e}</option>`)}
           </select>
-          <div class="hint" style="margin-top: 4px;">Events are published during the match.</div>
+          <div class="hint" style="margin-top: 4px;">${this._t('timeline.empty.sub')}</div>
         </div>
 
         <h3>${this._t("editor.settings")}</h3>

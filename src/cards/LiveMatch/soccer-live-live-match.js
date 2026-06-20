@@ -188,7 +188,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
       const awayS = match.away_statistics || {};
       stats = Object.entries(homeS)
         .filter(([k]) => k !== 'Unknown')
-        .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? 'N/A' }));
+        .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? '—' }));
     }
 
     return html`
@@ -246,8 +246,9 @@ class SoccerLiveLiveMatchCard extends LitElement {
         ${stats.length > 0 ? html`
           <div class="divider"></div>
           ${stats.map(s => {
-            const rawH = String(s.home ?? s.homeValue ?? '');
-            const rawA = String(s.away ?? s.awayValue ?? '');
+            const displayStat = value => value !== null && value !== undefined && value !== '' && value !== 'N/A' ? String(value) : '—';
+            const rawH = displayStat(s.home ?? s.homeValue);
+            const rawA = displayStat(s.away ?? s.awayValue);
             const hv = parseFloat(rawH) || 0;
             const av = parseFloat(rawA) || 0;
             const total = hv + av;
