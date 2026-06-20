@@ -20,7 +20,7 @@ class SoccerLiveTickerEditor extends LitElement {
   static get styles() {
     return [editorStyles, css`
       .card-config { display: flex; flex-direction: column; gap: 16px; }
-      select, input {
+      select, input:not([type=checkbox]) {
         width: 100%;
         padding: 10px 12px;
         font-size: 14px;
@@ -29,6 +29,13 @@ class SoccerLiveTickerEditor extends LitElement {
         background: var(--card-background-color, #fff);
         color: var(--primary-text-color, #000);
         box-sizing: border-box;
+      }
+      .toggle-row {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 14px; cursor: pointer;
+      }
+      .toggle-row input[type=checkbox] {
+        width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;
       }
     `];
   }
@@ -77,7 +84,7 @@ class SoccerLiveTickerEditor extends LitElement {
           <option value="live" ?selected=${this._config.filter === 'live'}>Live only</option>
         </select>
 
-        <label>
+        <label class="toggle-row">
           <input type="checkbox" ?checked=${!!this._config.auto_scroll}
             @change=${e => this._fire({ ...this._config, auto_scroll: e.target.checked })}>
           Auto-scroll

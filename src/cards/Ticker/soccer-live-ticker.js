@@ -88,13 +88,12 @@ class SoccerLiveTickerCard extends LitElement {
 
     if (!visible.length) return html`<ha-card><div class="empty">${this._t('ui.no_live_match')}</div></ha-card>`;
 
-    const autoScroll = this._config.auto_scroll;
+    const autoScroll = this._config.auto_scroll && visible.length > 1;
     const speed = this._config.scroll_speed || 'normal';
     // Pixel-rate based: duration scales with item count, speed stays consistent
     const pxPerSec = { slow: 28, normal: 55, fast: 110 }[speed] ?? 55;
     const duration = Math.round(visible.length * 176 / pxPerSec);
-    // Duplicate items for seamless loop; only worth it with enough items
-    const items = autoScroll && visible.length > 1 ? [...visible, ...visible] : visible;
+    const items = autoScroll ? [...visible, ...visible] : visible;
 
     return html`
       <ha-card>
@@ -119,7 +118,7 @@ class SoccerLiveTickerCard extends LitElement {
       .ticker-wrap {
         overflow-x: auto;
         scrollbar-width: none;
-        padding: 8px 12px;
+        padding: 6px 8px;
       }
       .ticker-wrap::-webkit-scrollbar { display: none; }
       .ticker-wrap.auto {
