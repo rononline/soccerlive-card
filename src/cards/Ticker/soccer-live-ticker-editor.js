@@ -77,6 +77,21 @@ class SoccerLiveTickerEditor extends LitElement {
           <option value="live" ?selected=${this._config.filter === 'live'}>Live only</option>
         </select>
 
+        <label>
+          <input type="checkbox" ?checked=${!!this._config.auto_scroll}
+            @change=${e => this._fire({ ...this._config, auto_scroll: e.target.checked })}>
+          Auto-scroll
+        </label>
+
+        ${this._config.auto_scroll ? html`
+          <label>Scroll speed</label>
+          <select data-config-value="scroll_speed" @change=${this._selectChanged}>
+            <option value="slow"   ?selected=${this._config.scroll_speed === 'slow'}>Slow</option>
+            <option value="normal" ?selected=${!this._config.scroll_speed || this._config.scroll_speed === 'normal'}>Normal</option>
+            <option value="fast"   ?selected=${this._config.scroll_speed === 'fast'}>Fast</option>
+          </select>
+        ` : ''}
+
         <label>Skin</label>
         <select data-config-value="skin" @change=${this._selectChanged}>
           ${SKIN_OPTIONS.map(([v, l]) => html`

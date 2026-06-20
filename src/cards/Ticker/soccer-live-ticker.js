@@ -74,11 +74,17 @@ class SoccerLiveTickerCard extends LitElement {
 
     if (!visible.length) return html`<ha-card><div class="empty">${this._t('ui.no_live_match')}</div></ha-card>`;
 
+    const autoScroll = this._config.auto_scroll;
+    const speed = this._config.scroll_speed || 'normal';
+    const duration = { slow: 60, normal: 30, fast: 15 }[speed] ?? 30;
+    // Duplicate items for seamless loop; only worth it with enough items
+    const items = autoScroll && visible.length > 1 ? [...visible, ...visible] : visible;
+
     return html`
       <ha-card>
-        <div class="ticker-wrap">
-          <div class="ticker-scroll">
-            ${visible.map(m => this._renderItem(m))}
+        <div class="ticker-wrap ${autoScroll ? 'auto' : ''}">
+          <div class="ticker-scroll" style="${autoScroll ? `animation-duration:${duration * visible.length}s` : ''}">
+            ${items.map(m => this._renderItem(m))}
           </div>
         </div>
       </ha-card>
@@ -100,10 +106,23 @@ class SoccerLiveTickerCard extends LitElement {
         padding: 8px 12px;
       }
       .ticker-wrap::-webkit-scrollbar { display: none; }
+      .ticker-wrap.auto {
+        overflow-x: hidden;
+      }
       .ticker-scroll {
         display: flex;
         gap: 8px;
         width: max-content;
+      }
+      .ticker-wrap.auto .ticker-scroll {
+        animation: ticker-slide linear infinite;
+      }
+      .ticker-wrap.auto:hover .ticker-scroll {
+        animation-play-state: paused;
+      }
+      @keyframes ticker-slide {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
       }
       .tick-item {
         display: flex;

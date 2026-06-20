@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.20 (2026-06-20)
+- Ticker: add auto-scroll option with seamless loop and configurable speed (slow/normal/fast); scrolling pauses on hover
+
 ## v3.21.19 (2026-06-20)
 - Add Ticker card: horizontal scrollable strip of matches with live scores, upcoming times and FT results; supports `all_matches_today`, `team_matches` and `team_matches_mixed` sensors; `filter: live` shows only live matches
 
