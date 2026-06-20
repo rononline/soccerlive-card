@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.21.18 (2026-06-20)
+## v3.21.19 (2026-06-20)
 - Add Ticker card: horizontal scrollable strip of matches with live scores, upcoming times and FT results; supports `all_matches_today`, `team_matches` and `team_matches_mixed` sensors; `filter: live` shows only live matches
 
 ## v3.21.17 (2026-06-20)
