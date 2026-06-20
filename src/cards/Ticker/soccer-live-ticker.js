@@ -18,11 +18,25 @@ class SoccerLiveTickerCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-ticker-editor"); }
   static getStubConfig() { return { entity: "sensor.soccer_live_all_today", card_type: "ticker" }; }
 
+  _formatMatchTime(dateStr) {
+    if (!dateStr) return 'vs';
+    const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}:\d{2})$/);
+    if (!m) return dateStr;
+    const [, dd, mm, yyyy, time] = m;
+    const now = new Date();
+    if (
+      parseInt(dd) === now.getDate() &&
+      parseInt(mm) === now.getMonth() + 1 &&
+      parseInt(yyyy) === now.getFullYear()
+    ) return time;
+    return `${parseInt(dd)}/${parseInt(mm)} ${time}`;
+  }
+
   _renderItem(m) {
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
     return html`
-      <div class="tick-item ${isLive ? 'live' : ''}">
+      <div class="tick-item ${isLive ? 'live' : ''} ${isFt ? 'ft' : ''}">
         <div class="tick-team">
           ${m.home_logo ? html`<img class="tick-logo" src="${m.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
           <span class="tick-name">${m.home_team || '?'}</span>
@@ -31,8 +45,8 @@ class SoccerLiveTickerCard extends LitElement {
           ${isLive ? html`<span class="tick-live"><span class="live-dot"></span>${m.clock || ''}</span>` : ''}
           ${isLive || isFt
             ? html`<span class="tick-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
-            : html`<span class="tick-time">${m.date || 'vs'}</span>`}
-          ${isFt ? html`<span class="tick-ft">${this._t('status.full_time')}</span>` : ''}
+            : html`<span class="tick-time">${this._formatMatchTime(m.date)}</span>`}
+          ${isFt ? html`<span class="tick-ft">FT</span>` : ''}
         </div>
         <div class="tick-team">
           ${m.away_logo ? html`<img class="tick-logo" src="${m.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
@@ -76,14 +90,16 @@ class SoccerLiveTickerCard extends LitElement {
 
     const autoScroll = this._config.auto_scroll;
     const speed = this._config.scroll_speed || 'normal';
-    const duration = { slow: 60, normal: 30, fast: 15 }[speed] ?? 30;
+    // Pixel-rate based: duration scales with item count, speed stays consistent
+    const pxPerSec = { slow: 28, normal: 55, fast: 110 }[speed] ?? 55;
+    const duration = Math.round(visible.length * 176 / pxPerSec);
     // Duplicate items for seamless loop; only worth it with enough items
     const items = autoScroll && visible.length > 1 ? [...visible, ...visible] : visible;
 
     return html`
       <ha-card>
         <div class="ticker-wrap ${autoScroll ? 'auto' : ''}">
-          <div class="ticker-scroll" style="${autoScroll ? `animation-duration:${duration * visible.length}s` : ''}">
+          <div class="ticker-scroll" style="${autoScroll ? `animation-duration:${duration}s` : ''}">
             ${items.map(m => this._renderItem(m))}
           </div>
         </div>
@@ -127,18 +143,21 @@ class SoccerLiveTickerCard extends LitElement {
       .tick-item {
         display: flex;
         flex-direction: column;
-        gap: 3px;
-        padding: 8px 12px;
+        gap: 2px;
+        padding: 7px 10px;
         background: var(--cl-surface);
         border: 1px solid var(--cl-divider);
         border-radius: 12px;
-        width: 160px;
+        width: 168px;
         flex-shrink: 0;
         box-sizing: border-box;
       }
       .tick-item.live {
         border-color: rgba(239,68,68,0.5);
         background: rgba(239,68,68,0.07);
+      }
+      .tick-item.ft {
+        opacity: 0.75;
       }
       .tick-team {
         display: flex; align-items: center; gap: 6px;
@@ -151,15 +170,21 @@ class SoccerLiveTickerCard extends LitElement {
         flex: 1; min-width: 0;
       }
       .tick-mid {
-        display: flex; align-items: center; gap: 5px;
-        padding: 1px 0;
+        display: flex; align-items: center; justify-content: center; gap: 5px;
+        padding: 2px 0;
       }
       .tick-score {
-        font-size: 14px; font-weight: 900; letter-spacing: 0.5px;
+        font-size: 15px; font-weight: 900; letter-spacing: 1px;
         color: var(--cl-text);
       }
-      .tick-time { font-size: 10px; color: var(--cl-text-2); }
-      .tick-ft { font-size: 9px; font-weight: 700; color: var(--cl-text-2); text-transform: uppercase; }
+      .tick-item.live .tick-score { color: var(--cl-live, #ef4444); }
+      .tick-time { font-size: 11px; font-weight: 600; color: var(--cl-accent, #60a5fa); }
+      .tick-ft {
+        font-size: 9px; font-weight: 700; color: var(--cl-text-2);
+        text-transform: uppercase; letter-spacing: 0.5px;
+        border: 1px solid var(--cl-divider); border-radius: 3px;
+        padding: 0 3px;
+      }
       .tick-live {
         font-size: 9px; font-weight: 700; color: var(--cl-live, #ef4444);
         display: flex; align-items: center; gap: 3px;
