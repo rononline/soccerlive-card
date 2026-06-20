@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { editorStyles } from '../editor-helper.js';
 import { t, resolveLang } from '../../i18n.js';
 import { SKIN_OPTIONS, resolveSkin } from '../../skins.js';
+import { renderSkinColorControls } from '../skin-editor.js';
 
 class SoccerLiveTeamCardEditor extends LitElement {
   static get properties() {
@@ -182,6 +183,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
             ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
           </select>
         </div>
+        ${renderSkinColorControls(this, this._config)}
         <div>
           <label class="field-label">${this._t('editor.score_size')}</label>
           <select data-config-value="score_size" @change=${this._selectChanged}>

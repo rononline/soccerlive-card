@@ -117,6 +117,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
   }
 
   render() {
+    applySkin(this, this._config);
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) return renderCardError('⚠️', this._t('ui.unknown_entity'), `${this._config.entity}`, this._t('ui.wrong_entity_type_hint'));

@@ -48,6 +48,7 @@ class SoccerLiveScorersCard extends LitElement {
   }
 
   render() {
+    applySkin(this, this._config);
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const entityId = this._config.entity;
     const stateObj = this.hass.states[entityId];

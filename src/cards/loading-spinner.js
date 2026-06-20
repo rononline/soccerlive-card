@@ -13,9 +13,9 @@ export const spinnerStyles = css`
     display: inline-block;
     width: 20px;
     height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--cl-chip-border, rgba(255, 255, 255, 0.3));
     border-radius: 50%;
-    border-top-color: var(--primary-color, #2196F3);
+    border-top-color: var(--cl-accent, var(--primary-color, #2196F3));
     animation: spinner-rotate 1s linear infinite;
   }
 
@@ -26,7 +26,7 @@ export const spinnerStyles = css`
   .spinner-text {
     margin-left: 12px;
     font-size: 12px;
-    color: var(--secondary-text-color);
+    color: var(--cl-text-2, var(--secondary-text-color));
   }
 `;
 

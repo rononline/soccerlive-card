@@ -57,6 +57,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _t(key) { return t(key, resolveLang(this.hass, this._config)); }
 
   render() {
+    applySkin(this, this._config);
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const entityId = this._config.entity;
     const s = this.hass.states[entityId];

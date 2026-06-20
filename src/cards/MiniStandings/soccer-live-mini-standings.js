@@ -60,6 +60,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
   }
 
   render() {
+    applySkin(this, this._config);
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));

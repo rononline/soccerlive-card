@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from '../../i18n.js';
 import { SKIN_OPTIONS, resolveSkin } from '../../skins.js';
+import { renderSkinColorControls } from '../skin-editor.js';
 
 class SoccerLiveTimelineEditor extends LitElement {
   static get properties() {
@@ -126,6 +127,7 @@ class SoccerLiveTimelineEditor extends LitElement {
             ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
           </select>
         </div>
+        ${renderSkinColorControls(this, this._config)}
         <div>
           <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>

@@ -55,6 +55,7 @@ class SoccerLiveLineupCard extends LitElement {
   }
 
   render() {
+    applySkin(this, this._config);
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</ha-card>`;

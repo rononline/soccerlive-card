@@ -143,6 +143,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
   }
 
   render() {
+    applySkin(this, this._config);
     if (!this.hass || !this._config) return renderLoading('Loading...');
 
     const stateObj = this.hass.states[this._config.entity];

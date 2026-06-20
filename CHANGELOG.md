@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.14 (2026-06-20)
+- Skins: `auto` now reads team colors from Home Assistant sensor attributes, including nested `next_match` and `matches` data
+- Editors: show compact custom skin color controls when `skin: custom` is selected
+- UI states: align shared loading, info and error states with Soccer Live skin tokens
+
 ## v3.21.13 (2026-06-20)
 - Skins: add generic `red-gold`, `blue-red` and `white-gold` palettes with legacy aliases for `arsenal`, `barcelona` and `real-madrid`
 - Skins: add `custom` and `auto` skin support with YAML color overrides

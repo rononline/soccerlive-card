@@ -494,8 +494,10 @@ function applyCustomSkinVars(el, config, skin) {
   for (const cssVar of CUSTOM_COLOR_VARS) el.style.removeProperty(cssVar);
   if (!config || (skin !== 'custom' && skin !== 'auto')) return;
 
-  const autoColors = skin === 'auto' ? getAutoColors(config) : {};
-  const mergedConfig = { ...autoColors, ...config };
+  const entityAttrs = getEntityAttributes(el, config);
+  const sourceConfig = { ...entityAttrs, ...config };
+  const autoColors = skin === 'auto' ? getAutoColors(sourceConfig) : {};
+  const mergedConfig = { ...autoColors, ...sourceConfig };
 
   for (const [key, colorVar, rgbVar] of CUSTOM_COLOR_KEYS) {
     const color = normalizeCssColor(mergedConfig[key]);
@@ -505,6 +507,20 @@ function applyCustomSkinVars(el, config, skin) {
     const rgb = rgbVar ? hexToRgbTriplet(color) : null;
     if (rgb) el.style.setProperty(rgbVar, rgb);
   }
+}
+
+function getEntityAttributes(el, config) {
+  const entityId = config?.entity || config?.entities?.[0];
+  if (!entityId || !el?.hass?.states) return {};
+  const attrs = el.hass.states[entityId]?.attributes || {};
+  const match = attrs.next_match || attrs.matches?.[0] || {};
+  return {
+    ...attrs,
+    home_color: attrs.home_color || attrs.next_match_home_color || match.home_color,
+    away_color: attrs.away_color || attrs.next_match_away_color || match.away_color,
+    team_color: attrs.team_color || attrs.primary_color || match.team_color,
+    team_colors: attrs.team_colors || [attrs.home_color || attrs.next_match_home_color || match.home_color, attrs.away_color || attrs.next_match_away_color || match.away_color].filter(Boolean),
+  };
 }
 
 function getAutoColors(config) {
