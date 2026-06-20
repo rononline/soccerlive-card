@@ -92,7 +92,9 @@ accent_2_color: "#2563eb"
 background_color: "#090909"
 ```
 
-`skin: auto` can use `team_colors`, `team_color`, `home_color` and `away_color` from YAML as accent inputs.
+`skin: auto` uses team colors from the selected Soccer Live sensor when available (`team_colors`, `home_color`, `away_color`, `next_match`, or the first match in `matches`). You can still provide `team_colors`, `team_color`, `home_color` or `away_color` in YAML as fallback inputs.
+
+The visual editor shows sensor-type hints and warnings for the selected card type, and card-specific settings are grouped in a collapsible section.
 
 > **Entity IDs:** Examples in this README use simplified IDs like `sensor.soccer_live_standings_ned_1`. Your actual entity IDs may be longer (e.g. `sensor.soccer_live_ned_1_soccerlive_standings_dutch_eredivisie`). Use the visual editor to pick the correct sensor.
 

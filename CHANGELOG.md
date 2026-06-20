@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.16 (2026-06-20)
+- Docs: document sensor-driven `auto` skin behavior and editor guidance
+
 ## v3.21.15 (2026-06-20)
 - Editor: show sensor-type hints and warnings for the selected card type
 - Editor: wrap card-specific settings in a collapsible settings section
