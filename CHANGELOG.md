@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.15 (2026-06-20)
+- Editor: show sensor-type hints and warnings for the selected card type
+- Editor: wrap card-specific settings in a collapsible settings section
+
 ## v3.21.14 (2026-06-20)
 - Skins: `auto` now reads team colors from Home Assistant sensor attributes, including nested `next_match` and `matches` data
 - Editors: show compact custom skin color controls when `skin: custom` is selected

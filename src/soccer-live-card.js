@@ -36,22 +36,22 @@ import "./cards/TeamForm/soccer-live-team-form-editor.js";
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
 const CARD_REGISTRY = [
-  { value: 'team',              element: 'soccer-live-team',              editor: 'soccer-live-team-editor',              label: 'Team',              description: 'Live score, form, lineup, weather for one team' },
-  { value: 'standings',         element: 'soccer-live-standings',         editor: 'soccer-live-standings-editor',         label: 'Standings',         description: 'League table with coloured zones' },
-  { value: 'matches',           element: 'soccer-live-matches',           editor: 'soccer-live-matches-editor',           label: 'Matches',           description: 'Day-grouped match list with live highlighting' },
-  { value: 'countdown',         element: 'soccer-live-countdown',         editor: 'soccer-live-countdown-editor',         label: 'Countdown',         description: 'Countdown timer to next match with live score' },
-  { value: 'live-match',        element: 'soccer-live-live-match',        editor: 'soccer-live-live-match-editor',        label: 'Live Match',        description: 'Current match with events, possession and shots' },
-  { value: 'news',              element: 'soccer-live-news',              editor: 'soccer-live-news-editor',              label: 'News',              description: 'Article feed with images and timestamps' },
-  { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams' },
-  { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events' },
-  { value: 'bracket',           element: 'soccer-live-bracket',           editor: 'soccer-live-bracket-editor',           label: 'Bracket',           description: 'Knockout bracket (list or tournament tree)' },
-  { value: 'mini-standings',    element: 'soccer-live-mini-standings',    editor: 'soccer-live-mini-standings-editor',    label: 'Mini Standings',    description: 'Compact standings with configurable rows' },
-  { value: 'scorers',           element: 'soccer-live-scorers',           editor: 'soccer-live-scorers-editor',           label: 'Top Scorers',       description: 'Top scorers list with photo and goal tally' },
-  { value: 'multi-team',        element: 'soccer-live-multi-team',        editor: 'soccer-live-multi-team-editor',        label: 'Multi Team',        description: 'Multiple teams in one compact card' },
-  { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector' },
-  { value: 'live-commentary',   element: 'soccer-live-live-commentary',   editor: 'soccer-live-live-commentary-editor',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary' },
-  { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H' },
-  { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split' },
+  { value: 'team',              element: 'soccer-live-team',              editor: 'soccer-live-team-editor',              label: 'Team',              description: 'Live score, form, lineup, weather for one team', sensorTypes: ['team_match'] },
+  { value: 'standings',         element: 'soccer-live-standings',         editor: 'soccer-live-standings-editor',         label: 'Standings',         description: 'League table with coloured zones', sensorTypes: ['standings'] },
+  { value: 'matches',           element: 'soccer-live-matches',           editor: 'soccer-live-matches-editor',           label: 'Matches',           description: 'Day-grouped match list with live highlighting', sensorTypes: ['team_matches', 'team_matches_mixed', 'all_matches_today'] },
+  { value: 'countdown',         element: 'soccer-live-countdown',         editor: 'soccer-live-countdown-editor',         label: 'Countdown',         description: 'Countdown timer to next match with live score', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
+  { value: 'live-match',        element: 'soccer-live-live-match',        editor: 'soccer-live-live-match-editor',        label: 'Live Match',        description: 'Current match with events, possession and shots', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today'] },
+  { value: 'news',              element: 'soccer-live-news',              editor: 'soccer-live-news-editor',              label: 'News',              description: 'Article feed with images and timestamps', sensorTypes: ['news'] },
+  { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams', sensorTypes: ['team_match'] },
+  { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events', sensorTypes: ['team_match', 'commentary'] },
+  { value: 'bracket',           element: 'soccer-live-bracket',           editor: 'soccer-live-bracket-editor',           label: 'Bracket',           description: 'Knockout bracket (list or tournament tree)', sensorTypes: ['bracket'] },
+  { value: 'mini-standings',    element: 'soccer-live-mini-standings',    editor: 'soccer-live-mini-standings-editor',    label: 'Mini Standings',    description: 'Compact standings with configurable rows', sensorTypes: ['standings'] },
+  { value: 'scorers',           element: 'soccer-live-scorers',           editor: 'soccer-live-scorers-editor',           label: 'Top Scorers',       description: 'Top scorers list with photo and goal tally', sensorTypes: ['top_scorers'] },
+  { value: 'multi-team',        element: 'soccer-live-multi-team',        editor: 'soccer-live-multi-team-editor',        label: 'Multi Team',        description: 'Multiple teams in one compact card', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
+  { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector', sensorTypes: ['team_matches_mixed'] },
+  { value: 'live-commentary',   element: 'soccer-live-live-commentary',   editor: 'soccer-live-live-commentary-editor',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary', sensorTypes: ['commentary'] },
+  { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H', sensorTypes: ['team_match'] },
+  { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)
@@ -260,6 +260,22 @@ class SoccerLiveCardEditor extends LitElement {
     }));
   }
 
+  _sensorHint(meta) {
+    if (!meta || !this._config?.entity || !this.hass?.states) return html``;
+    const stateObj = this.hass.states[this._config.entity];
+    if (!stateObj) return html`<div class="editor-warning">Entity not found: ${this._config.entity}</div>`;
+    const sensorType = stateObj.attributes?.sensor_type;
+    if (!sensorType || !meta.sensorTypes?.length) return html``;
+    if (meta.sensorTypes.includes(sensorType)) {
+      return html`<div class="editor-info">Sensor type: ${sensorType}</div>`;
+    }
+    return html`
+      <div class="editor-warning">
+        This card usually expects ${meta.sensorTypes.join(', ')}. Selected sensor is ${sensorType}.
+      </div>
+    `;
+  }
+
   render() {
     const raw = this._config?.card_type || '';
     const selected = CARD_TYPES.find(t => t.value === raw)
@@ -292,8 +308,12 @@ class SoccerLiveCardEditor extends LitElement {
           }}
         ></ha-form>
         ${meta ? html`<p class="picker-desc">${meta.description}</p>` : ''}
+        ${this._sensorHint(meta)}
       </div>
-      <div id="sub-editor"></div>
+      <details class="sub-editor-details" open>
+        <summary>Card settings</summary>
+        <div id="sub-editor"></div>
+      </details>
     `;
   }
 
@@ -308,6 +328,30 @@ class SoccerLiveCardEditor extends LitElement {
         margin: 6px 0 0;
         font-size: 12px;
         color: var(--secondary-text-color);
+      }
+      .editor-info,
+      .editor-warning {
+        margin-top: 8px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+      .editor-info {
+        color: var(--primary-text-color);
+        background: rgba(33,150,243,0.10);
+        border: 1px solid rgba(33,150,243,0.22);
+      }
+      .editor-warning {
+        color: var(--primary-text-color);
+        background: rgba(255,152,0,0.12);
+        border: 1px solid rgba(255,152,0,0.28);
+      }
+      .sub-editor-details summary {
+        cursor: pointer;
+        margin-bottom: 12px;
+        color: var(--secondary-text-color);
+        font-size: 13px;
+        font-weight: 700;
       }
     `;
   }
