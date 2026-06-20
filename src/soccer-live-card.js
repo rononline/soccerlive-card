@@ -36,6 +36,8 @@ import "./cards/Diagnostics/soccer-live-diagnostics.js";
 import "./cards/Diagnostics/soccer-live-diagnostics-editor.js";
 import "./cards/Ticker/soccer-live-ticker.js";
 import "./cards/Ticker/soccer-live-ticker-editor.js";
+import "./cards/SeasonOverview/soccer-live-season-overview.js";
+import "./cards/SeasonOverview/soccer-live-season-overview-editor.js";
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -58,6 +60,7 @@ const CARD_REGISTRY = [
   { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'diagnostics',       element: 'soccer-live-diagnostics',       editor: 'soccer-live-diagnostics-editor',       label: 'Diagnostics',       description: 'Sensor health, update status and schedule counters', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today', 'standings', 'top_scorers', 'bracket', 'news', 'commentary'] },
   { value: 'ticker',            element: 'soccer-live-ticker',            editor: 'soccer-live-ticker-editor',            label: 'Ticker',            description: "Horizontal scrollable strip of today's matches", sensorTypes: ['all_matches_today', 'team_matches', 'team_matches_mixed'] },
+  { value: 'season-overview',   element: 'soccer-live-season-overview',   editor: 'soccer-live-season-overview-editor',   label: 'Season Overview', description: 'All competitions at a glance: live score, next match, or last result per competition', sensorTypes: ['team_matches_mixed'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)

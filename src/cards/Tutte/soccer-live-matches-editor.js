@@ -243,6 +243,14 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div>
+          <label class="field-label">Groepeer op</label>
+          <select data-config-value="group_by" @change=${this._selectChanged}>
+            <option value="day" ?selected=${!this._config.group_by || this._config.group_by === 'day'}>Datum</option>
+            <option value="competition" ?selected=${this._config.group_by === 'competition'}>Competitie</option>
+          </select>
+        </div>
+
+        <div>
           <label class="field-label">${this._t('editor.hide_older_than_days')}</label>
           <input
             type="number"

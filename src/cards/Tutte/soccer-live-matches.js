@@ -341,25 +341,41 @@ class SoccerLiveMatchesCard extends LitElement {
     const liveCount = limited.filter(m => m.state === 'in').length;
     const uniqueLeagues = new Set(limited.map(m => m.league_name).filter(l => l && l !== 'N/A'));
     const isMultiLeague = uniqueLeagues.size > 1;
+    const groupBy = this._config.group_by || 'day';
 
-    const grouped = [];
-    let currentKey = null;
-    limited.forEach(m => {
-      const key = this._dayKey(m);
-      if (key !== currentKey) {
-        currentKey = key;
-        const d = this._parseMatchDate(m.date);
-        let dayDiff = null;
-        if (d) {
-          const today = new Date(); today.setHours(0, 0, 0, 0);
-          const md = new Date(d); md.setHours(0, 0, 0, 0);
-          dayDiff = Math.round((md - today) / 86400000);
+    let grouped = [];
+    if (groupBy === 'competition') {
+      const byComp = new Map();
+      limited.forEach(m => {
+        const key = m.league_name && m.league_name !== 'N/A' ? m.league_name : '—';
+        if (!byComp.has(key)) byComp.set(key, { key, logo: m.league_logo || m.competition_logo || null, dayDiff: null, matches: [] });
+        byComp.get(key).matches.push(m);
+      });
+      // Sort competitions: those with live matches first
+      grouped = [...byComp.values()].sort((a, b) => {
+        const aLive = a.matches.some(m => m.state === 'in') ? 0 : a.matches.some(m => m.state === 'pre') ? 1 : 2;
+        const bLive = b.matches.some(m => m.state === 'in') ? 0 : b.matches.some(m => m.state === 'pre') ? 1 : 2;
+        return aLive - bLive;
+      });
+    } else {
+      let currentKey = null;
+      limited.forEach(m => {
+        const key = this._dayKey(m);
+        if (key !== currentKey) {
+          currentKey = key;
+          const d = this._parseMatchDate(m.date);
+          let dayDiff = null;
+          if (d) {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const md = new Date(d); md.setHours(0, 0, 0, 0);
+            dayDiff = Math.round((md - today) / 86400000);
+          }
+          grouped.push({ key, dayDiff, matches: [m] });
+        } else {
+          grouped[grouped.length - 1].matches.push(m);
         }
-        grouped.push({ key, dayDiff, matches: [m] });
-      } else {
-        grouped[grouped.length - 1].matches.push(m);
-      }
-    });
+      });
+    }
 
     const scrollHeight = Math.max(this.maxEventsVisible * 80, 240);
 
@@ -405,9 +421,10 @@ class SoccerLiveMatchesCard extends LitElement {
 
         <div class="scroll-content" style="max-height: ${scrollHeight}px;">
           ${grouped.map(group => html`
-            <div class="day-divider ${group.dayDiff === 0 ? 'today' : group.dayDiff === -1 ? 'yesterday' : group.dayDiff === 1 ? 'tomorrow' : ''}">
+            <div class="day-divider ${groupBy === 'competition' ? 'comp' : (group.dayDiff === 0 ? 'today' : group.dayDiff === -1 ? 'yesterday' : group.dayDiff === 1 ? 'tomorrow' : '')}">
+              ${groupBy === 'competition' && group.logo ? html`<img class="comp-divider-logo" src="${group.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
               ${group.key}
-              ${group.dayDiff !== null && group.dayDiff > 1 ? html`<span class="day-rel">· over ${group.dayDiff} d</span>` : ''}
+              ${groupBy !== 'competition' && group.dayDiff !== null && group.dayDiff > 1 ? html`<span class="day-rel">· over ${group.dayDiff} d</span>` : ''}
             </div>
             ${group.matches.map(match => {
               const matchKey = `${match.home_team}_${match.away_team}`;
@@ -767,6 +784,8 @@ class SoccerLiveMatchesCard extends LitElement {
         opacity: 0.3;
       }
       .day-divider.yesterday { opacity: 0.55; }
+      .day-divider.comp { color: var(--cl-text); font-size: 11px; letter-spacing: 0.05em; }
+      .comp-divider-logo { width: 14px; height: 14px; object-fit: contain; flex-shrink: 0; }
 
       .confetti {
         position: absolute;
