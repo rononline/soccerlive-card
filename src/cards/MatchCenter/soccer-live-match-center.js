@@ -221,26 +221,47 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderTimeline(match) {
-    const events = match.key_events || [];
+    const events = (match.key_events || []).filter(e => !((e.type_text || '').toLowerCase().includes('delay')));
     if (!events.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
-    const badge = type => {
-      const s = (type || '').toLowerCase();
-      if (s.includes('goal'))   return html`<span class="tl-badge goal">${this._t('event.goal')}</span>`;
-      if (s.includes('yellow')) return html`<span class="tl-badge yellow">${this._t('event.yellow_card')}</span>`;
-      if (s.includes('red'))    return html`<span class="tl-badge red">${this._t('event.red_card')}</span>`;
-      if (s.includes('sub'))    return html`<span class="tl-badge sub">${this._t('event.substitution')}</span>`;
-      return html`<span class="tl-badge other">${type || '—'}</span>`;
+    const EVENT_I18N = {
+      'kickoff': 'status.kickoff', 'halftime': 'status.halftime',
+      'half time': 'status.halftime', 'end of half': 'status.halftime',
+      'start 2nd half': 'status.second_half', 'second half': 'status.second_half',
+      'first half': 'status.first_half', 'full time': 'status.full_time',
+      'final': 'status.full_time', 'end': 'status.end',
+    };
+    const getBadgeType = ev => {
+      const ty = (ev.type || '').toLowerCase();
+      const txt = (ev.type_text || '').toLowerCase();
+      if (ty === 'goal' || ev.scoring_play) return 'goal';
+      if (txt.includes('yellow')) return 'yellow';
+      if (txt.includes('red card')) return 'red';
+      if (ty === 'substitution' || txt.includes('substitut')) return 'sub';
+      return 'meta';
+    };
+    const badge = btype => {
+      if (btype === 'goal')   return html`<span class="tl-badge goal">${this._t('event.goal')}</span>`;
+      if (btype === 'yellow') return html`<span class="tl-badge yellow">${this._t('event.yellow_card')}</span>`;
+      if (btype === 'red')    return html`<span class="tl-badge red">${this._t('event.red_card')}</span>`;
+      if (btype === 'sub')    return html`<span class="tl-badge sub">${this._t('event.substitution')}</span>`;
+      return html`<span class="tl-badge meta">·</span>`;
+    };
+    const getText = ev => {
+      const athletes = (ev.athletes || []).filter(Boolean);
+      if (athletes.length) return athletes.join(', ');
+      const i18nKey = EVENT_I18N[(ev.type_text || '').toLowerCase()];
+      return i18nKey ? this._t(i18nKey) : (ev.type_text || ev.short_text || '');
     };
     return html`
       <div class="tl-list">
         ${events.map(ev => {
-          const player = (ev.athletes || []).join(', ') || ev.short_text || ev.type_text || '';
+          const btype = getBadgeType(ev);
           return html`
             <div class="tl-row">
               <span class="tl-min">${ev.clock || ev.minute ? `${ev.clock || ev.minute}'` : ''}</span>
-              ${badge(ev.type)}
+              ${badge(btype)}
               <div class="tl-text">
-                <div>${player}</div>
+                <div>${getText(ev)}</div>
                 ${ev.team ? html`<div class="tl-team">${ev.team}</div>` : ''}
               </div>
             </div>
@@ -374,7 +395,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
       .tl-badge.red    { background: rgba(239,68,68,0.18); color: #ef4444; }
       .tl-badge.sub    { background: rgba(148,163,184,0.12); color: var(--cl-text-2, #94a3b8); }
-      .tl-badge.other  { background: rgba(148,163,184,0.08); color: var(--cl-text-2, #94a3b8); }
+      .tl-badge.meta   { background: transparent; color: var(--cl-text-2, #94a3b8); font-size: 14px; padding: 0 4px; letter-spacing: 0; }
       .tl-text { flex: 1; font-size: 12px; }
       .tl-team { font-size: 10px; color: var(--cl-text-2, #94a3b8); margin-top: 2px; }
       /* Lineup */
