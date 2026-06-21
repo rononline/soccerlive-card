@@ -221,14 +221,19 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderTimeline(match) {
-    const events = (match.key_events || []).filter(e => !((e.type_text || '').toLowerCase().includes('delay')));
+    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
+    const events = (match.key_events || []).filter(e => {
+      const txt = (e.type_text || '').toLowerCase();
+      return !SKIP.some(s => txt.includes(s));
+    });
     if (!events.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
     const EVENT_I18N = {
       'kickoff': 'status.kickoff', 'halftime': 'status.halftime',
       'half time': 'status.halftime', 'end of half': 'status.halftime',
       'start 2nd half': 'status.second_half', 'second half': 'status.second_half',
-      'first half': 'status.first_half', 'full time': 'status.full_time',
-      'final': 'status.full_time', 'end': 'status.end',
+      '2nd half': 'status.second_half', 'first half': 'status.first_half',
+      'full time': 'status.full_time', 'final': 'status.full_time',
+      'end regular time': 'status.full_time', 'end': 'status.end',
     };
     const getBadgeType = ev => {
       const ty = (ev.type || '').toLowerCase();

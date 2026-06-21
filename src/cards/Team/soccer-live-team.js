@@ -1025,10 +1025,15 @@ class SoccerLiveTeamCard extends LitElement {
         .popup-player { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin: 2px; }
         .popup-jersey { color: #fbbf24; }
         .popup-timeline-list { margin: 0; padding: 0; list-style: none; }
-        .popup-timeline-item { display: grid; grid-template-columns: 36px 24px 1fr; gap: 8px; align-items: start; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
+        .popup-timeline-item { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
         .popup-timeline-item:last-child { border-bottom: none; }
-        .popup-tl-clock { text-align: right; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; }
-        .popup-tl-icon { text-align: center; }
+        .popup-tl-clock { min-width: 32px; text-align: right; font-size: 11px; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; padding-top: 2px; flex-shrink: 0; }
+        .popup-tl-badge { display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; line-height: 15px; white-space: nowrap; margin-top: 1px; }
+        .popup-tl-badge.goal   { background: rgba(99,102,241,0.18); color: #6366f1; }
+        .popup-tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
+        .popup-tl-badge.red    { background: rgba(239,68,68,0.18); color: #ef4444; }
+        .popup-tl-badge.sub    { background: rgba(148,163,184,0.12); color: #94a3b8; }
+        .popup-tl-badge.meta   { background: transparent; color: #94a3b8; font-size: 14px; padding: 0 4px; letter-spacing: 0; }
         .popup-tl-text strong { color: #fff; }
         .popup-tl-team { color: #94a3b8; font-size: 11px; }
         .popup-h2h-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: #cbd5e1; }
@@ -1124,37 +1129,51 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _renderPopupTimeline(m) {
-    const keyEvents = (m.key_events || []).filter(e => !(e.type_text || '').toLowerCase().includes('delay'));
+    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
+    const keyEvents = (m.key_events || []).filter(e => {
+      const txt = (e.type_text || '').toLowerCase();
+      return !SKIP.some(s => txt.includes(s));
+    });
     if (!keyEvents.length) return '';
-    const EVENT_I18N = { 'kickoff':'status.kickoff','halftime':'status.halftime','half time':'status.halftime','end of half':'status.halftime','start 2nd half':'status.second_half','second half':'status.second_half','first half':'status.first_half','full time':'status.full_time','final':'status.full_time','end':'status.end' };
-    const translateText = ev => {
+    const EVENT_I18N = {
+      'kickoff':'status.kickoff','halftime':'status.halftime','half time':'status.halftime',
+      'end of half':'status.halftime','start 2nd half':'status.second_half',
+      'second half':'status.second_half','2nd half':'status.second_half',
+      'first half':'status.first_half','full time':'status.full_time',
+      'final':'status.full_time','end regular time':'status.full_time','end':'status.end',
+    };
+    const getBadgeType = ev => {
+      const ty = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
+      if (ty === 'goal' || ev.scoring_play) return 'goal';
+      if (txt.includes('yellow')) return 'yellow';
+      if (txt.includes('red card')) return 'red';
+      if (ty === 'substitution' || txt.includes('substitut')) return 'sub';
+      return 'meta';
+    };
+    const getText = ev => {
       const athletes = (ev.athletes || []).filter(Boolean);
       if (athletes.length) return athletes.join(', ');
       const key = EVENT_I18N[(ev.type_text || '').toLowerCase()];
-      return key ? this._t(key) : (ev.type_text || '');
+      return key ? this._t(key) : (ev.type_text || ev.short_text || '');
     };
-    const iconOf = ev => {
-      const t = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
-      if (t === 'goal' || ev.scoring_play) return '⚽';
-      if (txt.includes('yellow')) return '🟨';
-      if (txt.includes('red card')) return '🟥';
-      if (t === 'substitution' || txt.includes('substitut')) return '🔄';
-      if (txt.includes('halftime') || txt === 'end of half') return '⏸';
-      if (txt.includes('kickoff') || txt.includes('start') || txt.includes('2nd half')) return '▶';
-      if (txt.includes('end')) return '🏁';
-      if (txt.includes('var')) return '📺';
-      return '·';
+    const badge = btype => {
+      const labels = { goal: 'event.goal', yellow: 'event.yellow_card', red: 'event.red_card', sub: 'event.substitution' };
+      if (labels[btype]) return html`<span class="popup-tl-badge ${btype}">${this._t(labels[btype])}</span>`;
+      return html`<span class="popup-tl-badge meta">·</span>`;
     };
     return html`
       <div class="popup-section popup-section-timeline">
         <h5 class="popup-section-title timeline">${this._t('popup.timeline')}</h5>
         <ul class="popup-timeline-list">
-          ${keyEvents.map(e => html`
-            <li class="popup-timeline-item">
-              <span class="popup-tl-clock">${e.clock || ''}</span>
-              <span class="popup-tl-icon">${iconOf(e)}</span>
-              <span class="popup-tl-text"><strong>${translateText(e)}</strong>${e.team ? html`<br><span class="popup-tl-team">${e.team}</span>` : ''}</span>
-            </li>`)}
+          ${keyEvents.map(e => {
+            const btype = getBadgeType(e);
+            return html`
+              <li class="popup-timeline-item">
+                <span class="popup-tl-clock">${e.clock || ''}</span>
+                ${badge(btype)}
+                <span class="popup-tl-text"><strong>${getText(e)}</strong>${e.team ? html`<br><span class="popup-tl-team">${e.team}</span>` : ''}</span>
+              </li>`;
+          })}
         </ul>
       </div>`;
   }
