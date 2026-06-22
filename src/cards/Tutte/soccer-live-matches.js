@@ -1,5 +1,5 @@
 import { LitElement, html, css, render } from "lit-element";
-import { t, resolveLang } from "../../i18n.js";
+import { t, resolveLang, formatMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
@@ -672,16 +672,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const score = s => (s == null || s === '' || s === 'N/A') ? '-' : s;
     const clock = !isPre && ((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : ''));
 
-    // Kickoff label for upcoming matches: "12:15" (today) or "8/9 12:15" (other day)
-    const kickoffLabel = (() => {
-      if (!m.date) return '—';
-      const p = m.date.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}:\d{2})$/);
-      if (!p) return m.date;
-      const [, dd, mm, yyyy, time] = p;
-      const now = new Date();
-      const isToday = parseInt(dd) === now.getDate() && parseInt(mm) === now.getMonth() + 1 && parseInt(yyyy) === now.getFullYear();
-      return isToday ? time : `${parseInt(dd)}/${parseInt(mm)} ${time}`;
-    })();
+    const kickoffLabel = formatMatchDate(m.date, resolveLang(this.hass, this._config)) || '—';
 
     const { goals, yellowCards, redCards } = this.separateEvents(m.match_details || []);
     const group = (title, items, cls) => items.length ? html`

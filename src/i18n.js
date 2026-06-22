@@ -1978,3 +1978,42 @@ export function t(key, lang, vars) {
 }
 
 export const SUPPORTED_LANGUAGES = SUPPORTED_LANGS;
+
+// BCP-47 locale per language code used for Intl.DateTimeFormat
+const LOCALE_MAP = {
+  nl: 'nl-NL', de: 'de-DE', fr: 'fr-FR',
+  it: 'it-IT', es: 'es-ES', pt: 'pt-PT',
+  en: 'en-GB',
+};
+
+/**
+ * Formats a sensor date string ("dd-mm-yyyy hh:mm") for display.
+ * Today's matches → time only ("12:15").
+ * Other dates → locale-aware short date + time ("8-9 12:15" for nl, "8/9 12:15" for en-GB, etc.)
+ * @param {string} dateStr  Sensor date like "08-09-2025 12:15"
+ * @param {string} lang     Language code from resolveLang()
+ * @returns {string}
+ */
+export function formatMatchDate(dateStr, lang) {
+  if (!dateStr) return '';
+  const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})$/);
+  if (!m) return dateStr;
+  const [, dd, mm, yyyy, hh, min] = m;
+  const date = new Date(+yyyy, +mm - 1, +dd, +hh, +min);
+  const now = new Date();
+  const timeStr = `${hh}:${min}`;
+
+  if (
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear()
+  ) return timeStr;
+
+  const locale = LOCALE_MAP[lang] || 'en-GB';
+  try {
+    const datePart = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'numeric' }).format(date);
+    return `${datePart} ${timeStr}`;
+  } catch (_) {
+    return `${+dd}/${+mm} ${timeStr}`;
+  }
+}

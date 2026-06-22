@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit-element";
-import { t, resolveLang } from "../../i18n.js";
+import { t, resolveLang, formatMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError } from "../card-error.js";
@@ -20,17 +20,7 @@ class SoccerLiveTickerCard extends LitElement {
   static getStubConfig() { return { entity: "sensor.soccer_live_all_today", card_type: "ticker" }; }
 
   _formatMatchTime(dateStr) {
-    if (!dateStr) return 'vs';
-    const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}:\d{2})$/);
-    if (!m) return dateStr;
-    const [, dd, mm, yyyy, time] = m;
-    const now = new Date();
-    if (
-      parseInt(dd) === now.getDate() &&
-      parseInt(mm) === now.getMonth() + 1 &&
-      parseInt(yyyy) === now.getFullYear()
-    ) return time;
-    return `${parseInt(dd)}/${parseInt(mm)} ${time}`;
+    return formatMatchDate(dateStr, resolveLang(this.hass, this._config)) || 'vs';
   }
 
   _isSel(m) {
