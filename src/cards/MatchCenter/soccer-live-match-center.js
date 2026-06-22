@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { t, resolveLang, formatMatchDateFull } from '../../i18n.js';
+import { t, resolveLang, formatMatchDateFull, formatMatchDate } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
@@ -8,16 +8,18 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
+import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
 class SoccerLiveMatchCenterCard extends LitElement {
   static get properties() {
     return {
-      hass:        {},
-      _config:     {},
-      _activeTab:  { type: String },
-      _isLoading:  { type: Boolean },
+      hass:          {},
+      _config:       {},
+      _activeTab:    { type: String },
+      _isLoading:    { type: Boolean },
+      _weatherBadge: { type: Object },
     };
   }
 
@@ -25,6 +27,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
     super();
     this._activeTab = 'overview';
     this._isLoading = true;
+    this._weatherBadge = null;
+    this._lastWeatherVenue = null;
   }
 
   setConfig(config) {
@@ -50,7 +54,20 @@ class SoccerLiveMatchCenterCard extends LitElement {
       if (s && s.state !== 'unavailable') {
         this._isLoading = false;
         OfflineCache.set(this._config.entity, s.attributes);
+        const match = (s.attributes.matches || [])[0];
+        if (match?.venue && match.venue !== this._lastWeatherVenue) {
+          this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
+        }
       }
+    }
+  }
+
+  async _loadWeather(venue, venue_lat = null, venue_lon = null) {
+    this._lastWeatherVenue = venue;
+    try {
+      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon);
+    } catch (_) {
+      this._weatherBadge = null;
     }
   }
 
@@ -179,6 +196,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ${renderMatchMeta(match, {
         lang: resolveLang(this.hass, this._config),
         t: k => this._t(k),
+        weatherBadge: this._weatherBadge || null,
         hideBroadcasts: this._config.hide_broadcasts === true,
       })}
     `;
@@ -341,7 +359,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
           const aw  = !isNaN(hs) && !isNaN(as_) && as_ > hs;
           return html`
             <div class="h2h-row">
-              <span class="h2h-date">${(m.date || '').split(' ')[0]}</span>
+              <span class="h2h-date">${formatMatchDate(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split(' ')[0]}</span>
               <span class="h2h-team ${hw ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
               <span class="h2h-score ${hw ? 'home-win' : aw ? 'away-win' : 'draw'}">${hs ?? '?'}–${as_ ?? '?'}</span>
               <span class="h2h-team right ${aw ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>
@@ -357,7 +375,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
       .mc-hero-section { position: relative; overflow: hidden; }

@@ -43,10 +43,6 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
     return { m: next, type: next.state };
   }
 
-  _parseTs(dateStr) {
-    return parseMatchTimestamp(dateStr);
-  }
-
   _renderCompRow(comp) {
     const { name, logo, featured } = comp;
     if (!featured) return '';
@@ -107,7 +103,7 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
       OfflineCache.set(entityId, attrs);
     }
 
-    const rawMatches = (attrs.matches || []).map(m => ({ ...m, _ts: this._parseTs(m.date) }));
+    const rawMatches = (attrs.matches || []).map(m => ({ ...m, _ts: parseMatchTimestamp(m.date) }));
     if (!rawMatches.length) return html`<ha-card><div class="empty">${this._t('ui.no_match_data')}</div></ha-card>`;
 
     // Group by competition

@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit-element";
+import { parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
 import { soccerCardShellStyles } from "../card-shell.js";
@@ -96,16 +97,8 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     return String(value);
   }
 
-  _parseLocalDate(value) {
-    if (!value || typeof value !== "string") return null;
-    const m = value.match(/^(\d{2})[-/](\d{2})[-/](\d{4})(?:\s+(\d{2}):(\d{2}))?/);
-    if (!m) return null;
-    const date = new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0));
-    return Number.isFinite(date.getTime()) ? date : null;
-  }
-
   _age(value) {
-    const date = this._parseLocalDate(value);
+    const date = parseMatchDate(value);
     if (!date) return "-";
     const minutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
     if (minutes < 1) return "now";
