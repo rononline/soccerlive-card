@@ -135,9 +135,10 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
     });
 
     const liveCount = rawMatches.filter(m => m.state === 'in').length;
-    const teamName = this._config.team_name || attrs.team_name || '';
-    const headerTitle = teamName || stateObj?.state || 'Season Overview';
-    const teamLogo = attrs.team_logo || null;
+    const teamName = this._config.team_name || (attrs.team_name !== 'N/A' ? attrs.team_name : '') || '';
+    const headerTitle = teamName || 'Season Overview';
+    const rawLogo = attrs.team_logo;
+    const teamLogo = rawLogo && rawLogo !== 'N/A' ? rawLogo : null;
 
     return html`
       <ha-card>

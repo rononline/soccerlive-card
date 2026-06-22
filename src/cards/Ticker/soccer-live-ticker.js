@@ -99,7 +99,9 @@ class SoccerLiveTickerCard extends LitElement {
           </div>
         </div>
         ${league ? html`<div class="td-comp">${league}</div>` : ''}
-        <button class="td-close" @click=${() => this._sel = null}>✕</button>
+        <button class="td-close" @click=${() => this._sel = null} aria-label="close">
+          <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+        </button>
       </div>
     `;
   }

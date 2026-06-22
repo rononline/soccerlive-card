@@ -590,7 +590,7 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-overlay {
           position: fixed; inset: 0;
           display: flex; justify-content: center; align-items: center;
-          overflow: auto; padding: 16px;
+          overflow: auto; -webkit-overflow-scrolling: touch; padding: 16px;
         }
         .mp-box {
           background: var(--cl-bg, #1a1f2e);
@@ -624,6 +624,33 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
         .mp-event-list li { margin: 4px 0; }
         .mp-no-events { text-align: center; color: #94a3b8; font-size: 13px; }
+        /* Lineup & Timeline sections */
+        .mp-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
+        .mp-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
+        .mp-section-timeline { background: rgba(251,191,36,0.08); border-color: #fbbf24; }
+        .mp-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
+        .mp-section-title.lineup { color: #10b981; }
+        .mp-section-title.timeline { color: #fbbf24; }
+        .mp-lineup-team { margin-bottom: 10px; }
+        .mp-lineup-team:last-child { margin-bottom: 0; }
+        .mp-lineup-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .mp-lineup-header span:first-child { font-size: 12px; font-weight: 800; color: #fff; }
+        .mp-formation { font-size: 10px; font-weight: 700; color: var(--cl-accent, #6366f1); letter-spacing: 0.1em; }
+        .mp-lineup-players { font-size: 12px; color: #cbd5e1; line-height: 1.7; }
+        .mp-player { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin: 2px; }
+        .mp-jersey { color: #fbbf24; font-weight: 800; }
+        .mp-timeline-list { margin: 0; padding: 0; list-style: none; }
+        .mp-timeline-item { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
+        .mp-timeline-item:last-child { border-bottom: none; }
+        .mp-tl-clock { min-width: 32px; text-align: right; font-size: 11px; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; padding-top: 2px; flex-shrink: 0; }
+        .mp-tl-badge { display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; line-height: 15px; white-space: nowrap; margin-top: 1px; }
+        .mp-tl-badge.goal   { background: rgba(99,102,241,0.18); color: #6366f1; }
+        .mp-tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
+        .mp-tl-badge.red    { background: rgba(239,68,68,0.18); color: #ef4444; }
+        .mp-tl-badge.sub    { background: rgba(148,163,184,0.12); color: #94a3b8; }
+        .mp-tl-badge.meta   { background: transparent; color: #94a3b8; font-size: 14px; padding: 0 4px; letter-spacing: 0; }
+        .mp-tl-text strong { color: #fff; }
+        .mp-tl-team { color: #94a3b8; font-size: 11px; }
         .mp-close {
           background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, #ec4899));
           color: white; padding: 12px 20px; border: none; border-radius: 12px;
@@ -661,10 +688,86 @@ class SoccerLiveMatchesCard extends LitElement {
           ${group(this._t('event.yellow_card'), yellowCards, 'yellow')}
           ${group(this._t('event.red_card'), redCards, 'red')}
           ${!hasEvents ? html`<p class="mp-no-events">${this._t('popup.no_events')}</p>` : ''}
+          ${this._renderPopupLineup(m)}
+          ${this._renderPopupTimeline(m)}
           <button class="mp-close" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
       </div>
     `;
+  }
+
+  _renderPopupLineup(m) {
+    const lineupHome = m.lineup_home || [];
+    const lineupAway = m.lineup_away || [];
+    if (!lineupHome.length && !lineupAway.length) return '';
+    const teamBlock = (players, formation, label) => {
+      const hasFlags = players.some(p => p.starter === true || p.starter === false);
+      const starters = hasFlags ? players.filter(p => p.starter === true) : players;
+      if (!starters.length) return '';
+      return html`
+        <div class="mp-lineup-team">
+          <div class="mp-lineup-header">
+            <span>${label}</span>
+            ${formation ? html`<span class="mp-formation">${formation}</span>` : ''}
+          </div>
+          <div class="mp-lineup-players">
+            ${starters.map(p => html`<span class="mp-player">${p.jersey ? html`<strong class="mp-jersey">${p.jersey}</strong> ` : ''}${p.short_name || p.name || ''}</span>`)}
+          </div>
+        </div>`;
+    };
+    return html`
+      <div class="mp-section mp-section-lineup">
+        <h5 class="mp-section-title lineup">${this._t('popup.lineups')}</h5>
+        ${teamBlock(lineupHome, m.formation_home, m.home_team)}
+        ${teamBlock(lineupAway, m.formation_away, m.away_team)}
+      </div>`;
+  }
+
+  _renderPopupTimeline(m) {
+    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
+    const keyEvents = (m.key_events || []).filter(e => !SKIP.some(s => (e.type_text || '').toLowerCase().includes(s)));
+    if (!keyEvents.length) return '';
+    const EVENT_I18N = {
+      'kickoff':'status.kickoff','halftime':'status.halftime','half time':'status.halftime',
+      'end of half':'status.halftime','start 2nd half':'status.second_half',
+      'second half':'status.second_half','2nd half':'status.second_half',
+      'first half':'status.first_half','full time':'status.full_time',
+      'final':'status.full_time','end regular time':'status.full_time','end':'status.end',
+    };
+    const getBadgeType = ev => {
+      const ty = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
+      if (ty === 'goal' || ev.scoring_play) return 'goal';
+      if (txt.includes('yellow')) return 'yellow';
+      if (txt.includes('red card')) return 'red';
+      if (ty === 'substitution' || txt.includes('substitut')) return 'sub';
+      return 'meta';
+    };
+    const getText = ev => {
+      const athletes = (ev.athletes || []).filter(Boolean);
+      if (athletes.length) return athletes.join(', ');
+      const key = EVENT_I18N[(ev.type_text || '').toLowerCase()];
+      return key ? this._t(key) : (ev.type_text || ev.short_text || '');
+    };
+    const badge = btype => {
+      const labels = { goal: 'event.goal', yellow: 'event.yellow_card', red: 'event.red_card', sub: 'event.substitution' };
+      if (labels[btype]) return html`<span class="mp-tl-badge ${btype}">${this._t(labels[btype])}</span>`;
+      return html`<span class="mp-tl-badge meta">·</span>`;
+    };
+    return html`
+      <div class="mp-section mp-section-timeline">
+        <h5 class="mp-section-title timeline">${this._t('popup.timeline')}</h5>
+        <ul class="mp-timeline-list">
+          ${keyEvents.map(e => {
+            const btype = getBadgeType(e);
+            return html`
+              <li class="mp-timeline-item">
+                <span class="mp-tl-clock">${e.clock || ''}</span>
+                ${badge(btype)}
+                <span class="mp-tl-text"><strong>${getText(e)}</strong>${e.team ? html`<br><span class="mp-tl-team">${e.team}</span>` : ''}</span>
+              </li>`;
+          })}
+        </ul>
+      </div>`;
   }
 
   static get styles() {

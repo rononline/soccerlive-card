@@ -172,7 +172,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
             <span class="ov-val right small">${awayStd || '—'}</span>
           </div>
         ` : ''}
-        ${match.week_label ? html`<div class="ov-meta">📅 ${match.week_label}</div>` : ''}
+        ${match.week_label ? html`<div class="ov-meta"><span class="ov-cal">◈</span> ${match.week_label}</div>` : ''}
       </div>
       ${renderMatchMeta(match, {
         lang: resolveLang(this.hass, this._config),
@@ -379,7 +379,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .ov-val.right { text-align: right; }
       .ov-val.small { font-size: 11px; }
       .ov-label { flex: 0 0 70px; text-align: center; font-size: 10px; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; }
-      .ov-meta { font-size: 12px; color: var(--cl-text-2, #94a3b8); padding: 7px 0; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.05)); }
+      .ov-meta { font-size: 12px; color: var(--cl-text-2, #94a3b8); padding: 7px 0; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.05)); display: flex; align-items: center; gap: 5px; }
+      .ov-cal { font-size: 10px; color: var(--cl-accent, #6366f1); }
       /* Stats */
       .stats-list { padding: 4px 0; }
       .stat-row { display: flex; align-items: center; padding: 6px 16px; gap: 8px; }
