@@ -1,5 +1,5 @@
 import { LitElement, html, css, render } from "lit-element";
-import { t, resolveLang } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
@@ -274,13 +274,7 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _parseMatchDate(dateStr) {
-    if (!dateStr || dateStr === 'N/A') return null;
-    try {
-      const [datePart, timePart] = dateStr.split(' ');
-      const [day, month, year] = datePart.split(/[-\/]/).map(Number);
-      const [hours, minutes] = (timePart || '00:00').split(':').map(Number);
-      return new Date(year, month - 1, day, hours, minutes);
-    } catch (e) { return null; }
+    return parseMatchDate(dateStr);
   }
 
   _liveCountdown(match) {

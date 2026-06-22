@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit-element";
-import { t, resolveLang } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
@@ -103,17 +103,7 @@ class SoccerLiveCountdownCard extends LitElement {
   static getStubConfig() { return { entity: "sensor.soccer_live_next_" }; }
 
   _parseDate(dateStr) {
-    if (!dateStr || dateStr === 'N/A') return null;
-    try {
-      const [datePart, timePart] = dateStr.split(' ');
-      const parts = datePart.split(/[-\/]/).map(Number);
-      const [hours, minutes] = (timePart || '00:00').split(':').map(Number);
-      if (parts.length === 3) {
-        const [day, month, year] = parts;
-        return new Date(year, month - 1, day, hours, minutes);
-      }
-    } catch (e) {}
-    return null;
+    return parseMatchDate(dateStr);
   }
 
   _getNextMatch(stateObj) {

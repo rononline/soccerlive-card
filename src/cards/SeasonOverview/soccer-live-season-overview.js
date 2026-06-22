@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit-element";
-import { t, resolveLang, formatMatchDate } from "../../i18n.js";
+import { t, resolveLang, formatMatchDate, parseMatchTimestamp } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError } from "../card-error.js";
@@ -44,11 +44,7 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
   }
 
   _parseTs(dateStr) {
-    if (!dateStr) return 0;
-    const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})$/);
-    if (!m) return 0;
-    const ts = new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]).getTime();
-    return Number.isFinite(ts) ? ts : 0;
+    return parseMatchTimestamp(dateStr);
   }
 
   _renderCompRow(comp) {

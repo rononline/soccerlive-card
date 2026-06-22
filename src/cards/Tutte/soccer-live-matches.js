@@ -1,5 +1,5 @@
 import { LitElement, html, css, render } from "lit-element";
-import { t, resolveLang, formatMatchDate } from "../../i18n.js";
+import { t, resolveLang, formatMatchDate, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
@@ -196,11 +196,7 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _parseMatchDate(dateStr) {
-    if (!dateStr) return null;
-    const [datePart, timePart] = dateStr.split(' ');
-    const [day, month, year] = datePart.split(/[-\/]/).map(Number);
-    const [hours, minutes] = timePart ? timePart.split(':').map(Number) : [0, 0];
-    return new Date(year, month - 1, day, hours, minutes);
+    return parseMatchDate(dateStr);
   }
 
   _matchTimeLabel(match) {

@@ -32,6 +32,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
+| Season Overview | `season-overview` | One row per competition: live match, next match or last result |
 
 > **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 
@@ -67,6 +68,10 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 
 Example dashboards are available in [`examples/`](examples/):
 `feyenoord-dashboard.yaml`, `world-cup-dashboard.yaml` and `mobile-minimal-dashboard.yaml`.
+
+For local styling work and screenshots, run `npm run preview` and open
+`http://localhost:4173/docs/preview.html`. It renders all card types with
+fixture data and skin/language selectors without requiring Home Assistant.
 
 ---
 
@@ -300,6 +305,41 @@ team_name: Ajax
 
 > `team_name` is recommended. Without it the card tries to auto-detect the tracked team from `previous_matches`, but detection may be ambiguous with only one previous match or when the same opponent appears multiple times.
 
+### 🧪 Diagnostics
+
+```yaml
+type: custom:soccer-live-card
+card_type: diagnostics
+entity: sensor.soccer_live_next_ned_1_ajax
+```
+
+Shows sensor type, API status, match counters, request counters and the last successful update. Useful when checking whether missing card data is a card issue or an integration/data issue.
+
+### 📺 Ticker
+
+```yaml
+type: custom:soccer-live-card
+card_type: ticker
+entity: sensor.soccer_live_all_ned_1
+filter: live            # optional: live / empty for all
+auto_scroll: true
+scroll_speed: normal    # slow / normal / fast
+hide_when_empty: true   # hides the card when the filter has no matches
+```
+
+Horizontal match strip for dense dashboards. With `hide_when_empty: true`, a live-only ticker disappears when there are no live matches.
+
+### 🗓️ Season Overview
+
+```yaml
+type: custom:soccer-live-card
+card_type: season-overview
+entity: sensor.soccer_live_all_mixed_feyenoord_rotterdam
+team_name: Feyenoord Rotterdam
+```
+
+Uses a mixed team sensor and shows each competition once. Per competition it prefers a live match, then the next upcoming match, then the most recent finished match.
+
 ---
 
 ## 🔗 Integration version requirements
@@ -318,6 +358,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Season form from summary (`last_five_home/away`) | v3.4.0 |
 | Countdown competition name from `league_info.name` | v3.6.5 |
 | URL-based shared fetch cache (sensors on same endpoint share one request) | v3.6.3 |
+| Stable `league_name` / `league_logo` per match on mixed/all sensors | v3.6.25 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 

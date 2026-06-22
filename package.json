@@ -4,7 +4,8 @@
   "description": "Football Live cards for Home Assistant",
   "main": "webpack.config.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "preview": "npm run build && python3 -m http.server 4173"
   },
   "repository": {
     "type": "git",

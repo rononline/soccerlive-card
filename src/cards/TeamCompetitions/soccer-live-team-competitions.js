@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit-element";
-import { t, resolveLang } from "../../i18n.js";
+import { t, resolveLang, parseMatchTimestamp } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from "../card-error.js";
@@ -27,6 +27,16 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     return value && value !== 'N/A' ? value : '';
   }
 
+  _parseTs(dateStr) {
+    return parseMatchTimestamp(dateStr);
+  }
+
+  _sortByDateAsc(a, b) {
+    const ta = this._parseTs(a.date) || Infinity;
+    const tb = this._parseTs(b.date) || Infinity;
+    return ta - tb;
+  }
+
   _groupByCompetition(matches) {
     const groups = {};
     for (const m of matches) {
@@ -45,11 +55,11 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
     return Object.values(groups).map(g => {
       const live     = g.all.find(m => m.state === 'in');
-      const nextM    = g.all.filter(m => m.state === 'pre').sort((a, b) => a.date < b.date ? -1 : 1)[0];
-      const finished = g.all.filter(m => m.state === 'post').sort((a, b) => a.date < b.date ? -1 : 1);
+      const nextM    = g.all.filter(m => m.state === 'pre').sort((a, b) => this._sortByDateAsc(a, b))[0];
+      const finished = g.all.filter(m => m.state === 'post').sort((a, b) => this._sortByDateAsc(a, b));
       const last     = finished[finished.length - 1];
       const featured = live || nextM || last || g.all[0];
-      const upcoming = g.all.filter(m => m.state === 'pre').sort((a, b) => a.date < b.date ? -1 : 1);
+      const upcoming = g.all.filter(m => m.state === 'pre').sort((a, b) => this._sortByDateAsc(a, b));
       return { ...g, featured, previous: finished, upcoming };
     }).filter(g => g.featured).sort((a, b) => {
       const score = m => m.featured.state === 'in' ? 0 : m.featured.state === 'pre' ? 1 : 2;
@@ -62,7 +72,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     const tn = teamName.toLowerCase();
     return matches
       .filter(m => m.state === 'post')
-      .sort((a, b) => a.date < b.date ? -1 : 1)
+      .sort((a, b) => this._sortByDateAsc(a, b))
       .slice(-5)
       .map(m => {
         const isHome = m.home_team?.toLowerCase().includes(tn) || m.home_team?.toLowerCase() === tn;

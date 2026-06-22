@@ -1993,6 +1993,19 @@ const LOCALE_MAP = {
   en: 'en-GB',
 };
 
+export function parseMatchDate(dateStr) {
+  if (!dateStr || dateStr === 'N/A') return null;
+  const m = String(dateStr).match(/^(\d{2})[-/](\d{2})[-/](\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+  if (!m) return null;
+  const date = new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0));
+  return Number.isFinite(date.getTime()) ? date : null;
+}
+
+export function parseMatchTimestamp(dateStr) {
+  const date = parseMatchDate(dateStr);
+  return date ? date.getTime() : 0;
+}
+
 /**
  * Formats a sensor date string ("dd-mm-yyyy hh:mm") for display.
  * Today's matches → time only ("12:15").
@@ -2006,7 +2019,8 @@ export function formatMatchDate(dateStr, lang) {
   const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})$/);
   if (!m) return dateStr;
   const [, dd, mm, yyyy, hh, min] = m;
-  const date = new Date(+yyyy, +mm - 1, +dd, +hh, +min);
+  const date = parseMatchDate(dateStr);
+  if (!date) return dateStr;
   const now = new Date();
   const timeStr = `${hh}:${min}`;
 
@@ -2034,7 +2048,8 @@ export function formatMatchDateFull(dateStr, lang) {
   const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})$/);
   if (!m) return dateStr;
   const [, dd, mm, yyyy, hh, min] = m;
-  const date = new Date(+yyyy, +mm - 1, +dd, +hh, +min);
+  const date = parseMatchDate(dateStr);
+  if (!date) return dateStr;
   const locale = LOCALE_MAP[lang] || 'en-GB';
   try {
     const datePart = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
