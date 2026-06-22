@@ -93,9 +93,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
     return html`
       <ha-card>
-        ${renderCardHero(match.home_logo, match.away_logo)}
-        <div class="card-content">
-        ${this._config.hide_header !== true ? this._renderHero(match) : ''}
+        <div class="mc-hero-section">
+          ${renderCardHero(match.home_logo, match.away_logo)}
+          <div class="card-content">
+            ${this._config.hide_header !== true ? this._renderHero(match) : ''}
+          </div>
+        </div>
         <div class="tab-bar">
           ${tabs.map(tab => html`
             <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
@@ -110,7 +113,6 @@ class SoccerLiveMatchCenterCard extends LitElement {
           ${this._activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
           ${this._activeTab === 'lineup'    ? this._renderLineup(match)   : ''}
           ${this._activeTab === 'h2h'       ? this._renderH2H(match)      : ''}
-        </div>
         </div>
       </ha-card>
     `;
@@ -357,6 +359,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
+      /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
+      .mc-hero-section { position: relative; overflow: hidden; }
       /* Scoreboard */
       .scoreboard { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; }
       .mc-team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
