@@ -27,13 +27,16 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
     const live = matches.find(m => m.state === 'in');
     if (live) return { m: live, type: 'live' };
     const stateOrder = m => m.state === 'pre' ? 0 : m.state === 'post' ? 1 : 2;
+    const validTs = m => Number.isFinite(m._ts) && m._ts > 0;
+    const sortTs = (m, fallback) => validTs(m) ? m._ts : fallback;
     const sorted = [...matches].sort((a, b) => {
       if (stateOrder(a) !== stateOrder(b)) return stateOrder(a) - stateOrder(b);
-      // upcoming: earliest first; past: most recent first
+      // Upcoming: earliest first, invalid dates last. Past: most recent first,
+      // invalid dates last.
       if (a.state === 'post' && b.state === 'post') {
-        return (b._ts || 0) - (a._ts || 0);
+        return sortTs(b, -Infinity) - sortTs(a, -Infinity);
       }
-      return (a._ts || 0) - (b._ts || 0);
+      return sortTs(a, Infinity) - sortTs(b, Infinity);
     });
     const next = sorted[0];
     if (!next) return null;
@@ -44,7 +47,8 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
     if (!dateStr) return 0;
     const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})$/);
     if (!m) return 0;
-    return new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]).getTime();
+    const ts = new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]).getTime();
+    return Number.isFinite(ts) ? ts : 0;
   }
 
   _renderCompRow(comp) {
@@ -124,7 +128,11 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
     comps.sort((a, b) => {
       const rank = c => !c.featured ? 3 : c.featured.type === 'live' ? 0 : c.featured.type === 'pre' ? 1 : 2;
       if (rank(a) !== rank(b)) return rank(a) - rank(b);
-      if (a.featured?.type === 'pre' && b.featured?.type === 'pre') return (a.featured.m._ts || 0) - (b.featured.m._ts || 0);
+      if (a.featured?.type === 'pre' && b.featured?.type === 'pre') {
+        const ta = a.featured.m._ts > 0 ? a.featured.m._ts : Infinity;
+        const tb = b.featured.m._ts > 0 ? b.featured.m._ts : Infinity;
+        return ta - tb;
+      }
       return 0;
     });
 
