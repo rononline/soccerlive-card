@@ -85,6 +85,12 @@ class SoccerLiveTickerEditor extends LitElement {
         </select>
 
         <label class="toggle-row">
+          <input type="checkbox" ?checked=${!!this._config.hide_when_empty}
+            @change=${e => this._fire({ ...this._config, hide_when_empty: e.target.checked })}>
+          Hide card when empty
+        </label>
+
+        <label class="toggle-row">
           <input type="checkbox" ?checked=${!!this._config.auto_scroll}
             @change=${e => this._fire({ ...this._config, auto_scroll: e.target.checked })}>
           Auto-scroll

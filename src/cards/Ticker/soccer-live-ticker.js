@@ -136,7 +136,10 @@ class SoccerLiveTickerCard extends LitElement {
     const filter = this._config.filter;
     const visible = filter === 'live' ? sorted.filter(m => m.state === 'in') : sorted;
 
-    if (!visible.length) return html`<ha-card><div class="empty">${this._t('ui.no_live_match')}</div></ha-card>`;
+    if (!visible.length) {
+      if (this._config.hide_when_empty) return html`<style>:host{display:none!important}</style>`;
+      return html`<ha-card><div class="empty">${this._t('ui.no_live_match')}</div></ha-card>`;
+    }
 
     const autoScroll = this._config.auto_scroll && visible.length > 1;
     const speed = this._config.scroll_speed || 'normal';
