@@ -610,8 +610,12 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-logo { width: 64px; height: 64px; object-fit: contain; }
         .mp-score-center { text-align: center; }
         .mp-score { font-size: 38px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+        .mp-score.live { color: var(--cl-live, #ef4444); }
         .mp-sep { opacity: 0.4; }
         .mp-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 6px; font-weight: 600; }
+        .mp-clock.live { color: var(--cl-live, #ef4444); }
+        .mp-kickoff { font-size: 26px; font-weight: 800; color: var(--cl-accent, #60a5fa); letter-spacing: 0.5px; line-height: 1; }
+        .mp-kickoff-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-top: 6px; }
         .mp-teams { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 14px; margin: 0 0 20px; }
         .mp-event-group { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
         .mp-event-group.goal { background: rgba(99,102,241,0.1); border-color: #6366f1; }
@@ -662,8 +666,23 @@ class SoccerLiveMatchesCard extends LitElement {
 
   _renderPopup() {
     const m = this.activeMatch;
+    const isPre  = m.state === 'pre';
+    const isLive = m.state === 'in';
+    const isFt   = m.state === 'post';
     const score = s => (s == null || s === '' || s === 'N/A') ? '-' : s;
-    const clock = (m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : '');
+    const clock = !isPre && ((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : ''));
+
+    // Kickoff label for upcoming matches: "12:15" (today) or "8/9 12:15" (other day)
+    const kickoffLabel = (() => {
+      if (!m.date) return '—';
+      const p = m.date.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}:\d{2})$/);
+      if (!p) return m.date;
+      const [, dd, mm, yyyy, time] = p;
+      const now = new Date();
+      const isToday = parseInt(dd) === now.getDate() && parseInt(mm) === now.getMonth() + 1 && parseInt(yyyy) === now.getFullYear();
+      return isToday ? time : `${parseInt(dd)}/${parseInt(mm)} ${time}`;
+    })();
+
     const { goals, yellowCards, redCards } = this.separateEvents(m.match_details || []);
     const group = (title, items, cls) => items.length ? html`
       <div class="mp-event-group ${cls}">
@@ -678,16 +697,24 @@ class SoccerLiveMatchesCard extends LitElement {
           <div class="mp-score-row">
             <img class="mp-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
             <div class="mp-score-center">
-              <div class="mp-score">${score(m.home_score)}<span class="mp-sep"> - </span>${score(m.away_score)}</div>
-              ${clock ? html`<div class="mp-clock">${clock}</div>` : ''}
+              ${isPre ? html`
+                <div class="mp-kickoff">${kickoffLabel}</div>
+                <div class="mp-kickoff-label">${this._t('status.kickoff')}</div>
+              ` : html`
+                <div class="mp-score ${isLive ? 'live' : ''}">${score(m.home_score)}<span class="mp-sep"> – </span>${score(m.away_score)}</div>
+                ${isLive && clock ? html`<div class="mp-clock live">${clock}</div>` : ''}
+                ${isFt ? html`<div class="mp-clock">${this._t('status.full_time')}</div>` : ''}
+              `}
             </div>
             <img class="mp-logo" src="${m.away_logo}" alt="" @error="${e => e.target.style.display='none'}">
           </div>
           <p class="mp-teams"><strong>${m.home_team}</strong> – <strong>${m.away_team}</strong></p>
-          ${group(this._t('event.goal'), goals, 'goal')}
-          ${group(this._t('event.yellow_card'), yellowCards, 'yellow')}
-          ${group(this._t('event.red_card'), redCards, 'red')}
-          ${!hasEvents ? html`<p class="mp-no-events">${this._t('popup.no_events')}</p>` : ''}
+          ${!isPre ? html`
+            ${group(this._t('event.goal'), goals, 'goal')}
+            ${group(this._t('event.yellow_card'), yellowCards, 'yellow')}
+            ${group(this._t('event.red_card'), redCards, 'red')}
+            ${!hasEvents ? html`<p class="mp-no-events">${this._t('popup.no_events')}</p>` : ''}
+          ` : ''}
           ${this._renderPopupLineup(m)}
           ${this._renderPopupTimeline(m)}
           <button class="mp-close" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
