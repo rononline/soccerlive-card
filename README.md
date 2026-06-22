@@ -71,7 +71,10 @@ Example dashboards are available in [`examples/`](examples/):
 
 For local styling work and screenshots, run `npm run preview` and open
 `http://localhost:4173/docs/preview.html`. It renders all card types with
-fixture data and skin/language selectors without requiring Home Assistant.
+fixture data, edge cases and skin/language selectors without requiring Home Assistant.
+
+Run `npm run smoke:preview` to verify that the preview fixture and built bundle
+are present before releasing.
 
 ---
 
@@ -375,6 +378,20 @@ All UI text is translated via `src/i18n.js` with **250 keys** in seven languages
 | `round.r16` | Round of 16 | Achtste finales | Achtelfinale | Oitavas | Huitièmes | Octavos | Ottavi |
 | `status.halftime` | Halftime | Rust | Halbzeit | Intervalo | Mi-temps | Descanso | Intervallo |
 | `ui.loading_timeout` | Loading timeout | Laden mislukt | Ladetimeout | Tempo esgotado | Délai dépassé | Tiempo agotado | Timeout |
+
+---
+
+## ✅ Release checklist
+
+For maintainers:
+
+1. Update `package.json` / `package-lock.json` version.
+2. Run `npm run build`.
+3. Run `npm run smoke:preview`.
+4. Commit `src/`, `docs/`, `README.md`, `package*.json` and `dist/soccer-live-card.bundle.js`.
+5. Push to `main`.
+6. Check the GitHub Auto Release workflow and confirm the new release appears as latest.
+7. In Home Assistant/HACS, refresh the browser cache after updating the frontend resource.
 
 ---
 

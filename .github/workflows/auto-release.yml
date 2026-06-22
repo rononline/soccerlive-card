@@ -41,7 +41,7 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install deps
@@ -51,6 +51,10 @@ jobs:
       - name: Build bundle
         if: steps.check.outputs.exists == 'false'
         run: npm run build
+
+      - name: Smoke test preview
+        if: steps.check.outputs.exists == 'false'
+        run: npm run smoke:preview
 
       - name: Build release notes from version-bump commit
         if: steps.check.outputs.exists == 'false'

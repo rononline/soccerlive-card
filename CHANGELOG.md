@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.21.39 (2026-06-22)
+- Preview: add edge-case fixture states for empty data, unavailable sensors, missing logos, long names and live-only ticker filtering
+- Diagnostics: add sensor age and recommended card types based on `sensor_type`
+- Tooling: add `npm run smoke:preview` and run it in the Auto Release workflow
+- Workflow: use Node 24 in Auto Release
+- Docs: add local preview smoke-test guidance and a release checklist
+
 ## v3.21.21 (2026-06-20)
 - Ticker: redesign match items to vertical layout (home top, score/time middle, away bottom) for better readability; fixed width 160px per item
 

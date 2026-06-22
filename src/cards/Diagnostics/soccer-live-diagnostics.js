@@ -59,6 +59,31 @@ class SoccerLiveDiagnosticsCard extends LitElement {
         background: rgba(239,68,68,0.10);
         font-size: 12px;
       }
+      .recommendations {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid var(--cl-divider);
+        border-radius: 10px;
+        background: var(--cl-surface);
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 7px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 3px 8px;
+        border: 1px solid var(--cl-chip-border);
+        border-radius: 999px;
+        background: var(--cl-chip-bg);
+        color: var(--cl-text);
+        font-size: 11px;
+        font-weight: 800;
+      }
       @media (max-width: 420px) {
         .grid { grid-template-columns: 1fr; }
       }
@@ -69,6 +94,40 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     if (value === undefined || value === null || value === "") return "-";
     if (Array.isArray(value)) return String(value.length);
     return String(value);
+  }
+
+  _parseLocalDate(value) {
+    if (!value || typeof value !== "string") return null;
+    const m = value.match(/^(\d{2})[-/](\d{2})[-/](\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+    if (!m) return null;
+    const date = new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0));
+    return Number.isFinite(date.getTime()) ? date : null;
+  }
+
+  _age(value) {
+    const date = this._parseLocalDate(value);
+    if (!date) return "-";
+    const minutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
+    if (minutes < 1) return "now";
+    if (minutes < 60) return `${minutes}m`;
+    const hours = Math.round(minutes / 60);
+    if (hours < 48) return `${hours}h`;
+    return `${Math.round(hours / 24)}d`;
+  }
+
+  _recommendedCards(sensorType) {
+    const map = {
+      team_match: ["Team", "Countdown", "Match Center", "Lineup", "Timeline", "Team Form"],
+      team_matches: ["Matches", "Ticker", "Live Match", "Team Form"],
+      team_matches_mixed: ["Team Competitions", "Season Overview", "Matches", "Ticker", "Team Form"],
+      all_matches_today: ["Matches", "Ticker", "Live Match"],
+      standings: ["Standings", "Mini Standings"],
+      top_scorers: ["Top Scorers"],
+      bracket: ["Bracket"],
+      news: ["News"],
+      commentary: ["Live Commentary", "Timeline"],
+    };
+    return map[sensorType] || [];
   }
 
   render() {
@@ -82,15 +141,19 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const attrs = stateObj.attributes || {};
     const apiStatus = attrs.api_status || "unknown";
     const statusClass = apiStatus === "ok" ? "ok" : "error";
+    const lastUpdate = attrs.last_successful_update || attrs.last_request_time;
+    const sensorType = attrs.sensor_type || "unknown";
+    const recommended = this._recommendedCards(sensorType);
     const metrics = [
-      ["Sensor", attrs.sensor_type],
+      ["Sensor", sensorType],
       ["State", stateObj.state],
       ["Matches", attrs.schedule_match_count ?? attrs.total_matches],
       ["Live", attrs.schedule_live_count ?? attrs.live_matches_count],
       ["Upcoming", attrs.schedule_upcoming_count ?? attrs.upcoming_matches_count],
       ["Recent", attrs.schedule_recent_count ?? attrs.finished_matches_count],
       ["Requests", attrs.request_count],
-      ["Last update", attrs.last_successful_update || attrs.last_request_time],
+      ["Last update", lastUpdate],
+      ["Sensor age", this._age(lastUpdate)],
     ];
 
     return html`
@@ -109,6 +172,14 @@ class SoccerLiveDiagnosticsCard extends LitElement {
               </div>
             `)}
           </div>
+          ${recommended.length ? html`
+            <div class="recommendations">
+              <div class="label">Recommended cards</div>
+              <div class="chips">
+                ${recommended.map(card => html`<span class="chip">${card}</span>`)}
+              </div>
+            </div>
+          ` : ""}
           ${attrs.last_error ? html`<div class="error-box">${attrs.last_error}</div>` : ""}
         </div>
       </ha-card>
@@ -119,4 +190,3 @@ class SoccerLiveDiagnosticsCard extends LitElement {
 if (!customElements.get("soccer-live-diagnostics")) {
   customElements.define("soccer-live-diagnostics", SoccerLiveDiagnosticsCard);
 }
-

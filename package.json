@@ -1,11 +1,12 @@
 {
   "name": "soccer-live-card",
-  "version": "3.21.38",
+  "version": "3.21.39",
   "description": "Football Live cards for Home Assistant",
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack",
-    "preview": "npm run build && python3 -m http.server 4173"
+    "preview": "npm run build && python3 -m http.server 4173",
+    "smoke:preview": "node scripts/smoke-preview.mjs"
   },
   "repository": {
     "type": "git",

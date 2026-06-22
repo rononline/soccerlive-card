@@ -172,8 +172,9 @@
 
   <main>
     <div class="note">
-      Open this file from the repository after running <code>npm run build</code>.
-      It loads <code>../dist/soccer-live-card.bundle.js</code> and uses mock Home Assistant sensor states.
+      Run <code>npm run preview</code> and open this page. It loads
+      <code>../dist/soccer-live-card.bundle.js</code> and uses mock Home Assistant sensor states,
+      including empty, unavailable, missing-logo and long-name edge cases.
     </div>
     <div id="grid" class="grid"></div>
   </main>
@@ -266,6 +267,52 @@
       away_score: "2",
     };
 
+    const longNames = {
+      ...upcoming,
+      event_id: "preview-long-names",
+      home_team: "Netherlands Under Twenty One Invitational XI",
+      away_team: "Sweden International Selection With A Very Long Name",
+      home_abbrev: "NED U21",
+      away_abbrev: "SWE INT",
+      home_logo: "",
+      away_logo: "",
+      league_name: "International Friendly Tournament With A Long Competition Name",
+      league_logo: "",
+      venue: "A Very Long Stadium Name With City And Country For Layout Checks",
+    };
+
+    const emptyAttrs = {
+      sensor_type: "team_matches_mixed",
+      api_status: "ok",
+      team_name: "No fixtures",
+      team_logo: "",
+      league_name: "Preview Empty State",
+      league_logo: "",
+      league_info: [{ name: "Preview Empty State", abbreviation: "EMPTY", logo_href: "" }],
+      matches: [],
+      previous_matches: [],
+      upcoming_matches: [],
+      total_matches: 0,
+      live_matches_count: 0,
+      upcoming_matches_count: 0,
+      finished_matches_count: 0,
+      request_count: 1,
+      last_successful_update: "22-06-2026 12:00",
+      standings_groups: [],
+      scorers: [],
+      articles: [],
+      commentary: [],
+      rounds: [],
+    };
+
+    const unavailableAttrs = {
+      ...emptyAttrs,
+      sensor_type: "team_match",
+      api_status: "error",
+      team_name: "Unavailable sensor",
+      last_error: "Preview: integration did not return data",
+    };
+
     const attrs = {
       sensor_type: "team_matches_mixed",
       api_status: "ok",
@@ -320,6 +367,30 @@
       }]
     };
 
+    const longNameAttrs = {
+      ...attrs,
+      team_name: "Netherlands Under Twenty One Invitational XI",
+      team_logo: "",
+      league_name: longNames.league_name,
+      league_logo: "",
+      league_info: [{ name: longNames.league_name, abbreviation: "LONG", logo_href: "" }],
+      matches: [longNames],
+      previous_matches: [],
+      upcoming_matches: [longNames],
+      total_matches: 1,
+      live_matches_count: 0,
+      upcoming_matches_count: 1,
+      finished_matches_count: 0,
+    };
+
+    const noLiveAttrs = {
+      ...attrs,
+      matches: [upcoming, done],
+      live_matches_count: 0,
+      upcoming_matches_count: 1,
+      finished_matches_count: 1,
+    };
+
     const states = {
       "sensor.preview_team": { state: "Netherlands", attributes: attrs },
       "sensor.preview_matches": { state: "3", attributes: attrs },
@@ -328,7 +399,11 @@
       "sensor.preview_news": { state: "2", attributes: attrs },
       "sensor.preview_bracket": { state: "FIFA World Cup", attributes: attrs },
       "sensor.preview_commentary": { state: "live", attributes: attrs },
-      "sensor.preview_diagnostics": { state: "ok", attributes: attrs }
+      "sensor.preview_diagnostics": { state: "ok", attributes: attrs },
+      "sensor.preview_empty": { state: "0", attributes: emptyAttrs },
+      "sensor.preview_unavailable": { state: "unavailable", attributes: unavailableAttrs },
+      "sensor.preview_missing_logos": { state: "long names", attributes: longNameAttrs },
+      "sensor.preview_live_empty": { state: "2", attributes: noLiveAttrs }
     };
 
     const cards = [
@@ -350,7 +425,12 @@
       ["Live Commentary", "live-commentary", { entity: "sensor.preview_commentary" }],
       ["News", "news", { entity: "sensor.preview_news" }],
       ["Bracket", "bracket", { entity: "sensor.preview_bracket", style: "list" }, "wide"],
-      ["Diagnostics", "diagnostics", { entity: "sensor.preview_diagnostics" }]
+      ["Diagnostics", "diagnostics", { entity: "sensor.preview_diagnostics" }],
+      ["Team · long names / no logos", "team", { entity: "sensor.preview_missing_logos" }, "wide"],
+      ["Matches · empty", "matches", { entity: "sensor.preview_empty" }],
+      ["Season Overview · empty", "season-overview", { entity: "sensor.preview_empty" }],
+      ["Ticker · live hidden when empty", "ticker", { entity: "sensor.preview_live_empty", filter: "live", hide_when_empty: true }],
+      ["Diagnostics · unavailable", "diagnostics", { entity: "sensor.preview_unavailable" }]
     ];
 
     const hass = {

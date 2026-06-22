@@ -30,6 +30,15 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
         color: var(--primary-text-color, #000);
         box-sizing: border-box;
       }
+      .hint {
+        padding: 10px 12px;
+        border: 1px solid rgba(33,150,243,0.24);
+        border-radius: 8px;
+        background: rgba(33,150,243,0.10);
+        color: var(--primary-text-color);
+        font-size: 12px;
+        line-height: 1.45;
+      }
     `];
   }
 
@@ -57,10 +66,27 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
   _textChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
   _selectChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
 
+  _recommendedCards(sensorType) {
+    const map = {
+      team_match: "Team, Countdown, Match Center, Lineup, Timeline, Team Form",
+      team_matches: "Matches, Ticker, Live Match, Team Form",
+      team_matches_mixed: "Team Competitions, Season Overview, Matches, Ticker, Team Form",
+      all_matches_today: "Matches, Ticker, Live Match",
+      standings: "Standings, Mini Standings",
+      top_scorers: "Top Scorers",
+      bracket: "Bracket",
+      news: "News",
+      commentary: "Live Commentary, Timeline",
+    };
+    return map[sensorType] || "";
+  }
+
   render() {
     if (!this._config || !this.hass) return html``;
     const current = this._config.entity || "";
     const inList = current && this.entities.includes(current);
+    const sensorType = this.hass.states[current]?.attributes?.sensor_type || "";
+    const recommended = this._recommendedCards(sensorType);
     return html`
       <div class="card-config">
         <h3>Sensor</h3>
@@ -71,6 +97,12 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
             ${this.entities.map(entity => html`<option value="${entity}" ?selected=${entity === current}>${entity}</option>`)}
           </select>
         </div>
+        ${sensorType ? html`
+          <div class="hint">
+            <strong>Sensor type:</strong> ${sensorType}
+            ${recommended ? html`<br><strong>Recommended cards:</strong> ${recommended}` : ""}
+          </div>
+        ` : ""}
         <div>
           <label class="field-label">Title</label>
           <input type="text" .value=${this._config.title || ""} data-config-value="title" @input=${this._textChanged} placeholder="Soccer Live diagnostics">
@@ -91,4 +123,3 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
 if (!customElements.get("soccer-live-diagnostics-editor")) {
   customElements.define("soccer-live-diagnostics-editor", SoccerLiveDiagnosticsEditor);
 }
-
