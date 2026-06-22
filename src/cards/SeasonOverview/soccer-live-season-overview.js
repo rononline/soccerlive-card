@@ -73,7 +73,7 @@ class SoccerLiveSeasonOverviewCard extends LitElement {
                 <span class="cm-clock"><span class="live-dot"></span>${m.clock || ''}</span>
               ` : isFt ? html`
                 <span class="cm-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>
-                <span class="cm-ft">FT</span>
+                <span class="cm-ft">${this._t('status.ft')}</span>
               ` : html`
                 <span class="cm-time">${this._formatTime(m.date)}</span>
               `}

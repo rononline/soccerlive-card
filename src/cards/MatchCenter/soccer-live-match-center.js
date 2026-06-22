@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { t, resolveLang } from '../../i18n.js';
+import { t, resolveLang, formatMatchDateFull } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
@@ -125,7 +125,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ? renderSoccerBadge(`${match.clock ? match.clock + "' " : ''}${this._t('status.live')}`, 'live')
       : isFinished
         ? renderSoccerBadge(this._t('status.full_time'), 'ft')
-        : renderSoccerBadge(match.date || '', 'date');
+        : renderSoccerBadge(formatMatchDateFull(match.date, resolveLang(this.hass, this._config)) || match.date || '', 'date');
 
     const compName = match.competition_name || match.league_name || '';
     const compLogo = match.competition_logo || match.league_logo || null;

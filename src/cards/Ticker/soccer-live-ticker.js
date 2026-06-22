@@ -48,7 +48,7 @@ class SoccerLiveTickerCard extends LitElement {
           ${isLive || isFt
             ? html`<span class="tick-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
             : html`<span class="tick-time">${this._formatMatchTime(m.date)}</span>`}
-          ${isFt ? html`<span class="tick-ft">FT</span>` : ''}
+          ${isFt ? html`<span class="tick-ft">${this._t('status.ft')}</span>` : ''}
         </div>
         <div class="tick-team">
           ${m.away_logo ? html`<img class="tick-logo" src="${m.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
@@ -78,7 +78,7 @@ class SoccerLiveTickerCard extends LitElement {
               <span class="td-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>
             ` : isFt ? html`
               <span class="td-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>
-              <span class="td-ft">FT</span>
+              <span class="td-ft">${this._t('status.ft')}</span>
             ` : html`
               <span class="td-time">${this._formatMatchTime(m.date)}</span>
             `}

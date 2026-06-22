@@ -45,6 +45,7 @@ const TRANSLATIONS = {
     'status.finished': 'Finished',
     'status.scheduled': 'Scheduled',
     'status.full_time': 'Full Time',
+    'status.ft': 'FT',
     'status.halftime': 'Halftime',
     'status.first_half': '1st Half',
     'status.second_half': '2nd Half',
@@ -336,6 +337,7 @@ const TRANSLATIONS = {
     'status.finished': 'Afgelopen',
     'status.scheduled': 'Gepland',
     'status.full_time': 'Einde wedstrijd',
+    'status.ft': 'FT',
     'status.halftime': 'Rust',
     'status.first_half': '1e helft',
     'status.second_half': '2e helft',
@@ -609,6 +611,7 @@ const TRANSLATIONS = {
     'status.finished': 'Finita',
     'status.scheduled': 'Programmata',
     'status.full_time': 'Termine',
+    'status.ft': 'FT',
     'status.halftime': 'Intervallo',
     'status.first_half': 'Primo Tempo',
     'status.second_half': 'Secondo Tempo',
@@ -882,6 +885,7 @@ const TRANSLATIONS = {
     'status.finished': 'Terminé',
     'status.scheduled': 'Programmé',
     'status.full_time': 'Temps régl.',
+    'status.ft': 'FT',
     'status.halftime': 'Mi-temps',
     'status.first_half': '1ère mi-temps',
     'status.second_half': '2ème mi-temps',
@@ -1155,6 +1159,7 @@ const TRANSLATIONS = {
     'status.finished': 'Finalizado',
     'status.scheduled': 'Programado',
     'status.full_time': 'Final',
+    'status.ft': 'FT',
     'status.halftime': 'Descanso',
     'status.first_half': 'Primer tiempo',
     'status.second_half': 'Segundo tiempo',
@@ -1428,6 +1433,7 @@ const TRANSLATIONS = {
     'status.finished': 'Beendet',
     'status.scheduled': 'Geplant',
     'status.full_time': 'Endstand',
+    'status.ft': 'FT',
     'status.halftime': 'Halbzeit',
     'status.first_half': '1. Halbzeit',
     'status.second_half': '2. Halbzeit',
@@ -1702,6 +1708,7 @@ const TRANSLATIONS = {
     'status.finished': 'Encerrado',
     'status.scheduled': 'Programado',
     'status.full_time': 'Tempo normal',
+    'status.ft': 'FT',
     'status.halftime': 'Intervalo',
     'status.first_half': '1º tempo',
     'status.second_half': '2º tempo',
@@ -2015,5 +2022,24 @@ export function formatMatchDate(dateStr, lang) {
     return `${datePart} ${timeStr}`;
   } catch (_) {
     return `${+dd}/${+mm} ${timeStr}`;
+  }
+}
+
+/**
+ * Full date+time for badge displays (always shows date, even for today).
+ * nl-NL → "26-06-2026 01:00", en-GB → "26/06/2026 01:00", de-DE → "26.06.2026 01:00"
+ */
+export function formatMatchDateFull(dateStr, lang) {
+  if (!dateStr) return '';
+  const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})$/);
+  if (!m) return dateStr;
+  const [, dd, mm, yyyy, hh, min] = m;
+  const date = new Date(+yyyy, +mm - 1, +dd, +hh, +min);
+  const locale = LOCALE_MAP[lang] || 'en-GB';
+  try {
+    const datePart = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+    return `${datePart} ${hh}:${min}`;
+  } catch (_) {
+    return dateStr;
   }
 }
