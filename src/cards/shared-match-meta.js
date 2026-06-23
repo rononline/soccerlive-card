@@ -39,7 +39,7 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
   // neutralSite is shown in the venue row, not as a chip — keep it out of hasChips
   const hasChips = rawBroadcasts.length || hasAttendance || hasStats || hasCommentary || hasVideo;
 
-  const openLink = (url) => url && window.open(url, '_blank', 'noopener,noreferrer');
+  const openLink = (url) => url && /^https?:\/\//i.test(url) && window.open(url, '_blank', 'noopener,noreferrer');
 
   return html`
     ${venueLabel || weatherBadge || showDate ? html`

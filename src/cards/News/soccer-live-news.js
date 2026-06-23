@@ -52,7 +52,7 @@ class SoccerLiveNewsCard extends LitElement {
   }
 
   _openLink(url) {
-    if (!url) return;
+    if (!url || !/^https?:\/\//i.test(url)) return;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
