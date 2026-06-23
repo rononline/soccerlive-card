@@ -1982,8 +1982,8 @@ export function resolveLang(hass, config) {
 }
 
 /**
- * Restituisce la traduzione per la chiave nella lingua scelta, con fallback
- * a inglese e poi alla chiave stessa. Supporta interpolazione {n}, {team}, ecc.
+ * Return the translation for the given key in the chosen language, with fallback
+ * to English and then to the key itself. Supports {n}, {team}, etc. interpolation.
  */
 export function t(key, lang, vars) {
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;

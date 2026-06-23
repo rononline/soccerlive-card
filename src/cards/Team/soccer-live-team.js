@@ -1500,7 +1500,7 @@ class SoccerLiveTeamCard extends LitElement {
         font-weight: 700;
         margin: 0 4px;
       }
-      /* score_size: big / huge — ingrandisce il punteggio */
+      /* score_size: big / huge — enlarges the score display */
       :host([data-score="big"]) .score-numbers { font-size: 68px; }
       :host([data-score="huge"]) .score-numbers { font-size: 92px; }
       :host([data-score="big"]) .score-vs { font-size: 38px; }

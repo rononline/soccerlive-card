@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.48 (2026-06-23)
+- Translate remaining Italian inline comments to English in Standings, Bracket, and Team cards
+
+## v3.21.47 (2026-06-23)
+- Translate remaining Italian comments to English in i18n.js, Standings, Bracket and Matches
+
 ## v3.21.46 (2026-06-23)
 - TeamCompetitions: remove `_parseTs` wrapper, call `parseMatchTimestamp` directly (same cleanup as SeasonOverview and Diagnostics)
 - i18n/Standings: translate remaining Italian comments to English

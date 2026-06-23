@@ -36,7 +36,7 @@ class SoccerLiveBracketCard extends LitElement {
   }
 
   _localizeRoundName(round) {
-    // Mappa il nome inglese dal sensor alla traduzione i18n
+    // Map English round name from sensor to i18n translation key
     const map = {
       'Final': 'round.final',
       'Semifinals': 'round.semifinals',
@@ -71,8 +71,7 @@ class SoccerLiveBracketCard extends LitElement {
     const isAWinner = winner && a.name && winner === a.name;
     const isBWinner = winner && b.name && winner === b.name;
 
-    // Per ogni leg, stabilisco le score di team_a e team_b (le squadre potrebbero essere
-    // home in leg1 e away in leg2 o viceversa)
+    // Determine scores for team_a and team_b per leg (teams may switch home/away between legs)
     const scoreFor = (leg, team) => {
       if (!leg || !team || !team.name) return null;
       if (leg.home_team === team.name) return leg.home_score;
@@ -184,8 +183,8 @@ class SoccerLiveBracketCard extends LitElement {
   }
 
   _renderArrows(outputCount, direction) {
-    // Bracket connectors: per ogni tie del round successivo disegna una staffa che
-    // collega due tie del round precedente. SVG con coordinate %.
+    // Bracket connectors: for each tie in the next round, draw a bracket connecting
+    // two ties from the previous round. SVG with % coordinates.
     if (outputCount <= 0) return '';
     const inputCount = outputCount * 2;
     const parts = [];
@@ -197,12 +196,12 @@ class SoccerLiveBracketCard extends LitElement {
       const yBot = ((2 * j + 1.5) / inputCount) * 100;
       const yMid = ((j + 0.5) / outputCount) * 100;
       if (isLeft) {
-        // 2 linee orizzontali (dai due tie sorgente verso destra)
+        // 2 horizontal lines (from the two source ties toward the right)
         parts.push(svg`<line x1="0" y1="${yTop}%" x2="50%" y2="${yTop}%" stroke-linecap="round" />`);
         parts.push(svg`<line x1="0" y1="${yBot}%" x2="50%" y2="${yBot}%" stroke-linecap="round" />`);
         // verticale
         parts.push(svg`<line x1="50%" y1="${yTop}%" x2="50%" y2="${yBot}%" />`);
-        // orizzontale finale verso destra (con marker freccia)
+        // final horizontal line toward the right (with arrowhead marker)
         parts.push(svg`<line x1="50%" y1="${yMid}%" x2="100%" y2="${yMid}%" marker-end="url(#${markerId})" />`);
       } else {
         parts.push(svg`<line x1="100%" y1="${yTop}%" x2="50%" y2="${yTop}%" stroke-linecap="round" />`);
@@ -212,8 +211,8 @@ class SoccerLiveBracketCard extends LitElement {
       }
     }
 
-    // Due marker fissi (no orient="auto" che si comporta male con marker-end su linee
-    // che vanno verso sinistra). Path esplicito per ogni direzione.
+    // Two fixed markers (no orient="auto" which misbehaves with marker-end on lines
+    // going leftward). Explicit path per direction.
     const marker = isLeft
       ? svg`<marker id="${markerId}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" overflow="visible"><path d="M0,0 L10,5 L0,10 z" fill="var(--cl-accent)" /></marker>`
       : svg`<marker id="${markerId}" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="7" markerHeight="7" markerUnits="strokeWidth" overflow="visible"><path d="M10,0 L0,5 L10,10 z" fill="var(--cl-accent)" /></marker>`;
@@ -604,8 +603,8 @@ class SoccerLiveBracketCard extends LitElement {
         align-items: stretch;
         min-width: 0;
       }
-      /* Niente row-reverse: per la "specularità" del lato destro renderizziamo
-         direttamente i figli nell'ordine SF→QF→R16 (vedi _renderTree). */
+      /* No row-reverse: the right side's mirror effect is achieved by rendering
+         children directly in SF→QF→R16 order (see _renderTree). */
 
       .tree-col {
         flex: 1;
@@ -643,13 +642,13 @@ class SoccerLiveBracketCard extends LitElement {
         position: relative;
       }
 
-      /* SVG bracket arrow connectors — colonne più larghe e con frecce sempre visibili */
+      /* SVG bracket arrow connectors — wider columns, arrows always visible */
       .tree-arrows {
         flex: 0 0 36px;
         min-width: 36px;
         display: flex;
         align-items: stretch;
-        padding-top: 44px; /* compensa la label dei round */
+        padding-top: 44px; /* offset for round labels */
         padding-bottom: 0;
       }
       .connector-svg {

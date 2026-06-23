@@ -311,9 +311,8 @@ class SoccerLiveMatchesCard extends LitElement {
     if (!this.showFinishedMatches) {
       matches = matches.filter((m) => m.status !== "Full Time");
     }
-    // Le date sono nel formato "dd/mm/yyyy hh:mm": new Date() non le parsa
-    // (restituisce Invalid Date), quindi usiamo _parseMatchDate. reverse_order
-    // ordina dalla più recente alla più vecchia.
+    // Dates are in "dd/mm/yyyy hh:mm" format: new Date() cannot parse them,
+    // so _parseMatchDate is used. reverse_order sorts newest first.
     matches = matches.slice().sort((a, b) => {
       const da = this._parseMatchDate(a.date) || new Date(0);
       const db = this._parseMatchDate(b.date) || new Date(0);

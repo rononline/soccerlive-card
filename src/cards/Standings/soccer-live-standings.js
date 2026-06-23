@@ -13,13 +13,13 @@ const DEFAULT_ZONE_LABELS = {
   relegation: 'zone.relegation',
 };
 
-// Preset zone classifica per competizione. Ogni preset definisce:
-// - match(code, entity): funzione che decide se applicare il preset
-// - champions / europa / conference / relegation: range posizioni o "bottomN"
-// - labels (opzionale): override i18n key per ogni zona; null = nascondi in legenda
-// L'utente può sovrascrivere con `zone_config` o sceglierne uno con `zone_preset`.
+// Zone presets per competition. Each preset defines:
+// - match(code, entity): function that decides whether to apply this preset
+// - champions / europa / conference / relegation: position range or "bottomN"
+// - labels (optional): override i18n key per zone; null = hide in legend
+// Users can override with `zone_config` or select a preset with `zone_preset`.
 const ZONE_PRESETS = {
-  // Italian Serie A (20 squadre): 1-4 CL, 5 EL, 6 CnL, ult. 3 retrocesse
+  // Italian Serie A (20 teams): 1-4 CL, 5 EL, 6 CnL, bottom 3 relegated
   serie_a: {
     match: (code, entity) => code === 'ita.1' || entity.includes('italian_serie_a'),
     champions: [1, 2, 3, 4], europa: [5], conference: [6], relegation: 'bottom3',
@@ -54,25 +54,25 @@ const ZONE_PRESETS = {
     match: (code, entity) => code === 'por.1' || entity.includes('portuguese_primeira'),
     champions: [1, 2], europa: [3], conference: [4], relegation: [17, 18],
   },
-  // UEFA Champions League — fase a 36: top 8 diretti agli ottavi,
-  // 9-24 KO playoff, 25-36 eliminate
+  // UEFA Champions League — league phase of 36: top 8 advance directly to R16,
+  // 9-24 enter KO playoff, 25-36 eliminated
   ucl_league_phase: {
     match: (code, entity) => code === 'uefa.champions' || entity.includes('uefa_champions_league'),
     champions: range(1, 8), europa: range(9, 24), conference: [], relegation: 'bottom12',
   },
-  // UEFA Europa League — stessa logica della UCL
+  // UEFA Europa League — same logic as UCL league phase
   uel_league_phase: {
     match: (code, entity) => code === 'uefa.europa' || entity.includes('uefa_europa_league'),
     champions: range(1, 8), europa: range(9, 24), conference: [], relegation: 'bottom12',
   },
-  // UEFA Conference League — fase a 36: top 8 ottavi, 9-24 playoff, 25-36 eliminate
+  // UEFA Conference League — league phase of 36: top 8 to R16, 9-24 playoff, 25-36 eliminated
   uecl_league_phase: {
     match: (code, entity) => code === 'uefa.europa.conf' || entity.includes('uefa_conference'),
     champions: range(1, 8), europa: range(9, 24), conference: [], relegation: 'bottom12',
   },
-  // FIFA World Cup — fase a gironi: top 2 qualificate agli ottavi,
-  // 3° posto può accedere come miglior terza (Mondiale 2026: 8 migliori terze),
-  // ultima eliminata
+  // FIFA World Cup — group stage: top 2 advance to R16,
+  // 3rd place may advance as one of the 8 best third-placed teams (2026 format),
+  // bottom team eliminated
   world_cup: {
     match: (code, entity) => code === 'fifa.world' || entity.includes('fifa_world_cup') || entity.includes('world_cup'),
     champions: [1, 2], europa: [3], conference: [], relegation: 'bottom1',
@@ -85,7 +85,7 @@ const ZONE_PRESETS = {
       relegation: 'zone.eliminated',
     },
   },
-  // UEFA European Championship — fase a gironi: top 2 + migliori 4 terze agli ottavi
+  // UEFA European Championship — group stage: top 2 + best 4 third-placed teams advance to round of 16
   uefa_euro: {
     match: (code, entity) => code === 'uefa.euro' || entity.includes('uefa_euro') || entity.includes('european_championship'),
     champions: [1, 2], europa: [3], conference: [], relegation: 'bottom1',
@@ -98,7 +98,7 @@ const ZONE_PRESETS = {
       relegation: 'zone.eliminated',
     },
   },
-  // Copa America — fase a gironi: top 2 ai quarti, altre eliminate
+  // Copa America — group stage: top 2 advance to quarterfinals, others eliminated
   copa_america: {
     match: (code, entity) => code === 'conmebol.america' || entity.includes('copa_america') || entity.includes('conmebol_america'),
     champions: [1, 2], europa: [], conference: [], relegation: 'bottom2',
@@ -256,16 +256,16 @@ class SoccerLiveStandingsCard extends LitElement {
   }
 
   _getZoneConfig() {
-    // 1) Override esplicito nella config della card
+    // 1) Explicit override in card config
     if (this._config.zone_config) return this._config.zone_config;
-    // 2) Preset preimpostato per nome (es. zone_preset: 'serie_a')
+    // 2) Named preset (e.g. zone_preset: 'serie_a')
     if (this._config.zone_preset && ZONE_PRESETS[this._config.zone_preset]) {
       return ZONE_PRESETS[this._config.zone_preset];
     }
-    // 3) Auto-detect dal codice competizione / nome entity
+    // 3) Auto-detect from competition code / entity name
     const preset = this._inferPresetFromEntity();
     if (preset) return preset;
-    // 4) Fallback: nessuna zona colorata
+    // 4) Fallback: no colored zones
     return { champions: [], europa: [], conference: [], relegation: null };
   }
 
@@ -291,7 +291,7 @@ class SoccerLiveStandingsCard extends LitElement {
     const entity = (this._config.entity || '').toLowerCase();
     const stateObj = this.hass && this._config.entity ? this.hass.states[this._config.entity] : null;
     const compCode = stateObj && stateObj.attributes ? String(stateObj.attributes.competition_code || '').toLowerCase() : '';
-    // Itera i preset: il primo con match vince
+    // Iterate presets: first match wins
     for (const [, def] of Object.entries(ZONE_PRESETS)) {
       if (def.match && def.match(compCode, entity)) return def;
     }
@@ -603,7 +603,7 @@ class SoccerLiveStandingsCard extends LitElement {
     if (seasonYear) subParts.push(seasonYear);
     if (phaseLabel) subParts.push(phaseLabel);
 
-    // Conteggio gironi e squadre totali (utile su tornei a gironi)
+    // Count groups and total teams (useful for group-stage tournaments)
     let totalTeams = 0;
     if (showAllGroups) {
       for (const g of standingsGroups) {
