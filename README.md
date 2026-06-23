@@ -4,6 +4,8 @@ Beautiful, animated football cards for Home Assistant with multi-language suppor
 
 Companion for the [Soccer Live integration](https://github.com/rononline/soccerlive).
 
+**[Live preview →](https://rononline.github.io)** — all cards rendered with mock data, no Home Assistant needed.
+
 > Built on ideas from [Calcio Live Card](https://github.com/Bobsilvio/calcio-live-card) by @Bobsilvio
 
 ---
