@@ -2,10 +2,10 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 
-// Helper per generare un range inclusivo
+// Generate an inclusive integer range
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 
-// Etichette di default per le 4 zone (i18n keys).
+// Default i18n keys for the 4 zone labels.
 const DEFAULT_ZONE_LABELS = {
   champions: 'zone.champions',
   europa: 'zone.europa',

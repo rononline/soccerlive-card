@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.21.46 (2026-06-23)
+- TeamCompetitions: remove `_parseTs` wrapper, call `parseMatchTimestamp` directly (same cleanup as SeasonOverview and Diagnostics)
+- i18n/Standings: translate remaining Italian comments to English
+
+## v3.21.45 (2026-06-23)
+- LiveCommentary: fix `'penaalty'` typo — penalty events now correctly get ⚽ instead of 📋
+- Standings: replace hardcoded Dutch preseason banner with translated `standings.preseason` key (EN/NL/DE/PT/FR/ES/IT)
+- Diagnostics: replace hardcoded English title with `card.diagnostics` i18n key
+- i18n: add `card.diagnostics` and `standings.preseason` keys in all 7 languages
+
 ## v3.21.44 (2026-06-23)
 - Bracket: hide `compact` toggle in editor when style is `tree`; hide `tree_show_playoffs` toggle when style is `list`
 - Bracket tree: show trophy centered with "Knockout stage starts soon" message when R16/QF/SF rounds are not yet available (e.g. during group stage)

@@ -1964,9 +1964,9 @@ const TRANSLATIONS = {
 const SUPPORTED_LANGS = ['en', 'it', 'fr', 'es', 'nl', 'de', 'pt'];
 
 /**
- * Risolve la lingua da usare per la card.
- * Priorità: config.language → hass.locale.language → hass.language → 'en'.
- * Solo lingue supportate.
+ * Resolve the language to use for the card.
+ * Priority: config.language → hass.locale.language → hass.language → 'en'.
+ * Only supported languages are accepted.
  */
 export function resolveLang(hass, config) {
   const candidates = [];
