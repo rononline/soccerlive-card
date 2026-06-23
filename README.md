@@ -45,7 +45,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
-- 🌦️ **Weather** — current conditions at the match venue (Team and Countdown cards)
+- 🌦️ **Weather** — current conditions at the match venue (Team, Countdown and Match Center cards)
 
 ---
 
@@ -232,8 +232,9 @@ type: custom:soccer-live-card
 card_type: mini-standings
 entity: sensor.soccer_live_standings_ned_1
 max_rows: 5
-group: null          # optional: filter standings group (e.g. "WK A", "WK B")
+default_group: null  # optional: default standings group to show (e.g. "Group A")
 highlight_team: null # optional: highlight team name
+hide_stats: false    # optional: hide W/D/L/GD columns
 ```
 
 Compact standings table with configurable max rows and optional team highlighting.
@@ -297,7 +298,7 @@ card_type: match-center
 entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
-Tabbed view of a single match. Tabs appear only when data is available: Stats and Timeline after kick-off, Lineup once ESPN publishes it.
+Tabbed view of a single match. Tabs appear only when data is available: Stats and Timeline after kick-off, Lineup once ESPN publishes it. Also shows venue info, broadcast chips, H2H with locale-aware dates, and a **weather badge** for the match venue.
 
 > Works best with a `next_*` or `all_mixed_*` sensor, which enriches the match with lineup, key events and H2H via the ESPN summary endpoint.
 
