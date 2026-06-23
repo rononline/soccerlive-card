@@ -27,13 +27,9 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     return value && value !== 'N/A' ? value : '';
   }
 
-  _parseTs(dateStr) {
-    return parseMatchTimestamp(dateStr);
-  }
-
   _sortByDateAsc(a, b) {
-    const ta = this._parseTs(a.date) || Infinity;
-    const tb = this._parseTs(b.date) || Infinity;
+    const ta = parseMatchTimestamp(a.date) || Infinity;
+    const tb = parseMatchTimestamp(b.date) || Infinity;
     return ta - tb;
   }
 
