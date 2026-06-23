@@ -2,7 +2,6 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
-import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveMiniStandingsCard extends LitElement {
@@ -26,15 +25,46 @@ class SoccerLiveMiniStandingsCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerCardShellStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
-        padding: 12px;
+        padding: 0;
         border-radius: 20px;
         overflow: hidden;
       }
-      /* .header / .league-logo / .title removed — now from soccerHeaderStyles */
+      .top-bar {
+        position: relative;
+        padding: 20px 18px;
+        background: linear-gradient(135deg, rgba(var(--cl-accent-rgb),0.15), rgba(var(--cl-accent-2-rgb),0.10) 60%, transparent);
+        border-bottom: 1px solid var(--cl-divider);
+        overflow: hidden;
+      }
+      .top-bar::before {
+        content: '⚽';
+        position: absolute;
+        right: -10px; top: -10px;
+        font-size: 90px;
+        opacity: 0.06;
+        transform: rotate(15deg);
+      }
+      .top-bar h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        background: linear-gradient(135deg, var(--cl-text), var(--cl-accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .top-bar .sub {
+        color: var(--cl-text-2);
+        font-size: 12px;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+      .card-content { padding: 12px; }
       .groups { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
       .group-btn {
         font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; cursor: pointer;
@@ -89,22 +119,30 @@ class SoccerLiveMiniStandingsCard extends LitElement {
 
     const maxRows = this._config.max_rows || standings.length;
     const myTeam = (this._config.highlight_team || '').toLowerCase();
-    const leagueName = stateObj.attributes.league_name || stateObj.attributes.league_abbreviation || '';
-    const _li = (stateObj.attributes.league_info || [])[0] || {};
-    const leagueLogo = stateObj.attributes.league_logo || _li.logo_href || '';
+    const leagueName = stateObj.attributes.league_name || '';
+    const leagueAbbr = stateObj.attributes.league_abbreviation && stateObj.attributes.league_abbreviation !== 'N/A'
+      ? stateObj.attributes.league_abbreviation : null;
+    const rawSeason = stateObj.attributes.season || '';
+    const seasonYear = leagueAbbr && leagueName
+      ? rawSeason.replace(leagueName, '').trim()
+      : rawSeason;
+    const subParts = [this._t('card.standings')];
+    if (seasonYear && seasonYear !== 'N/A') subParts.push(seasonYear);
     const rows = standings.slice(0, maxRows);
     const multiGroup = groups.length > 1;
 
     return html`
       <ha-card>
         <div class="hero-bg"></div>
-        <div class="card-content">
         ${!this._config.hide_header ? html`
-          ${renderSoccerHeader({
-            logo: leagueLogo || null,
-            title: (activeGroup && multiGroup) ? activeGroup.name : leagueName,
-          })}
+          <div class="top-bar">
+            <div class="league-title">
+              <h2>${leagueAbbr || leagueName || stateObj.state}</h2>
+              <div class="sub">${subParts.join(' · ')}</div>
+            </div>
+          </div>
         ` : ''}
+        <div class="card-content">
 
         ${multiGroup ? html`
           <div class="groups">
