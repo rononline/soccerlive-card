@@ -252,10 +252,11 @@ class SoccerLiveBracketCard extends LitElement {
     const sfSplit = split(sf);
     const playoffsSplit = this.treeShowPlayoffs ? split(playoffsRound) : null;
     const finalTie = finalRound ? finalRound.ties[0] : null;
+    const hasSides = r16 || qf || sf;
 
     return html`
       <div class="tree-wrap">
-        <div class="tree">
+        <div class="tree ${!hasSides ? 'tree-center-only' : ''}">
           <div class="tree-half left">
             ${playoffsSplit && playoffsSplit.left.length ? html`
               ${this._renderTreeRound(playoffsSplit.left, 'round.knockout_playoffs')}
@@ -276,6 +277,7 @@ class SoccerLiveBracketCard extends LitElement {
               ? html`<div class="final-tie-wrap">${this._renderMiniTie(finalTie)}</div>`
               : html`<div class="final-placeholder">${this._t('bracket.tbd')}</div>`
             }
+            ${!hasSides ? html`<div class="tree-pending">${this._t('bracket.empty.sub')}</div>` : ''}
           </div>
 
           <div class="tree-half right">
@@ -827,6 +829,25 @@ class SoccerLiveBracketCard extends LitElement {
         border: 1px dashed var(--cl-glass-border);
         border-radius: 8px;
         letter-spacing: 0.1em;
+      }
+
+      .tree-pending {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--cl-text-2);
+        text-align: center;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: var(--cl-card-2);
+        border: 1px dashed var(--cl-glass-border);
+        max-width: 160px;
+        line-height: 1.4;
+      }
+      .tree.tree-center-only {
+        justify-content: center;
+      }
+      .tree.tree-center-only .tree-half {
+        display: none;
       }
 
       /* Mobile per tree */

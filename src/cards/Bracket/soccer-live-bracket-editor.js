@@ -120,22 +120,26 @@ class SoccerLiveBracketEditor extends LitElement {
             @change=${this._switchChanged}
           ></ha-switch>
         </div>
-        <div class="option">
-          <label>${this._t('editor.bracket_compact')}</label>
-          <ha-switch
-            .checked=${this._config.compact === true}
-            data-config-value="compact"
-            @change=${this._switchChanged}
-          ></ha-switch>
-        </div>
-        <div class="option">
-          <label>${this._t('editor.tree_playoffs')}</label>
-          <ha-switch
-            .checked=${this._config.tree_show_playoffs === true}
-            data-config-value="tree_show_playoffs"
-            @change=${this._switchChanged}
-          ></ha-switch>
-        </div>
+        ${this._config.style !== 'tree' ? html`
+          <div class="option">
+            <label>${this._t('editor.bracket_compact')}</label>
+            <ha-switch
+              .checked=${this._config.compact === true}
+              data-config-value="compact"
+              @change=${this._switchChanged}
+            ></ha-switch>
+          </div>
+        ` : ''}
+        ${this._config.style === 'tree' ? html`
+          <div class="option">
+            <label>${this._t('editor.tree_playoffs')}</label>
+            <ha-switch
+              .checked=${this._config.tree_show_playoffs === true}
+              data-config-value="tree_show_playoffs"
+              @change=${this._switchChanged}
+            ></ha-switch>
+          </div>
+        ` : ''}
         <div>
           <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
