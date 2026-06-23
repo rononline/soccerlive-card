@@ -243,6 +243,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'My Teams',
     'card.team_form': 'Team Form',
     'card.live_commentary': 'Live Commentary',
+    'card.diagnostics': 'Diagnostics',
+    'standings.preseason': 'Season {season} has not started yet',
 
     // Match display
     'match.vs': 'vs',
@@ -519,6 +521,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mijn Teams',
     'card.team_form': 'Teamvorm',
     'card.live_commentary': 'Live commentaar',
+    'card.diagnostics': 'Diagnostiek',
+    'standings.preseason': 'Seizoen {season} is nog niet begonnen',
 
     'match.vs': 'tegen',
     'match.draw': 'G',
@@ -793,6 +797,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'I Miei Team',
     'card.team_form': 'Forma squadra',
     'card.live_commentary': 'Telecronaca live',
+    'card.diagnostics': 'Diagnostica',
+    'standings.preseason': 'La stagione {season} non è ancora iniziata',
 
     'match.vs': 'contro',
     'match.draw': 'P',
@@ -1067,6 +1073,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mes Équipes',
     'card.team_form': 'Forme équipe',
     'card.live_commentary': 'Commentaire live',
+    'card.diagnostics': 'Diagnostics',
+    'standings.preseason': 'La saison {season} n\'a pas encore commencé',
 
     'match.vs': 'contre',
     'match.draw': 'N',
@@ -1341,6 +1349,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Mis Equipos',
     'card.team_form': 'Forma del equipo',
     'card.live_commentary': 'Comentario en directo',
+    'card.diagnostics': 'Diagnósticos',
+    'standings.preseason': 'La temporada {season} no ha comenzado aún',
 
     'match.vs': 'vs',
     'match.draw': 'E',
@@ -1598,6 +1608,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Meine Teams',
     'card.team_form': 'Teamform',
     'card.live_commentary': 'Live-Kommentar',
+    'card.diagnostics': 'Diagnose',
+    'standings.preseason': 'Saison {season} hat noch nicht begonnen',
 
     'match.vs': 'gegen',
     'match.draw': 'U',
@@ -1890,6 +1902,8 @@ const TRANSLATIONS = {
     'card.my_teams': 'Meus Times',
     'card.team_form': 'Forma da equipa',
     'card.live_commentary': 'Comentário ao vivo',
+    'card.diagnostics': 'Diagnósticos',
+    'standings.preseason': 'A temporada {season} ainda não começou',
 
     'match.vs': 'contra',
     'match.draw': 'E',

@@ -154,7 +154,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
         <div class="hero-bg"></div>
         <div class="content">
           <div class="header">
-            <div class="title">${this._config.title || "Soccer Live diagnostics"}</div>
+            <div class="title">${this._config.title || this._t('card.diagnostics')}</div>
             <div class="status ${statusClass}">${apiStatus}</div>
           </div>
           <div class="grid">

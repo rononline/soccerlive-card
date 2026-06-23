@@ -438,7 +438,7 @@ class SoccerLiveStandingsCard extends LitElement {
         ${isPreSeason ? html`
           <div class="preseason-banner">
             <span class="preseason-icon">🗓️</span>
-            <span>Seizoen ${seasonName || ''} is nog niet begonnen</span>
+            <span>${this._t('standings.preseason', { season: seasonName || '' })}</span>
           </div>
         ` : ''}
 

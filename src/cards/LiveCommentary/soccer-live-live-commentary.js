@@ -111,7 +111,7 @@ class SoccerLiveLiveCommentaryCard extends LitElement {
     if (t.includes('yellow')) return '🟨';
     if (t.includes('red')) return '🟥';
     if (t.includes('substitut') || t.includes('sub')) return '🔄';
-    if (t.includes('penaalty') || t.includes('pen')) return '⚽';
+    if (t.includes('penalty') || t.includes('pen')) return '⚽';
     if (t.includes('own goal')) return '🔴';
     return '📋';
   }
