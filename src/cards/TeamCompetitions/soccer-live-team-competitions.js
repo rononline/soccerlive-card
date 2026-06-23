@@ -196,7 +196,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
           ${form.length ? this._renderForm(form) : ''}
 
-          ${featured.state === 'in' && prevMatch ? html`
+          ${(featured.state === 'in' || featured.state === 'pre') && prevMatch ? html`
             <div class="divider"></div>
             ${this._renderMatch(prevMatch, this._t('status.finished'))}
           ` : ''}
