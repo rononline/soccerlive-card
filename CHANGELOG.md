@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.21.44 (2026-06-23)
+- Bracket: hide `compact` toggle in editor when style is `tree`; hide `tree_show_playoffs` toggle when style is `list`
+- Bracket tree: show trophy centered with "Knockout stage starts soon" message when R16/QF/SF rounds are not yet available (e.g. during group stage)
+
+## v3.21.43 (2026-06-23)
+- TeamCompetitions: also show last finished match below the upcoming match, so each competition tab always shows context on the previous result
+
+## v3.21.42 (2026-06-23)
+- Security: validate URL scheme before `window.open` in shared match meta and News card — prevents `javascript:` and `data:` URI injection
+
+## v3.21.41 (2026-06-23)
+- MiniStandings: align header with Standings card — edge-to-edge gradient top bar with ball watermark and gradient title text
+
+## v3.21.40 (2026-06-23)
+- MatchCenter: add weather badge, venue/broadcast chips and locale-aware H2H dates
+- SeasonOverview: replace `_parseTs` wrapper with direct `parseMatchTimestamp` call
+- Diagnostics: replace duplicate `_parseLocalDate` with shared `parseMatchDate` from i18n
+
 ## v3.21.39 (2026-06-22)
 - Preview: add edge-case fixture states for empty data, unavailable sensors, missing logos, long names and live-only ticker filtering
 - Diagnostics: add sensor age and recommended card types based on `sensor_type`
