@@ -51,9 +51,13 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 
 ## 📸 Screenshots
 
-| Standings | Team | Matches |
+| Standings (tournament) | Team | Matches |
 |---|---|---|
 | ![Standings](images/standings.png) | ![Team](images/team.png) | ![Matches](images/matches.png) |
+
+| Standings (league) | Visual editor |
+|---|---|
+| ![Standings league](images/standings-league.png) | ![Visual editor](images/editor.png) |
 
 ---
 
