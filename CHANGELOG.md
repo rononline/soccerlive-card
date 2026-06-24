@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.55 (2026-06-24)
+- Team card: `separateEvents` now excludes "Goal Disallowed" strings so VAR-cancelled goals no longer appear in the goals section of the match popup
+- Countdown card: `_getNextMatch` now prioritises live matches (`in`) over upcoming (`pre`) — live score is shown instead of countdown when a match is in progress
+
 ## v3.21.54 (2026-06-24)
 - Diagnostics: restore the missing i18n helper so the card no longer fails during render
 - Team Competitions: ignore completed matches with invalid scores instead of classifying them as draws

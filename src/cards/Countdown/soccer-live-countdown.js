@@ -108,8 +108,8 @@ class SoccerLiveCountdownCard extends LitElement {
 
   _getNextMatch(stateObj) {
     const matches = stateObj.attributes.matches || [];
-    return matches.find(m => m.state === 'pre') ||
-           matches.find(m => m.state === 'in') ||
+    return matches.find(m => m.state === 'in') ||
+           matches.find(m => m.state === 'pre') ||
            matches.find(m => m.state === 'post') ||
            matches[0] || null;
   }

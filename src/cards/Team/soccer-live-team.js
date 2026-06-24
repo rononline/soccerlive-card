@@ -328,7 +328,7 @@ class SoccerLiveTeamCard extends LitElement {
     details.forEach(event => {
       const raw = String(event || '');
 
-      if (raw.includes('Goal') || raw.includes('Penalty - Scored')) {
+      if ((raw.includes('Goal') && !raw.includes('Disallowed')) || raw.includes('Penalty - Scored')) {
         goals.push(this.formatMatchEvent(raw));
       } else if (raw.includes('Yellow Card')) {
         yellowCards.push(this.formatMatchEvent(raw));
