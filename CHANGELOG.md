@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.51 (2026-06-24)
+- Team/Matches/Standings: on partial subscription failure release succeeded subscriptions and store empty array so a full retry happens on next hass update (previously a partial list blocked retries)
+
 ## v3.21.50 (2026-06-24)
 - Standings: add `soccer_live_match_finished` to event subscriptions — match-finished toasts were never received
 - Team/Matches: apply `Promise.allSettled` + generation-counter subscription pattern (same fix as Standings in v3.21.49)

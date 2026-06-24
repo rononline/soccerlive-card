@@ -205,10 +205,14 @@ class SoccerLiveStandingsCard extends LitElement {
         return;
       }
 
-      this._eventSubscriptions = subscriptions;
-      results
-        .filter(result => result.status === 'rejected')
-        .forEach(result => console.warn('Soccer Live event subscription failed:', result.reason));
+      const failed = results.filter(r => r.status === 'rejected');
+      if (failed.length > 0) {
+        subscriptions.forEach(unsub => unsub());
+        this._eventSubscriptions = [];
+        failed.forEach(r => console.warn('Soccer Live Standings subscription failed:', r.reason));
+      } else {
+        this._eventSubscriptions = subscriptions;
+      }
     }).finally(() => {
       if (this._eventSubscriptionPromise === subscriptionPromise) {
         this._eventSubscriptionPromise = null;
