@@ -144,9 +144,12 @@ class SoccerLiveMultiTeamCard extends LitElement {
     const entities = this._config.entities || [];
     if (!entities.length) return renderCardError('⚽', this._t('ui.no_entities_configured'), '', this._t('ui.add_team_entity'));
     if (this._isLoading) {
-      if (Date.now() - this._loadingStarted > 10000)
-        return renderCardError('⏱', this._t('ui.loading_timeout'), this._t('ui.entity_not_responding'), this._t('ui.check_integration'));
-      return renderLoading(this._t('ui.loading'));
+      const hasCached = entities.some(e => { const c = OfflineCache.get(e); return c && c.data.matches; });
+      if (!hasCached) {
+        if (Date.now() - this._loadingStarted > 10000)
+          return renderCardError('⏱', this._t('ui.loading_timeout'), this._t('ui.entity_not_responding'), this._t('ui.check_integration'));
+        return renderLoading(this._t('ui.loading'));
+      }
     }
 
     const missingEntities = entities.filter(e => !this.hass.states[e]);

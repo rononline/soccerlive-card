@@ -163,7 +163,7 @@ class SoccerLiveLiveMatchCard extends LitElement {
         return renderCardError('📡', this._t('ui.sensor_unavailable'), this._t('ui.sensor_unavailable_hint'), this._t('ui.restart_ha'));
       }
     }
-    if (this._isLoading) {
+    if (stateObj && this._isLoading) {
       if (Date.now() - this._loadingStarted > 10000)
         return renderCardError('⏱', this._t('ui.loading_timeout'), `${this._t('ui.entity_not_responding')}: ${this._config.entity}`, this._t('ui.check_integration'));
       return renderLoading(this._t('ui.loading'));
