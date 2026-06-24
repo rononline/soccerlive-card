@@ -62,6 +62,8 @@ class SoccerLiveMatchesCard extends LitElement {
     super.disconnectedCallback();
 
     if (this._toastTimer) clearTimeout(this._toastTimer);
+    this._eventSubscriptionGeneration = (this._eventSubscriptionGeneration || 0) + 1;
+    this._eventSubscriptionPromise = null;
 
     if (this._eventSubscriptions && Array.isArray(this._eventSubscriptions)) {
       this._eventSubscriptions.forEach(unsub => {
@@ -85,19 +87,35 @@ class SoccerLiveMatchesCard extends LitElement {
 
   _subscribeToEvents() {
     if (!this.hass || !this.hass.connection) return;
-    if (this._eventSubscriptions && this._eventSubscriptions.length > 0) return;
+    if (this._eventSubscriptionPromise || this._eventSubscriptions?.length) return;
 
-    this._eventSubscriptions = [];
+    const generation = this._eventSubscriptionGeneration || 0;
+    const handler = this._handleSoccerLiveEvent.bind(this);
+    const subscriptionPromise = Promise.allSettled(
+      ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].map(evt =>
+        this.hass.connection.subscribeEvents(handler, evt)
+      )
+    );
+    this._eventSubscriptionPromise = subscriptionPromise;
 
-    ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].forEach(evt => {
-      this.hass.connection.subscribeEvents(
-        this._handleSoccerLiveEvent.bind(this),
-        evt
-      ).then(unsub => {
-        if (typeof unsub === 'function') {
-          this._eventSubscriptions.push(unsub);
-        }
-      });
+    subscriptionPromise.then(results => {
+      const subscriptions = results
+        .filter(result => result.status === 'fulfilled' && typeof result.value === 'function')
+        .map(result => result.value);
+
+      if ((this._eventSubscriptionGeneration || 0) !== generation || !this.isConnected) {
+        subscriptions.forEach(unsub => unsub());
+        return;
+      }
+
+      this._eventSubscriptions = subscriptions;
+      results
+        .filter(result => result.status === 'rejected')
+        .forEach(result => console.warn('Soccer Live event subscription failed:', result.reason));
+    }).finally(() => {
+      if (this._eventSubscriptionPromise === subscriptionPromise) {
+        this._eventSubscriptionPromise = null;
+      }
     });
   }
 
@@ -160,13 +178,13 @@ class SoccerLiveMatchesCard extends LitElement {
     let message = '';
     let variant = 'goal';
     if (eventType === 'soccer_live_goal') {
-      message = `<strong>${this._t('event.goal').toUpperCase()}!</strong> ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
+      message = `${this._t('event.goal').toUpperCase()}! ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'goal';
     } else if (eventType === 'soccer_live_yellow_card') {
-      message = `🟨 <strong>${this._t('event.yellow_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
+      message = `🟨 ${this._t('event.yellow_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'yellow';
     } else if (eventType === 'soccer_live_red_card') {
-      message = `🟥 <strong>${this._t('event.red_card')}</strong> · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
+      message = `🟥 ${this._t('event.red_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'red';
     }
     if (!message) return;

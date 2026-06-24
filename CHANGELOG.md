@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.50 (2026-06-24)
+- Standings: add `soccer_live_match_finished` to event subscriptions — match-finished toasts were never received
+- Team/Matches: apply `Promise.allSettled` + generation-counter subscription pattern (same fix as Standings in v3.21.49)
+- Sync `package-lock.json` to v3.21.49
+
 ## v3.21.49 (2026-06-24)
 - Standings: rewrite `_subscribeToEvents` with `Promise.allSettled` and generation counter — prevents duplicate/stale subscriptions on rapid mount/unmount
 - Standings: toast messages use `.textContent` (already), removed `<strong>` tags that were rendering as literal text

@@ -189,7 +189,7 @@ class SoccerLiveStandingsCard extends LitElement {
     const generation = this._eventSubscriptionGeneration || 0;
     const handler = this._handleSoccerLiveEvent.bind(this);
     const subscriptionPromise = Promise.allSettled(
-      ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].map(evt =>
+      ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card', 'soccer_live_match_finished'].map(evt =>
         this.hass.connection.subscribeEvents(handler, evt)
       )
     );
