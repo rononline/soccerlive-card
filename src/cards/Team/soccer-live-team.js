@@ -503,12 +503,13 @@ class SoccerLiveTeamCard extends LitElement {
     const stateObj = this.hass.states[entityId];
     if (!stateObj) {
       const cached = OfflineCache.get(entityId);
-      if (cached) {
-        return renderCardError('⏱', this._t('ui.offline_cached'), 'Last update: ' + new Date(cached.data.timestamp || Date.now()).toLocaleTimeString(), this._t('ui.waiting_integration'));
+      if (cached && cached.data.matches) {
+        this._cachedData = cached.data;
+      } else {
+        return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${entityId}`, this._t('ui.check_entity_config'));
       }
-      return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${entityId}`, this._t('ui.check_entity_config'));
     }
-    if (stateObj.state === 'unavailable') {
+    if (stateObj && stateObj.state === 'unavailable') {
       const cached = OfflineCache.get(entityId);
       if (cached && cached.data.matches) {
         this._cachedData = cached.data;

@@ -212,12 +212,15 @@ class SoccerLiveCountdownCard extends LitElement {
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) {
       const cached = OfflineCache.get(this._config.entity);
-      if (cached) return renderCardError('⏱', this._t('ui.offline_cached'), 'Last update: ' + new Date().toLocaleTimeString(), this._t('ui.waiting_integration'));
-      return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));
+      if (cached && cached.data.matches) {
+        this._cachedData = cached.data;
+      } else {
+        return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));
+      }
     }
-    if (stateObj.state === 'unavailable') {
+    if (stateObj && stateObj.state === 'unavailable') {
       const cached = OfflineCache.get(this._config.entity);
-      if (cached) {
+      if (cached && cached.data.matches) {
         this._cachedData = cached.data;
       } else {
         return renderCardError('📡', this._t('ui.sensor_unavailable'), this._t('ui.sensor_unavailable_hint'), this._t('ui.restart_ha'));

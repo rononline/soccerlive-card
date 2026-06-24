@@ -96,8 +96,15 @@ class SoccerLiveMultiTeamCard extends LitElement {
   }
 
   _renderMatch(entityId) {
-    const stateObj = this.hass.states[entityId];
-    if (!stateObj) return html`<div class="match-row"><div class="no-match">${this._t('team.unknown_entity')}: ${entityId}</div></div>`;
+    let stateObj = this.hass.states[entityId];
+    if (!stateObj) {
+      const cached = OfflineCache.get(entityId);
+      if (cached && cached.data.matches) {
+        stateObj = { attributes: cached.data, state: 'cached' };
+      } else {
+        return html`<div class="match-row"><div class="no-match">${this._t('team.unknown_entity')}: ${entityId}</div></div>`;
+      }
+    }
 
     const match = this._getMatch(stateObj);
     if (!match) return html`<div class="match-row"><div class="no-match">${this._t('team.no_match')} (${entityId})</div></div>`;
@@ -145,9 +152,10 @@ class SoccerLiveMultiTeamCard extends LitElement {
     const missingEntities = entities.filter(e => !this.hass.states[e]);
     const hasAnyUnavailable = entities.some(e => this.hass.states[e]?.state === 'unavailable');
     if (missingEntities.length > 0 && !hasAnyUnavailable) {
-      const cached = OfflineCache.get(entities[0]);
-      if (cached) return renderCardError('⏱', this._t('ui.offline_cached'), 'Last update: ' + new Date().toLocaleTimeString(), this._t('ui.waiting_integration'));
-      return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${missingEntities[0]}`, this._t('ui.check_entity_config'));
+      const hasAnyCached = missingEntities.some(e => { const c = OfflineCache.get(e); return c && c.data.matches; });
+      if (!hasAnyCached) {
+        return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${missingEntities[0]}`, this._t('ui.check_entity_config'));
+      }
     }
 
     return html`
