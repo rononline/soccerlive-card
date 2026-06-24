@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.49 (2026-06-24)
+- Standings: rewrite `_subscribeToEvents` with `Promise.allSettled` and generation counter — prevents duplicate/stale subscriptions on rapid mount/unmount
+- Standings: toast messages use `.textContent` (already), removed `<strong>` tags that were rendering as literal text
+
 ## v3.21.48 (2026-06-23)
 - Translate remaining Italian inline comments to English in Standings, Bracket, and Team cards
 
