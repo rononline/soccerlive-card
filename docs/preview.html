@@ -188,23 +188,23 @@
       event_id: "preview-upcoming",
       state: "pre",
       status: "Scheduled",
-      date: "20-06-2026 19:00",
+      date: "26-06-2026 21:00",
       league_name: "FIFA World Cup",
       league_logo: leagueLogo,
       home_team: "Netherlands",
-      away_team: "Sweden",
+      away_team: "Tunisia",
       home_abbrev: "NED",
-      away_abbrev: "SWE",
+      away_abbrev: "TUN",
       home_score: "0",
       away_score: "0",
       home_logo: logo(449),
-      away_logo: logo(466),
+      away_logo: logo(290),
       home_form: "WGWGW",
-      away_form: "WGVWG",
+      away_form: "LGDLG",
       home_record: "0-1-0",
-      away_record: "1-0-0",
+      away_record: "0-0-1",
       home_top_scorer: { short_name: "V. van Dijk", value: "1" },
-      away_top_scorer: { short_name: "Y. Ayari", value: "2" },
+      away_top_scorer: { short_name: "E. Achouri", value: "1" },
       venue: "NRG Stadium, Houston, Texas",
       broadcasts: ["FOX", "Tele", "Peacock"],
       clock: "",
@@ -219,8 +219,15 @@
       event_id: "preview-live",
       state: "in",
       status: "In Progress",
+      date: "20-06-2026 19:00",
       status_detail: "62'",
       clock: "62",
+      away_team: "Sweden",
+      away_abbrev: "SWE",
+      away_logo: logo(466),
+      away_form: "WGVWG",
+      away_record: "1-0-0",
+      away_top_scorer: { short_name: "Y. Ayari", value: "2" },
       home_score: "2",
       away_score: "1",
       match_details: [
@@ -345,8 +352,8 @@
         { rank: 2, player: "Yasin Ayari", short_name: "Y. Ayari", team_name: "Sweden", team_logo: logo(466), goals: 2 }
       ],
       articles: [
-        { title: "Netherlands prepare for Sweden", description: "Fixture data for the local preview page.", published: "2026-06-22T10:00:00Z", link: "#" },
-        { title: "Group F remains open", description: "Standings, ticker and match cards use the same fixture.", published: "2026-06-21T18:30:00Z", link: "#" }
+        { headline: "Netherlands prepare for Sweden", description: "Fixture data for the local preview page.", published: "2026-06-22T10:00:00Z", link: "#" },
+        { headline: "Group F remains open", description: "Standings, ticker and match cards use the same fixture.", published: "2026-06-21T18:30:00Z", link: "#" }
       ],
       commentary: [
         { clock: "61", type: "goal", text: "Goal by Xavi Simons", home_score: 2, away_score: 1 },
@@ -358,7 +365,7 @@
         size: 1,
         ties: [{
           team_a: { name: "Netherlands", logo: logo(449), abbrev: "NED" },
-          team_b: { name: "Sweden", logo: logo(466), abbrev: "SWE" },
+          team_b: { name: "Tunisia", logo: logo(290), abbrev: "TUN" },
           single: upcoming,
           winner_team: "",
           aggregate: "",
@@ -429,7 +436,7 @@
       ["Team · long names / no logos", "team", { entity: "sensor.preview_missing_logos" }, "wide"],
       ["Matches · empty", "matches", { entity: "sensor.preview_empty" }],
       ["Season Overview · empty", "season-overview", { entity: "sensor.preview_empty" }],
-      ["Ticker · live hidden when empty", "ticker", { entity: "sensor.preview_live_empty", filter: "live", hide_when_empty: true }],
+      ["Ticker · no live matches", "ticker", { entity: "sensor.preview_live_empty", filter: "live", hide_when_empty: false }],
       ["Diagnostics · unavailable", "diagnostics", { entity: "sensor.preview_unavailable" }]
     ];
 

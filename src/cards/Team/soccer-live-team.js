@@ -557,8 +557,8 @@ class SoccerLiveTeamCard extends LitElement {
     return html`
       <ha-card class="${isLive ? 'live' : ''} ${this.compact ? 'compact' : ''}">
         <div class="bg-logos">
-          <div class="bg-logo home"><img src="${match.home_logo}" alt="" loading="lazy"></div>
-          <div class="bg-logo away"><img src="${match.away_logo}" alt="" loading="lazy"></div>
+          ${match.home_logo ? html`<div class="bg-logo home"><img src="${match.home_logo}" alt="" loading="lazy"></div>` : ''}
+          ${match.away_logo ? html`<div class="bg-logo away"><img src="${match.away_logo}" alt="" loading="lazy"></div>` : ''}
         </div>
         <div class="hero-bg" style="${heroBgStyle}"></div>
 
@@ -579,7 +579,9 @@ class SoccerLiveTeamCard extends LitElement {
         <div class="scoreboard">
           <div class="team-side home">
             <div class="team-logo-wrap">
-              <img class="team-logo-big" src="${match.home_logo}" alt="${match.home_team}" />
+              ${match.home_logo
+                ? html`<img class="team-logo-big" src="${match.home_logo}" alt="${match.home_team}" />`
+                : html`<div class="team-logo-fallback">${match.home_abbrev || '?'}</div>`}
             </div>
             <div class="team-name-big ${homeIsMyTeam ? 'my-team' : ''}">${match.home_team}</div>
             ${!isLive ? this._renderStandingSummary(match.home_standing_summary) : ''}
@@ -598,7 +600,9 @@ class SoccerLiveTeamCard extends LitElement {
 
           <div class="team-side away">
             <div class="team-logo-wrap">
-              <img class="team-logo-big" src="${match.away_logo}" alt="${match.away_team}" />
+              ${match.away_logo
+                ? html`<img class="team-logo-big" src="${match.away_logo}" alt="${match.away_team}" />`
+                : html`<div class="team-logo-fallback">${match.away_abbrev || '?'}</div>`}
             </div>
             <div class="team-name-big ${awayIsMyTeam ? 'my-team' : ''}">${match.away_team}</div>
             ${!isLive ? this._renderStandingSummary(match.away_standing_summary) : ''}
@@ -704,7 +708,7 @@ class SoccerLiveTeamCard extends LitElement {
                 <span class="upcoming-date-day">&nbsp;</span>
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
-                <img src="${m.home_logo}" alt="" />
+                ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
                 ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
               </span>
               <span class="prev-score ${homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw'}">
@@ -712,7 +716,7 @@ class SoccerLiveTeamCard extends LitElement {
               </span>
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
                 ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
-                <img src="${m.away_logo}" alt="" />
+                ${m.away_logo ? html`<img src="${m.away_logo}" alt="" />` : ''}
               </span>
             </div>
           `;
@@ -746,7 +750,7 @@ class SoccerLiveTeamCard extends LitElement {
                 <span class="upcoming-date-day">${this._relativeDate(m.date)}</span>
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
-                <img src="${m.home_logo}" alt="" />
+                ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
                 ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
               </span>
               ${isLiveRow
@@ -755,7 +759,7 @@ class SoccerLiveTeamCard extends LitElement {
               }
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
                 ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
-                <img src="${m.away_logo}" alt="" />
+                ${m.away_logo ? html`<img src="${m.away_logo}" alt="" />` : ''}
               </span>
             </div>
           `;
@@ -1403,6 +1407,19 @@ class SoccerLiveTeamCard extends LitElement {
         object-fit: contain;
         filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
         transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .team-logo-fallback {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 72px;
+        height: 72px;
+        border: 1px solid var(--cl-chip-border);
+        border-radius: 50%;
+        background: var(--cl-chip-bg);
+        color: var(--cl-text);
+        font-size: 14px;
+        font-weight: 900;
       }
       .team-side:hover .team-logo-big { transform: scale(1.1) rotate(-3deg); }
       @keyframes logo-glow {

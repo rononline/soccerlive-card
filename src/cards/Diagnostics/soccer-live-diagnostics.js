@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit-element";
-import { parseMatchDate } from "../../i18n.js";
+import { parseMatchDate, resolveLang, t } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
 import { soccerCardShellStyles } from "../card-shell.js";
@@ -19,6 +19,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
   }
 
   getCardSize() { return 2; }
+  _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-diagnostics-editor"); }
   static getStubConfig() { return { entity: "sensor.soccer_live_", card_type: "diagnostics" }; }
 

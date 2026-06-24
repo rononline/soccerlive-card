@@ -129,6 +129,10 @@ class SoccerLiveCountdownCard extends LitElement {
 
   static get styles() {
     return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, spinnerStyles, weatherBadgeStyles, css`
+      :host {
+        display: block;
+        container-type: inline-size;
+      }
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -149,18 +153,18 @@ class SoccerLiveCountdownCard extends LitElement {
       ha-card.compact .score { font-size: 30px !important; letter-spacing: 3px !important; }
       ha-card.compact .smm-venue-row,
       ha-card.compact .smm-chips { padding: 6px 14px !important; font-size: 10px !important; }
-      .teams { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-      .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+      .teams { display: flex; align-items: center; justify-content: space-between; min-width: 0; margin-bottom: 16px; }
+      .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1 1 0; min-width: 0; }
       .team-logo { width: 52px; height: 52px; object-fit: contain; }
-      .team-name { font-size: 13px; font-weight: 700; text-align: center; color: var(--cl-text); }
-      .center { text-align: center; flex: 0 0 auto; padding: 0 8px; }
+      .team-name { max-width: 100%; font-size: 13px; font-weight: 700; text-align: center; color: var(--cl-text); overflow-wrap: anywhere; }
+      .center { min-width: 0; text-align: center; flex: 0 1 auto; padding: 0 8px; }
       .live-badge { display: inline-block; background: var(--cl-live); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 99px; margin-bottom: 4px; }
       .ft-badge { font-size: 11px; color: var(--cl-text-2); margin-bottom: 4px; }
       .score { font-size: 42px; font-weight: 900; letter-spacing: 6px; color: var(--cl-text); line-height: 1; }
       .minute { font-size: 12px; color: var(--cl-text-2); margin-top: 2px; }
       .sched-date { font-size: 11px; color: var(--cl-text-2); margin-bottom: 6px; }
-      .countdown { display: flex; justify-content: center; gap: 8px; }
-      .cd-block { display: flex; flex-direction: column; align-items: center; min-width: 38px; }
+      .countdown { display: flex; max-width: 100%; justify-content: center; gap: clamp(3px, 1.5cqi, 8px); }
+      .cd-block { display: flex; flex-direction: column; align-items: center; min-width: 0; }
       .cd-num { font-size: 30px; font-weight: 900; color: var(--cl-accent); line-height: 1; }
       .cd-label { font-size: 9px; color: var(--cl-text-2); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
       .cd-sep { font-size: 26px; font-weight: 900; color: var(--cl-text-2); align-self: flex-start; padding-top: 2px; }
@@ -168,7 +172,7 @@ class SoccerLiveCountdownCard extends LitElement {
       /* .meta removed — now .smm-venue-row / .smm-chips from matchMetaStyles */
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
 
-      @media (max-width: 600px) {
+      @container (max-width: 600px) {
         .cd-body { padding: 12px !important; }
         .team-logo { width: 40px !important; height: 40px !important; }
         .team-name { font-size: 12px !important; }
@@ -183,7 +187,7 @@ class SoccerLiveCountdownCard extends LitElement {
       }
 
       /* On narrow screens: teams on top row, countdown below */
-      @media (max-width: 480px) {
+      @container (max-width: 480px) {
         .teams { flex-wrap: wrap; justify-content: space-between; margin-bottom: 8px; }
         .team { flex: 0 1 auto; flex-direction: row; align-items: center; gap: 6px; }
         .team:first-child { order: 1; }
@@ -198,7 +202,7 @@ class SoccerLiveCountdownCard extends LitElement {
         .sched-date { font-size: 11px !important; margin-bottom: 8px; }
       }
 
-      @media (max-width: 360px) {
+      @container (max-width: 360px) {
         .cd-num { font-size: 22px !important; min-width: 28px !important; }
         .cd-sep { font-size: 16px !important; }
         .countdown { gap: 3px !important; }

@@ -72,11 +72,13 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
       .slice(-5)
       .map(m => {
         const isHome = m.home_team?.toLowerCase().includes(tn) || m.home_team?.toLowerCase() === tn;
-        const hs = parseInt(m.home_score) ?? 0;
-        const as_ = parseInt(m.away_score) ?? 0;
+        const hs = Number.parseInt(m.home_score, 10);
+        const as_ = Number.parseInt(m.away_score, 10);
+        if (!Number.isFinite(hs) || !Number.isFinite(as_)) return null;
         if (isHome) return hs > as_ ? 'W' : hs < as_ ? 'L' : 'D';
         return as_ > hs ? 'W' : as_ < hs ? 'L' : 'D';
-      });
+      })
+      .filter(Boolean);
   }
 
   _getStanding(m, teamName) {

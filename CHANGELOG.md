@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.21.54 (2026-06-24)
+- Diagnostics: restore the missing i18n helper so the card no longer fails during render
+- Team Competitions: ignore completed matches with invalid scores instead of classifying them as draws
+- Team Form: do not repeat the current live match in the upcoming-match list
+- Preview: use realistic distinct live/upcoming fixtures and the correct `headline` news field
+- Preview: keep the no-live Ticker visible so every panel renders observable output
+- Team: show abbreviation fallbacks when team logos are missing instead of broken image icons
+- Countdown: use card-width container queries and bounded timer sizing so narrow dashboard columns cannot overflow
+- Preview smoke test: parse actual panel definitions and compare them with the card registry instead of counting unrelated arrays
+- Sync `package-lock.json` with package version `3.21.54`
+
+## Unreleased
+
 ## v3.21.51 (2026-06-24)
 - Team/Matches/Standings: on partial subscription failure release succeeded subscriptions and store empty array so a full retry happens on next hass update (previously a partial list blocked retries)
 

@@ -93,10 +93,10 @@ class SoccerLiveTeamFormCard extends LitElement {
   _renderCard(attrs) {
     const prev      = attrs.previous_matches || [];
     const next      = (attrs.matches || [])[0];
-    // upcoming_matches in the sensor starts at index 1 (next match is already in matches[0]).
-    // Prepend matches[0] when it is a future or live match so nothing is skipped.
+    // upcoming_matches starts after matches[0] when that entry is scheduled.
+    // A live match belongs in the current-match area, not in the upcoming list.
     const upcomingRaw = attrs.upcoming_matches || [];
-    const upcoming = (next && (next.state === 'pre' || next.state === 'in'))
+    const upcoming = (next && next.state === 'pre')
       ? [next, ...upcomingRaw]
       : upcomingRaw;
     // Team detection: prefer explicit config, then sensor attribute, then frequency analysis
