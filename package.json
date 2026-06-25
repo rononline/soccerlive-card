@@ -1,6 +1,6 @@
 {
   "name": "soccer-live-card",
-  "version": "3.21.55",
+  "version": "3.21.56",
   "description": "Football Live cards for Home Assistant",
   "main": "webpack.config.js",
   "scripts": {

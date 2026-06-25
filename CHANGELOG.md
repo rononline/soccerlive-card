@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.56 (2026-06-25)
+- Countdown card: `_loadWeather` and the venue trigger in `updated` now use `_getNextMatch()` instead of `matches[0]` — for `team_matches_mixed` sensors the weather is loaded for the displayed match's venue, not the oldest match in the list
+
 ## v3.21.55 (2026-06-24)
 - Team card: `separateEvents` now excludes "Goal Disallowed" strings so VAR-cancelled goals no longer appear in the goals section of the match popup
 - Countdown card: `_getNextMatch` now prioritises live matches (`in`) over upcoming (`pre`) — live score is shown instead of countdown when a match is in progress

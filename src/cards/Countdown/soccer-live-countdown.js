@@ -68,9 +68,12 @@ class SoccerLiveCountdownCard extends LitElement {
     }
     if (changedProperties.has('hass') || changedProperties.has('_config')) {
       const stateObj = this.hass?.states[this._config?.entity];
-      const venue = stateObj?.attributes?.matches?.[0]?.venue;
-      if (venue && venue !== this._lastWeatherVenue) {
-        this._loadWeather();
+      if (stateObj && stateObj.state !== 'unavailable') {
+        const match = this._getNextMatch(stateObj);
+        const venue = match?.venue;
+        if (venue && venue !== this._lastWeatherVenue) {
+          this._loadWeather();
+        }
       }
     }
   }
@@ -80,7 +83,7 @@ class SoccerLiveCountdownCard extends LitElement {
     const stateObj = this.hass.states[this._config.entity];
     const attrs = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     if (!attrs?.matches) return;
-    const match = attrs.matches[0];
+    const match = this._getNextMatch({ attributes: attrs });
     if (match && match.venue) {
       this._lastWeatherVenue = match.venue;
       try {
