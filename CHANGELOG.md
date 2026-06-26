@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.61 (2026-06-26)
+- Countdown card: `post` (afgelopen) state krijgt nu ook de compacte strip (`✓ FT · Tunisia – Netherlands · 1–3`) in plaats van de volledige kaart met score, badges en meta-info
+- Countdown card: `hide_when_live: true` verbergt de kaart nu ook bij afgelopen wedstrijden
+
 ## v3.21.60 (2026-06-26)
 - MatchCenter pitch: player names now strip only the ESPN initial (`V. `) instead of taking the last word — "van Dijk", "de Jong", "van den Berg" are now displayed correctly instead of just "Dijk" / "Jong" / "Berg"
 
