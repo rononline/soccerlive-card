@@ -43,6 +43,8 @@ class SoccerLiveBracketCard extends LitElement {
       'Quarterfinals': 'round.quarterfinals',
       'Round of 16': 'round.r16',
       'Round of 32': 'round.r32',
+      'Round of 64': 'round.r64',
+      'Third Place': 'round.third_place',
       'Knockout Playoffs': 'round.knockout_playoffs',
       'Preliminary Round': 'round.preliminary',
     };
@@ -235,6 +237,7 @@ class SoccerLiveBracketCard extends LitElement {
       return exact || candidates[candidates.length - 1];
     };
     const playoffsRound = rounds.find(r => r.name === 'Knockout Playoffs');
+    const r32 = findRound(16);
     const r16 = findRound(8);
     const qf = findRound(4);
     const sf = findRound(2);
@@ -246,12 +249,20 @@ class SoccerLiveBracketCard extends LitElement {
       const mid = Math.ceil(ties.length / 2);
       return { left: ties.slice(0, mid), right: ties.slice(mid) };
     };
+    const r32Split = split(r32);
     const r16Split = split(r16);
     const qfSplit = split(qf);
     const sfSplit = split(sf);
     const playoffsSplit = this.treeShowPlayoffs ? split(playoffsRound) : null;
     const finalTie = finalRound ? finalRound.ties[0] : null;
-    const hasSides = r16 || qf || sf;
+    const hasSides = r32 || r16 || qf || sf;
+
+    // When only early rounds (size > 16) exist, show a round label instead of "begins soon"
+    const earlyRound = !hasSides ? rounds.find(r => r.size > 16) : null;
+
+    // Outermost left/right column count (for playoff arrows)
+    const outerLeft = r32Split.left.length || r16Split.left.length;
+    const outerRight = r32Split.right.length || r16Split.right.length;
 
     return html`
       <div class="tree-wrap">
@@ -259,8 +270,10 @@ class SoccerLiveBracketCard extends LitElement {
           <div class="tree-half left">
             ${playoffsSplit && playoffsSplit.left.length ? html`
               ${this._renderTreeRound(playoffsSplit.left, 'round.knockout_playoffs')}
-              ${r16Split.left.length ? this._renderArrows(r16Split.left.length, 'left') : ''}
+              ${outerLeft ? this._renderArrows(outerLeft, 'left') : ''}
             ` : ''}
+            ${r32Split.left.length ? this._renderTreeRound(r32Split.left, 'round.r32') : ''}
+            ${r32Split.left.length && r16Split.left.length ? this._renderArrows(r16Split.left.length, 'left') : ''}
             ${r16Split.left.length ? this._renderTreeRound(r16Split.left, 'round.r16') : ''}
             ${r16Split.left.length && qfSplit.left.length ? this._renderArrows(qfSplit.left.length, 'left') : ''}
             ${qfSplit.left.length ? this._renderTreeRound(qfSplit.left, 'round.quarterfinals') : ''}
@@ -276,7 +289,11 @@ class SoccerLiveBracketCard extends LitElement {
               ? html`<div class="final-tie-wrap">${this._renderMiniTie(finalTie)}</div>`
               : html`<div class="final-placeholder">${this._t('bracket.tbd')}</div>`
             }
-            ${!hasSides ? html`<div class="tree-pending">${this._t('bracket.empty.sub')}</div>` : ''}
+            ${earlyRound
+              ? html`<div class="tree-pending">${this._localizeRoundName(earlyRound)}</div>`
+              : !hasSides
+                ? html`<div class="tree-pending">${this._t('bracket.empty.sub')}</div>`
+                : ''}
           </div>
 
           <div class="tree-half right">
@@ -286,8 +303,10 @@ class SoccerLiveBracketCard extends LitElement {
             ${qfSplit.right.length ? this._renderTreeRound(qfSplit.right, 'round.quarterfinals') : ''}
             ${qfSplit.right.length && r16Split.right.length ? this._renderArrows(qfSplit.right.length, 'right') : ''}
             ${r16Split.right.length ? this._renderTreeRound(r16Split.right, 'round.r16') : ''}
+            ${r16Split.right.length && r32Split.right.length ? this._renderArrows(r16Split.right.length, 'right') : ''}
+            ${r32Split.right.length ? this._renderTreeRound(r32Split.right, 'round.r32') : ''}
             ${playoffsSplit && playoffsSplit.right.length ? html`
-              ${r16Split.right.length ? this._renderArrows(r16Split.right.length, 'right') : ''}
+              ${outerRight ? this._renderArrows(outerRight, 'right') : ''}
               ${this._renderTreeRound(playoffsSplit.right, 'round.knockout_playoffs')}
             ` : ''}
           </div>
