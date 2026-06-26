@@ -335,6 +335,9 @@ class SoccerLiveBracketCard extends LitElement {
       `;
     }
 
+    const lastRound = rounds[rounds.length - 1];
+    const badgeLabel = lastRound ? this._localizeRoundName(lastRound) : stateObj.state;
+
     return html`
       <ha-card class="${this.compactMode ? 'compact' : ''} style-${this._cardStyle}">
         <div class="hero-bg"></div>
@@ -342,7 +345,7 @@ class SoccerLiveBracketCard extends LitElement {
           ${renderSoccerHeader({
             logo: stateObj.attributes.league_logo || (stateObj.attributes.league_info || [])[0]?.logo_href || null,
             title: stateObj.attributes.league_name || this._t('card.bracket'),
-            badge: renderSoccerBadge(stateObj.state, 'neutral'),
+            badge: renderSoccerBadge(badgeLabel, 'neutral'),
             fallbackIcon: '🏆',
           })}
         ` : ''}
