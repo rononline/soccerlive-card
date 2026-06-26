@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.62 (2026-06-26)
+- Removed cards: LiveMatch, LiveCommentary, SeasonOverview, Timeline, Lineup — functionaliteit zit in MatchCenter (tabs: stats, tijdlijn, opstelling) en Countdown/Team; bundle 73 KB kleiner (584 → 511 KB)
+
 ## v3.21.61 (2026-06-26)
 - Countdown card: `post` (afgelopen) state krijgt nu ook de compacte strip (`✓ FT · Tunisia – Netherlands · 1–3`) in plaats van de volledige kaart met score, badges en meta-info
 - Countdown card: `hide_when_live: true` verbergt de kaart nu ook bij afgelopen wedstrijden

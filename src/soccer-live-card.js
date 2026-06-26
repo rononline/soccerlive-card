@@ -8,10 +8,6 @@ import "./cards/Team/soccer-live-team.js";
 import "./cards/Team/soccer-live-team-editor.js";
 import "./cards/News/soccer-live-news.js";
 import "./cards/News/soccer-live-news-editor.js";
-import "./cards/Lineup/soccer-live-lineup.js";
-import "./cards/Lineup/soccer-live-lineup-editor.js";
-import "./cards/Timeline/soccer-live-timeline.js";
-import "./cards/Timeline/soccer-live-timeline-editor.js";
 import "./cards/Bracket/soccer-live-bracket.js";
 import "./cards/Bracket/soccer-live-bracket-editor.js";
 import "./cards/Scorers/soccer-live-scorers.js";
@@ -20,14 +16,10 @@ import "./cards/MiniStandings/soccer-live-mini-standings.js";
 import "./cards/MiniStandings/soccer-live-mini-standings-editor.js";
 import "./cards/Countdown/soccer-live-countdown.js";
 import "./cards/Countdown/soccer-live-countdown-editor.js";
-import "./cards/LiveMatch/soccer-live-live-match.js";
-import "./cards/LiveMatch/soccer-live-live-match-editor.js";
 import "./cards/MultiTeam/soccer-live-multi-team.js";
 import "./cards/MultiTeam/soccer-live-multi-team-editor.js";
 import "./cards/TeamCompetitions/soccer-live-team-competitions.js";
 import "./cards/TeamCompetitions/soccer-live-team-competitions-editor.js";
-import "./cards/LiveCommentary/soccer-live-live-commentary.js";
-import "./cards/LiveCommentary/soccer-live-live-commentary-editor.js";
 import "./cards/MatchCenter/soccer-live-match-center.js";
 import "./cards/MatchCenter/soccer-live-match-center-editor.js";
 import "./cards/TeamForm/soccer-live-team-form.js";
@@ -36,8 +28,6 @@ import "./cards/Diagnostics/soccer-live-diagnostics.js";
 import "./cards/Diagnostics/soccer-live-diagnostics-editor.js";
 import "./cards/Ticker/soccer-live-ticker.js";
 import "./cards/Ticker/soccer-live-ticker-editor.js";
-import "./cards/SeasonOverview/soccer-live-season-overview.js";
-import "./cards/SeasonOverview/soccer-live-season-overview-editor.js";
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -46,21 +36,16 @@ const CARD_REGISTRY = [
   { value: 'standings',         element: 'soccer-live-standings',         editor: 'soccer-live-standings-editor',         label: 'Standings',         description: 'League table with coloured zones', sensorTypes: ['standings'] },
   { value: 'matches',           element: 'soccer-live-matches',           editor: 'soccer-live-matches-editor',           label: 'Matches',           description: 'Day-grouped match list with live highlighting', sensorTypes: ['team_matches', 'team_matches_mixed', 'all_matches_today'] },
   { value: 'countdown',         element: 'soccer-live-countdown',         editor: 'soccer-live-countdown-editor',         label: 'Countdown',         description: 'Countdown timer to next match with live score', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
-  { value: 'live-match',        element: 'soccer-live-live-match',        editor: 'soccer-live-live-match-editor',        label: 'Live Match',        description: 'Current match with events, possession and shots', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today'] },
   { value: 'news',              element: 'soccer-live-news',              editor: 'soccer-live-news-editor',              label: 'News',              description: 'Article feed with images and timestamps', sensorTypes: ['news'] },
-  { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams', sensorTypes: ['team_match'] },
-  { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events', sensorTypes: ['team_match', 'commentary'] },
   { value: 'bracket',           element: 'soccer-live-bracket',           editor: 'soccer-live-bracket-editor',           label: 'Bracket',           description: 'Knockout bracket (list or tournament tree)', sensorTypes: ['bracket'] },
   { value: 'mini-standings',    element: 'soccer-live-mini-standings',    editor: 'soccer-live-mini-standings-editor',    label: 'Mini Standings',    description: 'Compact standings with configurable rows', sensorTypes: ['standings'] },
   { value: 'scorers',           element: 'soccer-live-scorers',           editor: 'soccer-live-scorers-editor',           label: 'Top Scorers',       description: 'Top scorers list with photo and goal tally', sensorTypes: ['top_scorers'] },
   { value: 'multi-team',        element: 'soccer-live-multi-team',        editor: 'soccer-live-multi-team-editor',        label: 'Multi Team',        description: 'Multiple teams in one compact card', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector', sensorTypes: ['team_matches_mixed'] },
-  { value: 'live-commentary',   element: 'soccer-live-live-commentary',   editor: 'soccer-live-live-commentary-editor',   label: 'Live Commentary',   description: 'Real-time play-by-play commentary', sensorTypes: ['commentary'] },
   { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H', sensorTypes: ['team_match'] },
   { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'diagnostics',       element: 'soccer-live-diagnostics',       editor: 'soccer-live-diagnostics-editor',       label: 'Diagnostics',       description: 'Sensor health, update status and schedule counters', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today', 'standings', 'top_scorers', 'bracket', 'news', 'commentary'] },
   { value: 'ticker',            element: 'soccer-live-ticker',            editor: 'soccer-live-ticker-editor',            label: 'Ticker',            description: "Horizontal scrollable strip of today's matches", sensorTypes: ['all_matches_today', 'team_matches', 'team_matches_mixed'] },
-  { value: 'season-overview',   element: 'soccer-live-season-overview',   editor: 'soccer-live-season-overview-editor',   label: 'Season Overview', description: 'All competitions at a glance: live score, next match, or last result per competition', sensorTypes: ['team_matches_mixed'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)
