@@ -346,7 +346,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ? [...homeRows.slice(1).reverse(), homeRows[0]]
       : homeRows;
 
-    const lastName = p => (p.short_name || p.name || '').split(' ').pop();
+    const lastName = p => {
+      const s = p.short_name || p.name || '';
+      return /^[A-Z]\. /.test(s) ? s.slice(3) : s;
+    };
 
     const dot = (p, side) => html`
       <div class="pit-player">
@@ -582,7 +585,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .pit-name {
         font-size: 8px; font-weight: 600; color: rgba(255,255,255,0.95);
         text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        max-width: 46px; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+        max-width: 54px; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
       }
       .pit-bench {
         display: grid; grid-template-columns: 1fr 1fr; gap: 12px;

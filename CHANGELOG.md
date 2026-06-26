@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.60 (2026-06-26)
+- MatchCenter pitch: player names now strip only the ESPN initial (`V. `) instead of taking the last word — "van Dijk", "de Jong", "van den Berg" are now displayed correctly instead of just "Dijk" / "Jong" / "Berg"
+
 ## v3.21.59 (2026-06-26)
 - Countdown card: when a match goes live the card now shows a compact one-line strip (pulsing dot · LIVE · Home – Away · clock) instead of the full score view — the countdown is done, live scores belong in LiveMatch/MatchCenter
 - Countdown card: new `hide_when_live: true` config option — the card disappears entirely from the dashboard when the match is in progress
