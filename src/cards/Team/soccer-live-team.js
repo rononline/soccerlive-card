@@ -245,7 +245,7 @@ class SoccerLiveTeamCard extends LitElement {
     banner.className = 'goal-banner';
     const bannerText = document.createElement('div');
     bannerText.className = 'goal-banner-text';
-    bannerText.textContent = 'GOAL!';
+    bannerText.textContent = (this._t('event.goal') || 'GOAL') + '!';
     banner.appendChild(bannerText);
     card.appendChild(banner);
     this._animationTimers.push(setTimeout(() => banner.remove(), 1700));

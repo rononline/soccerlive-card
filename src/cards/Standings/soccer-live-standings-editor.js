@@ -183,9 +183,9 @@ class SoccerLiveStandingsEditor extends LitElement {
 
         <h3>${this._t("editor.settings")}</h3>
         <div>
-          <label class="field-label">Group</label>
+          <label class="field-label">${this._t('editor.standings_group')}</label>
           <select @change=${this._groupChanged}>
-            <option value="" ?selected=${!this._config.selected_group}>— All —</option>
+            <option value="" ?selected=${!this._config.selected_group}>— ${this._t('editor.all_groups')} —</option>
             ${this.groups.map(g => html`
               <option value="${g}" ?selected=${g === this._config.selected_group}>${g}</option>
             `)}
