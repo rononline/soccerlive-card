@@ -100,7 +100,11 @@ class SoccerLiveCountdownCard extends LitElement {
     clearInterval(this._timer);
   }
 
-  getCardSize() { return 3; }
+  getCardSize() {
+    const stateObj = this.hass?.states[this._config?.entity];
+    const match = stateObj ? this._getNextMatch(stateObj) : null;
+    return (match?.state === 'in') ? 1 : 3;
+  }
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
   static getConfigElement() { return document.createElement("soccer-live-countdown-editor"); }
   static getStubConfig() { return { entity: "sensor.soccer_live_next_" }; }
@@ -174,6 +178,24 @@ class SoccerLiveCountdownCard extends LitElement {
       .vs-text { font-size: 20px; font-weight: 900; color: var(--cl-text-2); }
       /* .meta removed — now .smm-venue-row / .smm-chips from matchMetaStyles */
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
+      /* Compact live strip (shown instead of score when match is in progress) */
+      .cd-live-strip {
+        display: flex; align-items: center; gap: 8px;
+        padding: 14px 16px; font-size: 12px;
+      }
+      .cd-live-dot {
+        width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+        background: var(--cl-live, #ef4444);
+        animation: cd-pulse 1.5s ease-in-out infinite;
+      }
+      @keyframes cd-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+      .cd-live-label {
+        font-size: 10px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--cl-live, #ef4444);
+      }
+      .cd-live-sep { color: var(--cl-text-2); }
+      .cd-live-teams { font-weight: 600; flex: 1; }
+      .cd-live-clock { font-size: 11px; color: var(--cl-text-2); }
 
       @container (max-width: 600px) {
         .cd-body { padding: 12px !important; }
@@ -214,6 +236,7 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   render() {
+    this.style.display = '';
     applySkin(this, this._config);
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const stateObj = this.hass.states[this._config.entity];
@@ -243,12 +266,32 @@ class SoccerLiveCountdownCard extends LitElement {
     const match = this._getNextMatch({ attributes: attributes });
     if (!match) return renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint'));
 
-    const isLive = match.state === 'in';
+    const isLive     = match.state === 'in';
     const isFinished = match.state === 'post';
-    const countdown = (!isLive && !isFinished) ? this._countdown(match.date) : null;
     const leagueInfo = attributes?.league_info?.[0];
-    const compName = match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '';
-    const compLogo = match.competition_logo || leagueInfo?.logo_href || attributes?.league_logo || '';
+    const compName   = match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '';
+    const compLogo   = match.competition_logo || leagueInfo?.logo_href || attributes?.league_logo || '';
+
+    // Live: hide entirely or show a compact status strip (no score — that's for LiveMatch/MatchCenter)
+    if (isLive) {
+      if (this._config.hide_when_live) {
+        this.style.display = 'none';
+        return html``;
+      }
+      return html`
+        <ha-card>
+          <div class="cd-live-strip">
+            <span class="cd-live-dot"></span>
+            <span class="cd-live-label">${this._t('status.live')}</span>
+            <span class="cd-live-sep">·</span>
+            <span class="cd-live-teams">${match.home_team || '?'} – ${match.away_team || '?'}</span>
+            ${match.clock ? html`<span class="cd-live-clock">${match.clock}'</span>` : ''}
+          </div>
+        </ha-card>
+      `;
+    }
+
+    const countdown = !isFinished ? this._countdown(match.date) : null;
     const lDay = this._t('cd.days') || 'days';
     const lHrs = this._t('cd.hrs') || 'hrs';
     const lMin = this._t('cd.min') || 'min';
@@ -261,11 +304,9 @@ class SoccerLiveCountdownCard extends LitElement {
         ${!this._config.hide_header ? renderSoccerHeader({
           logo: compLogo || null,
           title: compName,
-          badge: isLive
-            ? renderSoccerBadge(`${match.clock ? match.clock + ` ` : ''}${this._t('status.live')}`, 'live')
-            : isFinished
-              ? renderSoccerBadge(this._t('status.full_time'), 'ft')
-              : renderSoccerBadge(match.date || '', 'date'),
+          badge: isFinished
+            ? renderSoccerBadge(this._t('status.full_time'), 'ft')
+            : renderSoccerBadge(match.date || '', 'date'),
         }) : ''}
 
         <div class="cd-body">
@@ -276,11 +317,7 @@ class SoccerLiveCountdownCard extends LitElement {
           </div>
 
           <div class="center">
-            ${isLive ? html`
-              <div class="live-badge">${this._t('status.live')}</div>
-              <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
-              ${match.clock ? html`<div class="minute">${match.clock}</div>` : ''}
-            ` : isFinished ? html`
+            ${isFinished ? html`
               <div class="ft-badge">${this._t('status.full_time')}</div>
               <div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>
             ` : countdown ? html`

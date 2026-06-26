@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.59 (2026-06-26)
+- Countdown card: when a match goes live the card now shows a compact one-line strip (pulsing dot · LIVE · Home – Away · clock) instead of the full score view — the countdown is done, live scores belong in LiveMatch/MatchCenter
+- Countdown card: new `hide_when_live: true` config option — the card disappears entirely from the dashboard when the match is in progress
+- Countdown card: `getCardSize()` returns 1 (instead of 3) while live so the HA grid allocates minimal space
+
 ## v3.21.58 (2026-06-26)
 - MatchCenter lineup: pitch now uses an SVG overlay for field markings (penalty areas, goal areas, penalty spots, penalty arcs, center circle, corner arcs); lineup tab no longer has a height cap so both teams are fully visible without scrolling
 
