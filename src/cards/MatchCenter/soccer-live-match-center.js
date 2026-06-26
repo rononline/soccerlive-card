@@ -124,7 +124,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
             </button>
           `)}
         </div>
-        <div class="tab-content">
+        <div class="tab-content${this._activeTab === 'lineup' ? ' lineup' : ''}">
           ${this._activeTab === 'overview'  ? this._renderOverview(match) : ''}
           ${this._activeTab === 'stats'     ? this._renderStats(match)    : ''}
           ${this._activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
@@ -369,12 +369,28 @@ class SoccerLiveMatchCenterCard extends LitElement {
     return html`
       <div class="pit-outer">
         <div class="pit-field">
+          <svg class="pit-lines" viewBox="0 0 100 150" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="98" height="148" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1"/>
+            <rect x="20" y="1" width="60" height="24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="0.8"/>
+            <rect x="37" y="1" width="26" height="8" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+            <circle cx="50" cy="17" r="1.5" fill="rgba(255,255,255,0.5)"/>
+            <path d="M 44 25 A 10 10 0 0 1 56 25" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="0.8"/>
+            <line x1="1" y1="75" x2="99" y2="75" stroke="rgba(255,255,255,0.55)" stroke-width="1"/>
+            <circle cx="50" cy="75" r="13" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.8"/>
+            <circle cx="50" cy="75" r="1.5" fill="rgba(255,255,255,0.5)"/>
+            <rect x="20" y="125" width="60" height="24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="0.8"/>
+            <rect x="37" y="141" width="26" height="8" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+            <circle cx="50" cy="133" r="1.5" fill="rgba(255,255,255,0.5)"/>
+            <path d="M 44 125 A 10 10 0 0 1 56 125" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="0.8"/>
+            <path d="M 1 6 A 5 5 0 0 1 6 1" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+            <path d="M 94 1 A 5 5 0 0 1 99 6" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+            <path d="M 1 144 A 5 5 0 0 1 6 149" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+            <path d="M 94 149 A 5 5 0 0 1 99 144" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+          </svg>
           ${match.formation_away ? html`<div class="pit-fm away">${match.formation_away}</div>` : ''}
-          <div class="pit-box pit-box-top"></div>
           <div class="pit-half">${awayDisplay.map(r => pitRow(r, 'away'))}</div>
-          <div class="pit-cl"><div class="pit-cc"></div></div>
+          <div class="pit-mid"></div>
           <div class="pit-half">${homeDisplay.map(r => pitRow(r, 'home'))}</div>
-          <div class="pit-box pit-box-btm"></div>
           ${match.formation_home ? html`<div class="pit-fm home">${match.formation_home}</div>` : ''}
         </div>
         ${(homeBench.length || awayBench.length) ? html`
@@ -494,6 +510,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .stat-bar.away { background: var(--cl-text-2, #94a3b8); opacity: 0.4; }
       /* Timeline */
       .tab-content { min-height: 80px; max-height: 380px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      .tab-content.lineup { max-height: none; overflow-y: visible; }
       .tl-list { padding: 4px 16px; }
       .tl-row { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
       .tl-min { min-width: 28px; font-size: 11px; font-weight: 700; color: var(--cl-text-2, #94a3b8); padding-top: 2px; }
@@ -530,12 +547,15 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .pit-outer { }
       .pit-field {
         position: relative;
-        background-color: #2e7d32;
-        background-image: repeating-linear-gradient(180deg, transparent, transparent 38px, rgba(0,0,0,0.07) 38px, rgba(0,0,0,0.07) 76px);
-        border: 2px solid rgba(255,255,255,0.2);
+        background-color: #2d7d30;
+        background-image: repeating-linear-gradient(180deg, transparent, transparent 36px, rgba(0,0,0,0.06) 36px, rgba(0,0,0,0.06) 72px);
         border-radius: 6px;
         margin: 12px;
         overflow: hidden;
+      }
+      .pit-lines {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        pointer-events: none;
       }
       .pit-fm {
         position: absolute; z-index: 1;
@@ -545,21 +565,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       }
       .pit-fm.away { top: 4px; right: 6px; }
       .pit-fm.home { bottom: 4px; left: 6px; }
-      .pit-box { width: 50%; height: 16px; border: 2px solid rgba(255,255,255,0.35); margin: 0 auto; }
-      .pit-box-top { border-top: none; }
-      .pit-box-btm { border-bottom: none; }
-      .pit-half { display: flex; flex-direction: column; gap: 10px; padding: 8px; }
-      .pit-cl {
-        height: 2px; background: rgba(255,255,255,0.4);
-        margin: 0 12px; position: relative;
-        display: flex; align-items: center; justify-content: center;
-      }
-      .pit-cc {
-        width: 60px; height: 60px;
-        border: 2px solid rgba(255,255,255,0.4);
-        border-radius: 50%; position: absolute;
-        top: 50%; left: 50%; transform: translate(-50%, -50%);
-      }
+      .pit-half { display: flex; flex-direction: column; gap: 10px; padding: 10px 8px; }
+      .pit-mid { height: 24px; }
       .pit-row { display: flex; justify-content: space-around; align-items: flex-start; }
       .pit-player { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 34px; }
       .pit-dot {
