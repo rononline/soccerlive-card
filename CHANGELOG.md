@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.63 (2026-06-26)
+- Docs: README bijgewerkt — verwijderde kaarten (LiveMatch, LiveCommentary, SeasonOverview, Timeline, Lineup) uit tabel en reference sections; Countdown sectie vermeldt nieuwe compacte strip en `hide_when_live`; MatchCenter sectie vermeldt pitch opstelling
+- Preview: verwijderde kaart-panels (Live Match, Lineup, Timeline, Live Commentary, Season Overview) uit preview.html
+
 ## v3.21.62 (2026-06-26)
 - Removed cards: LiveMatch, LiveCommentary, SeasonOverview, Timeline, Lineup — functionaliteit zit in MatchCenter (tabs: stats, tijdlijn, opstelling) en Countdown/Team; bundle 73 KB kleiner (584 → 511 KB)
 

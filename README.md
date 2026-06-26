@@ -20,21 +20,16 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Team | `team` | Live score, form pills, season record, top scorer, TV channel, attendance, weather |
 | Matches | `matches` | Day-grouped matches with live highlighting and FT badge |
 | News | `news` | Article feed with images and relative timestamps |
-| Lineup | `lineup` | Starting eleven for both teams, formation, shirt numbers |
-| Timeline | `timeline` | Minute-by-minute log (goals, cards, substitutions) |
 | Bracket | `bracket` | Knockout bracket: list view or tournament tree with trophy |
 | Top Scorers | `scorers` | Top scorers list with photo, team logo and goal tally |
-| Countdown | `countdown` | Countdown timer to next match with live score display and weather |
+| Countdown | `countdown` | Countdown timer to next match; compact strip when live/finished, optional hide |
 | Mini Standings | `mini-standings` | Compact standings table with configurable rows and groups |
-| Live Match | `live-match` | Current match with key events, possession, and shot stats |
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
-| Live Commentary | `live-commentary` | Real-time play-by-play commentary with event icons |
-| Match Center | `match-center` | Tabbed match view: Overview, Stats, Timeline, Lineup, H2H |
+| Match Center | `match-center` | Tabbed match view: Overview, Stats, Timeline, Lineup (pitch view), H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
-| Season Overview | `season-overview` | One row per competition: live match, next match or last result |
 
 > **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 
@@ -94,7 +89,7 @@ All cards share these common options:
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `skin` | `dark` | `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white` |
 | `hide_header` | `false` | Hide the top bar with competition logo and name |
-| `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, LiveMatch, MatchCenter, Matches |
+| `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, MatchCenter, Matches |
 | `compact` | `false` | Dense layout: smaller scoreboard, hides form/H2H/previous — applies to Team and Countdown |
 
 Legacy skin names still work: `feyenoord` maps to `red-white`, `arsenal` to `red-gold`, `barcelona` to `blue-red`, and `real-madrid` to `white-gold`.
@@ -168,25 +163,6 @@ max_articles: 5
 hide_images: false
 ```
 
-### 👥 Lineup
-
-```yaml
-type: custom:soccer-live-card
-card_type: lineup
-entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
-```
-
-> Available shortly before kick-off (once ESPN publishes the lineups).
-
-### ⏱ Timeline
-
-```yaml
-type: custom:soccer-live-card
-card_type: timeline
-entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
-reverse_order: true   # newest on top
-```
-
 ### 🏆 Bracket
 
 ```yaml
@@ -222,10 +198,10 @@ Shows: rank, player photo, name, team logo and goal tally.
 type: custom:soccer-live-card
 card_type: countdown
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
+hide_when_live: false   # true = card disappears when match is live or finished
 ```
 
-Shows a countdown timer to the next match, switches to live score when the match is active.
-Also shows a **weather badge** for the match venue.
+Shows a countdown timer to the next match. When the match starts or finishes, the card collapses to a compact one-line strip (`● LIVE · Home – Away · 23'` or `✓ FT · Home – Away · 1–3`) rather than showing match data — that's what MatchCenter is for. Set `hide_when_live: true` to remove the card from the dashboard entirely during and after the match. Also shows a **weather badge** for the match venue.
 
 ### 🏆 Mini Standings
 
@@ -241,17 +217,6 @@ hide_stats: false    # optional: hide W/D/L/GD columns
 
 Compact standings table with configurable max rows and optional team highlighting.
 Rows sorted by points, then wins, then goal difference.
-
-### ⚽ Live Match
-
-```yaml
-type: custom:soccer-live-card
-card_type: live-match
-entity: sensor.soccer_live_all_ned_1
-max_stats: 4
-```
-
-Displays the current/best match with key events, possession stats, and shots on target.
 
 ### 🔄 Multi Team
 
@@ -280,18 +245,6 @@ default_comp: "Eredivisie"  # optional: default competition tab
 
 All team competitions in one card with a tab selector to switch between leagues and cups.
 
-### 💬 Live Commentary
-
-```yaml
-type: custom:soccer-live-card
-card_type: live-commentary
-entity: sensor.soccer_live_commentary_ned_1
-```
-
-Real-time play-by-play commentary with event icons and score progression.
-
-> Requires a `soccer_live_commentary_*` sensor. Commentary availability depends on ESPN API support for the specific competition.
-
 ### 🗂️ Match Center
 
 ```yaml
@@ -300,7 +253,7 @@ card_type: match-center
 entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
-Tabbed view of a single match. Tabs appear only when data is available: Stats and Timeline after kick-off, Lineup once ESPN publishes it. Also shows venue info, broadcast chips, H2H with locale-aware dates, and a **weather badge** for the match venue.
+Tabbed view of a single match: **Overview**, **Stats**, **Timeline**, **Lineup**, **H2H**. Tabs appear only when data is available (Stats and Timeline after kick-off, Lineup once ESPN publishes it). The Lineup tab renders both teams on a football pitch with jersey-number circles positioned by formation, a bench list below, and falls back to a two-column list when no formation data is available. Also shows venue info, broadcast chips, H2H with locale-aware dates, and a **weather badge** for the match venue.
 
 > Works best with a `next_*` or `all_mixed_*` sensor, which enriches the match with lineup, key events and H2H via the ESPN summary endpoint.
 
@@ -338,17 +291,6 @@ hide_when_empty: true   # hides the card when the filter has no matches
 ```
 
 Horizontal match strip for dense dashboards. With `hide_when_empty: true`, a live-only ticker disappears when there are no live matches.
-
-### 🗓️ Season Overview
-
-```yaml
-type: custom:soccer-live-card
-card_type: season-overview
-entity: sensor.soccer_live_all_mixed_feyenoord_rotterdam
-team_name: Feyenoord Rotterdam
-```
-
-Uses a mixed team sensor and shows each competition once. Per competition it prefers a live match, then the next upcoming match, then the most recent finished match.
 
 ---
 
