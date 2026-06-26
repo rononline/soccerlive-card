@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.57 (2026-06-26)
+- MatchCenter: lineup tab now renders a football pitch view — away team at top, home team at bottom, players shown as jersey-number circles with name labels, positioned by formation rows; bench players listed below the pitch; falls back to the previous list layout when no formation data is available
+
 ## v3.21.56 (2026-06-25)
 - Countdown card: `_loadWeather` and the venue trigger in `updated` now use `_getNextMatch()` instead of `matches[0]` — for `team_matches_mixed` sensors the weather is loaded for the displayed match's venue, not the oldest match in the list
 

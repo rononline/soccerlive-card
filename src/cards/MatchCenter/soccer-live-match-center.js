@@ -296,17 +296,104 @@ class SoccerLiveMatchCenterCard extends LitElement {
     `;
   }
 
+  _parseFormation(str) {
+    if (!str) return [];
+    return str.split('-').map(Number).filter(n => n > 0);
+  }
+
+  _splitByFormation(starters, formation) {
+    if (!starters.length) return [];
+    const gkIdx = starters.findIndex(p => p.position === 'GK');
+    const pick  = gkIdx !== -1 ? gkIdx : 0;
+    const gk    = starters[pick];
+    const out   = starters.filter((_, i) => i !== pick);
+    const rows  = [[gk]];
+    let i = 0;
+    for (const n of formation) {
+      if (i >= out.length) break;
+      rows.push(out.slice(i, i + n));
+      i += n;
+    }
+    if (i < out.length) rows.push(out.slice(i));
+    return rows;
+  }
+
   _renderLineup(match) {
     const home = match.lineup_home || [];
     const away = match.lineup_away || [];
     if (!home.length && !away.length) return html`<p class="empty">${this._t('ui.no_lineup_yet')}</p>`;
 
     const hasFlags = arr => arr.some(p => p.starter === true || p.starter === false);
-    const homeStarters = hasFlags(home) ? home.filter(p => p.starter === true)  : home;
-    const homeBench    = hasFlags(home) ? home.filter(p => p.starter === false) : [];
-    const awayStarters = hasFlags(away) ? away.filter(p => p.starter === true)  : away;
-    const awayBench    = hasFlags(away) ? away.filter(p => p.starter === false) : [];
+    const homeStart = hasFlags(home) ? home.filter(p => p.starter === true)  : home;
+    const homeBench = hasFlags(home) ? home.filter(p => p.starter === false) : [];
+    const awayStart = hasFlags(away) ? away.filter(p => p.starter === true)  : away;
+    const awayBench = hasFlags(away) ? away.filter(p => p.starter === false) : [];
 
+    const fmHome = this._parseFormation(match.formation_home);
+    const fmAway = this._parseFormation(match.formation_away);
+
+    if (!fmHome.length && !fmAway.length) {
+      return this._renderLineupList(match, homeStart, homeBench, awayStart, awayBench);
+    }
+
+    const homeRows = this._splitByFormation(homeStart, fmHome);
+    const awayRows = this._splitByFormation(awayStart, fmAway);
+
+    // Away half: GK at top → defenders → midfielders → forwards (descending toward center)
+    const awayDisplay = awayRows;
+    // Home half: forwards nearest center → ... → GK at bottom (ascending from center)
+    const homeDisplay = homeRows.length > 1
+      ? [...homeRows.slice(1).reverse(), homeRows[0]]
+      : homeRows;
+
+    const lastName = p => (p.short_name || p.name || '').split(' ').pop();
+
+    const dot = (p, side) => html`
+      <div class="pit-player">
+        <div class="pit-dot ${side}${p.position === 'GK' ? ' gk' : ''}">${p.jersey || ''}</div>
+        <div class="pit-name">${lastName(p)}</div>
+      </div>
+    `;
+
+    const pitRow = (players, side) => html`
+      <div class="pit-row">${players.map(p => dot(p, side))}</div>
+    `;
+
+    const benchRow = p => html`
+      <div class="pit-bench-p">
+        <span class="pit-bench-num">${p.jersey || p.number || ''}</span>
+        <span>${p.short_name || p.name || ''}</span>
+      </div>
+    `;
+
+    return html`
+      <div class="pit-outer">
+        <div class="pit-field">
+          ${match.formation_away ? html`<div class="pit-fm away">${match.formation_away}</div>` : ''}
+          <div class="pit-box pit-box-top"></div>
+          <div class="pit-half">${awayDisplay.map(r => pitRow(r, 'away'))}</div>
+          <div class="pit-cl"><div class="pit-cc"></div></div>
+          <div class="pit-half">${homeDisplay.map(r => pitRow(r, 'home'))}</div>
+          <div class="pit-box pit-box-btm"></div>
+          ${match.formation_home ? html`<div class="pit-fm home">${match.formation_home}</div>` : ''}
+        </div>
+        ${(homeBench.length || awayBench.length) ? html`
+          <div class="pit-bench">
+            <div>
+              <div class="pit-bench-title">${match.home_team || 'Home'}</div>
+              ${homeBench.map(benchRow)}
+            </div>
+            <div>
+              <div class="pit-bench-title">${match.away_team || 'Away'}</div>
+              ${awayBench.map(benchRow)}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  _renderLineupList(match, homeStart, homeBench, awayStart, awayBench) {
     const playerRow = (p, isRight = false, isBench = false) => html`
       <div class="lu-player ${isBench ? 'bench' : ''}">
         ${!isRight ? html`<span class="lu-shirt">${p.jersey || p.number || ''}</span>` : ''}
@@ -315,20 +402,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ${isRight ? html`<span class="lu-shirt">${p.jersey || p.number || ''}</span>` : ''}
       </div>
     `;
-
     return html`
       <div class="lu-wrap">
-        ${(match.formation_home || match.formation_away) ? html`
-          <div class="lu-formation">
-            <span>${match.formation_home || '—'}</span>
-            <span class="lu-form-label">${this._t('match.formation')}</span>
-            <span>${match.formation_away || '—'}</span>
-          </div>
-        ` : ''}
         <div class="lu-cols">
           <div class="lu-col">
             <div class="lu-header">${match.home_team || 'Home'}</div>
-            ${homeStarters.map(p => playerRow(p, false))}
+            ${homeStart.map(p => playerRow(p, false))}
             ${homeBench.length ? html`
               <div class="lu-bench-label">${this._t('lineup.bench')}</div>
               ${homeBench.map(p => playerRow(p, false, true))}
@@ -336,7 +415,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
           </div>
           <div class="lu-col right">
             <div class="lu-header">${match.away_team || 'Away'}</div>
-            ${awayStarters.map(p => playerRow(p, true))}
+            ${awayStart.map(p => playerRow(p, true))}
             ${awayBench.length ? html`
               <div class="lu-bench-label">${this._t('lineup.bench')}</div>
               ${awayBench.map(p => playerRow(p, true, true))}
@@ -447,6 +526,71 @@ class SoccerLiveMatchCenterCard extends LitElement {
         content: ''; flex: 1; height: 1px;
         background: linear-gradient(90deg, var(--cl-divider, rgba(255,255,255,0.08)), transparent);
       }
+      /* Pitch lineup */
+      .pit-outer { }
+      .pit-field {
+        position: relative;
+        background-color: #2e7d32;
+        background-image: repeating-linear-gradient(180deg, transparent, transparent 38px, rgba(0,0,0,0.07) 38px, rgba(0,0,0,0.07) 76px);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        margin: 12px;
+        overflow: hidden;
+      }
+      .pit-fm {
+        position: absolute; z-index: 1;
+        font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
+        color: rgba(255,255,255,0.6);
+        padding: 3px 6px;
+      }
+      .pit-fm.away { top: 4px; right: 6px; }
+      .pit-fm.home { bottom: 4px; left: 6px; }
+      .pit-box { width: 50%; height: 16px; border: 2px solid rgba(255,255,255,0.35); margin: 0 auto; }
+      .pit-box-top { border-top: none; }
+      .pit-box-btm { border-bottom: none; }
+      .pit-half { display: flex; flex-direction: column; gap: 10px; padding: 8px; }
+      .pit-cl {
+        height: 2px; background: rgba(255,255,255,0.4);
+        margin: 0 12px; position: relative;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .pit-cc {
+        width: 60px; height: 60px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-radius: 50%; position: absolute;
+        top: 50%; left: 50%; transform: translate(-50%, -50%);
+      }
+      .pit-row { display: flex; justify-content: space-around; align-items: flex-start; }
+      .pit-player { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 34px; }
+      .pit-dot {
+        width: 30px; height: 30px; border-radius: 50%;
+        background: var(--cl-accent, #6366f1);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 10px; font-weight: 800; color: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      }
+      .pit-dot.away { background: #374151; }
+      .pit-dot.gk { background: #d946ef; }
+      .pit-dot.away.gk { background: #6b7280; }
+      .pit-name {
+        font-size: 8px; font-weight: 600; color: rgba(255,255,255,0.95);
+        text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        max-width: 46px; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      }
+      .pit-bench {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        padding: 12px 16px;
+        border-top: 1px solid var(--cl-divider, rgba(255,255,255,0.06));
+      }
+      .pit-bench-title {
+        font-size: 9px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 6px;
+      }
+      .pit-bench-p {
+        display: flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 0;
+        border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04));
+      }
+      .pit-bench-num { font-size: 10px; font-weight: 800; color: var(--cl-accent, #6366f1); min-width: 16px; }
       /* H2H */
       .h2h-list { padding: 4px 16px; }
       .h2h-row { display: flex; align-items: center; gap: 6px; padding: 8px 0; font-size: 12px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
