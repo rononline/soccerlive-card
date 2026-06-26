@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.58 (2026-06-26)
+- MatchCenter lineup: pitch now uses an SVG overlay for field markings (penalty areas, goal areas, penalty spots, penalty arcs, center circle, corner arcs); lineup tab no longer has a height cap so both teams are fully visible without scrolling
+
 ## v3.21.57 (2026-06-26)
 - MatchCenter: lineup tab now renders a football pitch view — away team at top, home team at bottom, players shown as jersey-number circles with name labels, positioned by formation rows; bench players listed below the pitch; falls back to the previous list layout when no formation data is available
 
