@@ -20,33 +20,3 @@ export const renderInfoState = (icon, title, message, hint = null) => html`
   </ha-card>
 `;
 
-export const validateEntity = (hass, entityId) => {
-  if (!hass) return { valid: false, error: 'Home Assistant not available' };
-  if (!entityId) return { valid: false, error: 'No entity specified' };
-  if (!(entityId in hass.states)) return { valid: false, error: `Entity not found: ${entityId}` };
-  return { valid: true };
-};
-
-export const validateSensor = (hass, entityId, sensorType = 'soccer_live') => {
-  const validation = validateEntity(hass, entityId);
-  if (!validation.valid) return validation;
-
-  if (!entityId.includes(sensorType)) {
-    return {
-      valid: false,
-      error: `Wrong sensor type: ${entityId}`,
-      hint: `Expected a ${sensorType} sensor`
-    };
-  }
-
-  const stateObj = hass.states[entityId];
-  if (stateObj.state === 'unavailable') {
-    return {
-      valid: false,
-      error: 'Sensor unavailable',
-      hint: 'Check if the Soccer Live integration is running'
-    };
-  }
-
-  return { valid: true };
-};

@@ -199,7 +199,6 @@ const TRANSLATIONS = {
     'scorers.rank': '#',
 
     // Commentary card
-    'commentary.empty': 'No live commentary available',
 
     // Generic UI strings
     'ui.loading': 'Loading...',
@@ -244,7 +243,6 @@ const TRANSLATIONS = {
     // Multi Team card
     'card.my_teams': 'My Teams',
     'card.team_form': 'Team Form',
-    'card.live_commentary': 'Live Commentary',
     'card.diagnostics': 'Diagnostics',
     'standings.preseason': 'Season {season} has not started yet',
 
@@ -316,6 +314,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Use a soccer_live_all_mixed_* sensor (contains all competitions for one team)',
     'editor.placeholder_default_group': 'Leave empty for first group',
     'editor.default_competition_hint': 'e.g. Premier League',
+    'editor.diag_sensor_type': 'Sensor type',
+    'editor.diag_recommended_cards': 'Recommended cards',
+    'editor.diag_title_placeholder': 'Soccer Live diagnostics',
   },
   nl: {
     'card.bracket': 'Schema',
@@ -494,7 +495,6 @@ const TRANSLATIONS = {
     'scorers.empty': 'Geen topschutters beschikbaar',
     'scorers.rank': '#',
 
-    'commentary.empty': 'Geen live commentaar beschikbaar',
 
     'ui.loading': 'Laden...',
     'ui.select_entity': 'Selecteer entiteit',
@@ -537,7 +537,6 @@ const TRANSLATIONS = {
 
     'card.my_teams': 'Mijn Teams',
     'card.team_form': 'Teamvorm',
-    'card.live_commentary': 'Live commentaar',
     'card.diagnostics': 'Diagnostiek',
     'standings.preseason': 'Seizoen {season} is nog niet begonnen',
 
@@ -607,6 +606,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Gebruik een soccer_live_all_mixed_* sensor (bevat alle competities voor één team)',
     'editor.placeholder_default_group': 'Leeg laten voor eerste groep',
     'editor.default_competition_hint': 'bijv. Eredivisie',
+    'editor.diag_sensor_type': 'Sensortype',
+    'editor.diag_recommended_cards': 'Aanbevolen kaarten',
+    'editor.diag_title_placeholder': 'Soccer Live diagnostiek',
   },
   it: {
     'card.bracket': 'Tabellone',
@@ -785,7 +787,6 @@ const TRANSLATIONS = {
     'scorers.empty': 'Nessun capocannoniere disponibile',
     'scorers.rank': '#',
 
-    'commentary.empty': 'Nessun commento in diretta disponibile',
 
     'ui.loading': 'Caricamento...',
     'ui.select_entity': 'Seleziona entità',
@@ -828,7 +829,6 @@ const TRANSLATIONS = {
 
     'card.my_teams': 'I Miei Team',
     'card.team_form': 'Forma squadra',
-    'card.live_commentary': 'Telecronaca live',
     'card.diagnostics': 'Diagnostica',
     'standings.preseason': 'La stagione {season} non è ancora iniziata',
 
@@ -898,6 +898,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Usa un sensor soccer_live_all_mixed_* (contiene tutte le competizioni per una squadra)',
     'editor.placeholder_default_group': 'Lasciare vuoto per il primo gruppo',
     'editor.default_competition_hint': 'es. Serie A',
+    'editor.diag_sensor_type': 'Tipo di sensore',
+    'editor.diag_recommended_cards': 'Schede consigliate',
+    'editor.diag_title_placeholder': 'Diagnostica Soccer Live',
   },
   fr: {
     'card.bracket': 'Tableau',
@@ -1076,7 +1079,6 @@ const TRANSLATIONS = {
     'scorers.empty': 'Aucun buteur disponible',
     'scorers.rank': '#',
 
-    'commentary.empty': 'Aucun commentaire en direct disponible',
 
     'ui.loading': 'Chargement...',
     'ui.select_entity': 'Sélectionner une entité',
@@ -1119,7 +1121,6 @@ const TRANSLATIONS = {
 
     'card.my_teams': 'Mes Équipes',
     'card.team_form': 'Forme équipe',
-    'card.live_commentary': 'Commentaire live',
     'card.diagnostics': 'Diagnostics',
     'standings.preseason': 'La saison {season} n\'a pas encore commencé',
 
@@ -1163,6 +1164,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Utilisez un capteur soccer_live_all_mixed_* (contient toutes les compétitions pour une équipe)',
     'editor.placeholder_default_group': 'Laisser vide pour le premier groupe',
     'editor.default_competition_hint': 'ex. Ligue 1',
+    'editor.diag_sensor_type': 'Type de capteur',
+    'editor.diag_recommended_cards': 'Cartes recommandées',
+    'editor.diag_title_placeholder': 'Diagnostics Soccer Live',
     'editor.theme': 'Thème',
     'editor.max_items': 'Max éléments',
     'editor.hide_images': 'Masquer les images',
@@ -1367,7 +1371,6 @@ const TRANSLATIONS = {
     'scorers.empty': 'No hay goleadores disponibles',
     'scorers.rank': '#',
 
-    'commentary.empty': 'No hay comentario en vivo disponible',
 
     'ui.loading': 'Cargando...',
     'ui.select_entity': 'Seleccionar entidad',
@@ -1410,7 +1413,6 @@ const TRANSLATIONS = {
 
     'card.my_teams': 'Mis Equipos',
     'card.team_form': 'Forma del equipo',
-    'card.live_commentary': 'Comentario en directo',
     'card.diagnostics': 'Diagnósticos',
     'standings.preseason': 'La temporada {season} no ha comenzado aún',
 
@@ -1454,6 +1456,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Usa un sensor soccer_live_all_mixed_* (contiene todas las competiciones de un equipo)',
     'editor.placeholder_default_group': 'Dejar vacío para el primer grupo',
     'editor.default_competition_hint': 'ej. La Liga',
+    'editor.diag_sensor_type': 'Tipo de sensor',
+    'editor.diag_recommended_cards': 'Tarjetas recomendadas',
+    'editor.diag_title_placeholder': 'Diagnósticos Soccer Live',
     'editor.theme': 'Tema',
     'editor.max_items': 'Máx elementos',
     'editor.hide_images': 'Ocultar imágenes',
@@ -1641,7 +1646,6 @@ const TRANSLATIONS = {
     'scorers.empty': 'Keine Torschützen verfügbar',
     'scorers.rank': '#',
 
-    'commentary.empty': 'Kein Live-Kommentar verfügbar',
 
     'ui.loading': 'Wird geladen...',
     'ui.select_entity': 'Entität auswählen',
@@ -1684,7 +1688,6 @@ const TRANSLATIONS = {
 
     'card.my_teams': 'Meine Teams',
     'card.team_form': 'Teamform',
-    'card.live_commentary': 'Live-Kommentar',
     'card.diagnostics': 'Diagnose',
     'standings.preseason': 'Saison {season} hat noch nicht begonnen',
 
@@ -1746,6 +1749,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Verwende einen soccer_live_all_mixed_* Sensor (enthält alle Wettbewerbe für ein Team)',
     'editor.placeholder_default_group': 'Leer lassen für erste Gruppe',
     'editor.default_competition_hint': 'z.B. Bundesliga',
+    'editor.diag_sensor_type': 'Sensortyp',
+    'editor.diag_recommended_cards': 'Empfohlene Karten',
+    'editor.diag_title_placeholder': 'Soccer Live Diagnose',
     'editor.theme': 'Design',
     'editor.max_items': 'Max Elemente',
     'editor.hide_images': 'Bilder ausblenden',
@@ -1950,7 +1956,6 @@ const TRANSLATIONS = {
     'scorers.empty': 'Nenhum artilheiro disponível',
     'scorers.rank': '#',
 
-    'commentary.empty': 'Nenhum comentário ao vivo disponível',
 
     'ui.loading': 'Carregando...',
     'ui.select_entity': 'Selecionar entidade',
@@ -1993,7 +1998,6 @@ const TRANSLATIONS = {
 
     'card.my_teams': 'Meus Times',
     'card.team_form': 'Forma da equipa',
-    'card.live_commentary': 'Comentário ao vivo',
     'card.diagnostics': 'Diagnósticos',
     'standings.preseason': 'A temporada {season} ainda não começou',
 
@@ -2037,6 +2041,9 @@ const TRANSLATIONS = {
     'editor.hint_team_competitions_sensor': 'Use um sensor soccer_live_all_mixed_* (contém todas as competições de uma equipa)',
     'editor.placeholder_default_group': 'Deixar vazio para o primeiro grupo',
     'editor.default_competition_hint': 'ex. Primeira Liga',
+    'editor.diag_sensor_type': 'Tipo de sensor',
+    'editor.diag_recommended_cards': 'Cartões recomendados',
+    'editor.diag_title_placeholder': 'Diagnósticos Soccer Live',
     'editor.theme': 'Tema',
     'editor.max_items': 'Máx itens',
     'editor.hide_images': 'Ocultar imagens',

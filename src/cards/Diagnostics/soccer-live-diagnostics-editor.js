@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { SKIN_OPTIONS, resolveSkin } from "../../skins.js";
 import { renderSkinColorControls } from "../skin-editor.js";
 import { editorStyles } from "../editor-helper.js";
+import { t, resolveLang } from "../../i18n.js";
 
 class SoccerLiveDiagnosticsEditor extends LitElement {
   static get properties() {
@@ -43,6 +44,7 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
   }
 
   setConfig(config) { this._config = { ...config }; }
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
   updated(changed) { if (changed.has("hass")) this._fetchEntities(); }
 
   _fetchEntities() {
@@ -76,7 +78,6 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
       top_scorers: "Top Scorers",
       bracket: "Bracket",
       news: "News",
-      commentary: "Live Commentary, Timeline",
     };
     return map[sensorType] || "";
   }
@@ -89,27 +90,27 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
     const recommended = this._recommendedCards(sensorType);
     return html`
       <div class="card-config">
-        <h3>Sensor</h3>
+        <h3>${this._t("editor.sensor")}</h3>
         <div>
-          <label class="field-label">Entity</label>
+          <label class="field-label">${this._t("editor.entity")}</label>
           <select @change=${this._entityChanged}>
-            ${!inList ? html`<option value="${current}" selected>${current || "- select -"}</option>` : ""}
+            ${!inList ? html`<option value="${current}" selected>${current || "— select —"}</option>` : ""}
             ${this.entities.map(entity => html`<option value="${entity}" ?selected=${entity === current}>${entity}</option>`)}
           </select>
         </div>
         ${sensorType ? html`
           <div class="hint">
-            <strong>Sensor type:</strong> ${sensorType}
-            ${recommended ? html`<br><strong>Recommended cards:</strong> ${recommended}` : ""}
+            <strong>${this._t("editor.diag_sensor_type")}:</strong> ${sensorType}
+            ${recommended ? html`<br><strong>${this._t("editor.diag_recommended_cards")}:</strong> ${recommended}` : ""}
           </div>
         ` : ""}
         <div>
-          <label class="field-label">Title</label>
-          <input type="text" .value=${this._config.title || ""} data-config-value="title" @input=${this._textChanged} placeholder="Soccer Live diagnostics">
+          <label class="field-label">${this._t("editor.card_title")}</label>
+          <input type="text" .value=${this._config.title || ""} data-config-value="title" @input=${this._textChanged} placeholder="${this._t("editor.diag_title_placeholder")}">
         </div>
-        <h3>Appearance</h3>
+        <h3>${this._t("editor.appearance")}</h3>
         <div>
-          <label class="field-label">Theme</label>
+          <label class="field-label">${this._t("editor.theme")}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
             ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
           </select>

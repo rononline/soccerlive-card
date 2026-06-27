@@ -250,6 +250,7 @@ class SoccerLiveMatchesEditor extends LitElement {
           </select>
         </div>
 
+        ${this._config.show_finished_matches !== false ? html`
         <div>
           <label class="field-label">${this._t('editor.hide_older_than_days')}</label>
           <input
@@ -260,8 +261,8 @@ class SoccerLiveMatchesEditor extends LitElement {
             data-config-value="hide_past_days"
             @change=${this._numberChanged}
           />
-          <div class="hint">${this._t('editor.hint_older_than_days')}</div>
         </div>
+        ` : ''}
         <div>
           <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
