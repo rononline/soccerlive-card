@@ -260,7 +260,7 @@ class SoccerLiveMatchesEditor extends LitElement {
             data-config-value="hide_past_days"
             @change=${this._numberChanged}
           />
-          <div class="hint">Only works when "Show Finished Matches" is enabled.</div>
+          <div class="hint">${this._t('editor.hint_older_than_days')}</div>
         </div>
         <div>
           <label class="field-label">${this._t('editor.skin')}</label>

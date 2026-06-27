@@ -219,7 +219,7 @@ class SoccerLiveStandingsEditor extends LitElement {
 
         <div>
           <label class="field-label">${this._t('editor.my_team')}</label>
-          <input type="text" placeholder="bijv. Feyenoord Rotterdam"
+          <input type="text" placeholder="${this._t('editor.my_team_hint')}"
             .value=${this._config.highlight_team || this._config.my_team || ''}
             @change=${(e) => this._fireConfigChanged({...this._config, highlight_team: e.target.value, my_team: e.target.value})} />
         </div>

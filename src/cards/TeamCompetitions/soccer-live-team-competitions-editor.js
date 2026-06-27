@@ -48,7 +48,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
     return html`
       <div class="card-config">
         <h3>${this._t("editor.sensor")}</h3>
-        <p class="hint">Use a <strong>soccer_live_all_mixed_*</strong> sensor (contains all competitions for one team)</p>
+        <p class="hint">${this._t('editor.hint_team_competitions_sensor')}</p>
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
@@ -60,11 +60,11 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
         <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.team_name')}</label>
-          <input type="text" .value=${this._config.team_name || ''} data-config-value="team_name" @input=${this._textChanged} placeholder="e.g. Feyenoord Rotterdam">
+          <input type="text" .value=${this._config.team_name || ''} data-config-value="team_name" @input=${this._textChanged} placeholder="${this._t('editor.my_team_hint')}">
         </div>
         <div>
           <label class="field-label">${this._t('editor.default_competition')}</label>
-          <input type="text" .value=${this._config.default_comp || ''} data-config-value="default_comp" @input=${this._textChanged} placeholder="e.g. Eredivisie">
+          <input type="text" .value=${this._config.default_comp || ''} data-config-value="default_comp" @input=${this._textChanged} placeholder="${this._t('editor.default_competition_hint')}">
         </div>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>

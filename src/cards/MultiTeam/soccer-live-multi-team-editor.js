@@ -61,7 +61,7 @@ class SoccerLiveMultiTeamEditor extends LitElement {
     return html`
       <div class="card-config">
         <h3>${this._t("editor.teams")}</h3>
-        <p class="hint">Add one soccer_live_next_* or soccer_live_all_mixed_* sensor per team</p>
+        <p class="hint">${this._t('editor.hint_multi_team_sensor')}</p>
         <div class="entity-list">
           ${entities.map((e, i) => html`
             <div class="entity-row">

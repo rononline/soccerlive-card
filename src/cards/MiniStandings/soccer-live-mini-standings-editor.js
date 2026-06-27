@@ -47,8 +47,8 @@ class SoccerLiveMiniStandingsEditor extends LitElement {
         </div>
         <h3>${this._t("editor.settings")}</h3>
         <div>
-          <label class="field-label">Default group (optional, e.g. "Group A")</label>
-          <input type="text" .value=${this._config.default_group || ''} data-config-value="default_group" @input=${this._textChanged} placeholder="Leave empty for first group">
+          <label class="field-label">${this._t('editor.default_group')}</label>
+          <input type="text" .value=${this._config.default_group || ''} data-config-value="default_group" @input=${this._textChanged} placeholder="${this._t('editor.placeholder_default_group')}">
         </div>
         <div>
           <label class="field-label">${this._t('editor.max_rows')}</label>

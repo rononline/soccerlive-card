@@ -96,20 +96,20 @@ class SoccerLiveBracketEditor extends LitElement {
       <div class="card-config">
         <h3>${this._t("editor.sensor")}</h3>
         <div>
-          <label class="field-label">Entity (bracket sensor — soccer_live_bracket_*)</label>
+          <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
             ${!inList ? html`<option value="${cur}" selected>${cur || '— select —'}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === cur}>${e}</option>`)}
           </select>
-          <div class="hint" style="margin-top: 4px;">Available for Champions League, Europa League, Conference League, FIFA World Cup and other cup competitions.</div>
+          <div class="hint" style="margin-top: 4px;">${this._t('editor.hint_bracket_competitions')}</div>
         </div>
 
         <h3>${this._t("editor.settings")}</h3>
         <div>
           <label class="field-label">${this._t('editor.style')}</label>
           <select data-config-value="style" @change=${this._selectChanged}>
-            <option value="list" ?selected=${this._config.style !== 'tree'}>List (default)</option>
-            <option value="tree" ?selected=${this._config.style === 'tree'}>Tree (bracket with central trophy)</option>
+            <option value="list" ?selected=${this._config.style !== 'tree'}>${this._t('editor.style_list')}</option>
+            <option value="tree" ?selected=${this._config.style === 'tree'}>${this._t('editor.style_tree')}</option>
           </select>
         </div>
         <div class="option">
