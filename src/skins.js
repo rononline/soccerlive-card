@@ -212,21 +212,21 @@ export const skinStyles = css`
     --cl-gold: #fbbf24;
     --cl-gold-glow: rgba(251,191,36,0.45);
     --cl-gold-text: #fde68a;
-    --cl-bg: #0d0600;
+    --cl-bg: #13120e;
     --cl-surface: rgba(249,115,22,0.08);
     --cl-surface-2: rgba(249,115,22,0.14);
-    --cl-card-2: rgba(249,115,22,0.08);
-    --cl-divider: rgba(249,115,22,0.20);
-    --cl-glass-border: rgba(249,115,22,0.24);
-    --cl-text: #fff8f0;
-    --cl-text-2: #c09060;
-    --cl-shadow: rgba(0,0,0,0.45);
+    --cl-card-2: rgba(249,115,22,0.06);
+    --cl-divider: rgba(249,115,22,0.16);
+    --cl-glass-border: rgba(249,115,22,0.20);
+    --cl-text: #f8f4ee;
+    --cl-text-2: #9a8878;
+    --cl-shadow: rgba(0,0,0,0.42);
     --cl-overlay-strong: rgba(0,0,0,0.60);
     --cl-overlay-soft: rgba(0,0,0,0.28);
     --cl-chip-bg: rgba(249,115,22,0.12);
-    --cl-chip-border: rgba(249,115,22,0.28);
-    --cl-toast-bg: #080400;
-    --cl-num-bg: #080400;
+    --cl-chip-border: rgba(249,115,22,0.26);
+    --cl-toast-bg: #0a0906;
+    --cl-num-bg: #0a0906;
   }
 
   /* ---------- BLUE (Chelsea / PSG / Man City / Inter / Napoli / Lazio) ---------- */
