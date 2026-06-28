@@ -263,23 +263,33 @@ class SoccerLiveBracketCard extends LitElement {
     const sf = findRound(2);
     const finalRound = rounds.find(r => r.name === 'Final') || findRound(1);
 
+    // When the full bracket (R16+QF+SF) is present, move R32 to the early-rounds grid
+    // below the tree so the tree stays a manageable width (max 3 columns per side).
+    const fullBracket = !!(r16 && qf && sf);
+    const r32InEarly = !!(r32 && fullBracket);
+
+    // Early rounds shown below tree: R64 and above always, R32 when full bracket present
+    const earlyRounds = rounds.filter(r => {
+      if (r.name === 'Third Place' || r.name === 'Final' || r.name === 'Knockout Playoffs') return false;
+      if (r.size > 16) return true;
+      if (r.size === 16 && r32InEarly) return true;
+      return false;
+    });
+
     const split = (round) => {
       if (!round) return { left: [], right: [] };
       const ties = round.ties || [];
       const mid = Math.ceil(ties.length / 2);
       return { left: ties.slice(0, mid), right: ties.slice(mid) };
     };
-    const r32Split = split(r32);
+    const r32Split = split(r32InEarly ? null : r32);
     const r16Split = split(r16);
     const qfSplit = split(qf);
     const sfSplit = split(sf);
     const playoffsSplit = this._treeShowPlayoffs ? split(playoffsRound) : null;
     const finalTie = finalRound ? finalRound.ties[0] : null;
     const thirdPlaceTie = thirdPlaceRound ? thirdPlaceRound.ties[0] : null;
-    const hasSides = r32 || r16 || qf || sf;
-
-    // Early rounds (size > 16) that the tree can't render as columns — show below tree
-    const earlyRounds = !hasSides ? rounds.filter(r => r.size > 16) : [];
+    const hasSides = r32Split.left.length || r16 || qf || sf;
 
     // Outermost left/right column count (for playoff arrows)
     const outerLeft = r32Split.left.length || r16Split.left.length;
@@ -287,7 +297,7 @@ class SoccerLiveBracketCard extends LitElement {
 
     return html`
       <div class="tree-wrap ${earlyRounds.length ? 'has-early' : ''}">
-        <div class="tree ${!hasSides ? 'tree-center-only' : ''}">
+        <div class="tree ${!hasSides ? 'tree-center-only' : ''} ${r32InEarly ? 'no-r32' : ''}">
           <div class="tree-half left">
             ${playoffsSplit && playoffsSplit.left.length ? html`
               ${this._renderTreeRound(playoffsSplit.left, 'round.knockout_playoffs')}
