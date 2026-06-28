@@ -41,6 +41,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'TBD',
     'bracket.tied_agg': 'Tied agg.',
     'bracket.agg': 'Agg.',
+    'bracket.tab_bracket': 'Bracket',
+    'bracket.tab_groups': 'Groups',
 
     // Match status
     'status.live': 'Live',
@@ -357,6 +359,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'N.t.b.',
     'bracket.tied_agg': 'Gelijk totaal',
     'bracket.agg': 'Totaal',
+    'bracket.tab_bracket': 'Schema',
+    'bracket.tab_groups': 'Groepen',
 
     'status.live': 'Live',
     'status.finished': 'Afgelopen',
@@ -654,6 +658,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'Da def.',
     'bracket.tied_agg': 'Pari aggreg.',
     'bracket.agg': 'Aggreg.',
+    'bracket.tab_bracket': 'Tabellone',
+    'bracket.tab_groups': 'Gironi',
 
     'status.live': 'Diretta',
     'status.finished': 'Finita',
@@ -951,6 +957,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'À déf.',
     'bracket.tied_agg': 'Score cumulé égal',
     'bracket.agg': 'Cumul',
+    'bracket.tab_bracket': 'Tableau',
+    'bracket.tab_groups': 'Groupes',
 
     'status.live': 'En direct',
     'status.finished': 'Terminé',
@@ -1248,6 +1256,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'Por def.',
     'bracket.tied_agg': 'Empate global',
     'bracket.agg': 'Global',
+    'bracket.tab_bracket': 'Cuadro',
+    'bracket.tab_groups': 'Grupos',
 
     'status.live': 'En vivo',
     'status.finished': 'Finalizado',
@@ -1545,6 +1555,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'N.N.',
     'bracket.tied_agg': 'Gleichstand gesamt',
     'bracket.agg': 'Gesamt',
+    'bracket.tab_bracket': 'K.o.-Baum',
+    'bracket.tab_groups': 'Gruppen',
 
     'status.live': 'Live',
     'status.finished': 'Beendet',
@@ -1843,6 +1855,8 @@ const TRANSLATIONS = {
     'bracket.tbd': 'A def.',
     'bracket.tied_agg': 'Empate no agregado',
     'bracket.agg': 'Agregado',
+    'bracket.tab_bracket': 'Chave',
+    'bracket.tab_groups': 'Grupos',
 
     'status.live': 'Ao vivo',
     'status.finished': 'Encerrado',

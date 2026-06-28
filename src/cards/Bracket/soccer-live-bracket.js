@@ -13,6 +13,8 @@ class SoccerLiveBracketCard extends LitElement {
       _cardStyle: { type: String },
       _hideHeader: { type: Boolean },
       _treeShowPlayoffs: { type: Boolean },
+      _myTeam: { type: String },
+      _activeTab: { type: String },
     };
   }
 
@@ -24,6 +26,8 @@ class SoccerLiveBracketCard extends LitElement {
     this._compact = config.compact === true;
     this._cardStyle = config.style === 'tree' ? 'tree' : 'list';
     this._treeShowPlayoffs = config.tree_show_playoffs === true;
+    this._myTeam = config.my_team || '';
+    this._activeTab = 'bracket';
   }
 
   _t(key, vars) {
@@ -54,6 +58,15 @@ class SoccerLiveBracketCard extends LitElement {
     };
     const key = map[round.name];
     return key ? this._t(key) : round.name;
+  }
+
+  _matchesMyTeam(name) {
+    if (!this._myTeam || !name) return false;
+    return name.toLowerCase().includes(this._myTeam.toLowerCase());
+  }
+
+  _tieHasMyTeam(tie) {
+    return this._matchesMyTeam((tie.team_a || {}).name) || this._matchesMyTeam((tie.team_b || {}).name);
   }
 
   getCardSize() { return 6; }
@@ -95,8 +108,9 @@ class SoccerLiveBracketCard extends LitElement {
     const isLive = (leg1 && leg1.state === 'in') || (leg2 && leg2.state === 'in') || (single && single.state === 'in');
     const isPending = !leg1 && !single;
 
+    const hasMyTeam = this._myTeam ? this._tieHasMyTeam(tie) : null;
     return html`
-      <div class="tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''}">
+      <div class="tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''}">
         <div class="tie-row ${isAWinner ? 'winner' : ''} ${isBWinner ? 'loser' : ''}">
           <img src="${a.logo}" alt="${a.name}" />
           <span class="tname">${a.name || 'TBD'}</span>
@@ -158,8 +172,9 @@ class SoccerLiveBracketCard extends LitElement {
     const abbrA = a.abbrev || (a.name ? a.name.substring(0, 3).toUpperCase() : 'TBD');
     const abbrB = b.abbrev || (b.name ? b.name.substring(0, 3).toUpperCase() : 'TBD');
 
+    const hasMyTeam = this._myTeam ? this._tieHasMyTeam(tie) : null;
     return html`
-      <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''}">
+      <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''}">
         <div class="mini-team ${isAW ? 'winner' : ''} ${isBW ? 'loser' : ''}">
           ${a.logo ? html`<img src="${a.logo}" alt="${a.name}" />` : html`<div class="logo-ph"></div>`}
           <span class="abbr">${abbrA}</span>
@@ -334,6 +349,42 @@ class SoccerLiveBracketCard extends LitElement {
     `;
   }
 
+  _renderGroups(groups) {
+    return html`
+      <div class="groups-view">
+        ${groups.map(g => html`
+          <div class="group-block">
+            <div class="group-title">${g.name}</div>
+            <div class="group-header-row">
+              <span class="gh-name"></span>
+              <span class="gh-stat">P</span>
+              <span class="gh-stat">W</span>
+              <span class="gh-stat">D</span>
+              <span class="gh-stat">L</span>
+              <span class="gh-stat">GD</span>
+              <span class="gh-pts">Pts</span>
+            </div>
+            ${g.standings.map((row, i) => html`
+              <div class="group-row ${this._matchesMyTeam(row.team_name) ? 'my-team' : ''} ${i < 2 ? 'qualify' : ''}">
+                <span class="g-rank">${row.rank}</span>
+                ${row.team_logo && row.team_logo !== 'N/A'
+                  ? html`<img class="g-logo" src="${row.team_logo}" alt="" @error=${e => e.target.style.display='none'}>`
+                  : html`<div class="g-logo-ph"></div>`}
+                <span class="g-name">${row.team_name}</span>
+                <span class="g-stat">${row.games_played}</span>
+                <span class="g-stat">${row.wins}</span>
+                <span class="g-stat">${row.draws}</span>
+                <span class="g-stat">${row.losses}</span>
+                <span class="g-stat g-gd ${Number(row.goal_difference) > 0 ? 'pos' : Number(row.goal_difference) < 0 ? 'neg' : ''}">${row.goal_difference}</span>
+                <span class="g-pts">${row.points}</span>
+              </div>
+            `)}
+          </div>
+        `)}
+      </div>
+    `;
+  }
+
   render() {
     applySkin(this, this._config);
     if (!this.hass || !this._config) return html``;
@@ -341,7 +392,13 @@ class SoccerLiveBracketCard extends LitElement {
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</ha-card>`;
 
     const rounds = stateObj.attributes.rounds || [];
-    if (rounds.length === 0) {
+
+    const groupsEntityId = this._config.groups_entity;
+    const groupsStateObj = groupsEntityId ? this.hass.states[groupsEntityId] : null;
+    const groupsData = (groupsStateObj?.attributes?.standings_groups || []).filter(g => g.standings?.length);
+    const hasGroups = groupsData.length > 0;
+
+    if (rounds.length === 0 && !hasGroups) {
       return html`
         <ha-card class="empty">
           <div class="hero-bg"></div>
@@ -369,23 +426,41 @@ class SoccerLiveBracketCard extends LitElement {
           })}
         ` : ''}
 
-        ${this._cardStyle === 'tree' ? this._renderTree(rounds) : html`
-          <div class="rounds-container"
-               style="${this._compact ? 'flex-direction:column;overflow-x:visible;' : ''}">
-            ${rounds.map(round => html`
-              <div class="round"
-                   style="${this._compact ? 'flex:none;min-width:0;' : ''}">
-                <div class="round-name">
-                  <span class="round-name-en">${this._localizeRoundName(round)}</span>
-                </div>
-                <div class="round-ties"
-                     style="${this._compact ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px;' : ''}">
-                  ${round.ties.map(tie => this._renderTie(tie))}
-                </div>
-              </div>
-            `)}
+        ${hasGroups ? html`
+          <div class="bracket-tabs">
+            <span class="bracket-tab ${this._activeTab === 'bracket' ? 'active' : ''}"
+                  @click=${() => { this._activeTab = 'bracket'; }}>
+              🏆 ${this._t('bracket.tab_bracket')}
+            </span>
+            <span class="bracket-tab ${this._activeTab === 'groups' ? 'active' : ''}"
+                  @click=${() => { this._activeTab = 'groups'; }}>
+              📊 ${this._t('bracket.tab_groups')}
+            </span>
           </div>
-        `}
+        ` : ''}
+
+        ${this._activeTab === 'groups' && hasGroups
+          ? this._renderGroups(groupsData)
+          : this._cardStyle === 'tree'
+            ? this._renderTree(rounds)
+            : html`
+              <div class="rounds-container"
+                   style="${this._compact ? 'flex-direction:column;overflow-x:visible;' : ''}">
+                ${rounds.map(round => html`
+                  <div class="round"
+                       style="${this._compact ? 'flex:none;min-width:0;' : ''}">
+                    <div class="round-name">
+                      <span class="round-name-en">${this._localizeRoundName(round)}</span>
+                    </div>
+                    <div class="round-ties"
+                         style="${this._compact ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px;' : ''}">
+                      ${round.ties.map(tie => this._renderTie(tie))}
+                    </div>
+                  </div>
+                `)}
+              </div>
+            `
+        }
       </ha-card>
     `;
   }
@@ -606,6 +681,87 @@ class SoccerLiveBracketCard extends LitElement {
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.3; transform: scale(0.7); }
       }
+
+      /* Team highlight */
+      .tie.my-team { border-color: var(--cl-green) !important; box-shadow: 0 0 16px rgba(16,185,129,0.25); }
+      .tie.other-team { opacity: 0.45; }
+      .mini-tie.my-team { border-color: var(--cl-green) !important; box-shadow: 0 0 12px rgba(16,185,129,0.3); }
+      .mini-tie.other-team { opacity: 0.38; filter: grayscale(0.3); }
+
+      /* Tab bar */
+      .bracket-tabs {
+        position: relative; z-index: 1;
+        display: flex; gap: 6px; padding: 0 16px 12px;
+      }
+      .bracket-tab {
+        font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 99px;
+        cursor: pointer; white-space: nowrap;
+        border: 1px solid var(--cl-divider); background: var(--cl-surface); color: var(--cl-text-2);
+        transition: background 0.15s;
+        user-select: none;
+      }
+      .bracket-tab.active { background: var(--cl-accent); border-color: var(--cl-accent); color: #fff; }
+
+      /* Groups view */
+      .groups-view {
+        position: relative; z-index: 1;
+        padding: 0 14px 18px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 12px;
+      }
+      .group-block {
+        background: var(--cl-card-2);
+        border: 1px solid var(--cl-glass-border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .group-title {
+        font-size: 10px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.12em; color: var(--cl-accent);
+        padding: 7px 10px;
+        background: rgba(var(--cl-accent-rgb),0.08);
+        border-bottom: 1px solid var(--cl-divider);
+      }
+      .group-header-row {
+        display: grid;
+        grid-template-columns: 20px 20px 1fr repeat(5, 26px) 28px;
+        align-items: center;
+        gap: 2px;
+        padding: 4px 8px 3px;
+        border-bottom: 1px solid var(--cl-divider);
+      }
+      .gh-name { grid-column: span 3; }
+      .gh-stat, .gh-pts {
+        font-size: 9px; font-weight: 700; color: var(--cl-text-2);
+        text-align: center; text-transform: uppercase;
+      }
+      .gh-pts { color: var(--cl-accent); }
+      .group-row {
+        display: grid;
+        grid-template-columns: 20px 20px 1fr repeat(5, 26px) 28px;
+        align-items: center;
+        gap: 2px;
+        padding: 5px 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+        transition: background 0.15s;
+      }
+      .group-row:last-child { border-bottom: none; }
+      .group-row.qualify { background: rgba(var(--cl-accent-rgb),0.04); }
+      .group-row.my-team {
+        background: rgba(16,185,129,0.08);
+        border-left: 2px solid var(--cl-green);
+      }
+      .g-rank { font-size: 10px; font-weight: 700; color: var(--cl-text-2); text-align: center; }
+      .g-logo { width: 18px; height: 18px; object-fit: contain; display: block; }
+      .g-logo-ph { width: 18px; height: 18px; border-radius: 50%; background: var(--cl-card-2); }
+      .g-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .group-row.my-team .g-name { font-weight: 800; color: var(--cl-green); }
+      .g-stat { font-size: 11px; font-weight: 600; color: var(--cl-text-2); text-align: center; font-variant-numeric: tabular-nums; }
+      .g-gd.pos { color: var(--cl-green); }
+      .g-gd.neg { color: var(--cl-live); }
+      .g-pts { font-size: 12px; font-weight: 800; color: var(--cl-text); text-align: center; font-variant-numeric: tabular-nums; }
+      .group-row.my-team .g-pts { color: var(--cl-green); }
 
       /* Compact mode (vertical, single column per round) */
       .rounds-container.compact {

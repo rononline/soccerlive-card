@@ -114,7 +114,14 @@ class SoccerLiveCountdownCard extends LitElement {
   }
 
   _getNextMatch(stateObj) {
-    const matches = stateObj.attributes.matches || [];
+    let matches = stateObj.attributes.matches || [];
+    const filter = this._config?.competition_filter?.toLowerCase();
+    if (filter) {
+      const filtered = matches.filter(m =>
+        (m.competition_name || m.league_name || '').toLowerCase().includes(filter)
+      );
+      if (filtered.length) matches = filtered;
+    }
     return matches.find(m => m.state === 'in') ||
            matches.find(m => m.state === 'pre') ||
            matches.find(m => m.state === 'post') ||
