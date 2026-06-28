@@ -11,6 +11,8 @@ class SoccerLiveBracketCard extends LitElement {
       _config: {},
       _compact: { type: Boolean },
       _cardStyle: { type: String },
+      _hideHeader: { type: Boolean },
+      _treeShowPlayoffs: { type: Boolean },
     };
   }
 
@@ -18,11 +20,10 @@ class SoccerLiveBracketCard extends LitElement {
     if (!config.entity) throw new Error("Entity required");
     this._config = config;
     applySkin(this, config);
-    this.hideHeader = config.hide_header === true;
-    this.compactMode = config.compact === true;
+    this._hideHeader = config.hide_header === true;
     this._compact = config.compact === true;
     this._cardStyle = config.style === 'tree' ? 'tree' : 'list';
-    this.treeShowPlayoffs = config.tree_show_playoffs === true;
+    this._treeShowPlayoffs = config.tree_show_playoffs === true;
   }
 
   _t(key, vars) {
@@ -257,7 +258,7 @@ class SoccerLiveBracketCard extends LitElement {
     const r16Split = split(r16);
     const qfSplit = split(qf);
     const sfSplit = split(sf);
-    const playoffsSplit = this.treeShowPlayoffs ? split(playoffsRound) : null;
+    const playoffsSplit = this._treeShowPlayoffs ? split(playoffsRound) : null;
     const finalTie = finalRound ? finalRound.ties[0] : null;
     const thirdPlaceTie = thirdPlaceRound ? thirdPlaceRound.ties[0] : null;
     const hasSides = r32 || r16 || qf || sf;
@@ -357,9 +358,9 @@ class SoccerLiveBracketCard extends LitElement {
     const badgeLabel = lastRound ? this._localizeRoundName(lastRound) : stateObj.state;
 
     return html`
-      <ha-card class="${this.compactMode ? 'compact' : ''} style-${this._cardStyle}">
+      <ha-card class="${this._compact ? 'compact' : ''} style-${this._cardStyle}">
         <div class="hero-bg"></div>
-        ${!this.hideHeader ? html`
+        ${!this._hideHeader ? html`
           ${renderSoccerHeader({
             logo: stateObj.attributes.league_logo || (stateObj.attributes.league_info || [])[0]?.logo_href || null,
             title: stateObj.attributes.league_name || this._t('card.bracket'),

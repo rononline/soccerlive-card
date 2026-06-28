@@ -217,8 +217,6 @@ class SoccerLiveTeamFormCard extends LitElement {
           ${prev.map(m => {
             const isHome = tracked && m.home_team?.toLowerCase().includes(tracked);
             const hs = parseInt(m.home_score), as_ = parseInt(m.away_score);
-            const hw = !isNaN(hs) && !isNaN(as_) && hs > as_;
-            const aw = !isNaN(hs) && !isNaN(as_) && as_ > hs;
             const scored = isHome ? hs : as_, conceded = isHome ? as_ : hs;
             const res = isNaN(hs) || isNaN(as_) ? null : (scored > conceded ? 'W' : scored < conceded ? 'L' : 'D');
             return html`
@@ -226,7 +224,7 @@ class SoccerLiveTeamFormCard extends LitElement {
                 <span class="pm-date">${(m.date || '').split(' ')[0]}</span>
                 <img class="pm-logo" src="${m.home_logo || ''}" alt="" @error=${e => e.target.style.display='none'}>
                 <span class="pm-team ${isHome ? 'tracked' : ''}">${m.home_abbrev || m.home_team || '?'}</span>
-                <span class="pm-score ${hw ? 'home-win' : aw ? 'away-win' : 'draw'}">${hs ?? '?'}-${as_ ?? '?'}</span>
+                <span class="pm-score ${res === 'W' ? 'tracked-win' : res === 'L' ? 'tracked-loss' : 'draw'}">${hs ?? '?'}-${as_ ?? '?'}</span>
                 <span class="pm-team right ${!isHome ? 'tracked' : ''}">${m.away_abbrev || m.away_team || '?'}</span>
                 <img class="pm-logo" src="${m.away_logo || ''}" alt="" @error=${e => e.target.style.display='none'}>
                 ${res ? html`<span class="pm-res ${res.toLowerCase()}">${res}</span>` : ''}
@@ -312,8 +310,8 @@ class SoccerLiveTeamFormCard extends LitElement {
       .pm-team.right { text-align: right; }
       .pm-team.tracked { font-weight: 700; }
       .pm-score { min-width: 40px; text-align: center; font-weight: 700; font-size: 12px; }
-      .pm-score.home-win { color: var(--cl-accent, #6366f1); }
-      .pm-score.away-win { color: #f43f5e; }
+      .pm-score.tracked-win { color: #22c55e; }
+      .pm-score.tracked-loss { color: #ef4444; }
       .pm-score.draw { color: var(--cl-text-2, #94a3b8); }
       .pm-res { min-width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; flex-shrink: 0; }
       .pm-res.w { background: #22c55e; color: #fff; }

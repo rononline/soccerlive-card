@@ -145,6 +145,7 @@ const TRANSLATIONS = {
     // News
     'news.empty': 'No news available',
     'news.articles': '{n} articles',
+    'news.premium': '★ Premium',
 
     // Standings zones
     'zone.champions': 'Champions',
@@ -449,6 +450,7 @@ const TRANSLATIONS = {
 
     'news.empty': 'Geen nieuws beschikbaar',
     'news.articles': '{n} artikelen',
+    'news.premium': '★ Premium',
 
     'phase.regular_season': 'Competitie',
     'phase.group_stage': 'Groepsfase',
@@ -742,6 +744,7 @@ const TRANSLATIONS = {
 
     'news.empty': 'Nessuna notizia disponibile',
     'news.articles': '{n} articoli',
+    'news.premium': '★ Premium',
 
     'zone.champions': 'Champions',
     'zone.europa': 'Europa',
@@ -1035,6 +1038,7 @@ const TRANSLATIONS = {
 
     'news.empty': 'Aucune actualité disponible',
     'news.articles': '{n} articles',
+    'news.premium': '★ Premium',
 
     'zone.champions': 'Champions',
     'zone.europa': 'Europa',
@@ -1328,6 +1332,7 @@ const TRANSLATIONS = {
 
     'news.empty': 'No hay noticias disponibles',
     'news.articles': '{n} artículos',
+    'news.premium': '★ Premium',
 
     'zone.champions': 'Champions',
     'zone.europa': 'Europa',
@@ -1604,6 +1609,7 @@ const TRANSLATIONS = {
 
     'news.empty': 'Keine Nachrichten verfügbar',
     'news.articles': '{n} Artikel',
+    'news.premium': '★ Premium',
 
     'zone.champions': 'Champions League',
     'zone.europa': 'Europa League',
@@ -1915,6 +1921,7 @@ const TRANSLATIONS = {
 
     'news.empty': 'Sem notícias disponíveis',
     'news.articles': '{n} artigos',
+    'news.premium': '★ Premium',
 
     'zone.champions': 'Champions League',
     'zone.europa': 'Europa League',
