@@ -207,8 +207,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
     if (match.home_statistics && typeof match.home_statistics === 'object') {
       const homeS = match.home_statistics;
       const awayS = match.away_statistics || {};
+      const MATCH_STAT_EXCLUDE = new Set(['appearances']);
       stats = Object.entries(homeS)
-        .filter(([k]) => k !== 'Unknown')
+        .filter(([k]) => k !== 'Unknown' && !MATCH_STAT_EXCLUDE.has(k))
         .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? '—' }));
     }
     if (!stats.length) return html`<p class="empty">${this._t('ui.no_stats_yet')}</p>`;
