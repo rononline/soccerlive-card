@@ -38,7 +38,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🌍 **Multi-language** — EN / NL / DE / PT / FR / ES / IT, auto-detected via HA locale
 - 🎨 **Animations** — live pulse, score pop, goal confetti + banner
 - 🔔 **In-card toasts** — optional on goals and cards, no notification spam
-- 🏆 **Bracket** — list style or tournament tree with SVG connector lines
+- 🏆 **Bracket** — list style or tournament tree with SVG connector lines, group stage tab and team highlight
 - 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
@@ -60,8 +60,10 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 
 ## 📦 Installation via HACS
 
-1. Add the repository as a **custom repository** in HACS:
-   `https://github.com/rononline/soccerlive-card` — category: **Dashboard**
+> **HACS default store**: submission pending — once approved, search for **Soccer Live Card** directly in HACS.
+
+Until then, add as a **custom repository**:
+1. In HACS → ⋮ → **Custom repositories** → add `https://github.com/rononline/soccerlive-card`, category: **Dashboard**
 2. Install **Soccer Live Card** via HACS
 3. Restart Home Assistant and do a hard refresh of the dashboard (`Ctrl+F5` / `Cmd+Shift+R`)
 
@@ -169,13 +171,29 @@ hide_images: false
 type: custom:soccer-live-card
 card_type: bracket
 entity: sensor.soccer_live_bracket_uefa_champions
-style: tree           # 'list' (default) or 'tree'
+style: tree              # 'list' (default) or 'tree'
 compact: false
 tree_show_playoffs: false
+my_team: "Ajax"          # optional: highlight this team's ties in green, dim others
+groups_entity: sensor.soccer_live_standings_uefa_champions  # optional: adds Groups tab
 ```
 
 The bracket sensor is created automatically for cup competitions:
 Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World Cup, Euros, and more.
+
+**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. Works in both list and tree view.
+
+**`groups_entity`** — point to the standings sensor for the same competition. Adds a tab bar with "Bracket" and "Groups". The Groups tab shows all groups in a compact grid with qualification rows highlighted and your `my_team` row marked in green.
+
+WK 2026 example:
+```yaml
+type: custom:soccer-live-card
+card_type: bracket
+entity: sensor.soccer_live_bracket_fifa_world
+groups_entity: sensor.soccer_live_standings_fifa_world
+style: tree
+my_team: Netherlands
+```
 
 ### 🥇 Top Scorers
 
@@ -198,7 +216,17 @@ Shows: rank, player photo, name, team logo and goal tally.
 type: custom:soccer-live-card
 card_type: countdown
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
-hide_when_live: false   # true = card disappears when match is live or finished
+hide_when_live: false        # true = card disappears when match is live or finished
+competition_filter: "World Cup"  # optional: filter by competition name (for multi-competition sensors)
+```
+
+**`competition_filter`** — useful when pointing the countdown at a multi-competition sensor like `all_mixed`. Only matches whose `competition_name` or `league_name` contains the filter string (case-insensitive) are considered. This lets you show the next World Cup match specifically:
+
+```yaml
+type: custom:soccer-live-card
+card_type: countdown
+entity: sensor.soccer_live_all_mixed_netherlands
+competition_filter: "World Cup"
 ```
 
 Shows a countdown timer to the next match. When the match starts or finishes, the card collapses to a compact one-line strip (`● LIVE · Home – Away · 23'` or `✓ FT · Home – Away · 1–3`) rather than showing match data — that's what MatchCenter is for. Set `hide_when_live: true` to remove the card from the dashboard entirely during and after the match. Also shows a **weather badge** for the match venue.
