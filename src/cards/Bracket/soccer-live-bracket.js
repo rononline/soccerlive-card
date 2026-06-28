@@ -262,8 +262,8 @@ class SoccerLiveBracketCard extends LitElement {
     const thirdPlaceTie = thirdPlaceRound ? thirdPlaceRound.ties[0] : null;
     const hasSides = r32 || r16 || qf || sf;
 
-    // When only early rounds (size > 16) exist, show a round label instead of "begins soon"
-    const earlyRound = !hasSides ? rounds.find(r => r.size > 16) : null;
+    // Early rounds (size > 16) that the tree can't render as columns — show below tree
+    const earlyRounds = !hasSides ? rounds.filter(r => r.size > 16) : [];
 
     // Outermost left/right column count (for playoff arrows)
     const outerLeft = r32Split.left.length || r16Split.left.length;
@@ -300,11 +300,9 @@ class SoccerLiveBracketCard extends LitElement {
                 <div class="final-tie-wrap third">${this._renderMiniTie(thirdPlaceTie)}</div>
               </div>
             ` : ''}
-            ${earlyRound
-              ? html`<div class="tree-pending">${this._localizeRoundName(earlyRound)}</div>`
-              : !hasSides
-                ? html`<div class="tree-pending">${this._t('bracket.empty.sub')}</div>`
-                : ''}
+            ${!hasSides && !earlyRounds.length
+              ? html`<div class="tree-pending">${this._t('bracket.empty.sub')}</div>`
+              : ''}
           </div>
 
           <div class="tree-half right">
@@ -322,6 +320,15 @@ class SoccerLiveBracketCard extends LitElement {
             ` : ''}
           </div>
         </div>
+
+        ${earlyRounds.map(round => html`
+          <div class="early-round-section">
+            <div class="early-round-label">${this._localizeRoundName(round)}</div>
+            <div class="early-round-ties">
+              ${round.ties.map(tie => this._renderTie(tie))}
+            </div>
+          </div>
+        `)}
       </div>
     `;
   }
@@ -938,6 +945,33 @@ class SoccerLiveBracketCard extends LitElement {
         ha-card.style-tree .tree-center {
           order: -1;
           padding: 12px;
+        }
+      }
+
+      /* Early rounds below tree (e.g. Round of 64 for WK 2026) */
+      .early-round-section {
+        padding: 0 18px 18px;
+      }
+      .early-round-label {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--cl-accent);
+        padding: 8px 12px;
+        margin-bottom: 12px;
+        background: rgba(var(--cl-accent-rgb),0.10);
+        border-radius: 10px;
+      }
+      .early-round-ties {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      @media (max-width: 480px) {
+        .early-round-ties {
+          grid-template-columns: 1fr;
         }
       }
     `];
