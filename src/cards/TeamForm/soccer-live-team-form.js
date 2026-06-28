@@ -5,7 +5,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
+import { soccerCardShellStyles } from '../card-shell.js';
 
 class SoccerLiveTeamFormCard extends LitElement {
   static get properties() {
@@ -149,7 +149,7 @@ class SoccerLiveTeamFormCard extends LitElement {
 
     return html`
       <ha-card>
-        ${renderCardHero(next?.home_logo, next?.away_logo)}
+        <div class="hero-bg"></div>
         <div class="card-content">
         ${!hideHeader ? renderSoccerHeader({
           logo,
@@ -178,8 +178,8 @@ class SoccerLiveTeamFormCard extends LitElement {
               ${goalData.map(g => html`
                 <div class="goal-col">
                   <div class="bar-wrap">
-                    <div class="bar scored"  style="height:${Math.round((g.scored   / maxGoals) * 48)}px"></div>
-                    <div class="bar conceded" style="height:${Math.round((g.conceded / maxGoals) * 48)}px"></div>
+                    <div class="bar scored"  style="height:${Math.round((g.scored   / maxGoals) * 36)}px"></div>
+                    <div class="bar conceded" style="height:${Math.round((g.conceded / maxGoals) * 36)}px"></div>
                   </div>
                   <div class="goal-nums">${g.scored}-${g.conceded}</div>
                 </div>
@@ -268,46 +268,46 @@ class SoccerLiveTeamFormCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
-      .section { padding: 12px 16px 4px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
-      .section:last-child { border-bottom: none; }
-      .section-label { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+      .section { padding: 8px 16px 2px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06)); }
+      .section:last-child { border-bottom: none; padding-bottom: 8px; }
+      .section-label { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
       /* Form dots */
-      .form-dots { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
-      .dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; cursor: default; }
+      .form-dots { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+      .dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; cursor: default; }
       .dot.w { background: #22c55e; color: #fff; }
       .dot.d { background: var(--cl-text-2, #64748b); color: #fff; }
       .dot.l { background: #ef4444; color: #fff; }
-      .wdl-row { display: flex; gap: 12px; margin-bottom: 6px; font-size: 13px; font-weight: 700; }
+      .wdl-row { display: flex; gap: 10px; margin-bottom: 4px; font-size: 12px; font-weight: 700; }
       .wdl.w { color: #22c55e; }
       .wdl.d { color: var(--cl-text-2, #94a3b8); }
       .wdl.l { color: #ef4444; }
       /* Goals bars */
-      .goal-bars { display: flex; align-items: flex-end; gap: 4px; height: 64px; margin-bottom: 4px; }
+      .goal-bars { display: flex; align-items: flex-end; gap: 4px; height: 50px; margin-bottom: 2px; }
       .goal-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-      .bar-wrap { display: flex; align-items: flex-end; gap: 2px; height: 48px; }
-      .bar { width: 8px; border-radius: 2px 2px 0 0; min-height: 3px; }
+      .bar-wrap { display: flex; align-items: flex-end; gap: 2px; height: 36px; }
+      .bar { width: 7px; border-radius: 2px 2px 0 0; min-height: 2px; }
       .bar.scored   { background: #22c55e; }
       .bar.conceded { background: #ef4444; opacity: 0.7; }
       .goal-nums { font-size: 9px; color: var(--cl-text-2, #94a3b8); }
-      .goal-legend { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--cl-text-2, #94a3b8); margin-top: 4px; margin-bottom: 6px; }
-      .leg-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+      .goal-legend { display: flex; align-items: center; gap: 8px; font-size: 10px; color: var(--cl-text-2, #94a3b8); margin-top: 2px; margin-bottom: 4px; }
+      .leg-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
       .leg-dot.scored   { background: #22c55e; }
       .leg-dot.conceded { background: #ef4444; opacity: 0.7; }
       /* Home/Away */
-      .home-away-grid { display: flex; align-items: flex-start; gap: 8px; padding-bottom: 8px; }
+      .home-away-grid { display: flex; align-items: flex-start; gap: 8px; padding-bottom: 4px; }
       .ha-col { flex: 1; }
       .ha-divider { width: 1px; background: var(--cl-divider, rgba(255,255,255,0.08)); align-self: stretch; }
-      .ha-label { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; margin-bottom: 4px; }
-      .ha-record { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+      .ha-label { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; margin-bottom: 3px; }
+      .ha-record { font-size: 11px; font-weight: 700; margin-bottom: 3px; }
       .ha-form { display: flex; gap: 3px; flex-wrap: wrap; }
-      .form-pill { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; }
+      .form-pill { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; }
       .form-pill.w { background: #22c55e; color: #fff; }
       .form-pill.d { background: var(--cl-text-2, #64748b); color: #fff; }
       .form-pill.l { background: #ef4444; color: #fff; }
       /* Previous match rows */
-      .pm-row { display: flex; align-items: center; gap: 5px; padding: 6px 0; font-size: 12px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04)); }
+      .pm-row { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 12px; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04)); }
       .pm-date { font-size: 10px; color: var(--cl-text-2, #94a3b8); min-width: 42px; }
-      .pm-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+      .pm-logo { width: 16px; height: 16px; object-fit: contain; flex-shrink: 0; }
       .pm-team { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .pm-team.right { text-align: right; }
       .pm-team.tracked { font-weight: 700; }
