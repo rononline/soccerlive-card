@@ -362,13 +362,16 @@ class SoccerLiveBracketCard extends LitElement {
         ` : ''}
 
         ${this._cardStyle === 'tree' ? this._renderTree(rounds) : html`
-          <div class="rounds-container ${this._compact ? 'compact' : ''}">
+          <div class="rounds-container"
+               style="${this._compact ? 'flex-direction:column;overflow-x:visible;' : ''}">
             ${rounds.map(round => html`
-              <div class="round">
+              <div class="round"
+                   style="${this._compact ? 'flex:none;min-width:0;' : ''}">
                 <div class="round-name">
                   <span class="round-name-en">${this._localizeRoundName(round)}</span>
                 </div>
-                <div class="round-ties">
+                <div class="round-ties"
+                     style="${this._compact ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px;' : ''}">
                   ${round.ties.map(tie => this._renderTie(tie))}
                 </div>
               </div>
