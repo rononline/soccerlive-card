@@ -808,12 +808,12 @@ class SoccerLiveBracketCard extends LitElement {
         justify-content: center;
         min-height: 480px;
         gap: 0;
+        min-width: max-content;
       }
       .tree-half {
-        flex: 1;
+        flex: 1 0 auto;
         display: flex;
         align-items: stretch;
-        min-width: 0;
       }
       /* No row-reverse: the right side's mirror effect is achieved by rendering
          children directly in SF→QF→R16 order (see _renderTree). */
@@ -1110,8 +1110,11 @@ class SoccerLiveBracketCard extends LitElement {
         ha-card.style-tree .tree {
           flex-direction: column;
           min-height: 0;
+          min-width: 0;
+          width: 100%;
         }
         ha-card.style-tree .tree-half {
+          flex: 1 1 auto;
           flex-direction: row;
         }
         ha-card.style-tree .tree-half.right {
