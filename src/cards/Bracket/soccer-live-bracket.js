@@ -359,7 +359,7 @@ class SoccerLiveBracketCard extends LitElement {
         ` : ''}
 
         ${this._cardStyle === 'tree' ? this._renderTree(rounds) : html`
-          <div class="rounds-container">
+          <div class="rounds-container ${this._config.compact ? 'compact' : ''}">
             ${rounds.map(round => html`
               <div class="round">
                 <div class="round-name">
@@ -594,11 +594,11 @@ class SoccerLiveBracketCard extends LitElement {
       }
 
       /* Compact mode (vertical, single column per round) */
-      ha-card.compact .rounds-container {
+      .rounds-container.compact {
         flex-direction: column;
         overflow-x: visible;
       }
-      ha-card.compact .round {
+      .rounds-container.compact .round {
         flex: none;
         min-width: 0;
       }
