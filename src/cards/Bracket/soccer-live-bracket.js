@@ -9,6 +9,8 @@ class SoccerLiveBracketCard extends LitElement {
     return {
       hass: {},
       _config: {},
+      _compact: { type: Boolean },
+      _cardStyle: { type: String },
     };
   }
 
@@ -18,6 +20,7 @@ class SoccerLiveBracketCard extends LitElement {
     applySkin(this, config);
     this.hideHeader = config.hide_header === true;
     this.compactMode = config.compact === true;
+    this._compact = config.compact === true;
     this._cardStyle = config.style === 'tree' ? 'tree' : 'list';
     this.treeShowPlayoffs = config.tree_show_playoffs === true;
   }
@@ -359,7 +362,7 @@ class SoccerLiveBracketCard extends LitElement {
         ` : ''}
 
         ${this._cardStyle === 'tree' ? this._renderTree(rounds) : html`
-          <div class="rounds-container ${this._config.compact ? 'compact' : ''}">
+          <div class="rounds-container ${this._compact ? 'compact' : ''}">
             ${rounds.map(round => html`
               <div class="round">
                 <div class="round-name">
