@@ -173,7 +173,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
             ${groups.map(g => html`
               <span class="comp-tab ${g.key === active.key ? 'active' : ''}" @click=${() => this._selectComp(g.key)}>
                 ${g.logo ? html`<img class="tab-logo" src="${g.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-                ${g.name}
+                ${g.name === 'Other' ? this._t('generic.other') : g.name}
               </span>
             `)}
           </div>

@@ -48,6 +48,11 @@ class SoccerLiveTeamCard extends LitElement {
       _toastVariant: { type: String },
       _weatherBadge: { type: Object },
       _cachedData: { type: Object },
+      showEventToasts: { type: Boolean },
+      myTeam: { type: String },
+      showPreviousMatches: { type: Boolean },
+      showFormTrend: { type: Boolean },
+      compact: { type: Boolean },
     };
   }
 

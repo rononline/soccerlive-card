@@ -180,6 +180,9 @@ const TRANSLATIONS = {
     'generic.close': 'Close',
 
     'generic.unknown': 'Unknown',
+    'generic.home': 'Home',
+    'generic.away': 'Away',
+    'generic.other': 'Other',
 
     // Match details popup
     'popup.match_details': 'Match details',
@@ -482,6 +485,9 @@ const TRANSLATIONS = {
     'generic.close': 'Sluiten',
 
     'generic.unknown': 'Onbekend',
+    'generic.home': 'Thuis',
+    'generic.away': 'Uit',
+    'generic.other': 'Overig',
 
     'popup.match_details': 'Wedstrijddetails',
     'popup.lineups': 'Opstellingen',
@@ -776,6 +782,9 @@ const TRANSLATIONS = {
     'generic.close': 'Chiudi',
 
     'generic.unknown': 'Sconosciuto',
+    'generic.home': 'Casa',
+    'generic.away': 'Trasferta',
+    'generic.other': 'Altro',
 
     'popup.match_details': 'Dettagli partita',
     'popup.lineups': 'Formazioni',
@@ -1070,6 +1079,9 @@ const TRANSLATIONS = {
     'generic.close': 'Fermer',
 
     'generic.unknown': 'Inconnu',
+    'generic.home': 'Domicile',
+    'generic.away': 'Extérieur',
+    'generic.other': 'Autre',
 
     'popup.match_details': 'Détails du match',
     'popup.lineups': 'Compositions',
@@ -1364,6 +1376,9 @@ const TRANSLATIONS = {
     'generic.close': 'Cerrar',
 
     'generic.unknown': 'Desconocido',
+    'generic.home': 'Local',
+    'generic.away': 'Visitante',
+    'generic.other': 'Otro',
 
     'popup.match_details': 'Detalles del partido',
     'popup.lineups': 'Alineaciones',
@@ -1641,6 +1656,9 @@ const TRANSLATIONS = {
     'generic.close': 'Schließen',
 
     'generic.unknown': 'Unbekannt',
+    'generic.home': 'Heim',
+    'generic.away': 'Auswärts',
+    'generic.other': 'Sonstige',
 
     'popup.match_details': 'Spieldetails',
     'popup.lineups': 'Aufstellungen',
@@ -1953,6 +1971,9 @@ const TRANSLATIONS = {
     'generic.close': 'Fechar',
 
     'generic.unknown': 'Desconhecido',
+    'generic.home': 'Casa',
+    'generic.away': 'Fora',
+    'generic.other': 'Outro',
 
     'popup.match_details': 'Detalhes do jogo',
     'popup.lineups': 'Escalações',

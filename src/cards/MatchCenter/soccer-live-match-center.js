@@ -400,11 +400,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ${(homeBench.length || awayBench.length) ? html`
           <div class="pit-bench">
             <div>
-              <div class="pit-bench-title">${match.home_team || 'Home'}</div>
+              <div class="pit-bench-title">${match.home_team || this._t('generic.home')}</div>
               ${homeBench.map(benchRow)}
             </div>
             <div>
-              <div class="pit-bench-title">${match.away_team || 'Away'}</div>
+              <div class="pit-bench-title">${match.away_team || this._t('generic.away')}</div>
               ${awayBench.map(benchRow)}
             </div>
           </div>
@@ -426,7 +426,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       <div class="lu-wrap">
         <div class="lu-cols">
           <div class="lu-col">
-            <div class="lu-header">${match.home_team || 'Home'}</div>
+            <div class="lu-header">${match.home_team || this._t('generic.home')}</div>
             ${homeStart.map(p => playerRow(p, false))}
             ${homeBench.length ? html`
               <div class="lu-bench-label">${this._t('lineup.bench')}</div>
@@ -434,7 +434,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
             ` : ''}
           </div>
           <div class="lu-col right">
-            <div class="lu-header">${match.away_team || 'Away'}</div>
+            <div class="lu-header">${match.away_team || this._t('generic.away')}</div>
             ${awayStart.map(p => playerRow(p, true))}
             ${awayBench.length ? html`
               <div class="lu-bench-label">${this._t('lineup.bench')}</div>
