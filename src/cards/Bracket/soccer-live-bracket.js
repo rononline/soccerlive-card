@@ -270,7 +270,7 @@ class SoccerLiveBracketCard extends LitElement {
     const outerRight = r32Split.right.length || r16Split.right.length;
 
     return html`
-      <div class="tree-wrap">
+      <div class="tree-wrap ${earlyRounds.length ? 'has-early' : ''}">
         <div class="tree ${!hasSides ? 'tree-center-only' : ''}">
           <div class="tree-half left">
             ${playoffsSplit && playoffsSplit.left.length ? html`
@@ -914,9 +914,15 @@ class SoccerLiveBracketCard extends LitElement {
       }
       .tree.tree-center-only {
         justify-content: center;
+        min-height: 0;
       }
       .tree.tree-center-only .tree-half {
         display: none;
+      }
+      .tree.tree-center-only .tree-center {
+        flex: 0 0 auto;
+        min-width: 0;
+        padding: 16px 24px;
       }
 
       /* Mobile per tree */
@@ -949,6 +955,9 @@ class SoccerLiveBracketCard extends LitElement {
       }
 
       /* Early rounds below tree (e.g. Round of 64 for WK 2026) */
+      .tree-wrap.has-early {
+        padding-bottom: 0;
+      }
       .early-round-section {
         padding: 0 18px 18px;
       }
