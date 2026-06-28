@@ -233,15 +233,16 @@ class SoccerLiveBracketCard extends LitElement {
     const findRound = (targetSize) => {
       const candidates = rounds.filter(r => r.size === targetSize);
       if (candidates.length === 0) return null;
-      const exact = candidates.find(r => r.name !== 'Knockout Playoffs' && r.name !== 'Preliminary Round');
+      const exact = candidates.find(r => r.name !== 'Knockout Playoffs' && r.name !== 'Preliminary Round' && r.name !== 'Third Place');
       return exact || candidates[candidates.length - 1];
     };
     const playoffsRound = rounds.find(r => r.name === 'Knockout Playoffs');
+    const thirdPlaceRound = rounds.find(r => r.name === 'Third Place');
     const r32 = findRound(16);
     const r16 = findRound(8);
     const qf = findRound(4);
     const sf = findRound(2);
-    const finalRound = findRound(1);
+    const finalRound = rounds.find(r => r.name === 'Final') || findRound(1);
 
     const split = (round) => {
       if (!round) return { left: [], right: [] };
@@ -255,6 +256,7 @@ class SoccerLiveBracketCard extends LitElement {
     const sfSplit = split(sf);
     const playoffsSplit = this.treeShowPlayoffs ? split(playoffsRound) : null;
     const finalTie = finalRound ? finalRound.ties[0] : null;
+    const thirdPlaceTie = thirdPlaceRound ? thirdPlaceRound.ties[0] : null;
     const hasSides = r32 || r16 || qf || sf;
 
     // When only early rounds (size > 16) exist, show a round label instead of "begins soon"
@@ -289,6 +291,12 @@ class SoccerLiveBracketCard extends LitElement {
               ? html`<div class="final-tie-wrap">${this._renderMiniTie(finalTie)}</div>`
               : html`<div class="final-placeholder">${this._t('bracket.tbd')}</div>`
             }
+            ${thirdPlaceTie ? html`
+              <div class="third-place-wrap">
+                <div class="third-place-label">🥉 ${this._t('round.third_place')}</div>
+                <div class="final-tie-wrap third">${this._renderMiniTie(thirdPlaceTie)}</div>
+              </div>
+            ` : ''}
             ${earlyRound
               ? html`<div class="tree-pending">${this._localizeRoundName(earlyRound)}</div>`
               : !hasSides
@@ -852,6 +860,33 @@ class SoccerLiveBracketCard extends LitElement {
         letter-spacing: 0.1em;
       }
 
+      .third-place-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 170px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .third-place-label {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--cl-text-2);
+        text-align: center;
+        opacity: 0.8;
+      }
+      .final-tie-wrap.third .mini-tie {
+        background: linear-gradient(135deg, rgba(var(--cl-accent-rgb),0.08), transparent);
+        border-color: rgba(var(--cl-accent-rgb),0.3);
+        box-shadow: none;
+      }
+      .final-tie-wrap.third .mini-team.winner .agg-num {
+        color: var(--cl-accent);
+      }
       .tree-pending {
         font-size: 11px;
         font-weight: 600;

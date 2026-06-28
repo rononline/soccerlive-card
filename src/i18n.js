@@ -202,6 +202,7 @@ const TRANSLATIONS = {
 
     // Generic UI strings
     'ui.loading': 'Loading...',
+    'ui.open_editor_to_configure': 'Soccer Live — open the editor to configure this card.',
     'ui.select_entity': 'Select entity',
     'ui.unknown_entity': 'Unknown entity',
     'ui.sensor_unavailable': 'Sensor unavailable',
@@ -399,8 +400,8 @@ const TRANSLATIONS = {
     'stat.tackles': 'Tackles',
     'stat.interceptions': 'Intercepties',
     'stat.aerial_duels_won': 'Luchtduels gewonnen',
-    'stat.free_kick_goals': 'Vrije trap goals',
-    'stat.penalty_goals': 'Penalty goals',
+    'stat.free_kick_goals': 'Vrije trap doelpunten',
+    'stat.penalty_goals': 'Penalty doelpunten',
     'team.spectators': 'toeschouwers',
     'match.record': 'Record',
     'match.formation': 'Formatie',
@@ -497,6 +498,7 @@ const TRANSLATIONS = {
 
 
     'ui.loading': 'Laden...',
+    'ui.open_editor_to_configure': 'Soccer Live — open de editor om deze kaart in te stellen.',
     'ui.select_entity': 'Selecteer entiteit',
     'ui.unknown_entity': 'Onbekende entiteit',
     'ui.sensor_unavailable': 'Sensor niet beschikbaar',
@@ -789,6 +791,7 @@ const TRANSLATIONS = {
 
 
     'ui.loading': 'Caricamento...',
+    'ui.open_editor_to_configure': "Soccer Live — apri l'editor per configurare questa scheda.",
     'ui.select_entity': 'Seleziona entità',
     'ui.unknown_entity': 'Entità sconosciuta',
     'ui.sensor_unavailable': 'Sensore non disponibile',
@@ -978,7 +981,7 @@ const TRANSLATIONS = {
     'stat.offsides': 'Hors-jeux',
     'stat.saves': 'Arrêts',
     'stat.blocked_shots': 'Tirs bloqués',
-    'stat.total_passes': 'Total passes',
+    'stat.total_passes': 'Passes totales',
     'stat.passes_completed': 'Passes réussies',
     'stat.tackles': 'Tacles',
     'stat.interceptions': 'Interceptions',
@@ -1081,6 +1084,7 @@ const TRANSLATIONS = {
 
 
     'ui.loading': 'Chargement...',
+    'ui.open_editor_to_configure': "Soccer Live — ouvrez l'éditeur pour configurer cette carte.",
     'ui.select_entity': 'Sélectionner une entité',
     'ui.unknown_entity': 'Entité inconnue',
     'ui.sensor_unavailable': 'Capteur indisponible',
@@ -1373,6 +1377,7 @@ const TRANSLATIONS = {
 
 
     'ui.loading': 'Cargando...',
+    'ui.open_editor_to_configure': 'Soccer Live — abre el editor para configurar esta tarjeta.',
     'ui.select_entity': 'Seleccionar entidad',
     'ui.unknown_entity': 'Entidad desconocida',
     'ui.sensor_unavailable': 'Sensor no disponible',
@@ -1648,6 +1653,7 @@ const TRANSLATIONS = {
 
 
     'ui.loading': 'Wird geladen...',
+    'ui.open_editor_to_configure': 'Soccer Live — öffne den Editor um diese Karte einzurichten.',
     'ui.select_entity': 'Entität auswählen',
     'ui.unknown_entity': 'Unbekannte Entität',
     'ui.sensor_unavailable': 'Sensor nicht verfügbar',
@@ -1958,6 +1964,7 @@ const TRANSLATIONS = {
 
 
     'ui.loading': 'Carregando...',
+    'ui.open_editor_to_configure': 'Soccer Live — abra o editor para configurar este cartão.',
     'ui.select_entity': 'Selecionar entidade',
     'ui.unknown_entity': 'Entidade desconhecida',
     'ui.sensor_unavailable': 'Sensor indisponível',
