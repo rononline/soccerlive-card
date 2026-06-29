@@ -17,6 +17,7 @@ class SoccerLiveBracketCard extends LitElement {
       _activeTab: { type: String },
       _matchesEntity: { type: String },
       _collapsedRounds: { type: Object },
+      _expandedRounds: { type: Object },
       _schedFilter: { type: String },
     };
   }
@@ -33,6 +34,7 @@ class SoccerLiveBracketCard extends LitElement {
     this._matchesEntity = config.matches_entity || '';
     this._activeTab = 'bracket';
     this._collapsedRounds = new Set();
+    this._expandedRounds = new Set();
     this._schedFilter = 'all';
   }
 
@@ -91,10 +93,23 @@ class SoccerLiveBracketCard extends LitElement {
     return null;
   }
 
-  _toggleRound(name) {
-    const s = new Set(this._collapsedRounds);
-    if (s.has(name)) s.delete(name); else s.add(name);
-    this._collapsedRounds = s;
+  _isCollapsed(round) {
+    const allDone = round.ties.length > 0 && round.ties.every(t => t.completed);
+    if (allDone) return !this._expandedRounds.has(round.name);
+    return this._collapsedRounds.has(round.name);
+  }
+
+  _toggleRound(round) {
+    const allDone = round.ties.length > 0 && round.ties.every(t => t.completed);
+    if (allDone) {
+      const s = new Set(this._expandedRounds);
+      if (s.has(round.name)) s.delete(round.name); else s.add(round.name);
+      this._expandedRounds = s;
+    } else {
+      const s = new Set(this._collapsedRounds);
+      if (s.has(round.name)) s.delete(round.name); else s.add(round.name);
+      this._collapsedRounds = s;
+    }
   }
 
   _roundProgress(round) {
@@ -139,8 +154,14 @@ class SoccerLiveBracketCard extends LitElement {
     const base = [...(relevant.length ? relevant : matches)]
       .sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
 
-    // Apply user chip filter
+    // Precompute chip counts
     const todayKey = new Date().toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
+    const liveCount = base.filter(m => m.state === 'in').length;
+    const todayCount = base.filter(m => m.date
+      ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
+      : false).length;
+
+    // Apply user chip filter
     const displayed = this._schedFilter === 'live'
       ? base.filter(m => m.state === 'in')
       : this._schedFilter === 'today'
@@ -159,10 +180,14 @@ class SoccerLiveBracketCard extends LitElement {
     return html`
       <div class="sched-view">
         <div class="sched-filters">
-          ${[['all', this._t('editor.all_groups')], ['live', this._t('status.live')], ['today', this._t('time.today')]].map(([f, label]) => html`
-            <span class="sched-chip ${this._schedFilter === f ? 'active' : ''}"
+          ${[
+            ['all', this._t('editor.all_groups'), base.length],
+            ['live', this._t('status.live'), liveCount],
+            ['today', this._t('time.today'), todayCount],
+          ].map(([f, label, count]) => html`
+            <span class="sched-chip ${this._schedFilter === f ? 'active' : ''} ${!count && f !== 'all' ? 'empty' : ''}"
                   @click=${() => { this._schedFilter = f; }}>
-              ${label}
+              ${label}${count > 0 ? html`<span class="chip-count">${count}</span>` : ''}
             </span>
           `)}
         </div>
@@ -303,6 +328,10 @@ class SoccerLiveBracketCard extends LitElement {
     const isAW = winner && a.name && winner === a.name;
     const isBW = winner && b.name && winner === b.name;
     const isLive = (tie.leg1 && tie.leg1.state === 'in') || (tie.leg2 && tie.leg2.state === 'in') || (tie.single && tie.single.state === 'in');
+    const liveLeg = (tie.leg1?.state === 'in' ? tie.leg1 : null) ||
+                   (tie.leg2?.state === 'in' ? tie.leg2 : null) ||
+                   (tie.single?.state === 'in' ? tie.single : null);
+    const liveClock = liveLeg?.clock || '';
     const isPending = !tie.leg1 && !tie.single;
     const abbrA = a.abbrev || (a.name ? a.name.substring(0, 3).toUpperCase() : 'TBD');
     const abbrB = b.abbrev || (b.name ? b.name.substring(0, 3).toUpperCase() : 'TBD');
@@ -320,7 +349,12 @@ class SoccerLiveBracketCard extends LitElement {
           <span class="abbr">${abbrB}</span>
           <span class="agg-num">${bAgg !== null ? bAgg : '-'}</span>
         </div>
-        ${isLive ? html`<span class="mini-live"><span class="dot"></span></span>` : ''}
+        ${isLive ? html`
+          <div class="mini-clock">
+            <span class="dot"></span>
+            ${liveClock ? html`<span class="mini-clock-text">${liveClock}</span>` : ''}
+          </div>
+        ` : ''}
       </div>
     `;
   }
@@ -487,12 +521,12 @@ class SoccerLiveBracketCard extends LitElement {
         </div>
 
         ${earlyRounds.map(round => {
-          const collapsed = this._collapsedRounds.has(round.name);
+          const collapsed = this._isCollapsed(round);
           const prog = this._roundProgress(round);
           const allDone = prog && prog.done === prog.total && prog.total > 0;
           return html`
             <div class="early-round-section ${collapsed ? 'collapsed' : ''}">
-              <div class="early-round-label" @click=${() => this._toggleRound(round.name)}>
+              <div class="early-round-label" @click=${() => this._toggleRound(round)}>
                 <span>${this._localizeRoundName(round)}</span>
                 ${prog ? html`
                   <span class="round-prog ${allDone ? 'done' : prog.live ? 'live' : ''}">
@@ -1169,18 +1203,19 @@ class SoccerLiveBracketCard extends LitElement {
       .mini-team.loser .agg-num {
         opacity: 0.55;
       }
-      .mini-live {
-        position: absolute;
-        top: -3px; right: -3px;
-        width: 10px; height: 10px;
+      .mini-clock {
+        display: flex; align-items: center; gap: 4px;
+        padding: 3px 6px 0;
       }
-      .mini-live .dot {
-        display: block;
-        width: 10px; height: 10px;
-        border-radius: 50%;
+      .mini-clock .dot {
+        width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
         background: var(--cl-live);
-        box-shadow: 0 0 8px var(--cl-live-glow);
+        box-shadow: 0 0 6px var(--cl-live-glow);
         animation: dot-pulse 1.2s ease-in-out infinite;
+      }
+      .mini-clock-text {
+        font-size: 9px; font-weight: 700; color: var(--cl-live);
+        font-variant-numeric: tabular-nums;
       }
 
       /* Tree center (trophy + final) */
@@ -1393,6 +1428,13 @@ class SoccerLiveBracketCard extends LitElement {
         background: var(--cl-accent); color: #fff; border-color: transparent;
       }
       .sched-chip:hover:not(.active) { background: rgba(var(--cl-accent-rgb),0.20); }
+      .sched-chip.empty { opacity: 0.45; }
+      .chip-count {
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 9px; font-weight: 800; padding: 1px 5px;
+        background: rgba(0,0,0,0.18); border-radius: 10px; margin-left: 4px;
+      }
+      .sched-chip.active .chip-count { background: rgba(255,255,255,0.30); }
     `];
   }
 }

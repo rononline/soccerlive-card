@@ -174,16 +174,25 @@ entity: sensor.soccer_live_bracket_uefa_champions
 style: tree              # 'list' (default) or 'tree'
 compact: false
 tree_show_playoffs: false
-my_team: "Ajax"          # optional: highlight this team's ties in green, dim others
+my_team: "Ajax"          # optional: highlight path to final
 groups_entity: sensor.soccer_live_standings_uefa_champions  # optional: adds Groups tab
+matches_entity: sensor.soccer_live_all_uefa_champions       # optional: adds Schedule tab
 ```
 
 The bracket sensor is created automatically for cup competitions:
 Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World Cup, Euros, and more.
 
-**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. Works in both list and tree view.
+**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. In tree view, the bracket half containing the team is highlighted green (Path to Final) and the other half is faded.
 
-**`groups_entity`** — point to the standings sensor for the same competition. Adds a tab bar with "Bracket" and "Groups". The Groups tab shows all groups in a compact grid with qualification rows highlighted and your `my_team` row marked in green.
+**`groups_entity`** — point to the standings sensor for the same competition. Adds a **Groups** tab with all groups in a compact grid, qualification rows highlighted and `my_team` marked in green.
+
+**`matches_entity`** — point to an `all_*` sensor for the same competition. Adds a **Schedule** tab showing all matches grouped by date. Placeholder dates far in the future (ESPN data quality issue) are filtered out automatically. Dates and times respect the Home Assistant timezone setting.
+
+**Schedule tab filter chips** — Live / Today / All. Each chip shows the match count; empty chips are dimmed. The Today chip uses the HA timezone to determine "today" correctly.
+
+**Tree view — early rounds** — For large brackets (WK 2026: 48 teams / R32 + R16), the Round of 32 and Round of 16 appear below the tree as a collapsible 2-column grid so the tree itself shows only QF → SF → Final. Completed rounds collapse automatically on load. A progress badge (`✓ 16/16` or `● 3/16` for live) is shown in the header.
+
+**Tree view — live clock** — When a match is in progress, the mini card in the tree shows a live dot and the current minute (e.g. `● 67'`).
 
 WK 2026 example:
 ```yaml
@@ -191,6 +200,7 @@ type: custom:soccer-live-card
 card_type: bracket
 entity: sensor.soccer_live_bracket_fifa_world
 groups_entity: sensor.soccer_live_standings_fifa_world
+matches_entity: sensor.soccer_live_all_fifa_world
 style: tree
 my_team: Netherlands
 ```
@@ -312,13 +322,16 @@ Shows sensor type, API status, match counters, request counters and the last suc
 type: custom:soccer-live-card
 card_type: ticker
 entity: sensor.soccer_live_all_ned_1
-filter: live            # optional: live / empty for all
+filter: live                  # optional: live / empty for all
+competition_filter: "World Cup"  # optional: filter by competition name (case-insensitive substring)
 auto_scroll: true
-scroll_speed: normal    # slow / normal / fast
-hide_when_empty: true   # hides the card when the filter has no matches
+scroll_speed: normal          # slow / normal / fast
+hide_when_empty: true         # hides the card when the filter has no matches
 ```
 
 Horizontal match strip for dense dashboards. With `hide_when_empty: true`, a live-only ticker disappears when there are no live matches.
+
+**`competition_filter`** — show only matches whose `competition_name` or `league_name` contains the filter string. Useful when the sensor covers multiple competitions (e.g. `all_mixed_*`). If no matches match the filter, the full unfiltered list is shown as fallback.
 
 ---
 
