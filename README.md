@@ -182,15 +182,15 @@ matches_entity: sensor.soccer_live_all_uefa_champions       # optional: adds Sch
 The bracket sensor is created automatically for cup competitions:
 Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World Cup, Euros, and more.
 
-**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. In tree view, the bracket half containing the team is highlighted green (Path to Final) and the other half is faded.
+**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. In tree view, the bracket half containing the team is highlighted green (Path to Final) and the other half is faded. When `my_team` is set and a tie is completed, a **won/eliminated badge** (✓ Won / ✗ Eliminated) appears in the tie footer. A **"My next match" banner** above the tabs shows the next upcoming or live match involving `my_team` with logos, score/time, round and venue.
 
 **`groups_entity`** — point to the standings sensor for the same competition. Adds a **Groups** tab with all groups in a compact grid, qualification rows highlighted and `my_team` marked in green.
 
-**`matches_entity`** — point to an `all_*` sensor for the same competition. Adds a **Schedule** tab showing all matches grouped by date. Placeholder dates far in the future (ESPN data quality issue) are filtered out automatically. Dates and times respect the Home Assistant timezone setting.
+**`matches_entity`** — point to an `all_*` sensor for the same competition. Adds a **Schedule** tab showing all matches grouped by date. Placeholder dates far in the future (ESPN data quality issue) are filtered out automatically. Dates and times respect the HA timezone setting. Day headers show the round name (e.g. Round of 16) as a chip next to the date.
 
-**Schedule tab filter chips** — Live / Today / All. Each chip shows the match count; empty chips are dimmed. The Today chip uses the HA timezone to determine "today" correctly.
+**Schedule tab filter chips** — Live / Today / All. Each chip shows the match count; empty chips are dimmed. The tab **auto-selects** the most relevant filter on load: Live if matches are in progress, Today if there are matches today, otherwise All. Clicking a chip overrides this.
 
-**Tree view — early rounds** — For large brackets (WK 2026: 48 teams / R32 + R16), the Round of 32 and Round of 16 appear below the tree as a collapsible 2-column grid so the tree itself shows only QF → SF → Final. Completed rounds collapse automatically on load. A progress badge (`✓ 16/16` or `● 3/16` for live) is shown in the header.
+**Tree view — early rounds** — For large brackets (WK 2026: 48 teams / R32 + R16), the Round of 32 and Round of 16 appear below the tree as a collapsible 2-column grid so the tree itself shows only QF → SF → Final. Completed rounds collapse automatically on load. A progress badge (`✓ 16/16` or `● 3/16` for live) is shown in the header, along with the date range of the round (e.g. `Jun 29 – Jul 4`). Pending ties show their scheduled first-leg date.
 
 **Tree view — live clock** — When a match is in progress, the mini card in the tree shows a live dot and the current minute (e.g. `● 67'`).
 
