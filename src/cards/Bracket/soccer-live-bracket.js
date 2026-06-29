@@ -16,6 +16,8 @@ class SoccerLiveBracketCard extends LitElement {
       _myTeam: { type: String },
       _activeTab: { type: String },
       _matchesEntity: { type: String },
+      _collapsedRounds: { type: Object },
+      _schedFilter: { type: String },
     };
   }
 
@@ -30,6 +32,8 @@ class SoccerLiveBracketCard extends LitElement {
     this._myTeam = config.my_team || '';
     this._matchesEntity = config.matches_entity || '';
     this._activeTab = 'bracket';
+    this._collapsedRounds = new Set();
+    this._schedFilter = 'all';
   }
 
   _t(key, vars) {
@@ -87,10 +91,32 @@ class SoccerLiveBracketCard extends LitElement {
     return null;
   }
 
+  _toggleRound(name) {
+    const s = new Set(this._collapsedRounds);
+    if (s.has(name)) s.delete(name); else s.add(name);
+    this._collapsedRounds = s;
+  }
+
+  _roundProgress(round) {
+    const total = round.ties.length;
+    if (!total) return null;
+    const done = round.ties.filter(t => t.completed).length;
+    const live = round.ties.filter(t =>
+      (t.single && t.single.state === 'in') ||
+      (t.leg1 && t.leg1.state === 'in') ||
+      (t.leg2 && t.leg2.state === 'in')
+    ).length;
+    return { total, done, live };
+  }
+
   _formatTime(iso) {
     if (!iso) return '';
     try {
-      return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const tz = this.hass?.config?.time_zone;
+      return new Date(iso).toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit',
+        ...(tz ? { timeZone: tz } : {}),
+      });
     } catch (e) { return ''; }
   }
 
@@ -98,12 +124,11 @@ class SoccerLiveBracketCard extends LitElement {
     if (!matches || !matches.length) {
       return html`<div class="sched-empty">${this._t('generic.no_data')}</div>`;
     }
-    // Filter logic:
-    // - live (in): always show
-    // - post (done): only if date is in the past (avoids ESPN matches with wrong future dates)
-    // - pre (upcoming): only within the next 45 days
     const now = Date.now();
     const maxFuture = now + 45 * 24 * 3600 * 1000;
+    const tz = this.hass?.config?.time_zone;
+
+    // Base filter: hide ESPN placeholder dates (post=must be past, pre=within 45 days)
     const relevant = matches.filter(m => {
       if (!m.date) return false;
       const d = new Date(m.date).getTime();
@@ -111,16 +136,37 @@ class SoccerLiveBracketCard extends LitElement {
       if (m.state === 'post') return d <= now;
       return d >= now && d <= maxFuture;
     });
-    const sorted = [...(relevant.length ? relevant : matches)]
+    const base = [...(relevant.length ? relevant : matches)]
       .sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+
+    // Apply user chip filter
+    const todayKey = new Date().toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
+    const displayed = this._schedFilter === 'live'
+      ? base.filter(m => m.state === 'in')
+      : this._schedFilter === 'today'
+        ? base.filter(m => m.date
+            ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
+            : false)
+        : base;
+
     const byDate = {};
-    for (const m of sorted) {
-      const key = (m.date || '').substring(0, 10);
+    for (const m of displayed) {
+      const key = m.date ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) : '';
       if (!byDate[key]) byDate[key] = [];
       byDate[key].push(m);
     }
+
     return html`
       <div class="sched-view">
+        <div class="sched-filters">
+          ${[['all', this._t('editor.all_groups')], ['live', this._t('status.live')], ['today', this._t('time.today')]].map(([f, label]) => html`
+            <span class="sched-chip ${this._schedFilter === f ? 'active' : ''}"
+                  @click=${() => { this._schedFilter = f; }}>
+              ${label}
+            </span>
+          `)}
+        </div>
+        ${!displayed.length ? html`<div class="sched-empty">${this._t('generic.no_data')}</div>` : ''}
         ${Object.entries(byDate).map(([, ms]) => html`
           <div class="sched-day">
             <div class="sched-day-label">${this._formatDate(ms[0].date)}</div>
@@ -440,14 +486,30 @@ class SoccerLiveBracketCard extends LitElement {
           </div>
         </div>
 
-        ${earlyRounds.map(round => html`
-          <div class="early-round-section">
-            <div class="early-round-label">${this._localizeRoundName(round)}</div>
-            <div class="early-round-ties">
-              ${round.ties.map(tie => this._renderTie(tie))}
+        ${earlyRounds.map(round => {
+          const collapsed = this._collapsedRounds.has(round.name);
+          const prog = this._roundProgress(round);
+          const allDone = prog && prog.done === prog.total && prog.total > 0;
+          return html`
+            <div class="early-round-section ${collapsed ? 'collapsed' : ''}">
+              <div class="early-round-label" @click=${() => this._toggleRound(round.name)}>
+                <span>${this._localizeRoundName(round)}</span>
+                ${prog ? html`
+                  <span class="round-prog ${allDone ? 'done' : prog.live ? 'live' : ''}">
+                    ${allDone ? '✓' : prog.live ? html`<span class="dot"></span>` : ''}
+                    ${prog.done}/${prog.total}
+                  </span>
+                ` : ''}
+                <span class="round-chevron">${collapsed ? '›' : '‹' }</span>
+              </div>
+              ${collapsed ? '' : html`
+                <div class="early-round-ties">
+                  ${round.ties.map(tie => this._renderTie(tie))}
+                </div>
+              `}
             </div>
-          </div>
-        `)}
+          `;
+        })}
       </div>
     `;
   }
@@ -1285,17 +1347,28 @@ class SoccerLiveBracketCard extends LitElement {
         padding: 0 18px 18px;
       }
       .early-round-label {
-        text-align: center;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--cl-accent);
-        padding: 8px 12px;
-        margin-bottom: 12px;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 8px; cursor: pointer; user-select: none;
+        font-size: 11px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.12em; color: var(--cl-accent);
+        padding: 8px 12px; margin-bottom: 12px;
         background: rgba(var(--cl-accent-rgb),0.10);
-        border-radius: 10px;
+        border-radius: 10px; transition: background 0.15s;
       }
+      .early-round-label:hover { background: rgba(var(--cl-accent-rgb),0.18); }
+      .early-round-label span:first-child { flex: 1; }
+      .round-prog {
+        font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+        display: flex; align-items: center; gap: 4px;
+        color: var(--cl-text-2);
+      }
+      .round-prog.done { color: var(--cl-green); }
+      .round-prog.live { color: var(--cl-live); }
+      .round-prog .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cl-live); animation: pulse 1.2s ease-in-out infinite; }
+      .round-chevron { font-size: 14px; font-weight: 400; color: var(--cl-text-2); transform: rotate(90deg); display: inline-block; transition: transform 0.2s; }
+      .early-round-section.collapsed .round-chevron { transform: rotate(-90deg); }
+      .early-round-section.collapsed { padding-bottom: 0; }
+      .early-round-section.collapsed .early-round-label { margin-bottom: 0; }
       .early-round-ties {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -1306,6 +1379,20 @@ class SoccerLiveBracketCard extends LitElement {
           grid-template-columns: 1fr;
         }
       }
+      /* Schedule filter chips */
+      .sched-filters {
+        display: flex; gap: 8px; padding: 0 0 12px; flex-wrap: wrap;
+      }
+      .sched-chip {
+        font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+        cursor: pointer; user-select: none; transition: background 0.15s, color 0.15s;
+        background: rgba(var(--cl-accent-rgb),0.10); color: var(--cl-accent);
+        border: 1px solid rgba(var(--cl-accent-rgb),0.2);
+      }
+      .sched-chip.active {
+        background: var(--cl-accent); color: #fff; border-color: transparent;
+      }
+      .sched-chip:hover:not(.active) { background: rgba(var(--cl-accent-rgb),0.20); }
     `];
   }
 }
