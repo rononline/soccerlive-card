@@ -122,7 +122,7 @@ class SoccerLiveBracketCard extends LitElement {
 
   _renderSchedule(matches) {
     if (!matches || !matches.length) {
-      return html`<div class="sched-empty">${this._t('generic.no_data')}</div>`;
+      return html`<div class="sched-empty">${this._t('generic.no_match')}</div>`;
     }
     const now = Date.now();
     const maxFuture = now + 45 * 24 * 3600 * 1000;
@@ -166,7 +166,7 @@ class SoccerLiveBracketCard extends LitElement {
             </span>
           `)}
         </div>
-        ${!displayed.length ? html`<div class="sched-empty">${this._t('generic.no_data')}</div>` : ''}
+        ${!displayed.length ? html`<div class="sched-empty">${this._t('generic.no_match')}</div>` : ''}
         ${Object.entries(byDate).map(([, ms]) => html`
           <div class="sched-day">
             <div class="sched-day-label">${this._formatDate(ms[0].date)}</div>
