@@ -118,8 +118,7 @@ class SoccerLiveBracketEditor extends LitElement {
       .filter(id => id.includes('soccerlive_standings') || id.includes('soccer_live_standings'))
       .sort();
     this.matchesEntities = Object.keys(this.hass.states)
-      .filter(id => (id.includes('soccerlive_all') || id.includes('soccer_live_all')) &&
-                    !id.includes('_mixed'))
+      .filter(id => id.includes('soccerlive_all') || id.includes('soccer_live_all'))
       .sort();
   }
 

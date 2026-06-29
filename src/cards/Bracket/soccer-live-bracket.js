@@ -98,9 +98,19 @@ class SoccerLiveBracketCard extends LitElement {
     if (!matches || !matches.length) {
       return html`<div class="sched-empty">${this._t('generic.no_data')}</div>`;
     }
-    // Only show matches from the past 7 days onwards (filter out stale placeholders)
-    const cutoff = Date.now() - 7 * 24 * 3600 * 1000;
-    const relevant = matches.filter(m => !m.date || new Date(m.date).getTime() >= cutoff);
+    // Filter logic:
+    // - live (in): always show
+    // - post (done): only if date is in the past (avoids ESPN matches with wrong future dates)
+    // - pre (upcoming): only within the next 45 days
+    const now = Date.now();
+    const maxFuture = now + 45 * 24 * 3600 * 1000;
+    const relevant = matches.filter(m => {
+      if (!m.date) return false;
+      const d = new Date(m.date).getTime();
+      if (m.state === 'in') return true;
+      if (m.state === 'post') return d <= now;
+      return d >= now && d <= maxFuture;
+    });
     const sorted = [...(relevant.length ? relevant : matches)]
       .sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
     const byDate = {};
