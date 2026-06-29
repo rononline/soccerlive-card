@@ -98,7 +98,11 @@ class SoccerLiveBracketCard extends LitElement {
     if (!matches || !matches.length) {
       return html`<div class="sched-empty">${this._t('generic.no_data')}</div>`;
     }
-    const sorted = [...matches].sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+    // Only show matches from the past 7 days onwards (filter out stale placeholders)
+    const cutoff = Date.now() - 7 * 24 * 3600 * 1000;
+    const relevant = matches.filter(m => !m.date || new Date(m.date).getTime() >= cutoff);
+    const sorted = [...(relevant.length ? relevant : matches)]
+      .sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
     const byDate = {};
     for (const m of sorted) {
       const key = (m.date || '').substring(0, 10);
@@ -114,25 +118,25 @@ class SoccerLiveBracketCard extends LitElement {
               ${ms.map(m => {
                 const isLive = m.state === 'in';
                 const isDone = m.state === 'post';
-                const home = m.home_team || {};
-                const away = m.away_team || {};
-                const matchMyTeam = this._matchesMyTeam(home.name) || this._matchesMyTeam(away.name);
+                const homeName = m.home_team || 'TBD';
+                const awayName = m.away_team || 'TBD';
+                const matchMyTeam = this._matchesMyTeam(homeName) || this._matchesMyTeam(awayName);
                 const scoreOrTime = (isDone || isLive)
                   ? `${m.home_score ?? '-'} – ${m.away_score ?? '-'}`
                   : this._formatTime(m.date);
                 return html`
                   <div class="sched-match ${isLive ? 'live' : ''} ${isDone ? 'done' : ''} ${matchMyTeam && this._myTeam ? 'my-team' : ''}">
                     <div class="sched-team">
-                      ${home.logo ? html`<img class="sched-logo" src="${home.logo}" alt="">` : ''}
-                      <span class="sched-name">${home.name || 'TBD'}</span>
+                      ${m.home_logo ? html`<img class="sched-logo" src="${m.home_logo}" alt="">` : ''}
+                      <span class="sched-name">${homeName}</span>
                     </div>
                     <div class="sched-score">
                       ${isLive ? html`<span class="dot"></span>` : ''}
                       <span>${scoreOrTime}</span>
                     </div>
                     <div class="sched-team away">
-                      ${away.logo ? html`<img class="sched-logo" src="${away.logo}" alt="">` : ''}
-                      <span class="sched-name">${away.name || 'TBD'}</span>
+                      ${m.away_logo ? html`<img class="sched-logo" src="${m.away_logo}" alt="">` : ''}
+                      <span class="sched-name">${awayName}</span>
                     </div>
                   </div>
                 `;
