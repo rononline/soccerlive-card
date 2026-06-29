@@ -52,7 +52,6 @@ class SoccerLiveBracketCard extends LitElement {
   }
 
   _localizeRoundName(round) {
-    // Map English round name from sensor to i18n translation key
     const map = {
       'Final': 'round.final',
       'Semifinals': 'round.semifinals',
@@ -66,6 +65,24 @@ class SoccerLiveBracketCard extends LitElement {
     };
     const key = map[round.name];
     return key ? this._t(key) : round.name;
+  }
+
+  _formatSeasonInfo(s) {
+    if (!s) return '';
+    const map = {
+      'round-of-32': 'round.r32',
+      'round-of-16': 'round.r16',
+      'quarterfinals': 'round.quarterfinals',
+      'semifinals': 'round.semifinals',
+      'final': 'round.final',
+      'third-place': 'round.third_place',
+      'group-stage': null,
+    };
+    if (s in map) {
+      if (!map[s]) return '';
+      return this._t(map[s]);
+    }
+    return s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   }
 
   _matchesMyTeam(name) {
@@ -135,6 +152,38 @@ class SoccerLiveBracketCard extends LitElement {
     } catch (e) { return ''; }
   }
 
+  _renderMyNextMatch(scheduleMatches) {
+    if (!this._myTeam || !scheduleMatches?.length) return '';
+    const now = Date.now();
+    const next = scheduleMatches.find(m => {
+      if (!(this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team))) return false;
+      if (m.state === 'in') return true;
+      if (m.state === 'pre' && m.date) return new Date(m.date).getTime() > now;
+      return false;
+    });
+    if (!next) return '';
+    const isLive = next.state === 'in';
+    const round = next.season_info ? this._formatSeasonInfo(next.season_info) : '';
+    return html`
+      <div class="my-next-banner ${isLive ? 'live' : ''}">
+        <div class="mnb-teams">
+          ${next.home_logo ? html`<img src="${next.home_logo}" class="mnb-logo">` : ''}
+          <span class="mnb-name">${next.home_team}</span>
+          ${isLive
+            ? html`<span class="mnb-score">${next.home_score ?? 0} – ${next.away_score ?? 0}</span>`
+            : html`<span class="mnb-vs">vs</span>`}
+          <span class="mnb-name away">${next.away_team}</span>
+          ${next.away_logo ? html`<img src="${next.away_logo}" class="mnb-logo">` : ''}
+        </div>
+        <div class="mnb-meta">
+          ${round ? html`<span class="mnb-round-tag">${round}</span>` : ''}
+          ${!isLive && next.date ? html`<span class="mnb-date">${this._formatDate(next.date)} · ${this._formatTime(next.date)}</span>` : ''}
+          ${next.venue ? html`<span class="mnb-venue">📍 ${next.venue}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
   _renderSchedule(matches) {
     if (!matches || !matches.length) {
       return html`<div class="sched-empty">${this._t('generic.no_match')}</div>`;
@@ -194,7 +243,10 @@ class SoccerLiveBracketCard extends LitElement {
         ${!displayed.length ? html`<div class="sched-empty">${this._t('generic.no_match')}</div>` : ''}
         ${Object.entries(byDate).map(([, ms]) => html`
           <div class="sched-day">
-            <div class="sched-day-label">${this._formatDate(ms[0].date)}</div>
+            <div class="sched-day-label">
+              ${ms[0].season_info ? (() => { const r = this._formatSeasonInfo(ms[0].season_info); return r ? html`<span class="sched-round-chip">${r}</span>` : ''; })() : ''}
+              <span>${this._formatDate(ms[0].date)}</span>
+            </div>
             <div class="sched-matches">
               ${ms.map(m => {
                 const isLive = m.state === 'in';
@@ -355,6 +407,7 @@ class SoccerLiveBracketCard extends LitElement {
             ${liveClock ? html`<span class="mini-clock-text">${liveClock}</span>` : ''}
           </div>
         ` : ''}
+        ${isPending && tie.first_leg_date ? html`<div class="mini-date">${this._formatDate(tie.first_leg_date)}</div>` : ''}
       </div>
     `;
   }
@@ -524,10 +577,19 @@ class SoccerLiveBracketCard extends LitElement {
           const collapsed = this._isCollapsed(round);
           const prog = this._roundProgress(round);
           const allDone = prog && prog.done === prog.total && prog.total > 0;
+          const roundDates = round.ties.map(t => t.first_leg_date).filter(Boolean).sort();
+          const dateRange = roundDates.length
+            ? (roundDates[0] === roundDates[roundDates.length - 1]
+                ? this._formatDate(roundDates[0])
+                : `${this._formatDate(roundDates[0])} – ${this._formatDate(roundDates[roundDates.length - 1])}`)
+            : '';
           return html`
             <div class="early-round-section ${collapsed ? 'collapsed' : ''}">
               <div class="early-round-label" @click=${() => this._toggleRound(round)}>
-                <span>${this._localizeRoundName(round)}</span>
+                <span class="early-round-name">
+                  ${this._localizeRoundName(round)}
+                  ${dateRange ? html`<span class="early-date-range"> · ${dateRange}</span>` : ''}
+                </span>
                 ${prog ? html`
                   <span class="round-prog ${allDone ? 'done' : prog.live ? 'live' : ''}">
                     ${allDone ? '✓' : prog.live ? html`<span class="dot"></span>` : ''}
@@ -629,6 +691,8 @@ class SoccerLiveBracketCard extends LitElement {
             fallbackIcon: '🏆',
           })}
         ` : ''}
+
+        ${this._renderMyNextMatch(scheduleMatches)}
 
         ${(hasGroups || hasSchedule) ? html`
           <div class="bracket-tabs">
@@ -1391,7 +1455,8 @@ class SoccerLiveBracketCard extends LitElement {
         border-radius: 10px; transition: background 0.15s;
       }
       .early-round-label:hover { background: rgba(var(--cl-accent-rgb),0.18); }
-      .early-round-label span:first-child { flex: 1; }
+      .early-round-name { flex: 1; }
+      .early-date-range { font-size: 9px; font-weight: 400; opacity: 0.65; letter-spacing: 0; }
       .round-prog {
         font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
         display: flex; align-items: center; gap: 4px;
@@ -1429,6 +1494,50 @@ class SoccerLiveBracketCard extends LitElement {
       }
       .sched-chip:hover:not(.active) { background: rgba(var(--cl-accent-rgb),0.20); }
       .sched-chip.empty { opacity: 0.45; }
+
+      /* My next match banner */
+      .my-next-banner {
+        position: relative; z-index: 1;
+        margin: 0 14px 12px;
+        padding: 10px 14px;
+        background: rgba(var(--cl-accent-rgb),0.07);
+        border: 1px solid rgba(var(--cl-accent-rgb),0.18);
+        border-radius: 12px;
+      }
+      .my-next-banner.live {
+        background: rgba(239,68,68,0.07);
+        border-color: rgba(239,68,68,0.25);
+      }
+      .mnb-teams {
+        display: flex; align-items: center; gap: 8px;
+      }
+      .mnb-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
+      .mnb-name { font-size: 13px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .mnb-name.away { text-align: right; }
+      .mnb-vs { font-size: 11px; font-weight: 600; color: var(--cl-text-2); padding: 0 2px; flex-shrink: 0; }
+      .mnb-score { font-size: 17px; font-weight: 900; color: var(--cl-live); font-variant-numeric: tabular-nums; padding: 0 4px; flex-shrink: 0; }
+      .mnb-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+      .mnb-round-tag {
+        font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+        color: var(--cl-accent); background: rgba(var(--cl-accent-rgb),0.12);
+        padding: 2px 7px; border-radius: 6px;
+      }
+      .mnb-date { font-size: 11px; font-weight: 600; color: var(--cl-text-2); }
+      .mnb-venue { font-size: 10px; color: var(--cl-text-2); opacity: 0.65; }
+
+      /* Schedule round chip in day header */
+      .sched-day-label { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+      .sched-round-chip {
+        font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+        color: var(--cl-accent); background: rgba(var(--cl-accent-rgb),0.12);
+        padding: 2px 7px; border-radius: 6px; flex-shrink: 0;
+      }
+
+      /* Pending mini-tie date */
+      .mini-date {
+        font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+        color: var(--cl-text-2); text-align: center; padding: 3px 0 0; opacity: 0.8;
+      }
       .chip-count {
         display: inline-flex; align-items: center; justify-content: center;
         font-size: 9px; font-weight: 800; padding: 1px 5px;

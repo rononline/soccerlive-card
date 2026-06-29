@@ -374,6 +374,101 @@
       }]
     };
 
+    // ── WK 2026 bracket mock data ────────────────────────────────────────
+    const wkDone = (nA, abA, lA, nB, abB, lB, sA, sB, date) => ({
+      team_a: { name: nA, abbrev: abA, logo: logo(lA) },
+      team_b: { name: nB, abbrev: abB, logo: logo(lB) },
+      single: { state: 'post', home_team: nA, away_team: nB, home_score: sA, away_score: sB },
+      winner_team: sA > sB ? nA : nB,
+      completed: true,
+      aggregate: `${sA} – ${sB}`,
+      first_leg_date: date,
+    });
+    const wkPending = (nA, abA, lA, nB, abB, lB, date) => ({
+      team_a: { name: nA || 'TBD', abbrev: abA || '?', logo: nA ? logo(lA) : '' },
+      team_b: { name: nB || 'TBD', abbrev: abB || '?', logo: nB ? logo(lB) : '' },
+      completed: false, winner_team: null,
+      first_leg_date: date || null,
+    });
+
+    const bracketWkAttrs = {
+      league_name: "FIFA World Cup 2026",
+      league_logo: leagueLogo,
+      league_info: [{ name: "FIFA World Cup 2026", abbreviation: "FIFA", logo_href: leagueLogo }],
+      sensor_type: "bracket",
+      api_status: "ok",
+      rounds: [
+        {
+          name: "Round of 32", size: 16,
+          ties: [
+            wkDone("Netherlands","NED",449, "Morocco","MAR",202, 2,1, "2026-06-30T01:00:00Z"),
+            wkDone("France","FRA",577,    "Poland","POL",557,   3,1, "2026-07-01T01:00:00Z"),
+            wkDone("Argentina","ARG",433, "Uruguay","URU",259,  2,0, "2026-07-01T23:00:00Z"),
+            wkDone("Spain","ESP",164,     "Mexico","MEX",162,   4,1, "2026-07-02T01:00:00Z"),
+            wkDone("Portugal","POR",556,  "Nigeria","NGA",200,  2,1, "2026-07-02T23:00:00Z"),
+            wkDone("England","ENG",4572,  "Senegal","SEN",241,  3,0, "2026-07-03T01:00:00Z"),
+            wkDone("Germany","GER",165,   "USA","USA",564,      2,0, "2026-07-03T23:00:00Z"),
+            wkDone("Brazil","BRA",6600,   "Japan","JPN",627,    3,2, "2026-07-04T01:00:00Z"),
+          ]
+        },
+        {
+          name: "Round of 16", size: 8,
+          ties: [
+            wkDone("Netherlands","NED",449, "France","FRA",577, 3,2, "2026-07-07T01:00:00Z"),
+            wkDone("Argentina","ARG",433,   "Spain","ESP",164,  1,0, "2026-07-07T23:00:00Z"),
+            wkPending("Portugal","POR",556, "England","ENG",4572, "2026-07-08T01:00:00Z"),
+            wkPending("Germany","GER",165,  "Brazil","BRA",6600,  "2026-07-08T23:00:00Z"),
+          ]
+        },
+        {
+          name: "Quarterfinals", size: 4,
+          ties: [
+            wkPending("Netherlands","NED",449, null,null,null, "2026-07-11T23:00:00Z"),
+            wkPending("Argentina","ARG",433,   null,null,null, "2026-07-12T23:00:00Z"),
+            wkPending(null,null,null, null,null,null, "2026-07-12T01:00:00Z"),
+            wkPending(null,null,null, null,null,null, "2026-07-13T01:00:00Z"),
+          ]
+        },
+        {
+          name: "Semifinals", size: 2,
+          ties: [
+            wkPending(null,null,null, null,null,null, "2026-07-15T23:00:00Z"),
+            wkPending(null,null,null, null,null,null, "2026-07-16T23:00:00Z"),
+          ]
+        },
+        { name: "Final", size: 1,
+          ties: [ wkPending(null,null,null, null,null,null, "2026-07-19T20:00:00Z") ]
+        }
+      ]
+    };
+
+    const bracketMatchesAttrs = {
+      sensor_type: "all_matches",
+      api_status: "ok",
+      matches: [
+        { state:'post', date:'2026-06-30T01:00:00Z', season_info:'round-of-32', league_name:'FIFA World Cup',
+          home_team:'Netherlands', home_abbrev:'NED', home_logo:logo(449), home_score:'2',
+          away_team:'Morocco',     away_abbrev:'MAR', away_logo:logo(202), away_score:'1',
+          home_color:'fb5d00', away_color:'df2027', venue:'Estadio BBVA' },
+        { state:'post', date:'2026-07-07T01:00:00Z', season_info:'round-of-16', league_name:'FIFA World Cup',
+          home_team:'Netherlands', home_abbrev:'NED', home_logo:logo(449), home_score:'3',
+          away_team:'France',      home_abbrev:'FRA', away_logo:logo(577), away_score:'2',
+          home_color:'fb5d00', away_color:'0055a4', venue:'AT&T Stadium' },
+        { state:'pre',  date:'2026-07-11T23:00:00Z', season_info:'quarterfinals', league_name:'FIFA World Cup',
+          home_team:'Netherlands', home_abbrev:'NED', home_logo:logo(449), home_score:'0',
+          away_team:'TBD',         away_abbrev:'?',   away_logo:'',        away_score:'0',
+          home_color:'fb5d00', venue:'SoFi Stadium, Los Angeles' },
+        { state:'pre',  date:'2026-07-15T23:00:00Z', season_info:'semifinals', league_name:'FIFA World Cup',
+          home_team:'TBD', home_abbrev:'?', home_logo:'', home_score:'0',
+          away_team:'TBD', away_abbrev:'?', away_logo:'', away_score:'0', venue:'MetLife Stadium' },
+        { state:'pre',  date:'2026-07-19T20:00:00Z', season_info:'final', league_name:'FIFA World Cup',
+          home_team:'TBD', home_abbrev:'?', home_logo:'', home_score:'0',
+          away_team:'TBD', away_abbrev:'?', away_logo:'', away_score:'0', venue:'MetLife Stadium, New York' },
+      ]
+    };
+
+    const bracketGroupsAttrs = { ...attrs, standings_groups: attrs.standings_groups };
+
     const longNameAttrs = {
       ...attrs,
       team_name: "Netherlands Under Twenty One Invitational XI",
@@ -405,6 +500,9 @@
       "sensor.preview_scorers": { state: "FIFA World Cup", attributes: attrs },
       "sensor.preview_news": { state: "2", attributes: attrs },
       "sensor.preview_bracket": { state: "FIFA World Cup", attributes: attrs },
+      "sensor.preview_bracket_wk": { state: "FIFA World Cup 2026", attributes: bracketWkAttrs },
+      "sensor.preview_bracket_matches": { state: "5", attributes: bracketMatchesAttrs },
+      "sensor.preview_bracket_groups": { state: "FIFA World Cup", attributes: bracketGroupsAttrs },
       "sensor.preview_commentary": { state: "live", attributes: attrs },
       "sensor.preview_diagnostics": { state: "ok", attributes: attrs },
       "sensor.preview_empty": { state: "0", attributes: emptyAttrs },
@@ -426,7 +524,8 @@
       ["Mini Standings", "mini-standings", { entity: "sensor.preview_standings", max_rows: 4, highlight_team: "Netherlands" }],
       ["Top Scorers", "scorers", { entity: "sensor.preview_scorers" }],
       ["News", "news", { entity: "sensor.preview_news" }],
-      ["Bracket", "bracket", { entity: "sensor.preview_bracket", style: "list" }, "wide"],
+      ["Bracket · List", "bracket", { entity: "sensor.preview_bracket", style: "list" }, "wide"],
+      ["Bracket · WK Tree + Groups + Schedule", "bracket", { entity: "sensor.preview_bracket_wk", style: "tree", my_team: "Netherlands", groups_entity: "sensor.preview_bracket_groups", matches_entity: "sensor.preview_bracket_matches" }, "wide"],
       ["Diagnostics", "diagnostics", { entity: "sensor.preview_diagnostics" }],
       ["Team · long names / no logos", "team", { entity: "sensor.preview_missing_logos" }, "wide"],
       ["Matches · empty", "matches", { entity: "sensor.preview_empty" }],
