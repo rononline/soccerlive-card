@@ -38,6 +38,29 @@ class SoccerLiveBracketCard extends LitElement {
     this._schedFilter = 'auto';
   }
 
+  updated(changedProps) {
+    super.updated?.(changedProps);
+    if (changedProps.has('_activeTab') && this._activeTab === 'schedule') {
+      this._scrollScheduleAfterRender();
+    }
+  }
+
+  _scrollScheduleAfterRender() {
+    requestAnimationFrame(() => {
+      const tz = this.hass?.config?.time_zone;
+      let target = null;
+      if (this._schedScrollToDate) {
+        target = this.shadowRoot?.querySelector(`.sched-day[data-date="${this._schedScrollToDate}"]`);
+        this._schedScrollToDate = null;
+      }
+      if (!target) {
+        const todayKey = new Date().toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
+        target = this.shadowRoot?.querySelector(`.sched-day[data-date="${todayKey}"]`);
+      }
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
   _t(key, vars) {
     return t(key, resolveLang(this.hass, this._config), vars);
   }
@@ -177,7 +200,15 @@ class SoccerLiveBracketCard extends LitElement {
         </div>
         <div class="mnb-meta">
           ${round ? html`<span class="mnb-round-tag">${round}</span>` : ''}
-          ${!isLive && next.date ? html`<span class="mnb-date">${this._formatDate(next.date)} · ${this._formatTime(next.date)}</span>` : ''}
+          ${!isLive && next.date ? (() => {
+            const diff = new Date(next.date).getTime() - now;
+            if (diff > 0 && diff < 24 * 3600 * 1000) {
+              const h = Math.floor(diff / 3600000);
+              const m = Math.floor((diff % 3600000) / 60000);
+              return html`<span class="mnb-countdown">⏱ ${h > 0 ? `${h}u ${m}m` : `${m}m`}</span>`;
+            }
+            return html`<span class="mnb-date">${this._formatDate(next.date)} · ${this._formatTime(next.date)}</span>`;
+          })() : ''}
           ${next.venue ? html`<span class="mnb-venue">📍 ${next.venue}</span>` : ''}
         </div>
       </div>
@@ -247,8 +278,8 @@ class SoccerLiveBracketCard extends LitElement {
           `)}
         </div>
         ${!displayed.length ? html`<div class="sched-empty">${this._t('generic.no_match')}</div>` : ''}
-        ${Object.entries(byDate).map(([, ms]) => html`
-          <div class="sched-day">
+        ${Object.entries(byDate).map(([key, ms]) => html`
+          <div class="sched-day" data-date=${key}>
             <div class="sched-day-label">
               ${ms[0].season_info ? (() => { const r = this._formatSeasonInfo(ms[0].season_info); return r ? html`<span class="sched-round-chip">${r}</span>` : ''; })() : ''}
               <span>${this._formatDate(ms[0].date)}</span>
@@ -419,6 +450,9 @@ class SoccerLiveBracketCard extends LitElement {
           </div>
         ` : ''}
         ${isPending && tie.first_leg_date ? html`<div class="mini-date">${this._formatDate(tie.first_leg_date)}</div>` : ''}
+        ${tie.completed && hasMyTeam
+          ? html`<div class="mini-result ${this._matchesMyTeam(tie.winner_team) ? 'won' : 'lost'}">${this._matchesMyTeam(tie.winner_team) ? '✓' : '✗'}</div>`
+          : ''}
       </div>
     `;
   }
@@ -606,6 +640,14 @@ class SoccerLiveBracketCard extends LitElement {
                     ${allDone ? '✓' : prog.live ? html`<span class="dot"></span>` : ''}
                     ${prog.done}/${prog.total}
                   </span>
+                ` : ''}
+                ${this._matchesEntity ? html`
+                  <span class="early-sched-btn" title="View in schedule" @click=${e => {
+                    e.stopPropagation();
+                    this._schedScrollToDate = roundDates[0] || null;
+                    this._schedFilter = 'all';
+                    this._activeTab = 'schedule';
+                  }}>📅</span>
                 ` : ''}
                 <span class="round-chevron">${collapsed ? '›' : '‹' }</span>
               </div>
@@ -1540,6 +1582,7 @@ class SoccerLiveBracketCard extends LitElement {
         padding: 2px 7px; border-radius: 6px;
       }
       .mnb-date { font-size: 11px; font-weight: 600; color: var(--cl-text-2); }
+      .mnb-countdown { font-size: 12px; font-weight: 800; color: var(--cl-accent); }
       .mnb-venue { font-size: 10px; color: var(--cl-text-2); opacity: 0.65; }
 
       /* Schedule round chip in day header */
@@ -1549,6 +1592,15 @@ class SoccerLiveBracketCard extends LitElement {
         color: var(--cl-accent); background: rgba(var(--cl-accent-rgb),0.12);
         padding: 2px 7px; border-radius: 6px; flex-shrink: 0;
       }
+
+      .mini-result { font-size: 9px; font-weight: 900; text-align: center; padding: 2px 0 1px; line-height: 1; }
+      .mini-result.won { color: var(--cl-green); }
+      .mini-result.lost { color: var(--cl-live); }
+      .early-sched-btn {
+        font-size: 12px; opacity: 0.45; cursor: pointer; padding: 2px 5px;
+        border-radius: 4px; transition: opacity 0.15s; flex-shrink: 0;
+      }
+      .early-sched-btn:hover { opacity: 1; background: rgba(var(--cl-accent-rgb),0.15); }
 
       /* Pending mini-tie date */
       .mini-date {
