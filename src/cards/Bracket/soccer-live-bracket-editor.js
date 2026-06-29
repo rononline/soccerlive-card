@@ -9,10 +9,17 @@ class SoccerLiveBracketEditor extends LitElement {
       _config: { type: Object },
       hass: { type: Object },
       entities: { type: Array },
+      standingsEntities: { type: Array },
+      matchesEntities: { type: Array },
     };
   }
 
-  constructor() { super(); this.entities = []; }
+  constructor() {
+    super();
+    this.entities = [];
+    this.standingsEntities = [];
+    this.matchesEntities = [];
+  }
 
   static get styles() {
     return css`
@@ -20,7 +27,7 @@ class SoccerLiveBracketEditor extends LitElement {
       .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       label { font-size: 14px; color: var(--primary-text-color); }
       .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
-      select {
+      select, input[type="text"] {
         width: 100%; padding: 10px 12px; font-size: 14px;
         border-radius: 8px;
         border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
@@ -78,13 +85,41 @@ class SoccerLiveBracketEditor extends LitElement {
     const key = target.dataset.configValue;
     const value = target.value;
     if (this._config[key] === value) return;
-    this._fireConfigChanged({ ...this._config, [key]: value });
+    if (value === '') {
+      const cfg = { ...this._config };
+      delete cfg[key];
+      this._fireConfigChanged(cfg);
+    } else {
+      this._fireConfigChanged({ ...this._config, [key]: value });
+    }
+  }
+
+  _textChanged(ev) {
+    if (!this._config) return;
+    const target = ev.target;
+    const key = target.dataset.configValue;
+    const value = target.value;
+    if (this._config[key] === value) return;
+    if (value === '') {
+      const cfg = { ...this._config };
+      delete cfg[key];
+      this._fireConfigChanged(cfg);
+    } else {
+      this._fireConfigChanged({ ...this._config, [key]: value });
+    }
   }
 
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
       .filter(id => id.includes('soccerlive_bracket') || id.includes('soccer_live_bracket'))
+      .sort();
+    this.standingsEntities = Object.keys(this.hass.states)
+      .filter(id => id.includes('soccerlive_standings') || id.includes('soccer_live_standings'))
+      .sort();
+    this.matchesEntities = Object.keys(this.hass.states)
+      .filter(id => (id.includes('soccerlive_all') || id.includes('soccer_live_all')) &&
+                    !id.includes('_mixed'))
       .sort();
   }
 
@@ -140,6 +175,32 @@ class SoccerLiveBracketEditor extends LitElement {
             ></ha-switch>
           </div>
         ` : ''}
+        <div>
+          <label class="field-label">${this._t('editor.my_team')}</label>
+          <input type="text"
+            data-config-value="my_team"
+            .value=${this._config.my_team || ''}
+            placeholder="${this._t('editor.my_team_hint')}"
+            @change=${this._textChanged}
+          >
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.groups_entity')}</label>
+          <select data-config-value="groups_entity" @change=${this._selectChanged}>
+            <option value="" ?selected=${!this._config.groups_entity}>— None —</option>
+            ${this.standingsEntities.map(e => html`<option value="${e}" ?selected=${e === this._config.groups_entity}>${e}</option>`)}
+          </select>
+          <div class="hint" style="margin-top:4px">${this._t('editor.hint_groups_entity')}</div>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.matches_entity')}</label>
+          <select data-config-value="matches_entity" @change=${this._selectChanged}>
+            <option value="" ?selected=${!this._config.matches_entity}>— None —</option>
+            ${this.matchesEntities.map(e => html`<option value="${e}" ?selected=${e === this._config.matches_entity}>${e}</option>`)}
+          </select>
+          <div class="hint" style="margin-top:4px">${this._t('editor.hint_matches_entity')}</div>
+        </div>
+
         <div>
           <label class="field-label">${this._t('editor.skin')}</label>
           <select data-config-value="skin" @change=${this._selectChanged}>
