@@ -84,6 +84,17 @@ class SoccerLiveTickerEditor extends LitElement {
           <option value="live" ?selected=${this._config.filter === 'live'}>Live only</option>
         </select>
 
+        <label>Competition filter (optional)</label>
+        <input type="text"
+          .value=${this._config.competition_filter || ''}
+          placeholder="e.g. World Cup"
+          @change=${e => {
+            const v = e.target.value.trim();
+            const cfg = { ...this._config };
+            if (v) cfg.competition_filter = v; else delete cfg.competition_filter;
+            this._fire(cfg);
+          }}>
+
         <label class="toggle-row">
           <input type="checkbox" ?checked=${!!this._config.hide_when_empty}
             @change=${e => this._fire({ ...this._config, hide_when_empty: e.target.checked })}>

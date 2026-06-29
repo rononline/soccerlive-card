@@ -44,6 +44,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Bracket',
     'bracket.tab_groups': 'Groups',
     'bracket.tab_schedule': 'Schedule',
+    'bracket.won': 'Won',
+    'bracket.eliminated': 'Eliminated',
 
     // Match status
     'status.live': 'Live',
@@ -367,6 +369,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Schema',
     'bracket.tab_groups': 'Groepen',
     'bracket.tab_schedule': 'Wedstrijden',
+    'bracket.won': 'Gewonnen',
+    'bracket.eliminated': 'Uitgeschakeld',
 
     'status.live': 'Live',
     'status.finished': 'Afgelopen',
@@ -671,6 +675,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Tabellone',
     'bracket.tab_groups': 'Gironi',
     'bracket.tab_schedule': 'Partite',
+    'bracket.won': 'Vinto',
+    'bracket.eliminated': 'Eliminato',
 
     'status.live': 'Diretta',
     'status.finished': 'Finita',
@@ -975,6 +981,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Tableau',
     'bracket.tab_groups': 'Groupes',
     'bracket.tab_schedule': 'Matchs',
+    'bracket.won': 'Gagné',
+    'bracket.eliminated': 'Éliminé',
 
     'status.live': 'En direct',
     'status.finished': 'Terminé',
@@ -1279,6 +1287,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Cuadro',
     'bracket.tab_groups': 'Grupos',
     'bracket.tab_schedule': 'Partidos',
+    'bracket.won': 'Ganado',
+    'bracket.eliminated': 'Eliminado',
 
     'status.live': 'En vivo',
     'status.finished': 'Finalizado',
@@ -1583,6 +1593,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'K.o.-Baum',
     'bracket.tab_groups': 'Gruppen',
     'bracket.tab_schedule': 'Spiele',
+    'bracket.won': 'Gewonnen',
+    'bracket.eliminated': 'Ausgeschieden',
 
     'status.live': 'Live',
     'status.finished': 'Beendet',
@@ -1888,6 +1900,8 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Chave',
     'bracket.tab_groups': 'Grupos',
     'bracket.tab_schedule': 'Jogos',
+    'bracket.won': 'Ganhou',
+    'bracket.eliminated': 'Eliminado',
 
     'status.live': 'Ao vivo',
     'status.finished': 'Encerrado',

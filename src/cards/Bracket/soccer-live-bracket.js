@@ -35,7 +35,7 @@ class SoccerLiveBracketCard extends LitElement {
     this._activeTab = 'bracket';
     this._collapsedRounds = new Set();
     this._expandedRounds = new Set();
-    this._schedFilter = 'all';
+    this._schedFilter = 'auto';
   }
 
   _t(key, vars) {
@@ -210,10 +210,16 @@ class SoccerLiveBracketCard extends LitElement {
       ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
       : false).length;
 
-    // Apply user chip filter
-    const displayed = this._schedFilter === 'live'
+    // Resolve auto filter
+    let effectiveFilter = this._schedFilter;
+    if (effectiveFilter === 'auto') {
+      effectiveFilter = liveCount > 0 ? 'live' : todayCount > 0 ? 'today' : 'all';
+    }
+
+    // Apply filter
+    const displayed = effectiveFilter === 'live'
       ? base.filter(m => m.state === 'in')
-      : this._schedFilter === 'today'
+      : effectiveFilter === 'today'
         ? base.filter(m => m.date
             ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
             : false)
@@ -234,7 +240,7 @@ class SoccerLiveBracketCard extends LitElement {
             ['live', this._t('status.live'), liveCount],
             ['today', this._t('time.today'), todayCount],
           ].map(([f, label, count]) => html`
-            <span class="sched-chip ${this._schedFilter === f ? 'active' : ''} ${!count && f !== 'all' ? 'empty' : ''}"
+            <span class="sched-chip ${effectiveFilter === f ? 'active' : ''} ${!count && f !== 'all' ? 'empty' : ''}"
                   @click=${() => { this._schedFilter = f; }}>
               ${label}${count > 0 ? html`<span class="chip-count">${count}</span>` : ''}
             </span>
@@ -349,6 +355,11 @@ class SoccerLiveBracketCard extends LitElement {
           ${tie.tied ? html`<span class="agg tied">${this._t('bracket.tied_agg')}</span>` : ''}
           ${!tie.completed && !isLive && tie.first_leg_date ? html`<span class="date">${this._formatDate(tie.first_leg_date)}</span>` : ''}
           ${isPending ? html`<span class="date pending">${this._t('bracket.tbd')}</span>` : ''}
+          ${tie.completed && hasMyTeam
+            ? this._matchesMyTeam(tie.winner_team)
+              ? html`<span class="my-result won">✓ ${this._t('bracket.won')}</span>`
+              : html`<span class="my-result lost">✗ ${this._t('bracket.eliminated')}</span>`
+            : ''}
         </div>
       </div>
     `;
@@ -938,6 +949,12 @@ class SoccerLiveBracketCard extends LitElement {
       .date.pending {
         color: var(--cl-accent);
       }
+      .my-result {
+        font-size: 9px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; padding: 2px 7px; border-radius: 6px;
+      }
+      .my-result.won { color: var(--cl-green); background: rgba(16,185,129,0.12); }
+      .my-result.lost { color: var(--cl-live); background: rgba(239,68,68,0.08); }
       .live-badge {
         display: inline-flex; align-items: center; gap: 5px;
         background: linear-gradient(135deg, var(--cl-live), #f97316);
