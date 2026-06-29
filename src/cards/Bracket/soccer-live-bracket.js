@@ -15,6 +15,7 @@ class SoccerLiveBracketCard extends LitElement {
       _treeShowPlayoffs: { type: Boolean },
       _myTeam: { type: String },
       _activeTab: { type: String },
+      _matchesEntity: { type: String },
     };
   }
 
@@ -27,6 +28,7 @@ class SoccerLiveBracketCard extends LitElement {
     this._cardStyle = config.style === 'tree' ? 'tree' : 'list';
     this._treeShowPlayoffs = config.tree_show_playoffs === true;
     this._myTeam = config.my_team || '';
+    this._matchesEntity = config.matches_entity || '';
     this._activeTab = 'bracket';
   }
 
@@ -67,6 +69,79 @@ class SoccerLiveBracketCard extends LitElement {
 
   _tieHasMyTeam(tie) {
     return this._matchesMyTeam((tie.team_a || {}).name) || this._matchesMyTeam((tie.team_b || {}).name);
+  }
+
+  _getBracketSide(earlyRounds, qfSplit, sfSplit) {
+    if (!this._myTeam) return null;
+    for (const tie of sfSplit.left) { if (this._tieHasMyTeam(tie)) return 'left'; }
+    for (const tie of sfSplit.right) { if (this._tieHasMyTeam(tie)) return 'right'; }
+    for (const tie of qfSplit.left) { if (this._tieHasMyTeam(tie)) return 'left'; }
+    for (const tie of qfSplit.right) { if (this._tieHasMyTeam(tie)) return 'right'; }
+    for (const round of earlyRounds) {
+      const ties = round.ties || [];
+      const mid = Math.ceil(ties.length / 2);
+      for (let i = 0; i < ties.length; i++) {
+        if (this._tieHasMyTeam(ties[i])) return i < mid ? 'left' : 'right';
+      }
+    }
+    return null;
+  }
+
+  _formatTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return ''; }
+  }
+
+  _renderSchedule(matches) {
+    if (!matches || !matches.length) {
+      return html`<div class="sched-empty">${this._t('generic.no_data')}</div>`;
+    }
+    const sorted = [...matches].sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+    const byDate = {};
+    for (const m of sorted) {
+      const key = (m.date || '').substring(0, 10);
+      if (!byDate[key]) byDate[key] = [];
+      byDate[key].push(m);
+    }
+    return html`
+      <div class="sched-view">
+        ${Object.entries(byDate).map(([, ms]) => html`
+          <div class="sched-day">
+            <div class="sched-day-label">${this._formatDate(ms[0].date)}</div>
+            <div class="sched-matches">
+              ${ms.map(m => {
+                const isLive = m.state === 'in';
+                const isDone = m.state === 'post';
+                const home = m.home_team || {};
+                const away = m.away_team || {};
+                const matchMyTeam = this._matchesMyTeam(home.name) || this._matchesMyTeam(away.name);
+                const scoreOrTime = (isDone || isLive)
+                  ? `${m.home_score ?? '-'} – ${m.away_score ?? '-'}`
+                  : this._formatTime(m.date);
+                return html`
+                  <div class="sched-match ${isLive ? 'live' : ''} ${isDone ? 'done' : ''} ${matchMyTeam && this._myTeam ? 'my-team' : ''}">
+                    <div class="sched-team">
+                      ${home.logo ? html`<img class="sched-logo" src="${home.logo}" alt="">` : ''}
+                      <span class="sched-name">${home.name || 'TBD'}</span>
+                    </div>
+                    <div class="sched-score">
+                      ${isLive ? html`<span class="dot"></span>` : ''}
+                      <span>${scoreOrTime}</span>
+                    </div>
+                    <div class="sched-team away">
+                      ${away.logo ? html`<img class="sched-logo" src="${away.logo}" alt="">` : ''}
+                      <span class="sched-name">${away.name || 'TBD'}</span>
+                    </div>
+                  </div>
+                `;
+              })}
+            </div>
+          </div>
+        `)}
+      </div>
+    `;
   }
 
   getCardSize() { return 6; }
@@ -297,10 +372,12 @@ class SoccerLiveBracketCard extends LitElement {
     const outerLeft = r32Split.left.length || r16Split.left.length;
     const outerRight = r32Split.right.length || r16Split.right.length;
 
+    const pathSide = this._getBracketSide(earlyRounds, qfSplit, sfSplit);
+
     return html`
       <div class="tree-wrap ${earlyRounds.length ? 'has-early' : ''}">
         <div class="tree ${!hasSides ? 'tree-center-only' : ''} ${r32InEarly ? 'no-r32' : ''} ${r16InEarly ? 'no-r16' : ''}">
-          <div class="tree-half left">
+          <div class="tree-half left ${pathSide === 'left' ? 'path-my-team' : pathSide ? 'path-other' : ''}">
             ${playoffsSplit && playoffsSplit.left.length ? html`
               ${this._renderTreeRound(playoffsSplit.left, 'round.knockout_playoffs')}
               ${outerLeft ? this._renderArrows(outerLeft, 'left') : ''}
@@ -333,7 +410,7 @@ class SoccerLiveBracketCard extends LitElement {
               : ''}
           </div>
 
-          <div class="tree-half right">
+          <div class="tree-half right ${pathSide === 'right' ? 'path-my-team' : pathSide ? 'path-other' : ''}">
             ${sfSplit.right.length ? this._renderArrows(1, 'right') : ''}
             ${sfSplit.right.length ? this._renderTreeRound(sfSplit.right, 'round.semifinals') : ''}
             ${sfSplit.right.length && qfSplit.right.length ? this._renderArrows(sfSplit.right.length, 'right') : ''}
@@ -410,7 +487,12 @@ class SoccerLiveBracketCard extends LitElement {
     const groupsData = (groupsStateObj?.attributes?.standings_groups || []).filter(g => g.standings?.length);
     const hasGroups = groupsData.length > 0;
 
-    if (rounds.length === 0 && !hasGroups) {
+    const matchesEntityId = this._config.matches_entity || this._matchesEntity;
+    const matchesStateObj = matchesEntityId ? this.hass.states[matchesEntityId] : null;
+    const scheduleMatches = matchesStateObj?.attributes?.matches || [];
+    const hasSchedule = scheduleMatches.length > 0;
+
+    if (rounds.length === 0 && !hasGroups && !hasSchedule) {
       return html`
         <ha-card class="empty">
           <div class="hero-bg"></div>
@@ -438,22 +520,32 @@ class SoccerLiveBracketCard extends LitElement {
           })}
         ` : ''}
 
-        ${hasGroups ? html`
+        ${(hasGroups || hasSchedule) ? html`
           <div class="bracket-tabs">
             <span class="bracket-tab ${this._activeTab === 'bracket' ? 'active' : ''}"
                   @click=${() => { this._activeTab = 'bracket'; }}>
               🏆 ${this._t('bracket.tab_bracket')}
             </span>
-            <span class="bracket-tab ${this._activeTab === 'groups' ? 'active' : ''}"
-                  @click=${() => { this._activeTab = 'groups'; }}>
-              📊 ${this._t('bracket.tab_groups')}
-            </span>
+            ${hasGroups ? html`
+              <span class="bracket-tab ${this._activeTab === 'groups' ? 'active' : ''}"
+                    @click=${() => { this._activeTab = 'groups'; }}>
+                📊 ${this._t('bracket.tab_groups')}
+              </span>
+            ` : ''}
+            ${hasSchedule ? html`
+              <span class="bracket-tab ${this._activeTab === 'schedule' ? 'active' : ''}"
+                    @click=${() => { this._activeTab = 'schedule'; }}>
+                📅 ${this._t('bracket.tab_schedule')}
+              </span>
+            ` : ''}
           </div>
         ` : ''}
 
         ${this._activeTab === 'groups' && hasGroups
           ? this._renderGroups(groupsData)
-          : this._cardStyle === 'tree'
+          : this._activeTab === 'schedule' && hasSchedule
+            ? this._renderSchedule(scheduleMatches)
+            : this._cardStyle === 'tree'
             ? this._renderTree(rounds)
             : html`
               <div class="rounds-container"
@@ -775,6 +867,42 @@ class SoccerLiveBracketCard extends LitElement {
       .g-pts { font-size: 12px; font-weight: 800; color: var(--cl-text); text-align: center; font-variant-numeric: tabular-nums; }
       .group-row.my-team .g-pts { color: var(--cl-green); }
 
+      /* ============== SCHEDULE TAB ============== */
+      .sched-view { padding: 8px 16px 16px; }
+      .sched-empty { padding: 32px; text-align: center; color: var(--cl-text-2); font-size: 13px; }
+      .sched-day { margin-bottom: 16px; }
+      .sched-day-label {
+        font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+        color: var(--cl-accent); padding: 4px 8px; margin-bottom: 6px;
+        background: rgba(var(--cl-accent-rgb),0.10); border-radius: 6px; display: inline-block;
+      }
+      .sched-matches { display: flex; flex-direction: column; gap: 4px; }
+      .sched-match {
+        display: grid; grid-template-columns: 1fr auto 1fr;
+        align-items: center; gap: 8px;
+        background: var(--cl-card-2); border-radius: 8px; padding: 7px 10px;
+        border: 1px solid var(--cl-glass-border);
+      }
+      .sched-match.live { border-color: var(--cl-live); box-shadow: 0 0 12px var(--cl-live-glow); }
+      .sched-match.my-team { border-color: var(--cl-green); }
+      .sched-team {
+        display: flex; align-items: center; gap: 6px;
+        overflow: hidden;
+      }
+      .sched-team.away { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
+      .sched-logo { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+      .sched-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .sched-score {
+        display: flex; align-items: center; gap: 4px; justify-content: center;
+        font-size: 13px; font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums;
+        min-width: 56px; text-align: center;
+      }
+      .sched-match.live .sched-score { color: var(--cl-live); }
+      .sched-score .dot {
+        width: 7px; height: 7px; border-radius: 50%; background: var(--cl-live); flex-shrink: 0;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
       /* Compact mode (vertical, single column per round) */
       .rounds-container.compact {
         flex-direction: column;
@@ -814,6 +942,15 @@ class SoccerLiveBracketCard extends LitElement {
         flex: 1 0 auto;
         display: flex;
         align-items: stretch;
+      }
+      .tree-half.path-my-team {
+        background: rgba(16, 185, 129, 0.05);
+        border-radius: 12px;
+        outline: 1px solid rgba(16, 185, 129, 0.15);
+      }
+      .tree-half.path-other {
+        opacity: 0.55;
+        filter: saturate(0.6);
       }
       /* No row-reverse: the right side's mirror effect is achieved by rendering
          children directly in SF→QF→R16 order (see _renderTree). */

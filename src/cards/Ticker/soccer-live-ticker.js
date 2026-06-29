@@ -124,7 +124,14 @@ class SoccerLiveTickerCard extends LitElement {
     });
 
     const filter = this._config.filter;
-    const visible = filter === 'live' ? sorted.filter(m => m.state === 'in') : sorted;
+    let visible = filter === 'live' ? sorted.filter(m => m.state === 'in') : sorted;
+    const compFilter = this._config.competition_filter?.toLowerCase();
+    if (compFilter) {
+      const filtered = visible.filter(m =>
+        (m.competition_name || m.league_name || '').toLowerCase().includes(compFilter)
+      );
+      if (filtered.length) visible = filtered;
+    }
 
     if (!visible.length) {
       if (this._config.hide_when_empty) return html`<style>:host{display:none!important}</style>`;

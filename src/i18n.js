@@ -43,6 +43,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Agg.',
     'bracket.tab_bracket': 'Bracket',
     'bracket.tab_groups': 'Groups',
+    'bracket.tab_schedule': 'Schedule',
 
     // Match status
     'status.live': 'Live',
@@ -361,6 +362,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Totaal',
     'bracket.tab_bracket': 'Schema',
     'bracket.tab_groups': 'Groepen',
+    'bracket.tab_schedule': 'Wedstrijden',
 
     'status.live': 'Live',
     'status.finished': 'Afgelopen',
@@ -660,6 +662,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Aggreg.',
     'bracket.tab_bracket': 'Tabellone',
     'bracket.tab_groups': 'Gironi',
+    'bracket.tab_schedule': 'Partite',
 
     'status.live': 'Diretta',
     'status.finished': 'Finita',
@@ -959,6 +962,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Cumul',
     'bracket.tab_bracket': 'Tableau',
     'bracket.tab_groups': 'Groupes',
+    'bracket.tab_schedule': 'Matchs',
 
     'status.live': 'En direct',
     'status.finished': 'Terminé',
@@ -1258,6 +1262,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Global',
     'bracket.tab_bracket': 'Cuadro',
     'bracket.tab_groups': 'Grupos',
+    'bracket.tab_schedule': 'Partidos',
 
     'status.live': 'En vivo',
     'status.finished': 'Finalizado',
@@ -1557,6 +1562,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Gesamt',
     'bracket.tab_bracket': 'K.o.-Baum',
     'bracket.tab_groups': 'Gruppen',
+    'bracket.tab_schedule': 'Spiele',
 
     'status.live': 'Live',
     'status.finished': 'Beendet',
@@ -1857,6 +1863,7 @@ const TRANSLATIONS = {
     'bracket.agg': 'Agregado',
     'bracket.tab_bracket': 'Chave',
     'bracket.tab_groups': 'Grupos',
+    'bracket.tab_schedule': 'Jogos',
 
     'status.live': 'Ao vivo',
     'status.finished': 'Encerrado',
