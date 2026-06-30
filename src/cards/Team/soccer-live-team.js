@@ -711,7 +711,8 @@ class SoccerLiveTeamCard extends LitElement {
           const scoreClass = (homeTracked || awayTracked)
             ? (trackedWon ? 'tw' : trackedLost ? 'tl' : 'draw')
             : (homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw');
-          const compLabel = m.league_abbrev || m.league_abbreviation || m.competition_abbreviation || m.league_name || '';
+          const cleanStr = v => (v && v !== 'N/A') ? v : '';
+          const compLabel = cleanStr(m.league_abbrev) || cleanStr(m.league_abbreviation) || cleanStr(m.competition_abbreviation) || cleanStr(m.league_name);
           return html`
             <div class="upcoming-row">
               <span class="upcoming-date">
@@ -753,7 +754,8 @@ class SoccerLiveTeamCard extends LitElement {
           const isLiveRow = m.state === 'in';
           const hasH2H = m.head_to_head && m.head_to_head.length > 0;
           const clickable = hasH2H;
-          const oppForm = homeTracked ? (m.away_form || '') : awayTracked ? (m.home_form || '') : '';
+          const cleanForm = v => (v && v !== 'N/A') ? v : '';
+          const oppForm = homeTracked ? cleanForm(m.away_form) : awayTracked ? cleanForm(m.home_form) : '';
           const renderOppDots = (str, side) => {
             if (!str) return '';
             return html`<div class="upl-opp-form ${side}">
@@ -763,7 +765,7 @@ class SoccerLiveTeamCard extends LitElement {
               })}
             </div>`;
           };
-          const uplCompLabel = m.league_name || '';
+          const uplCompLabel = (m.league_name && m.league_name !== 'N/A') ? m.league_name : '';
           return html`
             <div class="upcoming-row ${clickable ? 'clickable' : ''}"
                  @click="${clickable ? () => this.showDetails(m) : null}">

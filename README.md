@@ -390,6 +390,9 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Countdown competition name from `league_info.name` | v3.6.5 |
 | URL-based shared fetch cache (sensors on same endpoint share one request) | v3.6.3 |
 | Stable `league_name` / `league_logo` per match on mixed/all sensors | v3.6.25 |
+| Competition label in Team card previous/upcoming matches (`league_name` in compact objects) | v3.6.47 |
+| Opponent form dots in Team card upcoming matches (`home_form`/`away_form` in compact objects) | v3.6.47 |
+| Live clock in schedule summary (`clock` in compact schedule objects) | v3.6.48 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -397,7 +400,7 @@ Cards degrade gracefully when older integration versions are used — features s
 
 ## 🌍 Multi-language
 
-All UI text is translated via `src/i18n.js` with **282 keys** in seven languages.
+All UI text is translated via `src/i18n.js` with **290 keys** in seven languages.
 
 | Key | EN | NL | DE | PT | FR | ES | IT |
 |---|---|---|---|---|---|---|---|
@@ -407,6 +410,9 @@ All UI text is translated via `src/i18n.js` with **282 keys** in seven languages
 | `filter.all` | All | Alles | Alle | Todos | Tout | Todo | Tutto |
 | `round.r16` | Round of 16 | Achtste finales | Achtelfinale | Oitavas | Huitièmes | Octavos | Ottavi |
 | `status.halftime` | Halftime | Rust | Halbzeit | Intervalo | Mi-temps | Descanso | Intervallo |
+| `status.extra_time` | Extra Time | Verlengingen | Verlängerung | Prorrogação | Prolongations | Prórroga | Tempi supplementari |
+| `status.shootout` | Penalty Shootout | Strafschoppen | Elfmeterschießen | Pênaltis | Tirs au but | Penaltis | Rigori |
+| `status.end_match` | End of Match | Einde wedstrijd | Spielende | Fim da partida | Fin du match | Fin del partido | Fine partita |
 | `team.form` | Form | Vorm | Form | Forma | Forme | Forma | Forma |
 | `ui.loading_timeout` | Loading timeout | Laden mislukt | Ladetimeout | Tempo esgotado | Délai dépassé | Tiempo agotado | Timeout |
 

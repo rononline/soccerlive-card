@@ -91,14 +91,19 @@ class SoccerLiveBracketCard extends LitElement {
   }
 
   _formatSeasonInfo(s) {
-    if (!s) return '';
+    if (!s || s === 'N/A') return '';
     const map = {
+      'round-of-64': 'round.r64',
       'round-of-32': 'round.r32',
       'round-of-16': 'round.r16',
       'quarterfinals': 'round.quarterfinals',
       'semifinals': 'round.semifinals',
       'final': 'round.final',
       'third-place': 'round.third_place',
+      'knockout-playoffs': 'round.knockout_playoffs',
+      'knockout-round': 'round.knockout_playoffs',
+      'preliminary': 'round.preliminary',
+      'preliminary-round': 'round.preliminary',
       'group-stage': null,
     };
     if (s in map) {
@@ -186,7 +191,7 @@ class SoccerLiveBracketCard extends LitElement {
     });
     if (!next) return '';
     const isLive = next.state === 'in';
-    const round = next.season_info ? this._formatSeasonInfo(next.season_info) : '';
+    const round = (next.season_info && next.season_info !== 'N/A') ? this._formatSeasonInfo(next.season_info) : '';
     return html`
       <div class="my-next-banner ${isLive ? 'live' : ''}">
         <div class="mnb-teams">
@@ -290,7 +295,7 @@ class SoccerLiveBracketCard extends LitElement {
           <div class="sched-day" data-date=${key}>
             <div class="sched-day-label">
               ${dayLogo ? html`<img class="sched-comp-logo" src="${dayLogo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
-              ${ms[0].season_info ? (() => { const r = this._formatSeasonInfo(ms[0].season_info); return r ? html`<span class="sched-round-chip">${r}</span>` : ''; })() : ''}
+              ${(ms[0].season_info && ms[0].season_info !== 'N/A') ? (() => { const r = this._formatSeasonInfo(ms[0].season_info); return r ? html`<span class="sched-round-chip">${r}</span>` : ''; })() : ''}
               <span>${this._formatDate(ms[0].date)}</span>
             </div>
             <div class="sched-matches">
