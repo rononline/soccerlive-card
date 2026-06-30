@@ -67,9 +67,9 @@ export class OfflineCache {
   }
 
   static getAge(entityId) {
-    const cached = localStorage.getItem(CACHE_KEY_PREFIX + entityId);
-    if (!cached) return null;
     try {
+      const cached = localStorage.getItem(CACHE_KEY_PREFIX + entityId);
+      if (!cached) return null;
       const { timestamp } = JSON.parse(cached);
       const ageMs = Date.now() - timestamp;
       const ageMin = Math.floor(ageMs / 60000);
