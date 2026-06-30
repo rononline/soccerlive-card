@@ -280,6 +280,17 @@ class SoccerLiveMatchCenterCard extends LitElement {
       '2nd half': 'status.second_half', 'first half': 'status.first_half',
       'full time': 'status.full_time', 'final': 'status.full_time',
       'end regular time': 'status.full_time', 'end': 'status.end',
+      'extra time': 'status.extra_time',
+      'start extra time': 'status.extra_time_start',
+      'halftime extra time': 'status.extra_time_halftime',
+      'half time extra time': 'status.extra_time_halftime',
+      'start 2nd half extra time': 'status.extra_time_second_half',
+      '2nd half extra time': 'status.extra_time_second_half',
+      'end extra time': 'status.extra_time_end',
+      'shootout': 'status.shootout',
+      'penalty shootout': 'status.shootout',
+      'start shootout': 'status.shootout_start',
+      'end match': 'status.end_match',
     };
     const getBadgeType = ev => {
       const ty = (ev.type || '').toLowerCase();
