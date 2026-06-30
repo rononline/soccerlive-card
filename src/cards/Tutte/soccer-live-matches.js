@@ -2,7 +2,7 @@ import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang, formatMatchDate, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { EVENT_I18N } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveMatchesCard extends LitElement {
@@ -760,7 +760,6 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _renderPopupTimeline(m) {
-    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
     const keyEvents = (m.key_events || []).filter(e => !SKIP.some(s => (e.type_text || '').toLowerCase().includes(s)));
     if (!keyEvents.length) return '';
     const getBadgeType = ev => {

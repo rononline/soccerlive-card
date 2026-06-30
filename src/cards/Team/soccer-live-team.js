@@ -7,7 +7,7 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
-import { EVENT_I18N } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 
 /**
  * Soccer Live Team Card
@@ -824,8 +824,7 @@ class SoccerLiveTeamCard extends LitElement {
           <div class="h2h-bar-seg away" style="width:${aPct}%"></div>
         </div>
         ${headToHead.slice(0, 5).map(g => {
-          const d = g.date ? g.date.split('T')[0].split('-') : [];
-          const dateLabel = d.length === 3 ? `${d[2]}/${d[1]}/${d[0].slice(2)}` : '';
+          const dateLabel = formatDateOnly(g.date, resolveLang(this.hass, this._config));
           const homeWon = parseInt(g.home_score) > parseInt(g.away_score);
           const awayWon = parseInt(g.away_score) > parseInt(g.home_score);
           return html`
@@ -1177,7 +1176,6 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _renderPopupTimeline(m) {
-    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
     const keyEvents = (m.key_events || []).filter(e => {
       const txt = (e.type_text || '').toLowerCase();
       return !SKIP.some(s => txt.includes(s));

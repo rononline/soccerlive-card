@@ -1,3 +1,5 @@
+export const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
+
 export const EVENT_I18N = {
   'kickoff': 'status.kickoff',
   'halftime': 'status.halftime',

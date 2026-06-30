@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { EVENT_I18N } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveTimelineCard extends LitElement {
@@ -32,7 +32,6 @@ class SoccerLiveTimelineCard extends LitElement {
   }
 
   _getEventInfo(ev) {
-    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
     const ty = (ev.type || '').toLowerCase();
     const txt = (ev.type_text || '').toLowerCase();
     if (SKIP.some(s => txt.includes(s))) return null;

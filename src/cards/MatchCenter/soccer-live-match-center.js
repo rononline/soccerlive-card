@@ -1,12 +1,12 @@
 import { LitElement, html, css } from 'lit-element';
-import { t, resolveLang, formatMatchDateFull, formatMatchDate } from '../../i18n.js';
+import { t, resolveLang, formatMatchDateFull, formatMatchDate, formatDateOnly } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
-import { EVENT_I18N } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
@@ -268,7 +268,6 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderTimeline(match) {
-    const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
     const allEvents = (match.key_events || []).filter(e => {
       const txt = (e.type_text || '').toLowerCase();
       return !SKIP.some(s => txt.includes(s));
@@ -493,7 +492,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
           const scoreClass = currentHome ? (ourWon ? 'our-win' : ourLost ? 'our-loss' : 'draw') : (hw ? 'home-win' : aw ? 'away-win' : 'draw');
           return html`
             <div class="h2h-row">
-              <span class="h2h-date">${formatMatchDate(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split(' ')[0]}</span>
+              <span class="h2h-date">${formatDateOnly(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split('T')[0]}</span>
               <span class="h2h-team ${hw ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
               <span class="h2h-score ${scoreClass}">${hs ?? '?'}–${as_ ?? '?'}</span>
               <span class="h2h-team right ${aw ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>

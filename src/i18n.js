@@ -2297,9 +2297,13 @@ const LOCALE_MAP = {
 export function parseMatchDate(dateStr) {
   if (!dateStr || dateStr === 'N/A') return null;
   const m = String(dateStr).match(/^(\d{2})[-/](\d{2})[-/](\d{4})(?:\s+(\d{2}):(\d{2}))?/);
-  if (!m) return null;
-  const date = new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0));
-  return Number.isFinite(date.getTime()) ? date : null;
+  if (m) {
+    const date = new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0));
+    return Number.isFinite(date.getTime()) ? date : null;
+  }
+  // ISO 8601 fallback — e.g. H2H dates from ESPN: "2022-06-23T18:00Z"
+  const iso = new Date(dateStr);
+  return Number.isFinite(iso.getTime()) ? iso : null;
 }
 
 export function parseMatchTimestamp(dateStr) {
