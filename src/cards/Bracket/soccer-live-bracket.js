@@ -811,6 +811,7 @@ class SoccerLiveBracketCard extends LitElement {
                        style="${this._compact ? 'flex:none;min-width:0;' : ''}">
                     <div class="round-name" style="cursor:pointer;" @click=${() => this._toggleRound(round)}>
                       <span class="round-name-en">${this._localizeRoundName(round)}</span>
+                      ${(() => { const done = (round.ties || []).filter(t => t.completed).length; const total = (round.ties || []).length; return done > 0 ? html`<span class="round-prog-count">${done}/${total}</span>` : ''; })()}
                       <span class="round-chevron"></span>
                     </div>
                     ${collapsed ? '' : html`
@@ -907,6 +908,12 @@ class SoccerLiveBracketCard extends LitElement {
         letter-spacing: 0.12em;
         color: var(--cl-accent);
         line-height: 1;
+      }
+      .round-prog-count {
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--cl-text-2);
+        opacity: 0.7;
       }
       .round-ties {
         display: flex; flex-direction: column;

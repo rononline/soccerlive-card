@@ -711,11 +711,12 @@ class SoccerLiveTeamCard extends LitElement {
           const scoreClass = (homeTracked || awayTracked)
             ? (trackedWon ? 'tw' : trackedLost ? 'tl' : 'draw')
             : (homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw');
+          const compLabel = m.league_abbrev || m.league_abbreviation || m.competition_abbreviation || '';
           return html`
             <div class="upcoming-row">
               <span class="upcoming-date">
                 ${m.date ? m.date.split(' ')[0] : ''}
-                <span class="upcoming-date-day">&nbsp;</span>
+                <span class="upcoming-date-day prev-comp-label">${compLabel}</span>
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
                 ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
@@ -1773,6 +1774,7 @@ class SoccerLiveTeamCard extends LitElement {
       .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
+      .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
       .upl-opp-form { grid-column: 1 / -1; display: flex; gap: 2px; margin-top: -3px; padding-bottom: 2px; }
       .upl-opp-form.side-right { justify-content: flex-end; }
       .upl-opp-form.side-left { justify-content: flex-start; padding-left: 58px; }

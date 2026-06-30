@@ -18,6 +18,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       hass:          {},
       _config:       {},
       _activeTab:    { type: String },
+      _tlFilter:     { type: String },
       _isLoading:    { type: Boolean },
       _weatherBadge: { type: Object },
     };
@@ -26,6 +27,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   constructor() {
     super();
     this._activeTab = 'overview';
+    this._tlFilter = 'all';
     this._isLoading = true;
     this._weatherBadge = null;
     this._lastWeatherVenue = null;
@@ -181,9 +183,25 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const awayRec = clean(match.away_record_summary || match.away_record);
     const homeStd = clean(match.home_standing_summary);
     const awayStd = clean(match.away_standing_summary);
+    const homeForm = clean(match.home_form || match.last_five_home);
+    const awayForm = clean(match.away_form || match.last_five_away);
+    const formDots = str => str ? html`<div class="ov-form-dots">${str.split('').slice(-5).map(c => {
+      const cls = c === 'W' ? 'w' : (c === 'L' || c === 'V') ? 'l' : 'd';
+      return html`<span class="ov-fd ${cls}"></span>`;
+    })}</div>` : html`<div class="ov-form-dots"></div>`;
 
     return html`
       <div class="ov-section">
+        ${(homeForm || awayForm) ? html`
+          <div class="ov-row">
+            ${formDots(homeForm)}
+            <span class="ov-label">${this._t('team.form') || 'Form'}</span>
+            <div class="ov-form-dots right">${awayForm ? awayForm.split('').slice(-5).map(c => {
+              const cls = c === 'W' ? 'w' : (c === 'L' || c === 'V') ? 'l' : 'd';
+              return html`<span class="ov-fd ${cls}"></span>`;
+            }) : ''}</div>
+          </div>
+        ` : ''}
         ${(homeRec || awayRec) ? html`
           <div class="ov-row">
             <span class="ov-val">${homeRec || '—'}</span>
@@ -250,11 +268,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   _renderTimeline(match) {
     const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
-    const events = (match.key_events || []).filter(e => {
+    const allEvents = (match.key_events || []).filter(e => {
       const txt = (e.type_text || '').toLowerCase();
       return !SKIP.some(s => txt.includes(s));
     });
-    if (!events.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
+    if (!allEvents.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
     const EVENT_I18N = {
       'kickoff': 'status.kickoff', 'halftime': 'status.halftime',
       'half time': 'status.halftime', 'end of half': 'status.halftime',
@@ -285,9 +303,21 @@ class SoccerLiveMatchCenterCard extends LitElement {
       const i18nKey = EVENT_I18N[(ev.type_text || '').toLowerCase()];
       return i18nKey ? this._t(i18nKey) : (ev.type_text || ev.short_text || '');
     };
+    const events = this._tlFilter === 'goals'
+      ? allEvents.filter(e => getBadgeType(e) === 'goal')
+      : this._tlFilter === 'cards'
+        ? allEvents.filter(e => ['yellow', 'red'].includes(getBadgeType(e)))
+        : allEvents;
+    const hasGoals = allEvents.some(e => getBadgeType(e) === 'goal');
+    const hasCards = allEvents.some(e => ['yellow', 'red'].includes(getBadgeType(e)));
     return html`
+      <div class="tl-filters">
+        <button class="tl-chip ${this._tlFilter === 'all' ? 'active' : ''}" @click=${() => { this._tlFilter = 'all'; }}>${this._t('filter.all') || 'Alles'}</button>
+        ${hasGoals ? html`<button class="tl-chip ${this._tlFilter === 'goals' ? 'active' : ''}" @click=${() => { this._tlFilter = 'goals'; }}>⚽ ${this._t('event.goal')}</button>` : ''}
+        ${hasCards ? html`<button class="tl-chip ${this._tlFilter === 'cards' ? 'active' : ''}" @click=${() => { this._tlFilter = 'cards'; }}>🟨 ${this._t('event.cards') || this._t('event.yellow_card')}</button>` : ''}
+      </div>
       <div class="tl-list">
-        ${events.map(ev => {
+        ${events.length ? events.map(ev => {
           const btype = getBadgeType(ev);
           return html`
             <div class="tl-row">
@@ -299,7 +329,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
               </div>
             </div>
           `;
-        })}
+        }) : html`<p class="empty">${this._t('ui.no_events_yet')}</p>`}
       </div>
     `;
   }
@@ -514,6 +544,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .ov-label { flex: 0 0 70px; text-align: center; font-size: 10px; color: var(--cl-text-2, #94a3b8); text-transform: uppercase; }
       .ov-meta { font-size: 12px; color: var(--cl-text-2, #94a3b8); padding: 7px 0; border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.05)); display: flex; align-items: center; gap: 5px; }
       .ov-cal { font-size: 10px; color: var(--cl-accent, #6366f1); }
+      .ov-form-dots { flex: 1; display: flex; gap: 3px; align-items: center; }
+      .ov-form-dots.right { justify-content: flex-end; }
+      .ov-fd { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+      .ov-fd.w { background: var(--cl-green, #10b981); }
+      .ov-fd.l { background: var(--cl-live, #ef4444); }
+      .ov-fd.d { background: var(--cl-text-2, #94a3b8); opacity: 0.5; }
       /* Stats */
       .stats-list { padding: 4px 0; }
       .stat-row { display: flex; align-items: center; padding: 6px 16px; gap: 8px; }
@@ -525,6 +561,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .stat-bar.home { background: var(--cl-accent, #6366f1); }
       .stat-bar.away { background: var(--cl-text-2, #94a3b8); opacity: 0.4; }
       /* Timeline */
+      .tl-filters { display: flex; gap: 6px; padding: 8px 16px 4px; }
+      .tl-chip { background: var(--cl-card-2, rgba(255,255,255,0.05)); border: 1px solid var(--cl-divider, rgba(255,255,255,0.08)); border-radius: 99px; color: var(--cl-text-2, #94a3b8); font-size: 10px; font-weight: 700; padding: 3px 10px; cursor: pointer; }
+      .tl-chip.active { background: var(--cl-accent, #6366f1); border-color: var(--cl-accent, #6366f1); color: #fff; }
       .tab-content { min-height: 80px; max-height: 380px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
       .tab-content.lineup { max-height: none; overflow-y: visible; }
       .tl-list { padding: 4px 16px; }
