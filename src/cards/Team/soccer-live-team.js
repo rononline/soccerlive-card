@@ -706,6 +706,11 @@ class SoccerLiveTeamCard extends LitElement {
           const hs = parseInt(m.home_score), as_ = parseInt(m.away_score);
           const homeWon = !isNaN(hs) && !isNaN(as_) && hs > as_;
           const awayWon = !isNaN(hs) && !isNaN(as_) && as_ > hs;
+          const trackedWon = (homeTracked && homeWon) || (awayTracked && awayWon);
+          const trackedLost = (homeTracked && awayWon) || (awayTracked && homeWon);
+          const scoreClass = (homeTracked || awayTracked)
+            ? (trackedWon ? 'tw' : trackedLost ? 'tl' : 'draw')
+            : (homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw');
           return html`
             <div class="upcoming-row">
               <span class="upcoming-date">
@@ -716,7 +721,7 @@ class SoccerLiveTeamCard extends LitElement {
                 ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
                 ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
               </span>
-              <span class="prev-score ${homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw'}">
+              <span class="prev-score ${scoreClass}">
                 ${m.home_score ?? '-'}-${m.away_score ?? '-'}
               </span>
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
@@ -1785,6 +1790,8 @@ class SoccerLiveTeamCard extends LitElement {
       }
       .prev-score.home-win { color: var(--cl-green); }
       .prev-score.away-win { color: var(--cl-live); }
+      .prev-score.tw { color: var(--cl-green); }
+      .prev-score.tl { color: var(--cl-live); }
       .prev-score.draw { color: var(--cl-text-2); }
       .upcoming-live-score {
         font-size: 12px; font-weight: 900;
