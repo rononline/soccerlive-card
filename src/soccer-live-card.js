@@ -126,7 +126,7 @@ class SoccerLiveCard extends HTMLElement {
   _placeholder() {
     const el = document.createElement('ha-card');
     el.style.cssText = 'padding:24px;text-align:center;color:#94a3b8;font-size:13px;';
-    const lang = this.hass ? (this.hass.language || 'en').split('-')[0] : 'en';
+    const lang = this._hass ? (this._hass.language || 'en').split('-')[0] : 'en';
     el.textContent = t('ui.open_editor_to_configure', lang);
     return el;
   }
