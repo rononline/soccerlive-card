@@ -17,17 +17,19 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Card | `card_type` | Description |
 |---|---|---|
 | Standings | `standings` | League table with coloured zones (CL / EL / relegation), gold for #1 |
-| Team | `team` | Live score, form pills, season record, top scorer, TV channel, attendance, weather |
+| Team | `team` | Live score, form pills, season record, top scorer, TV channel, attendance, weather, upcoming + previous matches |
 | Matches | `matches` | Day-grouped matches with live highlighting and FT badge |
 | News | `news` | Article feed with images and relative timestamps |
-| Bracket | `bracket` | Knockout bracket: list view or tournament tree with trophy |
+| Bracket | `bracket` | Knockout bracket: collapsible list view or tournament tree with trophy and champion banner |
 | Top Scorers | `scorers` | Top scorers list with photo, team logo and goal tally |
 | Countdown | `countdown` | Countdown timer to next match; compact strip when live/finished, optional hide |
-| Mini Standings | `mini-standings` | Compact standings table with configurable rows and groups |
+| Mini Standings | `mini-standings` | Compact standings table with configurable rows, groups, zone-colour indicators and team highlight |
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
-| Match Center | `match-center` | Tabbed match view: Overview, Stats, Timeline, Lineup (pitch view), H2H |
+| Match Center | `match-center` | Tabbed match view: Overview (with form strips), Stats, Timeline (filterable), Lineup (pitch view), H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
+| Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
+| Timeline | `timeline` | Minute-by-minute match events |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
 
@@ -38,7 +40,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🌍 **Multi-language** — EN / NL / DE / PT / FR / ES / IT, auto-detected via HA locale
 - 🎨 **Animations** — live pulse, score pop, goal confetti + banner
 - 🔔 **In-card toasts** — optional on goals and cards, no notification spam
-- 🏆 **Bracket** — list style or tournament tree with SVG connector lines, group stage tab and team highlight
+- 🏆 **Bracket** — list style (collapsible rounds with progress counter) or tournament tree with SVG connector lines, group stage tab and team highlight
 - 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
@@ -92,7 +94,7 @@ All cards share these common options:
 | `skin` | `dark` | `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white` |
 | `hide_header` | `false` | Hide the top bar with competition logo and name |
 | `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, MatchCenter, Matches |
-| `compact` | `false` | Dense layout: smaller scoreboard, hides form/H2H/previous — applies to Team and Countdown |
+| `compact` | `false` | Dense layout: smaller scoreboard, hides form strips and H2H — applies to Team and Countdown |
 
 Legacy skin names still work: `feyenoord` maps to `red-white`, `arsenal` to `red-gold`, `barcelona` to `blue-red`, and `real-madrid` to `white-gold`.
 
@@ -142,6 +144,8 @@ confetti burst, flashing card border, large "GOAL!" banner, score animation and 
 
 The card shows a **weather badge** (temperature, wind) for the match venue when conditions are available.
 
+**Upcoming matches** show a row per fixture with team badge, date and live score when in progress. The opponent's last-5 form dots appear below each row (green = win, grey = draw, red = loss). With `show_previous_matches: true`, finished matches are shown with score coloured from the tracked team's perspective and a competition label in the date column.
+
 ### 📋 Matches
 
 ```yaml
@@ -182,17 +186,21 @@ matches_entity: sensor.soccer_live_all_uefa_champions       # optional: adds Sch
 The bracket sensor is created automatically for cup competitions:
 Champions League, Europa League, Conference League, FA Cup, Copa del Rey, World Cup, Euros, and more.
 
-**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. In tree view, the bracket half containing the team is highlighted green (Path to Final) and the other half is faded. When `my_team` is set and a tie is completed, a **won/eliminated badge** (✓ Won / ✗ Eliminated) appears in the tie footer. A **"My next match" banner** above the tabs shows the next upcoming or live match involving `my_team` with logos, score/time, round and venue.
+**`my_team`** — case-insensitive substring match against team names. The matching tie gets a green border; all other ties are dimmed. In tree view, the bracket half containing the team is highlighted green (Path to Final) and the other half is faded. When `my_team` is set and a tie is completed, a **won/eliminated badge** (✓ Won / ✗ Eliminated) appears in the tie footer. A **"My next match" banner** above the tabs shows the next upcoming or live match involving `my_team` with logos, score/time, round and venue. The schedule tab also shows a **My team** filter chip to jump directly to that team's matches.
 
 **`groups_entity`** — point to the standings sensor for the same competition. Adds a **Groups** tab with all groups in a compact grid, qualification rows highlighted and `my_team` marked in green.
 
 **`matches_entity`** — point to an `all_*` sensor for the same competition. Adds a **Schedule** tab showing all matches grouped by date. Placeholder dates far in the future (ESPN data quality issue) are filtered out automatically. Dates and times respect the HA timezone setting. Day headers show the round name (e.g. Round of 16) as a chip next to the date.
 
-**Schedule tab filter chips** — Live / Today / All. Each chip shows the match count; empty chips are dimmed. The tab **auto-selects** the most relevant filter on load: Live if matches are in progress, Today if there are matches today, otherwise All. Clicking a chip overrides this.
+**Schedule tab filter chips** — Live / Today / My team / All. Each chip shows the match count; empty chips are dimmed. The tab **auto-selects** the most relevant filter on load: Live if matches are in progress, Today if there are matches today, otherwise All. Clicking a chip overrides this. A live clock (`62'`) appears next to the score of in-progress matches.
+
+**List view (default)** — Rounds are collapsible: click the round header to expand or collapse it. The header shows a progress counter (`3/4`, or `● 1/4` when a match is live). Clicking a mini-tie card navigates to the matching date in the Schedule tab.
 
 **Tree view — early rounds** — For large brackets (WK 2026: 48 teams / R32 + R16), the Round of 32 and Round of 16 appear below the tree as a collapsible 2-column grid so the tree itself shows only QF → SF → Final. Completed rounds collapse automatically on load. A progress badge (`✓ 16/16` or `● 3/16` for live) is shown in the header, along with the date range of the round (e.g. `Jun 29 – Jul 4`). Pending ties show their scheduled first-leg date.
 
 **Tree view — live clock** — When a match is in progress, the mini card in the tree shows a live dot and the current minute (e.g. `● 67'`).
+
+**Champion banner** — Once the final is completed, a gold banner with the winner's logo appears at the top of the bracket.
 
 WK 2026 example:
 ```yaml
@@ -227,10 +235,11 @@ type: custom:soccer-live-card
 card_type: countdown
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 hide_when_live: false        # true = card disappears when match is live or finished
-competition_filter: "World Cup"  # optional: filter by competition name (for multi-competition sensors)
+competition_filter: "World Cup"  # optional: filter by competition name (case-insensitive)
+compact: false               # true = hides form dots and H2H snippet
 ```
 
-**`competition_filter`** — useful when pointing the countdown at a multi-competition sensor like `all_mixed`. Only matches whose `competition_name` or `league_name` contains the filter string (case-insensitive) are considered. This lets you show the next World Cup match specifically:
+**`competition_filter`** — useful when pointing the countdown at a multi-competition sensor like `all_mixed`. Only matches whose `competition_name` or `league_name` contains the filter string (case-insensitive) are considered:
 
 ```yaml
 type: custom:soccer-live-card
@@ -239,7 +248,9 @@ entity: sensor.soccer_live_all_mixed_netherlands
 competition_filter: "World Cup"
 ```
 
-Shows a countdown timer to the next match. When the match starts or finishes, the card collapses to a compact one-line strip (`● LIVE · Home – Away · 23'` or `✓ FT · Home – Away · 1–3`) rather than showing match data — that's what MatchCenter is for. Set `hide_when_live: true` to remove the card from the dashboard entirely during and after the match. Also shows a **weather badge** for the match venue.
+Shows a countdown timer to the next match. Under each team logo, the last 5 form dots (green/grey/red) are shown, and the most recent head-to-head result appears below the countdown. When the match starts, the card collapses to a compact one-line strip showing `● LIVE · Home – Away · 2–1 62'`; when finished it shows `✓ FT · Home – Away · 1–3`. Set `hide_when_live: true` to remove the card entirely during and after the match. Also shows a **weather badge** for the match venue.
+
+With `compact: true`, the card uses a smaller layout and hides the form dots and H2H snippet.
 
 ### 🏆 Mini Standings
 
@@ -248,13 +259,12 @@ type: custom:soccer-live-card
 card_type: mini-standings
 entity: sensor.soccer_live_standings_ned_1
 max_rows: 5
-default_group: null  # optional: default standings group to show (e.g. "Group A")
-highlight_team: null # optional: highlight team name
-hide_stats: false    # optional: hide W/D/L/GD columns
+default_group: null    # optional: default standings group (e.g. "Group A")
+highlight_team: null   # optional: highlight a team row (case-insensitive substring)
+hide_stats: false      # optional: hide W/D/L/GD columns
 ```
 
-Compact standings table with configurable max rows and optional team highlighting.
-Rows sorted by points, then wins, then goal difference.
+Compact standings table sorted by points, wins and goal difference. When `highlight_team` is set, the matching row is highlighted and automatically scrolled into view on load. If the integration provides `zone_color` for a row (e.g. green for Champions League qualification, red for relegation), a coloured bar appears on the left edge of the rank cell.
 
 ### 🔄 Multi Team
 
@@ -291,9 +301,17 @@ card_type: match-center
 entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
-Tabbed view of a single match: **Overview**, **Stats**, **Timeline**, **Lineup**, **H2H**. Tabs appear only when data is available (Stats and Timeline after kick-off, Lineup once ESPN publishes it). The Lineup tab renders both teams on a football pitch with jersey-number circles positioned by formation, a bench list below, and falls back to a two-column list when no formation data is available. Also shows venue info, broadcast chips, H2H with locale-aware dates, and a **weather badge** for the match venue.
+Tabbed view of a single match with five tabs:
 
-> Works best with a `next_*` or `all_mixed_*` sensor, which enriches the match with lineup, key events and H2H via the ESPN summary endpoint.
+- **Overview** — W/D/L form dots for both teams, season record, current standing, week label, venue and broadcast chips. The card automatically switches to the Timeline tab when the match kicks off (only if you haven't manually navigated away from Overview).
+- **Stats** — side-by-side stat bars for possession, shots, etc. (available after kick-off).
+- **Timeline** — chronological event list with filter chips: **All / ⚽ Goals / 🟨 Cards**. The filter resets to All whenever you switch tabs. The card auto-switches here when a match goes live.
+- **Lineup** — both teams on a pitch rendered by formation, with bench list (available once ESPN publishes the lineup).
+- **H2H** — historical head-to-head results with win/draw/loss bar.
+
+The active tab is remembered across page refreshes (per entity, via sessionStorage).
+
+> Works best with a `next_*` or `all_mixed_*` sensor, which enriches the match with lineup, key events and H2H via the ESPN summary endpoint. Also shows a **weather badge** for the match venue.
 
 ### 👥 Team Form
 
@@ -305,6 +323,26 @@ team_name: Ajax
 ```
 
 > `team_name` is recommended. Without it the card tries to auto-detect the tracked team from `previous_matches`, but detection may be ambiguous with only one previous match or when the same opponent appears multiple times.
+
+### 📋 Lineup
+
+```yaml
+type: custom:soccer-live-card
+card_type: lineup
+entity: sensor.soccer_live_next_ned_1_ajax
+```
+
+Starting eleven for both teams rendered on a football pitch with jersey-number circles positioned by formation. Includes a bench list below. Falls back to a two-column list when no formation data is available.
+
+### ⏱️ Timeline
+
+```yaml
+type: custom:soccer-live-card
+card_type: timeline
+entity: sensor.soccer_live_next_ned_1_ajax
+```
+
+Minute-by-minute match events (goals, cards, substitutions, half-time, full-time) in chronological order.
 
 ### 🧪 Diagnostics
 
@@ -329,7 +367,7 @@ scroll_speed: normal          # slow / normal / fast
 hide_when_empty: true         # hides the card when the filter has no matches
 ```
 
-Horizontal match strip for dense dashboards. With `hide_when_empty: true`, a live-only ticker disappears when there are no live matches.
+Horizontal match strip for dense dashboards. Scrolling pauses automatically when you hover over the strip. With `hide_when_empty: true`, a live-only ticker disappears when there are no live matches.
 
 **`competition_filter`** — show only matches whose `competition_name` or `league_name` contains the filter string. Useful when the sensor covers multiple competitions (e.g. `all_mixed_*`). If no matches match the filter, the full unfiltered list is shown as fallback.
 
@@ -359,14 +397,17 @@ Cards degrade gracefully when older integration versions are used — features s
 
 ## 🌍 Multi-language
 
-All UI text is translated via `src/i18n.js` with **250 keys** in seven languages.
+All UI text is translated via `src/i18n.js` with **282 keys** in seven languages.
 
 | Key | EN | NL | DE | PT | FR | ES | IT |
 |---|---|---|---|---|---|---|---|
 | `time.today` | Today | Vandaag | Heute | Hoje | Aujourd'hui | Hoy | Oggi |
 | `event.goal` | Goal | Doelpunt | Tor | Gol | But | Gol | Goal |
+| `event.cards` | Cards | Kaarten | Karten | Cartões | Cartons | Tarjetas | Cartellini |
+| `filter.all` | All | Alles | Alle | Todos | Tout | Todo | Tutto |
 | `round.r16` | Round of 16 | Achtste finales | Achtelfinale | Oitavas | Huitièmes | Octavos | Ottavi |
 | `status.halftime` | Halftime | Rust | Halbzeit | Intervalo | Mi-temps | Descanso | Intervallo |
+| `team.form` | Form | Vorm | Form | Forma | Forme | Forma | Forma |
 | `ui.loading_timeout` | Loading timeout | Laden mislukt | Ladetimeout | Tempo esgotado | Délai dépassé | Tiempo agotado | Timeout |
 
 ---
@@ -375,7 +416,7 @@ All UI text is translated via `src/i18n.js` with **250 keys** in seven languages
 
 For maintainers:
 
-1. Update `package.json` / `package-lock.json` version.
+1. Update `package.json` version.
 2. Run `npm run build`.
 3. Run `npm run smoke:preview`.
 4. Commit `src/`, `docs/`, `README.md`, `package*.json` and `dist/soccer-live-card.bundle.js`.
@@ -383,9 +424,10 @@ For maintainers:
 6. Check the GitHub Auto Release workflow and confirm the new release appears as latest.
 7. In Home Assistant/HACS, refresh the browser cache after updating the frontend resource.
 
+> Tip: batch related changes into one version bump per session rather than bumping for every small fix.
+
 ---
 
 ## 📜 License
 
 GPL-3.0 — see [LICENSE](LICENSE).
-Data via ESPN public APIs.
