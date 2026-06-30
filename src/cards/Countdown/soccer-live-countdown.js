@@ -219,7 +219,8 @@ class SoccerLiveCountdownCard extends LitElement {
       }
       .cd-live-sep { color: var(--cl-text-2); }
       .cd-live-teams { font-weight: 600; flex: 1; }
-      .cd-live-clock { font-size: 11px; color: var(--cl-text-2); }
+      .cd-live-clock { font-size: 12px; font-weight: 800; color: var(--cl-text); }
+      .cd-live-min { font-size: 10px; font-weight: 400; color: var(--cl-text-2); }
 
       @container (max-width: 600px) {
         .cd-body { padding: 12px !important; }
@@ -312,8 +313,8 @@ class SoccerLiveCountdownCard extends LitElement {
                      <span class="cd-ft-label">${this._t('status.full_time')}</span>`}
             <span class="cd-live-sep">·</span>
             <span class="cd-live-teams">${match.home_team || '?'} – ${match.away_team || '?'}</span>
-            ${isLive && match.clock
-              ? html`<span class="cd-live-clock">${match.clock}'</span>`
+            ${isLive
+              ? html`<span class="cd-live-clock">${match.home_score ?? 0}–${match.away_score ?? 0}${match.clock ? html`<span class="cd-live-min"> ${match.clock}'</span>` : ''}</span>`
               : isFinished
                 ? html`<span class="cd-live-clock">${match.home_score ?? 0}–${match.away_score ?? 0}</span>`
                 : ''}

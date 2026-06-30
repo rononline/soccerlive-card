@@ -811,8 +811,8 @@ class SoccerLiveBracketCard extends LitElement {
                        style="${this._compact ? 'flex:none;min-width:0;' : ''}">
                     <div class="round-name" style="cursor:pointer;" @click=${() => this._toggleRound(round)}>
                       <span class="round-name-en">${this._localizeRoundName(round)}</span>
-                      ${(() => { const done = (round.ties || []).filter(t => t.completed).length; const total = (round.ties || []).length; return done > 0 ? html`<span class="round-prog-count">${done}/${total}</span>` : ''; })()}
-                      <span class="round-chevron"></span>
+                      ${(() => { const prog = this._roundProgress(round); return prog && prog.done > 0 ? html`<span class="round-prog-count ${prog.live ? 'live' : ''}">${prog.live ? html`<span class="dot"></span>` : ''}${prog.done}/${prog.total}</span>` : ''; })()}
+                      <span class="round-chevron">${collapsed ? '›' : '‹'}</span>
                     </div>
                     ${collapsed ? '' : html`
                     <div class="round-ties"
@@ -908,12 +908,6 @@ class SoccerLiveBracketCard extends LitElement {
         letter-spacing: 0.12em;
         color: var(--cl-accent);
         line-height: 1;
-      }
-      .round-prog-count {
-        font-size: 9px;
-        font-weight: 700;
-        color: var(--cl-text-2);
-        opacity: 0.7;
       }
       .round-ties {
         display: flex; flex-direction: column;
@@ -1199,6 +1193,8 @@ class SoccerLiveBracketCard extends LitElement {
       .round .round-name { cursor: pointer; }
       .round.collapsed .round-chevron { transform: rotate(-90deg); }
       .round.collapsed .round-name { margin-bottom: 0; }
+      .round-prog-count { font-size: 9px; font-weight: 700; color: var(--cl-text-2); opacity: 0.7; display: inline-flex; align-items: center; gap: 3px; }
+      .round-prog-count.live { color: var(--cl-live); opacity: 1; }
 
       /* ============== STYLE: TREE ============== */
       .tree-wrap {

@@ -128,7 +128,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         <div class="tab-bar">
           ${tabs.map(tab => html`
             <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
-              @click=${() => { this._activeTab = tab.id; sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, tab.id); }}>
+              @click=${() => { this._activeTab = tab.id; this._tlFilter = 'all'; sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, tab.id); }}>
               ${tab.label}
             </button>
           `)}

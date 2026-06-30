@@ -185,9 +185,10 @@ class SoccerLiveMiniStandingsCard extends LitElement {
             const played = (parseInt(row.wins)||0) + (parseInt(row.draws)||0) + (parseInt(row.losses)||0);
             const gd = parseInt(row.goal_difference) || 0;
             const gdLabel = gd > 0 ? `+${gd}` : `${gd}`;
+            const zoneColor = row.zone_color || null;
             return html`
               <tr class="${isHl ? 'hl' : ''}">
-                <td class="pos">${row.rank ?? ''}</td>
+                <td class="pos" style="${zoneColor ? `box-shadow: inset 3px 0 0 ${zoneColor};` : ''}">${row.rank ?? ''}</td>
                 <td class="left">
                   <div class="team-row">
                     ${row.team_logo ? html`<img class="team-logo" src="${row.team_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
