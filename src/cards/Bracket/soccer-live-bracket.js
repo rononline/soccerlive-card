@@ -284,9 +284,12 @@ class SoccerLiveBracketCard extends LitElement {
           `)}
         </div>
         ${!displayed.length ? html`<div class="sched-empty">${this._t('generic.no_match')}</div>` : ''}
-        ${Object.entries(byDate).map(([key, ms]) => html`
+        ${Object.entries(byDate).map(([key, ms]) => {
+          const dayLogo = ms[0].league_logo && ms.every(m => m.league_logo === ms[0].league_logo) ? ms[0].league_logo : null;
+          return html`
           <div class="sched-day" data-date=${key}>
             <div class="sched-day-label">
+              ${dayLogo ? html`<img class="sched-comp-logo" src="${dayLogo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
               ${ms[0].season_info ? (() => { const r = this._formatSeasonInfo(ms[0].season_info); return r ? html`<span class="sched-round-chip">${r}</span>` : ''; })() : ''}
               <span>${this._formatDate(ms[0].date)}</span>
             </div>
@@ -320,7 +323,8 @@ class SoccerLiveBracketCard extends LitElement {
               })}
             </div>
           </div>
-        `)}
+        `;
+        })}
       </div>
     `;
   }
@@ -1637,6 +1641,7 @@ class SoccerLiveBracketCard extends LitElement {
 
       /* Schedule round chip in day header */
       .sched-day-label { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+      .sched-comp-logo { width: 14px; height: 14px; object-fit: contain; opacity: 0.85; flex-shrink: 0; }
       .sched-round-chip {
         font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
         color: var(--cl-accent); background: rgba(var(--cl-accent-rgb),0.12);

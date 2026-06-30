@@ -2285,6 +2285,23 @@ export function formatMatchDate(dateStr, lang) {
 }
 
 /**
+ * Date-only display for past match results ("14 jun", "28 Jun", "14 giu").
+ * Uses locale short month name, no time component.
+ */
+export function formatDateOnly(dateStr, lang) {
+  if (!dateStr) return '';
+  const date = parseMatchDate(dateStr);
+  if (!date) return dateStr.split(' ')[0] || dateStr;
+  const locale = LOCALE_MAP[lang] || 'en-GB';
+  try {
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(date);
+  } catch (_) {
+    const m = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})/);
+    return m ? `${+m[1]}/${+m[2]}` : dateStr;
+  }
+}
+
+/**
  * Full date+time for badge displays (always shows date, even for today).
  * nl-NL → "26-06-2026 01:00", en-GB → "26/06/2026 01:00", de-DE → "26.06.2026 01:00"
  */

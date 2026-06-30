@@ -1,5 +1,5 @@
 import { LitElement, html, css, render } from "lit-element";
-import { t, resolveLang, parseMatchDate, formatMatchDate } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate, formatMatchDate, formatDateOnly } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
@@ -715,7 +715,7 @@ class SoccerLiveTeamCard extends LitElement {
           return html`
             <div class="upcoming-row">
               <span class="upcoming-date">
-                ${formatMatchDate(m.date, resolveLang(this.hass, this._config)) || (m.date ? m.date.split(' ')[0] : '')}
+                ${formatDateOnly(m.date, resolveLang(this.hass, this._config)) || (m.date ? m.date.split(' ')[0] : '')}
                 <span class="upcoming-date-day prev-comp-label">${compLabel}</span>
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
@@ -763,12 +763,14 @@ class SoccerLiveTeamCard extends LitElement {
               })}
             </div>`;
           };
+          const uplCompLabel = m.league_name || '';
           return html`
             <div class="upcoming-row ${clickable ? 'clickable' : ''}"
                  @click="${clickable ? () => this.showDetails(m) : null}">
               <span class="upcoming-date">
                 ${m.date ? m.date.split(' ')[1] || '' : ''}
                 <span class="upcoming-date-day">${this._relativeDate(m.date)}</span>
+                ${uplCompLabel ? html`<span class="upl-comp-label">${uplCompLabel}</span>` : ''}
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
                 ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
@@ -1774,7 +1776,8 @@ class SoccerLiveTeamCard extends LitElement {
       .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
-      .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+      .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; display: block; max-width: 52px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .upl-comp-label { color: var(--cl-text-2); font-size: 8px; letter-spacing: 0.03em; text-transform: uppercase; display: block; max-width: 52px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .upl-opp-form { grid-column: 1 / -1; display: flex; gap: 2px; margin-top: -3px; padding-bottom: 2px; }
       .upl-opp-form.side-right { justify-content: flex-end; }
       .upl-opp-form.side-left { justify-content: flex-start; padding-left: 58px; }
