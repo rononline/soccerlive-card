@@ -70,6 +70,8 @@ const TRANSLATIONS = {
     'event.shot': 'Shot',
     'event.penalty': 'Penalty',
     'event.free_kick': 'Free kick',
+    'event.cards': 'Cards',
+    'filter.all': 'All',
 
     // Form pills
     'form.W': 'W',
@@ -393,6 +395,8 @@ const TRANSLATIONS = {
     'event.shot': 'Schot',
     'event.penalty': 'Penalty',
     'event.free_kick': 'Vrije trap',
+    'event.cards': 'Kaarten',
+    'filter.all': 'Alles',
 
     'form.W': 'W',
     'form.D': 'G',
@@ -699,6 +703,8 @@ const TRANSLATIONS = {
     'event.shot': 'Tiro',
     'event.penalty': 'Rigore',
     'event.free_kick': 'Calcio di punizione',
+    'event.cards': 'Cartellini',
+    'filter.all': 'Tutto',
 
     'form.W': 'V',
     'form.D': 'N',
@@ -1005,6 +1011,8 @@ const TRANSLATIONS = {
     'event.shot': 'Tir',
     'event.penalty': 'Penalty',
     'event.free_kick': 'Coup franc',
+    'event.cards': 'Cartons',
+    'filter.all': 'Tout',
 
     'form.W': 'V',
     'form.D': 'N',
@@ -1311,6 +1319,8 @@ const TRANSLATIONS = {
     'event.shot': 'Disparo',
     'event.penalty': 'Penalti',
     'event.free_kick': 'Falta directa',
+    'event.cards': 'Tarjetas',
+    'filter.all': 'Todo',
 
     'form.W': 'V',
     'form.D': 'E',
@@ -1617,6 +1627,8 @@ const TRANSLATIONS = {
     'event.shot': 'Schuss',
     'event.penalty': 'Elfmeter',
     'event.free_kick': 'Freistoß',
+    'event.cards': 'Karten',
+    'filter.all': 'Alle',
 
     'form.W': 'S',
     'form.D': 'U',
@@ -1924,6 +1936,8 @@ const TRANSLATIONS = {
     'event.shot': 'Chute',
     'event.penalty': 'Pênalti',
     'event.free_kick': 'Falta',
+    'event.cards': 'Cartões',
+    'filter.all': 'Todos',
 
     'form.W': 'V',
     'form.D': 'E',
