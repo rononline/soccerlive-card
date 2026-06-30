@@ -752,6 +752,16 @@ class SoccerLiveTeamCard extends LitElement {
           const isLiveRow = m.state === 'in';
           const hasH2H = m.head_to_head && m.head_to_head.length > 0;
           const clickable = hasH2H;
+          const oppForm = homeTracked ? (m.away_form || '') : awayTracked ? (m.home_form || '') : '';
+          const renderOppDots = (str, side) => {
+            if (!str) return '';
+            return html`<div class="upl-opp-form ${side}">
+              ${str.split('').slice(-5).map(c => {
+                const cls = c === 'W' ? 'w' : (c === 'L' || c === 'V') ? 'l' : 'd';
+                return html`<span class="upl-fd ${cls}"></span>`;
+              })}
+            </div>`;
+          };
           return html`
             <div class="upcoming-row ${clickable ? 'clickable' : ''}"
                  @click="${clickable ? () => this.showDetails(m) : null}">
@@ -771,6 +781,7 @@ class SoccerLiveTeamCard extends LitElement {
                 ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
                 ${m.away_logo ? html`<img src="${m.away_logo}" alt="" />` : ''}
               </span>
+              ${renderOppDots(oppForm, homeTracked ? 'side-right' : 'side-left')}
             </div>
           `;
         })}
@@ -1762,6 +1773,13 @@ class SoccerLiveTeamCard extends LitElement {
       .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
+      .upl-opp-form { grid-column: 1 / -1; display: flex; gap: 2px; margin-top: -3px; padding-bottom: 2px; }
+      .upl-opp-form.side-right { justify-content: flex-end; }
+      .upl-opp-form.side-left { justify-content: flex-start; padding-left: 58px; }
+      .upl-fd { width: 5px; height: 5px; border-radius: 50%; }
+      .upl-fd.w { background: var(--cl-green); }
+      .upl-fd.l { background: var(--cl-live); }
+      .upl-fd.d { background: var(--cl-text-2); opacity: 0.6; }
       .form-trend-section {
         border-top: 1px solid var(--cl-divider);
         padding: 10px 16px 8px;

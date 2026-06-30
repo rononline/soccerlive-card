@@ -29,6 +29,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._isLoading = true;
     this._weatherBadge = null;
     this._lastWeatherVenue = null;
+    this._lastMatchState = null;
   }
 
   setConfig(config) {
@@ -60,6 +61,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
         if (match?.venue && match.venue !== this._lastWeatherVenue) {
           this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
         }
+        if (this._lastMatchState === 'pre' && match?.state === 'in' && this._activeTab === 'overview') {
+          this._activeTab = 'timeline';
+        }
+        this._lastMatchState = match?.state ?? this._lastMatchState;
       }
     }
   }

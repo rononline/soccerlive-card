@@ -167,6 +167,8 @@ class SoccerLiveCountdownCard extends LitElement {
       ha-card.compact .score { font-size: 30px !important; letter-spacing: 3px !important; }
       ha-card.compact .smm-venue-row,
       ha-card.compact .smm-chips { padding: 6px 14px !important; font-size: 10px !important; }
+      ha-card.compact .cd-form,
+      ha-card.compact .cd-h2h { display: none; }
       .teams { display: flex; align-items: center; justify-content: space-between; min-width: 0; margin-bottom: 16px; }
       .team { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1 1 0; min-width: 0; }
       .team-logo { width: 52px; height: 52px; object-fit: contain; }

@@ -7,11 +7,27 @@ import { soccerCardShellStyles } from "../card-shell.js";
 class SoccerLiveMiniStandingsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedGroup: { type: String } }; }
 
+  constructor() {
+    super();
+    this._hlScrolled = false;
+  }
+
   setConfig(config) {
     if (!config.entity) throw new Error("Entity required");
     this._config = config;
     this._selectedGroup = config.default_group || null;
+    this._hlScrolled = false;
     applySkin(this, config);
+  }
+
+  updated() {
+    if (!this._hlScrolled && this._config?.highlight_team) {
+      const hl = this.shadowRoot?.querySelector('tr.hl');
+      if (hl) {
+        hl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        this._hlScrolled = true;
+      }
+    }
   }
 
   getCardSize() { return 3; }

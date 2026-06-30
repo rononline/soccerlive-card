@@ -804,18 +804,24 @@ class SoccerLiveBracketCard extends LitElement {
             : html`
               <div class="rounds-container"
                    style="${this._compact ? 'flex-direction:column;overflow-x:visible;' : ''}">
-                ${rounds.map(round => html`
-                  <div class="round"
+                ${rounds.map(round => {
+                  const collapsed = this._isCollapsed(round);
+                  return html`
+                  <div class="round ${collapsed ? 'collapsed' : ''}"
                        style="${this._compact ? 'flex:none;min-width:0;' : ''}">
-                    <div class="round-name">
+                    <div class="round-name" style="cursor:pointer;" @click=${() => this._toggleRound(round)}>
                       <span class="round-name-en">${this._localizeRoundName(round)}</span>
+                      <span class="round-chevron"></span>
                     </div>
+                    ${collapsed ? '' : html`
                     <div class="round-ties"
                          style="${this._compact ? 'display:grid;grid-template-columns:1fr 1fr;gap:8px;' : ''}">
                       ${round.ties.map(tie => this._renderTie(tie))}
                     </div>
+                    `}
                   </div>
-                `)}
+                `;})}
+
               </div>
             `
         }
@@ -1183,6 +1189,9 @@ class SoccerLiveBracketCard extends LitElement {
           min-width: 0;
         }
       }
+      .round .round-name { cursor: pointer; }
+      .round.collapsed .round-chevron { transform: rotate(-90deg); }
+      .round.collapsed .round-name { margin-bottom: 0; }
 
       /* ============== STYLE: TREE ============== */
       .tree-wrap {
