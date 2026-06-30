@@ -40,8 +40,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._config = config;
     applySkin(this, config);
     this._isLoading = true;
-    const saved = sessionStorage.getItem(`soccer-mc-tab:${config.entity}`);
-    if (saved && TAB_IDS.includes(saved)) this._activeTab = saved;
+    try {
+      const saved = sessionStorage.getItem(`soccer-mc-tab:${config.entity}`);
+      if (saved && TAB_IDS.includes(saved)) this._activeTab = saved;
+    } catch (_) { /* storage blocked in private/restricted contexts */ }
   }
 
   connectedCallback() {
@@ -129,7 +131,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         <div class="tab-bar">
           ${tabs.map(tab => html`
             <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
-              @click=${() => { this._activeTab = tab.id; this._tlFilter = 'all'; sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, tab.id); }}>
+              @click=${() => { this._activeTab = tab.id; this._tlFilter = 'all'; try { sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, tab.id); } catch (_) {} }}>
               ${tab.label}
             </button>
           `)}
