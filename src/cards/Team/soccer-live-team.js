@@ -7,6 +7,7 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { EVENT_I18N } from '../shared-event-i18n.js';
 
 /**
  * Soccer Live Team Card
@@ -1182,13 +1183,6 @@ class SoccerLiveTeamCard extends LitElement {
       return !SKIP.some(s => txt.includes(s));
     });
     if (!keyEvents.length) return '';
-    const EVENT_I18N = {
-      'kickoff':'status.kickoff','halftime':'status.halftime','half time':'status.halftime',
-      'end of half':'status.halftime','start 2nd half':'status.second_half',
-      'second half':'status.second_half','2nd half':'status.second_half',
-      'first half':'status.first_half','full time':'status.full_time',
-      'final':'status.full_time','end regular time':'status.full_time','end':'status.end',
-    };
     const getBadgeType = ev => {
       const ty = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
       if (ty === 'goal' || ev.scoring_play) return 'goal';

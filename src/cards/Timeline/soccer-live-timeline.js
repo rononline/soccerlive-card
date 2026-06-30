@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { EVENT_I18N } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveTimelineCard extends LitElement {
@@ -35,14 +36,6 @@ class SoccerLiveTimelineCard extends LitElement {
     const ty = (ev.type || '').toLowerCase();
     const txt = (ev.type_text || '').toLowerCase();
     if (SKIP.some(s => txt.includes(s))) return null;
-    const EVENT_I18N = {
-      'kickoff': 'status.kickoff', 'halftime': 'status.halftime',
-      'half time': 'status.halftime', 'end of half': 'status.halftime',
-      'start 2nd half': 'status.second_half', 'second half': 'status.second_half',
-      '2nd half': 'status.second_half', 'first half': 'status.first_half',
-      'full time': 'status.full_time', 'final': 'status.full_time',
-      'end regular time': 'status.full_time', 'end': 'status.end',
-    };
     let btype = 'meta';
     if (ty === 'goal' || ev.scoring_play || txt.includes('penalty')) btype = 'goal';
     else if (txt.includes('yellow')) btype = 'yellow';

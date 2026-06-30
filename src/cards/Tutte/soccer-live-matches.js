@@ -2,6 +2,7 @@ import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang, formatMatchDate, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
+import { EVENT_I18N } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 
 class SoccerLiveMatchesCard extends LitElement {
@@ -762,13 +763,6 @@ class SoccerLiveMatchesCard extends LitElement {
     const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
     const keyEvents = (m.key_events || []).filter(e => !SKIP.some(s => (e.type_text || '').toLowerCase().includes(s)));
     if (!keyEvents.length) return '';
-    const EVENT_I18N = {
-      'kickoff':'status.kickoff','halftime':'status.halftime','half time':'status.halftime',
-      'end of half':'status.halftime','start 2nd half':'status.second_half',
-      'second half':'status.second_half','2nd half':'status.second_half',
-      'first half':'status.first_half','full time':'status.full_time',
-      'final':'status.full_time','end regular time':'status.full_time','end':'status.end',
-    };
     const getBadgeType = ev => {
       const ty = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
       if (ty === 'goal' || ev.scoring_play) return 'goal';
