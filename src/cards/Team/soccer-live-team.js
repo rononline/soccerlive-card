@@ -1,5 +1,5 @@
 import { LitElement, html, css, render } from "lit-element";
-import { t, resolveLang, parseMatchDate } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate, formatMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
@@ -711,11 +711,11 @@ class SoccerLiveTeamCard extends LitElement {
           const scoreClass = (homeTracked || awayTracked)
             ? (trackedWon ? 'tw' : trackedLost ? 'tl' : 'draw')
             : (homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw');
-          const compLabel = m.league_abbrev || m.league_abbreviation || m.competition_abbreviation || '';
+          const compLabel = m.league_abbrev || m.league_abbreviation || m.competition_abbreviation || m.league_name || '';
           return html`
             <div class="upcoming-row">
               <span class="upcoming-date">
-                ${m.date ? m.date.split(' ')[0] : ''}
+                ${formatMatchDate(m.date, resolveLang(this.hass, this._config)) || (m.date ? m.date.split(' ')[0] : '')}
                 <span class="upcoming-date-day prev-comp-label">${compLabel}</span>
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
