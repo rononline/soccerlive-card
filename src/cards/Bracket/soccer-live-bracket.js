@@ -240,6 +240,9 @@ class SoccerLiveBracketCard extends LitElement {
     const todayCount = base.filter(m => m.date
       ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
       : false).length;
+    const myTeamCount = this._myTeam
+      ? base.filter(m => this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team)).length
+      : 0;
 
     // Resolve auto filter
     let effectiveFilter = this._schedFilter;
@@ -250,11 +253,13 @@ class SoccerLiveBracketCard extends LitElement {
     // Apply filter
     const displayed = effectiveFilter === 'live'
       ? base.filter(m => m.state === 'in')
-      : effectiveFilter === 'today'
-        ? base.filter(m => m.date
-            ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
-            : false)
-        : base;
+      : effectiveFilter === 'my-team'
+        ? base.filter(m => this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team))
+        : effectiveFilter === 'today'
+          ? base.filter(m => m.date
+              ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
+              : false)
+          : base;
 
     const byDate = {};
     for (const m of displayed) {
@@ -270,6 +275,7 @@ class SoccerLiveBracketCard extends LitElement {
             ['all', this._t('editor.all_groups'), base.length],
             ['live', this._t('status.live'), liveCount],
             ['today', this._t('time.today'), todayCount],
+            ...(this._myTeam ? [['my-team', this._myTeam, myTeamCount]] : []),
           ].map(([f, label, count]) => html`
             <span class="sched-chip ${effectiveFilter === f ? 'active' : ''} ${!count && f !== 'all' ? 'empty' : ''}"
                   @click=${() => { this._schedFilter = f; }}>
@@ -600,6 +606,18 @@ class SoccerLiveBracketCard extends LitElement {
               ? html`<div class="final-tie-wrap">${this._renderMiniTie(finalTie)}</div>`
               : html`<div class="final-placeholder">${this._t('bracket.tbd')}</div>`
             }
+            ${(() => {
+              const champion = finalTie?.completed && finalTie?.winner_team
+                ? [finalTie.team_a, finalTie.team_b].find(t => t?.name === finalTie.winner_team)
+                : null;
+              return champion ? html`
+                <div class="champion-banner">
+                  ${champion.logo ? html`<img class="champion-logo" src="${champion.logo}" alt="">` : ''}
+                  <span class="champion-crown">👑</span>
+                  <span class="champion-name">${champion.name}</span>
+                </div>
+              ` : '';
+            })()}
             ${thirdPlaceTie ? html`
               <div class="third-place-wrap">
                 <div class="third-place-label">🥉 ${this._t('round.third_place')}</div>
@@ -1399,6 +1417,14 @@ class SoccerLiveBracketCard extends LitElement {
         text-align: center;
         z-index: 2;
       }
+      .champion-banner {
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        margin-top: 8px; padding: 5px 10px; border-radius: 10px;
+        background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3);
+      }
+      .champion-logo { width: 18px; height: 18px; object-fit: contain; }
+      .champion-crown { font-size: 13px; }
+      .champion-name { font-size: 10px; font-weight: 800; color: var(--cl-gold, #fbbf24); text-transform: uppercase; letter-spacing: 0.08em; }
       .final-tie-wrap {
         position: relative;
         width: 100%;

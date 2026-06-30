@@ -184,6 +184,11 @@ class SoccerLiveCountdownCard extends LitElement {
       .cd-sep { font-size: 26px; font-weight: 900; color: var(--cl-text-2); align-self: flex-start; padding-top: 2px; }
       .vs-text { font-size: 20px; font-weight: 900; color: var(--cl-text-2); }
       /* .meta removed — now .smm-venue-row / .smm-chips from matchMetaStyles */
+      .cd-h2h { font-size: 10px; color: var(--cl-text-2); text-align: center; margin-top: 10px; padding: 5px 12px; background: rgba(255,255,255,0.04); border-radius: 8px; }
+      .cd-h2h strong { color: var(--cl-text); }
+      .cd-h2h strong.hw { color: var(--cl-green); }
+      .cd-h2h strong.aw { color: var(--cl-live); }
+      .cd-h2h-date { opacity: 0.55; margin-left: 4px; }
       .cd-form { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
       .cd-fd { width: 6px; height: 6px; border-radius: 50%; }
       .cd-fd.w { background: var(--cl-green, #10b981); }
@@ -373,6 +378,17 @@ class SoccerLiveCountdownCard extends LitElement {
             ${renderForm(match.away_form)}
           </div>
         </div>
+        ${(() => {
+          const last = (match.head_to_head || [])[0];
+          if (!last || last.home_score === undefined) return '';
+          const hs = parseInt(last.home_score), as_ = parseInt(last.away_score);
+          const hw = !isNaN(hs) && !isNaN(as_) && hs > as_;
+          const aw = !isNaN(hs) && !isNaN(as_) && as_ > hs;
+          return html`<div class="cd-h2h">
+            ${last.home_team} <strong class="${hw ? 'hw' : aw ? 'aw' : ''}">${hs}–${as_}</strong> ${last.away_team}
+            ${last.date ? html`<span class="cd-h2h-date">${last.date.split(' ')[0]}</span>` : ''}
+          </div>`;
+        })()}
 
         </div>
         ${renderMatchMeta(match, {

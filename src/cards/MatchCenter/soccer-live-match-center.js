@@ -451,6 +451,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _renderH2H(match) {
     const h2h = match.head_to_head || [];
     if (!h2h.length) return html`<p class="empty">${this._t('ui.no_h2h_yet')}</p>`;
+    const currentHome = (match.home_team || '').toLowerCase();
     return html`
       <div class="h2h-list">
         ${h2h.map(m => {
@@ -458,11 +459,15 @@ class SoccerLiveMatchCenterCard extends LitElement {
           const as_ = parseInt(m.away_score ?? m.away_goals);
           const hw  = !isNaN(hs) && !isNaN(as_) && hs > as_;
           const aw  = !isNaN(hs) && !isNaN(as_) && as_ > hs;
+          const h2hHomeIsOurs = currentHome && m.home_team && m.home_team.toLowerCase().includes(currentHome);
+          const ourWon  = h2hHomeIsOurs ? hw : aw;
+          const ourLost = h2hHomeIsOurs ? aw : hw;
+          const scoreClass = currentHome ? (ourWon ? 'our-win' : ourLost ? 'our-loss' : 'draw') : (hw ? 'home-win' : aw ? 'away-win' : 'draw');
           return html`
             <div class="h2h-row">
               <span class="h2h-date">${formatMatchDate(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split(' ')[0]}</span>
               <span class="h2h-team ${hw ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
-              <span class="h2h-score ${hw ? 'home-win' : aw ? 'away-win' : 'draw'}">${hs ?? '?'}–${as_ ?? '?'}</span>
+              <span class="h2h-score ${scoreClass}">${hs ?? '?'}–${as_ ?? '?'}</span>
               <span class="h2h-team right ${aw ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>
             </div>
           `;
@@ -614,6 +619,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .h2h-score { min-width: 46px; text-align: center; font-weight: 700; }
       .h2h-score.home-win { color: var(--cl-accent, #6366f1); }
       .h2h-score.away-win { color: #f43f5e; }
+      .h2h-score.our-win { color: var(--cl-green); }
+      .h2h-score.our-loss { color: var(--cl-live); }
       .h2h-score.draw { color: var(--cl-text-2, #94a3b8); }
       /* Shared */
       .empty { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 12px; padding: 24px 16px; margin: 0; }
