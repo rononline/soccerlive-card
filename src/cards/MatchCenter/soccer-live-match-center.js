@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { t, resolveLang, formatMatchDateFull, formatMatchDate, formatDateOnly } from '../../i18n.js';
+import { t, resolveLang, formatMatchDateFull, formatDateOnly } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
