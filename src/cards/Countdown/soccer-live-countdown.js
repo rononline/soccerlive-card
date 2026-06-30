@@ -184,6 +184,11 @@ class SoccerLiveCountdownCard extends LitElement {
       .cd-sep { font-size: 26px; font-weight: 900; color: var(--cl-text-2); align-self: flex-start; padding-top: 2px; }
       .vs-text { font-size: 20px; font-weight: 900; color: var(--cl-text-2); }
       /* .meta removed — now .smm-venue-row / .smm-chips from matchMetaStyles */
+      .cd-form { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
+      .cd-fd { width: 6px; height: 6px; border-radius: 50%; }
+      .cd-fd.w { background: var(--cl-green, #10b981); }
+      .cd-fd.l { background: var(--cl-live, #ef4444); }
+      .cd-fd.d { background: var(--cl-text-2, #94a3b8); opacity: 0.5; }
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
       /* Compact live strip (shown instead of score when match is in progress) */
       .cd-live-strip {
@@ -316,6 +321,14 @@ class SoccerLiveCountdownCard extends LitElement {
     const lMin = this._t('cd.min') || 'min';
     const lSec = this._t('cd.sec') || 'sec';
 
+    const renderForm = (formStr) => {
+      if (!formStr) return '';
+      return html`<div class="cd-form">${formStr.split('').map(c => {
+        const cls = c === 'W' ? 'w' : (c === 'L' || c === 'V') ? 'l' : 'd';
+        return html`<span class="cd-fd ${cls}"></span>`;
+      })}</div>`;
+    };
+
     return html`
       <ha-card class="${this._config.compact ? 'compact' : ''}">
         ${renderCardHero(match.home_logo, match.away_logo)}
@@ -331,6 +344,7 @@ class SoccerLiveCountdownCard extends LitElement {
           <div class="team">
             ${match.home_logo ? html`<img class="team-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
             <span class="team-name">${match.home_team || '?'}</span>
+            ${renderForm(match.home_form)}
           </div>
 
           <div class="center">
@@ -356,6 +370,7 @@ class SoccerLiveCountdownCard extends LitElement {
           <div class="team">
             ${match.away_logo ? html`<img class="team-logo" src="${match.away_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
             <span class="team-name">${match.away_team || '?'}</span>
+            ${renderForm(match.away_form)}
           </div>
         </div>
 

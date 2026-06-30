@@ -303,6 +303,7 @@ class SoccerLiveBracketCard extends LitElement {
                     <div class="sched-score">
                       ${isLive ? html`<span class="dot"></span>` : ''}
                       <span>${scoreOrTime}</span>
+                      ${isLive && m.clock ? html`<span class="sched-clock">${m.clock}'</span>` : ''}
                     </div>
                     <div class="sched-team away">
                       ${m.away_logo ? html`<img class="sched-logo" src="${m.away_logo}" alt="">` : ''}
@@ -431,8 +432,16 @@ class SoccerLiveBracketCard extends LitElement {
     const abbrB = b.abbrev || (b.name ? b.name.substring(0, 3).toUpperCase() : 'TBD');
 
     const hasMyTeam = this._myTeam ? this._tieHasMyTeam(tie) : null;
+    const tieDate = tie.leg1?.date || tie.leg2?.date || tie.single?.date || tie.first_leg_date || null;
+    const canNavSched = !!(this._matchesEntity && tieDate);
     return html`
-      <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''}">
+      <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''} ${canNavSched ? 'sched-link' : ''}"
+        @click=${canNavSched ? () => {
+          const tz = this.hass?.config?.time_zone;
+          this._schedScrollToDate = new Date(tieDate).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
+          this._schedFilter = 'all';
+          this._activeTab = 'schedule';
+        } : null}>
         <div class="mini-team ${isAW ? 'winner' : ''} ${isBW ? 'loser' : ''}">
           ${a.logo ? html`<img src="${a.logo}" alt="${a.name}" />` : html`<div class="logo-ph"></div>`}
           <span class="abbr">${abbrA}</span>
@@ -1131,6 +1140,7 @@ class SoccerLiveBracketCard extends LitElement {
         min-width: 56px; text-align: center;
       }
       .sched-match.live .sched-score { color: var(--cl-live); }
+      .sched-clock { font-size: 9px; font-weight: 700; color: var(--cl-text-2); opacity: 0.8; }
       .sched-score .dot {
         width: 7px; height: 7px; border-radius: 50%; background: var(--cl-live); flex-shrink: 0;
         animation: pulse 1.2s ease-in-out infinite;
@@ -1260,6 +1270,8 @@ class SoccerLiveBracketCard extends LitElement {
         position: relative;
         box-shadow: 0 2px 8px rgba(var(--cl-accent-rgb),0.15);
       }
+      .mini-tie.sched-link { cursor: pointer; }
+      .mini-tie.sched-link:hover { border-color: var(--cl-accent) !important; box-shadow: 0 0 10px rgba(var(--cl-accent-rgb),0.25); }
       .mini-tie:hover {
         border-color: var(--cl-accent);
         transform: scale(1.04);
