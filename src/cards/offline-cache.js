@@ -20,7 +20,7 @@ export class OfflineCache {
         JSON.stringify({ timestamp: Date.now(), data })
       );
     } catch (e) {
-      console.warn('Failed to cache:', e);
+      console.debug('Failed to cache:', e);
     }
   }
 
@@ -41,7 +41,7 @@ export class OfflineCache {
       this.clear(entityId);
       return null;
     } catch (e) {
-      console.warn('Failed to read cache:', e);
+      console.debug('Failed to read cache:', e);
       return null;
     }
   }
@@ -50,7 +50,7 @@ export class OfflineCache {
     try {
       localStorage.removeItem(CACHE_KEY_PREFIX + entityId);
     } catch (e) {
-      console.warn('Failed to clear cache:', e);
+      console.debug('Failed to clear cache:', e);
     }
   }
 
@@ -62,7 +62,7 @@ export class OfflineCache {
         }
       });
     } catch (e) {
-      console.warn('Failed to clear all cache:', e);
+      console.debug('Failed to clear all cache:', e);
     }
   }
 
