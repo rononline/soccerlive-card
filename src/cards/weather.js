@@ -4,6 +4,7 @@
 
 const VENUE_CACHE = new Map();
 const WEATHER_CACHE = new Map();
+const WEATHER_INFLIGHT = new Map(); // cacheKey -> pending fetch Promise (de-dupes concurrent requests)
 const CACHE_DURATION = 3600000; // 1 hour
 const MAX_CACHE_SIZE = 150;
 
@@ -135,30 +136,40 @@ async function getWeather(lat, lon) {
     if (Date.now() - cached.timestamp < CACHE_DURATION) return cached.data;
   }
 
-  try {
-    const response = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`
-    );
-    const data = await response.json();
-    if (data.current) {
-      const weather = {
-        temp: Math.round(data.current.temperature_2m),
-        code: data.current.weather_code,
-        wind: kmhToBeaufort(data.current.wind_speed_10m),
-        wind_unit: 'BFT',
-        icon: getWeatherIcon(data.current.weather_code),
-        description: getWeatherDescription(data.current.weather_code),
-        timestamp: Date.now()
-      };
-      _evictCacheIfNeeded(WEATHER_CACHE);
-      WEATHER_CACHE.set(cacheKey, { data: weather, timestamp: Date.now() });
-      return weather;
-    }
-  } catch (e) {
-    console.warn('Weather fetch failed:', e);
-  }
+  // Share a single in-flight request across concurrent callers for the same
+  // venue, so multiple cards mounting at once don't each hit the API.
+  if (WEATHER_INFLIGHT.has(cacheKey)) return WEATHER_INFLIGHT.get(cacheKey);
 
-  return null;
+  const request = (async () => {
+    try {
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`
+      );
+      const data = await response.json();
+      if (data.current) {
+        const weather = {
+          temp: Math.round(data.current.temperature_2m),
+          code: data.current.weather_code,
+          wind: kmhToBeaufort(data.current.wind_speed_10m),
+          wind_unit: 'BFT',
+          icon: getWeatherIcon(data.current.weather_code),
+          description: getWeatherDescription(data.current.weather_code),
+          timestamp: Date.now()
+        };
+        _evictCacheIfNeeded(WEATHER_CACHE);
+        WEATHER_CACHE.set(cacheKey, { data: weather, timestamp: Date.now() });
+        return weather;
+      }
+    } catch (e) {
+      console.warn('Weather fetch failed:', e);
+    } finally {
+      WEATHER_INFLIGHT.delete(cacheKey);
+    }
+    return null;
+  })();
+
+  WEATHER_INFLIGHT.set(cacheKey, request);
+  return request;
 }
 
 function kmhToBeaufort(kmh) {
