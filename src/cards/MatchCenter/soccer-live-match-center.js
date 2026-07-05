@@ -10,6 +10,7 @@ import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
+import { displayCompetitionName } from '../shared-competition.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
@@ -156,7 +157,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ? renderSoccerBadge(this._t('status.full_time'), 'ft')
         : renderSoccerBadge(formatMatchDateFull(match.date, resolveLang(this.hass, this._config)) || match.date || '', 'date');
 
-    const compName = match.competition_name || match.league_name || '';
+    const compName = displayCompetitionName(
+      match.competition_name || match.league_name || '',
+      resolveLang(this.hass, this._config)
+    );
     const compLogo = match.competition_logo || match.league_logo || null;
 
     return html`

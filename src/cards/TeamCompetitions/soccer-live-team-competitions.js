@@ -5,6 +5,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from "../card-error.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
+import { displayCompetitionName } from '../shared-competition.js';
 
 class SoccerLiveTeamCompetitionsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedComp: { type: String } }; }
@@ -40,7 +41,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
       if (!groups[key]) {
         groups[key] = {
           key,
-          name: key,
+          name: displayCompetitionName(key, resolveLang(this.hass, this._config)),
           logo: this._validText(m.league_logo) || this._validText(m.competition_logo),
           all: [],
         };

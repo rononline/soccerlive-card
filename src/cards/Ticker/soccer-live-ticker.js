@@ -3,6 +3,7 @@ import { t, resolveLang, formatMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError } from "../card-error.js";
+import { displayCompetitionName } from '../shared-competition.js';
 
 class SoccerLiveTickerCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _sel: {} }; }
@@ -35,7 +36,9 @@ class SoccerLiveTickerCard extends LitElement {
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
     const sel    = this._isSel(m);
-    const league = m.league_name && m.league_name !== 'N/A' ? m.league_name : null;
+    const league = m.league_name && m.league_name !== 'N/A'
+      ? displayCompetitionName(m.league_name, resolveLang(this.hass, this._config))
+      : null;
     return html`
       <div class="tick-item ${isLive ? 'live' : ''} ${isFt ? 'ft' : ''} ${sel ? 'selected' : ''}"
            @click=${() => this._toggleSel(m)}>
@@ -64,7 +67,9 @@ class SoccerLiveTickerCard extends LitElement {
     if (!m) return '';
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
-    const league = m.league_name && m.league_name !== 'N/A' ? m.league_name : null;
+    const league = m.league_name && m.league_name !== 'N/A'
+      ? displayCompetitionName(m.league_name, resolveLang(this.hass, this._config))
+      : null;
     return html`
       <div class="tick-detail">
         <div class="td-row">

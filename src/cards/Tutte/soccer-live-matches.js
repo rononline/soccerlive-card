@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
+import { displayCompetitionName } from '../shared-competition.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -240,22 +241,7 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _displayCompetitionName(name) {
-    const raw = String(name || '').trim();
-    const key = raw.toLowerCase();
-    const lang = resolveLang(this.hass, this._config);
-    const friendlies = {
-      en: 'Club Friendlies',
-      nl: 'Oefenwedstrijden clubs',
-      de: 'Vereinsfreundschaftsspiele',
-      es: 'Amistosos de clubes',
-      fr: 'Matchs amicaux clubs',
-      it: 'Amichevoli club',
-      pt: 'Amistosos de clubes',
-    };
-    if (key === 'friendlies clubs' || key === 'friendly clubs' || key === 'club friendlies') {
-      return friendlies[lang] || friendlies.en;
-    }
-    return raw;
+    return displayCompetitionName(name, resolveLang(this.hass, this._config));
   }
 
   _isWinner(match, side) {

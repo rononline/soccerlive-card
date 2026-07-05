@@ -8,6 +8,7 @@ import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
+import { displayCompetitionName } from '../shared-competition.js';
 
 /**
  * Soccer Live Team Card
@@ -543,13 +544,15 @@ class SoccerLiveTeamCard extends LitElement {
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
     const showScore = isLive || isFinished;
-    const competitionLabel = (leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'N/A')
+    const lang = resolveLang(this.hass, this._config);
+    const competitionLabelRaw = (leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'N/A')
       ? leagueInfo.abbreviation
       : (match.league_name && match.league_name !== 'N/A'
           ? match.league_name
           : (match.season_info && match.season_info !== 'N/A' && this._shouldShowPhase(match.season_info)
               ? this._translatePhase(match.season_info)
               : ''));
+    const competitionLabel = displayCompetitionName(competitionLabelRaw, lang);
 
     const homeRgb = this._hexToRgb(match.home_color);
     const awayRgb = this._hexToRgb(match.away_color);
@@ -623,7 +626,7 @@ class SoccerLiveTeamCard extends LitElement {
         ${renderMatchMeta(match, {
           lang: resolveLang(this.hass, this._config),
           t: k => this._t(k),
-          weatherBadge: this._weatherBadge || null,
+              weatherBadge: this._weatherBadge || null,
           showDate: !showScore,
           hideBroadcasts: this._config.hide_broadcasts === true,
         })}
@@ -713,7 +716,10 @@ class SoccerLiveTeamCard extends LitElement {
             ? (trackedWon ? 'tw' : trackedLost ? 'tl' : 'draw')
             : (homeWon ? 'home-win' : awayWon ? 'away-win' : 'draw');
           const cleanStr = v => (v && v !== 'N/A') ? v : '';
-          const compLabel = cleanStr(m.league_abbrev) || cleanStr(m.league_abbreviation) || cleanStr(m.competition_abbreviation) || cleanStr(m.league_name);
+          const compLabel = displayCompetitionName(
+            cleanStr(m.league_abbrev) || cleanStr(m.league_abbreviation) || cleanStr(m.competition_abbreviation) || cleanStr(m.league_name),
+            resolveLang(this.hass, this._config)
+          );
           return html`
             <div class="upcoming-row">
               <span class="upcoming-date">
@@ -766,7 +772,10 @@ class SoccerLiveTeamCard extends LitElement {
               })}
             </div>`;
           };
-          const uplCompLabel = (m.league_name && m.league_name !== 'N/A') ? m.league_name : '';
+          const uplCompLabel = displayCompetitionName(
+            (m.league_name && m.league_name !== 'N/A') ? m.league_name : '',
+            resolveLang(this.hass, this._config)
+          );
           return html`
             <div class="upcoming-row ${clickable ? 'clickable' : ''}"
                  @click="${clickable ? () => this.showDetails(m) : null}">

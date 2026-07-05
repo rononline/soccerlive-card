@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.117 (2026-07-05)
+- Cards: translate API-Football friendly competition labels consistently across Matches, Team, Ticker, Team Competitions and Match Center cards, including `Friendlies`, `Friendlies Club`, `Friendlies Clubs`, `Friendly Club(s)` and `Club Friendlies`
+
 ## v3.21.116 (2026-07-05)
 - Matches card: prefer team name over `World` as the header for team/mixed sensors and translate club friendlies labels in the match list
 - Team card: hide empty `N/A` clock/status text in finished-match detail popups
