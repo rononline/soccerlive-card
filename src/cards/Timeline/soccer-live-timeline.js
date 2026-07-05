@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
+import { displayCompetitionName } from "../shared-competition.js";
 
 class SoccerLiveTimelineCard extends LitElement {
   static get properties() {
@@ -85,7 +86,10 @@ class SoccerLiveTimelineCard extends LitElement {
         ${!this.hideHeader ? html`
           ${renderSoccerHeader({
             logo: m.competition_logo || m.league_logo || stateObj.attributes.league_logo || null,
-            title: m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.timeline'),
+            title: displayCompetitionName(
+              m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.timeline'),
+              resolveLang(this.hass, this._config)
+            ),
             badge: (m.state === 'in' || m.state === 'post')
               ? renderSoccerBadge(`${m.home_score ?? 0}–${m.away_score ?? 0}`, m.state === 'in' ? 'live' : 'ft')
               : renderSoccerBadge(m.date || '', 'date'),

@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.118 (2026-07-05)
+- Cards: translate API-Football competition labels consistently in Countdown, News, Lineup and Timeline headers as well, so friendly fixtures no longer leak raw provider names in those views
+
 ## v3.21.117 (2026-07-05)
 - Cards: translate API-Football friendly competition labels consistently across Matches, Team, Ticker, Team Competitions and Match Center cards, including `Friendlies`, `Friendlies Club`, `Friendlies Clubs`, `Friendly Club(s)` and `Club Friendlies`
 

@@ -8,6 +8,7 @@ import { OfflineCache } from "../offline-cache.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
+import { displayCompetitionName } from "../shared-competition.js";
 
 /**
  * Soccer Live Countdown Card
@@ -294,7 +295,10 @@ class SoccerLiveCountdownCard extends LitElement {
     const isLive     = match.state === 'in';
     const isFinished = match.state === 'post';
     const leagueInfo = attributes?.league_info?.[0];
-    const compName   = match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '';
+    const compName   = displayCompetitionName(
+      match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '',
+      resolveLang(this.hass, this._config)
+    );
     const compLogo   = match.competition_logo || leagueInfo?.logo_href || attributes?.league_logo || '';
 
     // Live or finished: hide entirely or show a compact one-line strip

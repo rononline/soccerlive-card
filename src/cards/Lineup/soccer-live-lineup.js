@@ -3,6 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
+import { displayCompetitionName } from "../shared-competition.js";
 
 class SoccerLiveLineupCard extends LitElement {
   static get properties() {
@@ -93,7 +94,10 @@ class SoccerLiveLineupCard extends LitElement {
         ${!this.hideHeader ? html`
           ${renderSoccerHeader({
             logo: m.competition_logo || m.league_logo || stateObj.attributes.league_logo || null,
-            title: m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.lineup'),
+            title: displayCompetitionName(
+              m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.lineup'),
+              resolveLang(this.hass, this._config)
+            ),
             badge: renderSoccerBadge(`${m.home_team} – ${m.away_team}`, 'neutral'),
             fallbackIcon: '👥',
           })}
