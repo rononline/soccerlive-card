@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.116 (2026-07-05)
+- Matches card: prefer team name over `World` as the header for team/mixed sensors and translate club friendlies labels in the match list
+- Team card: hide empty `N/A` clock/status text in finished-match detail popups
+- Docs: document API-Football sensor compatibility and the v3.6.58 integration requirement for API-Football match details
+
 ## v3.21.63 (2026-06-26)
 - Docs: README bijgewerkt — verwijderde kaarten (LiveMatch, LiveCommentary, SeasonOverview, Timeline, Lineup) uit tabel en reference sections; Countdown sectie vermeldt nieuwe compacte strip en `hide_when_live`; MatchCenter sectie vermeldt pitch opstelling
 - Preview: verwijderde kaart-panels (Live Match, Lineup, Timeline, Live Commentary, Season Overview) uit preview.html

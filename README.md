@@ -1,6 +1,6 @@
 # ⚽ Soccer Live Card
 
-Beautiful, animated football cards for Home Assistant with multi-language support, extensive customization, offline caching, and mobile responsiveness.
+Beautiful, animated football cards for Home Assistant with multi-language support, extensive customization, offline caching, mobile responsiveness, and ESPN/API-Football sensor support.
 
 Companion for the [Soccer Live integration](https://github.com/rononline/soccerlive).
 
@@ -311,7 +311,7 @@ Tabbed view of a single match with five tabs:
 
 The active tab is remembered across page refreshes (per entity, via sessionStorage).
 
-> Works best with a `next_*` or `all_mixed_*` sensor, which enriches the match with lineup, key events and H2H via the ESPN summary endpoint. Also shows a **weather badge** for the match venue.
+> Works best with a `next_*` or `all_mixed_*` sensor. ESPN sensors enrich the match through the ESPN summary endpoint; API-Football sensors expose fixture events, statistics and lineups when summary enrichment is enabled in the integration. Also shows a **weather badge** for the match venue.
 
 ### 👥 Team Form
 
@@ -393,6 +393,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Competition label in Team card previous/upcoming matches (`league_name` in compact objects) | v3.6.47 |
 | Opponent form dots in Team card upcoming matches (`home_form`/`away_form` in compact objects) | v3.6.47 |
 | Live clock in schedule summary (`clock` in compact schedule objects) | v3.6.48 |
+| API-Football team/mixed match details, event timeline and club-friendly labels | v3.6.58 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 

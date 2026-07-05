@@ -951,6 +951,16 @@ class SoccerLiveTeamCard extends LitElement {
 
   _renderPopup() {
     const m = this.activeMatch;
+    const isPre  = m.state === 'pre';
+    const isLive = m.state === 'in';
+    const isFt   = m.state === 'post';
+    const clock = isLive
+      ? ((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : this._t('status.live')))
+      : isFt
+        ? this._t('status.full_time')
+        : isPre
+          ? (formatMatchDate(m.date, resolveLang(this.hass, this._config)) || m.date || '')
+          : '';
     return html`
       <div
         class="popup-overlay"
@@ -962,7 +972,7 @@ class SoccerLiveTeamCard extends LitElement {
             <img class="popup-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
             <div class="popup-score-center">
               <div class="popup-score">${m.home_score ?? '-'}<span class="popup-score-sep"> - </span>${m.away_score ?? '-'}</div>
-              <div class="popup-clock">${m.clock ?? m.status ?? ''}</div>
+              ${clock ? html`<div class="popup-clock">${clock}</div>` : ''}
             </div>
             <img class="popup-logo" src="${m.away_logo}" alt="" @error="${e => e.target.style.display='none'}">
           </div>

@@ -239,6 +239,25 @@ class SoccerLiveMatchesCard extends LitElement {
     return score;
   }
 
+  _displayCompetitionName(name) {
+    const raw = String(name || '').trim();
+    const key = raw.toLowerCase();
+    const lang = resolveLang(this.hass, this._config);
+    const friendlies = {
+      en: 'Club Friendlies',
+      nl: 'Oefenwedstrijden clubs',
+      de: 'Vereinsfreundschaftsspiele',
+      es: 'Amistosos de clubes',
+      fr: 'Matchs amicaux clubs',
+      it: 'Amichevoli club',
+      pt: 'Amistosos de clubes',
+    };
+    if (key === 'friendlies clubs' || key === 'friendly clubs' || key === 'club friendlies') {
+      return friendlies[lang] || friendlies.en;
+    }
+    return raw;
+  }
+
   _isWinner(match, side) {
     if (match.state === 'pre') return null;
     const h = parseInt(match.home_score);
@@ -329,6 +348,9 @@ class SoccerLiveMatchesCard extends LitElement {
 
     let matches = stateObj.attributes.matches || [];
     const leagueInfo = stateObj.attributes.league_info ? stateObj.attributes.league_info[0] : null;
+    const teamName = stateObj.attributes.team_name && stateObj.attributes.team_name !== 'N/A'
+      ? stateObj.attributes.team_name
+      : null;
     const teamLogo = stateObj.attributes.team_logo || null;
 
     if (!this.showFinishedMatches) {
@@ -365,7 +387,7 @@ class SoccerLiveMatchesCard extends LitElement {
     if (groupBy === 'competition') {
       const byComp = new Map();
       limited.forEach(m => {
-        const key = m.league_name && m.league_name !== 'N/A' ? m.league_name : '—';
+        const key = m.league_name && m.league_name !== 'N/A' ? this._displayCompetitionName(m.league_name) : '—';
         if (!byComp.has(key)) byComp.set(key, { key, logo: m.league_logo || m.competition_logo || null, dayDiff: null, matches: [] });
         byComp.get(key).matches.push(m);
       });
@@ -423,7 +445,10 @@ class SoccerLiveMatchesCard extends LitElement {
 
         ${!this.hideHeader ? (() => {
           const _logo  = (leagueInfo && leagueInfo.logo_href) || teamLogo || null;
-          const _title = (leagueInfo && leagueInfo.abbreviation) || stateObj.state || 'Soccer Live';
+          const leagueTitle = leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'World'
+            ? leagueInfo.abbreviation
+            : (leagueInfo && leagueInfo.name ? this._displayCompetitionName(leagueInfo.name) : null);
+          const _title = teamName || leagueTitle || stateObj.state || 'Soccer Live';
           const _total    = stateObj.attributes.total_matches || stateObj.attributes.matches?.length || 0;
           const _finished = stateObj.attributes.finished_matches_count
             ?? (stateObj.attributes.matches || []).filter(m => m.state === 'post').length;
@@ -474,7 +499,7 @@ class SoccerLiveMatchesCard extends LitElement {
                     ${(broadcast && isUpcoming) || (isMultiLeague && match.league_name && match.league_name !== 'N/A') ? html`
                       <div class="row-extras">
                         ${isMultiLeague && match.league_name && match.league_name !== 'N/A' ? html`
-                          <span class="league-chip">${match.league_name}</span>
+                          <span class="league-chip">${this._displayCompetitionName(match.league_name)}</span>
                         ` : ''}
                         ${broadcast && isUpcoming && !this._config.hide_broadcasts ? html`
                           <span class="tv-chip" title="Live TV">
