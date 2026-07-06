@@ -978,17 +978,24 @@ class SoccerLiveTeamCard extends LitElement {
         <div class="popup-box" @click="${e => e.stopPropagation()}">
           <h3 class="popup-title">${this._t('popup.match_details')}</h3>
           <div class="popup-score-row">
-            <img class="popup-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
+            <div class="popup-team-col">
+              <img class="popup-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">
+              <div class="popup-team-name">${m.home_team}</div>
+            </div>
             <div class="popup-score-center">
               <div class="popup-score">${m.home_score ?? '-'}<span class="popup-score-sep"> - </span>${m.away_score ?? '-'}</div>
               ${clock ? html`<div class="popup-clock">${clock}</div>` : ''}
             </div>
-            <img class="popup-logo" src="${m.away_logo}" alt="" @error="${e => e.target.style.display='none'}">
+            <div class="popup-team-col">
+              <img class="popup-logo" src="${m.away_logo}" alt="" @error="${e => e.target.style.display='none'}">
+              <div class="popup-team-name">${m.away_team}</div>
+            </div>
           </div>
+          ${(this._hasStats(m.home_statistics) || this._hasStats(m.away_statistics)) ? html`
           <div class="popup-stats-grid">
             ${this._renderPopupStatBox(m.home_team, m.home_statistics)}
             ${this._renderPopupStatBox(m.away_team, m.away_statistics)}
-          </div>
+          </div>` : ''}
           ${this._renderPopupEventGroups(m)}
           ${this._renderPopupLineup(m)}
           ${this._renderPopupTimeline(m)}
@@ -1054,9 +1061,11 @@ class SoccerLiveTeamCard extends LitElement {
           background-clip: text;
           -webkit-text-fill-color: transparent;
         }
-        .popup-score-row { display: flex; justify-content: center; align-items: center; gap: 18px; margin-bottom: 24px; }
+        .popup-score-row { display: flex; justify-content: center; align-items: flex-start; gap: 14px; margin-bottom: 24px; }
+        .popup-team-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .popup-team-name { font-size: 12px; font-weight: 700; text-align: center; color: var(--cl-text, #f8fafc); line-height: 1.25; word-break: break-word; }
         .popup-logo { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
-        .popup-score-center { text-align: center; }
+        .popup-score-center { flex: 0 0 auto; text-align: center; padding-top: 14px; }
         .popup-score { font-size: 42px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
         .popup-score-sep { opacity: 0.4; }
         .popup-clock { font-size: 12px; color: var(--cl-text-2, #94a3b8); margin-top: 8px; font-weight: 600; }
@@ -1138,10 +1147,13 @@ class SoccerLiveTeamCard extends LitElement {
     `;
   }
 
+  _hasStats(stats) {
+    return !!stats && Object.keys(stats).length > 0;
+  }
+
   _renderPopupStatBox(teamName, stats) {
     const s = stats || {};
-    const hasStat = Object.keys(s).length > 0;
-    if (!hasStat) return html`<div class="popup-stat-box"><div class="popup-stat-team">${teamName}</div></div>`;
+    if (!this._hasStats(s)) return html`<div class="popup-stat-box"><div class="popup-stat-team">${teamName}</div></div>`;
     return html`
       <div class="popup-stat-box">
         <div class="popup-stat-team">${teamName}</div>
