@@ -1141,6 +1141,7 @@ class SoccerLiveTeamCard extends LitElement {
           .popup-box { padding: 16px; }
           .popup-logo { width: 52px; height: 52px; }
           .popup-score { font-size: 32px; }
+          .popup-score-center { padding-top: 10px; }
           .popup-stats-grid { grid-template-columns: 1fr; }
         }
       </style>
