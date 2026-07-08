@@ -5,6 +5,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
+import { renderPitch, pitchStyles } from '../shared-pitch.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -600,6 +601,7 @@ class SoccerLiveMatchesCard extends LitElement {
   _renderPopupPortalStyles() {
     return html`
       <style>
+        ${pitchStyles.cssText}
         .soccer-live-matches-popup-portal {
           border: 0;
           padding: 0;
@@ -747,6 +749,14 @@ class SoccerLiveMatchesCard extends LitElement {
     const lineupHome = m.lineup_home || [];
     const lineupAway = m.lineup_away || [];
     if (!lineupHome.length && !lineupAway.length) return '';
+    const pitch = renderPitch(m, { t: (k, v) => this._t(k, v) });
+    if (pitch) {
+      return html`
+        <div class="mp-section mp-section-lineup">
+          <h5 class="mp-section-title lineup">${this._t('popup.lineups')}</h5>
+          ${pitch}
+        </div>`;
+    }
     const teamBlock = (players, formation, label) => {
       const hasFlags = players.some(p => p.starter === true || p.starter === false);
       const starters = hasFlags ? players.filter(p => p.starter === true) : players;

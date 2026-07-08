@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
+import { renderPitch, pitchStyles } from "../shared-pitch.js";
 
 class SoccerLiveLineupCard extends LitElement {
   static get properties() {
@@ -55,50 +56,6 @@ class SoccerLiveLineupCard extends LitElement {
     `;
   }
 
-  /** Parse "4-3-3" / "4-4-1-1" into outfield line counts. Returns null unless
-   *  it is a valid formation summing to 10 outfield players. */
-  _parseFormation(str) {
-    if (!str || typeof str !== 'string') return null;
-    const parts = str.trim().split(/[-\s]+/).map(n => parseInt(n, 10));
-    if (!parts.length || parts.some(n => !Number.isInteger(n) || n <= 0)) return null;
-    if (parts.reduce((a, b) => a + b, 0) !== 10) return null;
-    return parts;
-  }
-
-  /** Build pitch rows from a lineup + formation: [ [GK], [def…], [mid…], [fwd…] ].
-   *  Returns null when the data cannot be laid out (caller falls back to the grid). */
-  _buildPitchLines(players, formationStr) {
-    const starters = this._starters(players);
-    if (starters.length !== 11) return null;
-    const lines = this._parseFormation(formationStr);
-    if (!lines) return null;
-    let gkIdx = starters.findIndex(p => {
-      const pos = (p.position || '').toUpperCase();
-      return pos === 'G' || pos === 'GK';
-    });
-    if (gkIdx === -1) gkIdx = 0;
-    const gk = starters[gkIdx];
-    const outfield = starters.filter((_, i) => i !== gkIdx);
-    if (outfield.length !== 10) return null;
-    const rows = [[gk]];
-    let idx = 0;
-    for (const count of lines) {
-      rows.push(outfield.slice(idx, idx + count));
-      idx += count;
-    }
-    return rows;
-  }
-
-  _pitchChip(p, side, isGk) {
-    const name = p.short_name || p.name || '';
-    return html`
-      <div class="pp" title="${p.name || name}">
-        <div class="pp-badge pp-badge--${isGk ? 'gk' : side}">${p.jersey ?? ''}</div>
-        <div class="pp-name">${name}</div>
-      </div>
-    `;
-  }
-
   _renderPitchScorebar(m, formationHome, formationAway) {
     const isPre = m.state === 'pre';
     const isLive = m.state === 'in';
@@ -127,30 +84,6 @@ class SoccerLiveLineupCard extends LitElement {
             <div class="psb-abbr">${m.away_abbrev || m.away_team}</div>
             ${formationAway ? html`<div class="psb-form">${formationAway}</div>` : ''}
           </div>
-        </div>
-      </div>
-    `;
-  }
-
-  _renderPitch(homeRows, awayRows) {
-    const homeReversed = [...homeRows].reverse(); // GK ends up at the bottom
-    return html`
-      <div class="pitch">
-        <div class="pitch-lines" aria-hidden="true">
-          <div class="pl-center-line"></div>
-          <div class="pl-center-circle"></div>
-          <div class="pl-box pl-box--top"></div>
-          <div class="pl-box pl-box--bottom"></div>
-        </div>
-        <div class="pitch-team">
-          ${awayRows.map((row, ri) => html`
-            <div class="pitch-row">${row.map(p => this._pitchChip(p, 'away', ri === 0))}</div>
-          `)}
-        </div>
-        <div class="pitch-team">
-          ${homeReversed.map((row, ri) => html`
-            <div class="pitch-row">${row.map(p => this._pitchChip(p, 'home', ri === homeReversed.length - 1))}</div>
-          `)}
         </div>
       </div>
     `;
@@ -242,18 +175,16 @@ class SoccerLiveLineupCard extends LitElement {
       fallbackIcon: '👥',
     }) : '';
 
-    // Prefer the pitch view when both teams have a valid formation + XI,
-    // otherwise fall back to the player grid.
-    const homeRows = this._buildPitchLines(lineupHome, formationHome);
-    const awayRows = this._buildPitchLines(lineupAway, formationAway);
-
-    if (homeRows && awayRows) {
+    // Prefer the shared pitch view; fall back to the player grid when a
+    // formation is missing.
+    const pitch = renderPitch(m, { t: (k, v) => this._t(k, v) });
+    if (pitch) {
       return html`
         <ha-card>
           <div class="hero-bg"></div>
           ${header}
           ${this._renderPitchScorebar(m, formationHome, formationAway)}
-          ${this._renderPitch(homeRows, awayRows)}
+          ${pitch}
         </ha-card>
       `;
     }
@@ -268,7 +199,7 @@ class SoccerLiveLineupCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, pitchStyles, css`
       :host {
         --cl-accent: #6366f1;
         --cl-accent-2: #ec4899;
@@ -426,7 +357,7 @@ class SoccerLiveLineupCard extends LitElement {
         .team-block:last-child { border-bottom: none; }
       }
 
-      /* ---- Pitch view ---- */
+      /* ---- Pitch scorebar (card chrome above the shared pitch) ---- */
       .psb {
         position: relative; z-index: 1;
         display: flex; align-items: center; gap: 12px;
@@ -450,81 +381,6 @@ class SoccerLiveLineupCard extends LitElement {
       .psb-vs { font-size: 12px; font-weight: 700; color: var(--cl-text-2); }
       .psb-status { font-size: 10px; font-weight: 800; color: var(--cl-text-2); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.06em; }
       .psb-status.live { color: #ef4444; }
-
-      .pitch {
-        position: relative; z-index: 1;
-        margin: 10px 12px 14px;
-        border-radius: 10px;
-        overflow: hidden;
-        aspect-ratio: 0.64;
-        display: flex; flex-direction: column;
-        background-color: #2c9a58;
-        background-image: repeating-linear-gradient(
-          0deg,
-          rgba(255,255,255,0.05) 0 9.0909%,
-          rgba(0,0,0,0.05) 9.0909% 18.1818%
-        );
-        box-shadow: inset 0 0 40px rgba(0,0,0,0.25);
-      }
-      .pitch-lines { position: absolute; inset: 0; pointer-events: none; }
-      .pitch-lines::before {
-        content: ''; position: absolute; inset: 8px;
-        border: 2px solid rgba(255,255,255,0.4); border-radius: 4px;
-      }
-      .pl-center-line {
-        position: absolute; left: 8px; right: 8px; top: 50%;
-        border-top: 2px solid rgba(255,255,255,0.4);
-      }
-      .pl-center-circle {
-        position: absolute; left: 50%; top: 50%;
-        transform: translate(-50%, -50%);
-        width: 26%; aspect-ratio: 1;
-        border: 2px solid rgba(255,255,255,0.4); border-radius: 50%;
-      }
-      .pl-box {
-        position: absolute; left: 50%; transform: translateX(-50%);
-        width: 54%; height: 14%;
-        border: 2px solid rgba(255,255,255,0.4);
-      }
-      .pl-box--top { top: 8px; border-top: none; }
-      .pl-box--bottom { bottom: 8px; border-bottom: none; }
-
-      .pitch-team {
-        position: relative; z-index: 2;
-        flex: 1;
-        display: flex; flex-direction: column;
-        justify-content: space-evenly;
-        padding: 8px 4px;
-      }
-      .pitch-row {
-        display: flex; justify-content: space-evenly; align-items: center;
-      }
-      .pp {
-        display: flex; flex-direction: column; align-items: center; gap: 3px;
-        flex: 0 1 auto; max-width: 20%;
-      }
-      .pp-badge {
-        width: 34px; height: 34px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 13px; font-weight: 800; color: #fff;
-        font-variant-numeric: tabular-nums;
-        border: 2px solid rgba(255,255,255,0.3);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.45);
-      }
-      .pp-badge--home { background: #1d4ed8; }
-      .pp-badge--away { background: #7c3aed; }
-      .pp-badge--gk { background: #f59e0b; color: #1a1a1a; }
-      .pp-name {
-        font-size: 9px; font-weight: 700; color: #fff;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.85);
-        text-align: center; line-height: 1.1;
-        max-width: 72px;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      @media (max-width: 400px) {
-        .pp-badge { width: 30px; height: 30px; font-size: 12px; }
-        .pp-name { font-size: 8px; max-width: 58px; }
-      }
     `];
   }
 }

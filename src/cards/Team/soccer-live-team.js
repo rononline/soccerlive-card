@@ -9,6 +9,7 @@ import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
 import { displayCompetitionName } from '../shared-competition.js';
+import { renderPitch, pitchStyles } from '../shared-pitch.js';
 
 /**
  * Soccer Live Team Card
@@ -1009,6 +1010,7 @@ class SoccerLiveTeamCard extends LitElement {
   _renderPopupPortalStyles() {
     return html`
       <style>
+        ${pitchStyles.cssText}
         .soccer-live-popup-portal {
           border: 0;
           padding: 0;
@@ -1185,6 +1187,14 @@ class SoccerLiveTeamCard extends LitElement {
     const lineupHome = m.lineup_home || [];
     const lineupAway = m.lineup_away || [];
     if (!lineupHome.length && !lineupAway.length) return '';
+    const pitch = renderPitch(m, { t: (k, v) => this._t(k, v) });
+    if (pitch) {
+      return html`
+        <div class="popup-section popup-section-lineup">
+          <h5 class="popup-section-title lineup">${this._t('popup.lineups')}</h5>
+          ${pitch}
+        </div>`;
+    }
     const teamBlock = (players, formation, label) => {
       const starters = (players || []).filter(p => p.starter);
       if (!starters.length) return '';
