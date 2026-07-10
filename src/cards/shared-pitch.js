@@ -85,7 +85,7 @@ export function renderPitch(match, opts = {}) {
   `;
   const benchRow = p => html`
     <div class="pit-bench-p">
-      <span class="pit-bench-num">${p.jersey || p.number || ''}</span>
+      <span class="pit-bench-num">${p.jersey || ''}</span>
       <span>${p.short_name || p.name || ''}</span>
     </div>
   `;
