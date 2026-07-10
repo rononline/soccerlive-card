@@ -10,7 +10,7 @@ export function displayCompetitionName(name, lang = 'en') {
 
   const clubFriendlies = {
     en: 'Club Friendlies',
-    nl: 'Oefenwedstrijden clubs',
+    nl: 'Oefenwedstrijd',
     de: 'Vereinsfreundschaftsspiele',
     es: 'Amistosos de clubes',
     fr: 'Matchs amicaux clubs',
