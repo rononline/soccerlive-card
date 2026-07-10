@@ -224,7 +224,7 @@ class SoccerLiveTeamFormCard extends LitElement {
                 <span class="pm-date">${(m.date || '').split(' ')[0]}</span>
                 <img class="pm-logo" src="${m.home_logo || ''}" alt="" @error=${e => e.target.style.display='none'}>
                 <span class="pm-team ${isHome ? 'tracked' : ''}">${m.home_abbrev || m.home_team || '?'}</span>
-                <span class="pm-score ${res === 'W' ? 'tracked-win' : res === 'L' ? 'tracked-loss' : 'draw'}">${hs ?? '?'}-${as_ ?? '?'}</span>
+                <span class="pm-score ${res === 'W' ? 'tracked-win' : res === 'L' ? 'tracked-loss' : 'draw'}">${Number.isFinite(hs) ? hs : '?'}-${Number.isFinite(as_) ? as_ : '?'}</span>
                 <span class="pm-team right ${!isHome ? 'tracked' : ''}">${m.away_abbrev || m.away_team || '?'}</span>
                 <img class="pm-logo" src="${m.away_logo || ''}" alt="" @error=${e => e.target.style.display='none'}>
                 ${res ? html`<span class="pm-res ${res.toLowerCase()}">${res}</span>` : ''}

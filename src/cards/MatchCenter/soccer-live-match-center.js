@@ -402,7 +402,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
             <div class="h2h-row">
               <span class="h2h-date">${formatDateOnly(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split('T')[0]}</span>
               <span class="h2h-team ${hw ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
-              <span class="h2h-score ${scoreClass}">${hs ?? '?'}–${as_ ?? '?'}</span>
+              <span class="h2h-score ${scoreClass}">${Number.isFinite(hs) ? hs : '?'}–${Number.isFinite(as_) ? as_ : '?'}</span>
               <span class="h2h-team right ${aw ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>
             </div>
           `;

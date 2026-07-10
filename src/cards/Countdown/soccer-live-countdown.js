@@ -55,7 +55,15 @@ class SoccerLiveCountdownCard extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this._now = new Date();
-    this._timer = setInterval(() => { this._now = new Date(); this.requestUpdate(); }, 1000);
+    // Tick every second, but only re-render while an upcoming match is actually
+    // counting down — no point repainting a finished or live match every second
+    // on an always-on dashboard.
+    if (this._counting === undefined) this._counting = true;
+    clearInterval(this._timer);
+    this._timer = setInterval(() => {
+      this._now = new Date();
+      if (this._counting) this.requestUpdate();
+    }, 1000);
     this._loadWeather();
   }
 
@@ -71,6 +79,8 @@ class SoccerLiveCountdownCard extends LitElement {
       const stateObj = this.hass?.states[this._config?.entity];
       if (stateObj && stateObj.state !== 'unavailable') {
         const match = this._getNextMatch(stateObj);
+        // Only an upcoming match drives the per-second countdown repaint.
+        this._counting = !!match && match.state === 'pre';
         const venue = match?.venue;
         if (venue && venue !== this._lastWeatherVenue) {
           this._loadWeather();
@@ -391,8 +401,11 @@ class SoccerLiveCountdownCard extends LitElement {
           const hs = parseInt(last.home_score), as_ = parseInt(last.away_score);
           const hw = !isNaN(hs) && !isNaN(as_) && hs > as_;
           const aw = !isNaN(hs) && !isNaN(as_) && as_ > hs;
+          // Fall back to a dash rather than rendering "NaN" for a non-numeric score.
+          const hd = Number.isFinite(hs) ? hs : '-';
+          const ad = Number.isFinite(as_) ? as_ : '-';
           return html`<div class="cd-h2h">
-            ${last.home_team} <strong class="${hw ? 'hw' : aw ? 'aw' : ''}">${hs}–${as_}</strong> ${last.away_team}
+            ${last.home_team} <strong class="${hw ? 'hw' : aw ? 'aw' : ''}">${hd}–${ad}</strong> ${last.away_team}
             ${last.date ? html`<span class="cd-h2h-date">${last.date.split(' ')[0]}</span>` : ''}
           </div>`;
         })()}
