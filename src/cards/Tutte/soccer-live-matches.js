@@ -2,7 +2,7 @@ import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang, formatMatchDate, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
@@ -785,7 +785,7 @@ class SoccerLiveMatchesCard extends LitElement {
     if (!keyEvents.length) return '';
     const getBadgeType = ev => {
       const ty = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
-      if (ty === 'goal' || ev.scoring_play) return 'goal';
+      if (isGoalEvent(ev)) return 'goal';
       if (txt.includes('yellow')) return 'yellow';
       if (txt.includes('red card')) return 'red';
       if (ty === 'substitution' || txt.includes('substitut')) return 'sub';

@@ -1,5 +1,16 @@
 export const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
 
+// Whether a key_event is an actual goal that changed the score. Excludes missed
+// penalties and VAR-disallowed goals — providers still tag those with type
+// "Goal" (API-Football) or "penalty" in the text (ESPN "Penalty - Missed"), so
+// a naive check would give them a goal badge.
+export function isGoalEvent(ev) {
+  const ty = (ev.type || '').toLowerCase();
+  const txt = (ev.type_text || '').toLowerCase();
+  if (txt.includes('missed') || txt.includes('disallow')) return false;
+  return !!ev.scoring_play || ty === 'goal' || txt.includes('penalty - scored');
+}
+
 export const EVENT_I18N = {
   'kickoff': 'status.kickoff',
   'halftime': 'status.halftime',

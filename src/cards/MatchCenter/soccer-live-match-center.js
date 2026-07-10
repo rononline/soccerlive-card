@@ -6,7 +6,7 @@ import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
-import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
@@ -283,7 +283,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const getBadgeType = ev => {
       const ty = (ev.type || '').toLowerCase();
       const txt = (ev.type_text || '').toLowerCase();
-      if (ty === 'goal' || ev.scoring_play) return 'goal';
+      if (isGoalEvent(ev)) return 'goal';
       if (txt.includes('yellow')) return 'yellow';
       if (txt.includes('red card')) return 'red';
       if (ty === 'substitution' || txt.includes('substitut')) return 'sub';

@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { EVENT_I18N, SKIP } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
 
@@ -37,7 +37,7 @@ class SoccerLiveTimelineCard extends LitElement {
     const txt = (ev.type_text || '').toLowerCase();
     if (SKIP.some(s => txt.includes(s))) return null;
     let btype = 'meta';
-    if (ty === 'goal' || ev.scoring_play || txt.includes('penalty')) btype = 'goal';
+    if (isGoalEvent(ev)) btype = 'goal';
     else if (txt.includes('yellow')) btype = 'yellow';
     else if (txt.includes('red card')) btype = 'red';
     else if (ty === 'substitution' || txt.includes('substitut')) btype = 'sub';
