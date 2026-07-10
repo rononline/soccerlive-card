@@ -6,6 +6,7 @@ import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from '../card-shell.js';
+import { displayCompetitionName } from '../shared-competition.js';
 
 class SoccerLiveScorersCard extends LitElement {
   static get properties() {
@@ -88,7 +89,7 @@ class SoccerLiveScorersCard extends LitElement {
         <div class="card-content">
         ${!hideHeader ? renderSoccerHeader({
           logo: attrs.league_logo,
-          title: attrs.league_name || this._t('card.scorers'),
+          title: displayCompetitionName(attrs.league_name, resolveLang(this.hass, this._config)) || this._t('card.scorers'),
           badge: renderSoccerBadge(`${visible.length}`, 'neutral'),
           fallbackIcon: '🥇',
         }) : ''}

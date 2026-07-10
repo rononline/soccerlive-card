@@ -3,6 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
+import { displayCompetitionName } from '../shared-competition.js';
 
 class SoccerLiveBracketCard extends LitElement {
   static get properties() {
@@ -775,7 +776,7 @@ class SoccerLiveBracketCard extends LitElement {
         ${!this._hideHeader ? html`
           ${renderSoccerHeader({
             logo: stateObj.attributes.league_logo || (stateObj.attributes.league_info || [])[0]?.logo_href || null,
-            title: stateObj.attributes.league_name || this._t('card.bracket'),
+            title: displayCompetitionName(stateObj.attributes.league_name, resolveLang(this.hass, this._config)) || this._t('card.bracket'),
             badge: renderSoccerBadge(badgeLabel, 'neutral'),
             fallbackIcon: '🏆',
           })}

@@ -3,6 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
 import { soccerCardShellStyles } from "../card-shell.js";
+import { displayCompetitionName } from "../shared-competition.js";
 
 class SoccerLiveMiniStandingsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedGroup: { type: String } }; }
@@ -136,6 +137,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
     const maxRows = this._config.max_rows || standings.length;
     const myTeam = (this._config.highlight_team || '').toLowerCase();
     const leagueName = stateObj.attributes.league_name || '';
+    const leagueNameDisplay = displayCompetitionName(leagueName, resolveLang(this.hass, this._config)) || leagueName;
     const leagueAbbr = stateObj.attributes.league_abbreviation && stateObj.attributes.league_abbreviation !== 'N/A'
       ? stateObj.attributes.league_abbreviation : null;
     const rawSeason = stateObj.attributes.season || '';
@@ -153,7 +155,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
         ${!this._config.hide_header ? html`
           <div class="top-bar">
             <div class="league-title">
-              <h2>${leagueAbbr || leagueName || stateObj.state}</h2>
+              <h2>${leagueAbbr || leagueNameDisplay || stateObj.state}</h2>
               <div class="sub">${subParts.join(' · ')}</div>
             </div>
           </div>
