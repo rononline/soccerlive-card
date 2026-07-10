@@ -1812,8 +1812,8 @@ class SoccerLiveTeamCard extends LitElement {
       .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
-      .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; display: block; max-width: 52px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .upl-comp-label { color: var(--cl-text-2); font-size: 8px; letter-spacing: 0.03em; text-transform: uppercase; display: block; max-width: 52px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; display: block; max-width: 68px; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; }
+      .upl-comp-label { color: var(--cl-text-2); font-size: 8px; letter-spacing: 0.03em; text-transform: uppercase; display: block; max-width: 68px; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; }
       .upl-opp-form { grid-column: 1 / -1; display: flex; gap: 2px; margin-top: -3px; padding-bottom: 2px; }
       .upl-opp-form.side-right { justify-content: flex-end; }
       .upl-opp-form.side-left { justify-content: flex-start; padding-left: 58px; }
