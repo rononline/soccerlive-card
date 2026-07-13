@@ -49,6 +49,10 @@ const KNOWN_VENUES = {
   'Goffertstadion': { lat: 51.8307, lon: 5.8606 },  // NEC Nijmegen (one-word variant of Goffert Stadion)
   'Sportcomplex Varkenoord': { lat: 51.8896, lon: 4.5219 },  // Feyenoord training ground, adjacent to De Kuip
   'Varkenoord': { lat: 51.8896, lon: 4.5219 },
+  'M-Scores Stadion': { lat: 51.8139, lon: 4.6836 },  // FC Dordrecht (Stadion Krommedijk, sponsor name)
+  'Stadion Krommedijk': { lat: 51.8139, lon: 4.6836 },  // FC Dordrecht
+  'Riwal Hoogwerkers Stadion': { lat: 51.8139, lon: 4.6836 },  // FC Dordrecht (former name)
+  'Krommedijk': { lat: 51.8139, lon: 4.6836 },
   'Kooi Stadion': { lat: 53.2112, lon: 5.8102 },  // SC Cambuur (Leeuwarden)
   'Kooi Stadium': { lat: 53.2112, lon: 5.8102 },
   'Leeuwarden Stadion': { lat: 53.2112, lon: 5.8102 },  // SC Cambuur
