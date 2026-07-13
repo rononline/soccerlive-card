@@ -24,6 +24,7 @@ const KNOWN_VENUES = {
   'Goffert Stadion': { lat: 51.8307, lon: 5.8606 },
   'Abe Lenstra Stadion': { lat: 52.9584, lon: 5.9141 },
   'Sparta-Stadion Het Kasteel': { lat: 51.9171, lon: 4.4658 },
+  'Sparta Stadion Het Kasteel': { lat: 51.9171, lon: 4.4658 },  // API-Football naming (no hyphen)
   'Het Kasteel': { lat: 51.9171, lon: 4.4658 },
   'De Adelaarshorst': { lat: 52.2488, lon: 6.1737 },
   'Polman Stadion': { lat: 52.3514, lon: 6.6582 },
@@ -42,6 +43,27 @@ const KNOWN_VENUES = {
   'Parkstad Limburg Stadion': { lat: 50.9081, lon: 5.9928 },
   'Cars Jeans Stadion': { lat: 52.0667, lon: 4.3167 },
   'BENU Stadion': { lat: 52.0667, lon: 4.3167 },  // ADO Den Haag (renamed)
+  'ADO Den Haag Stadium': { lat: 52.0667, lon: 4.3167 },  // ESPN naming for ADO's stadium
+  'Bingoal Stadion': { lat: 52.0667, lon: 4.3167 },  // ADO Den Haag (renamed)
+  // Name variants seen in live ESPN/API-Football venue fields:
+  'Goffertstadion': { lat: 51.8307, lon: 5.8606 },  // NEC Nijmegen (one-word variant of Goffert Stadion)
+  'Sportcomplex Varkenoord': { lat: 51.8896, lon: 4.5219 },  // Feyenoord training ground, adjacent to De Kuip
+  'Kooi Stadion': { lat: 53.2112, lon: 5.8102 },  // SC Cambuur (Leeuwarden)
+  'Kooi Stadium': { lat: 53.2112, lon: 5.8102 },
+  'Leeuwarden Stadion': { lat: 53.2112, lon: 5.8102 },  // SC Cambuur
+  '711 Stadion': { lat: 52.4592, lon: 4.6556 },  // Telstar (Velsen-Zuid)
+  'BUKO Stadion': { lat: 52.4592, lon: 4.6556 },  // Telstar (API-Football naming)
+  'Rabobank IJmond Stadion': { lat: 52.4592, lon: 4.6556 },  // Telstar
+  'WerkTalent Stadion': { lat: 52.0667, lon: 4.3167 },  // ADO Den Haag (API-Football naming)
+  'Stadion Woudestein': { lat: 51.9308, lon: 4.5386 },  // Excelsior (Rotterdam)
+  'Van Donge & De Roo Stadion': { lat: 51.9308, lon: 4.5386 },  // Excelsior
+  'Goffert Stadium': { lat: 51.8307, lon: 5.8606 },  // NEC (English variant)
+  'Grolsch Veste': { lat: 52.2373, lon: 6.8296 },  // FC Twente (without "De")
+  'Abe Lenstra Stadium': { lat: 52.9584, lon: 5.9141 },  // Heerenveen (English variant)
+  'Philips Stadium': { lat: 51.4424, lon: 5.4675 },  // PSV (English variant)
+  'Hitachi Capital Mobility Stadion': { lat: 53.1822, lon: 6.5942 },  // FC Groningen (Euroborg sponsor name)
+  'Koning Willem II Stadium': { lat: 51.5547, lon: 5.0917 },  // Willem II (English variant)
+  'Galgenwaard': { lat: 52.0779, lon: 5.1456 },  // FC Utrecht (without "Stadion")
 
   // === FIFA WORLD CUP 2026 (USA / Canada / Mexico) ===
   'MetLife Stadium': { lat: 40.8135, lon: -74.0745 },          // New York/New Jersey
