@@ -48,6 +48,7 @@ const KNOWN_VENUES = {
   // Name variants seen in live ESPN/API-Football venue fields:
   'Goffertstadion': { lat: 51.8307, lon: 5.8606 },  // NEC Nijmegen (one-word variant of Goffert Stadion)
   'Sportcomplex Varkenoord': { lat: 51.8896, lon: 4.5219 },  // Feyenoord training ground, adjacent to De Kuip
+  'Varkenoord': { lat: 51.8896, lon: 4.5219 },
   'Kooi Stadion': { lat: 53.2112, lon: 5.8102 },  // SC Cambuur (Leeuwarden)
   'Kooi Stadium': { lat: 53.2112, lon: 5.8102 },
   'Leeuwarden Stadion': { lat: 53.2112, lon: 5.8102 },  // SC Cambuur
@@ -146,7 +147,14 @@ function getVenueCoordinates(venueName) {
 
   if (VENUE_CACHE.has(venueName)) return VENUE_CACHE.get(venueName);
 
-  const coords = KNOWN_VENUES[venueName] || null;
+  let coords = KNOWN_VENUES[venueName] || null;
+  // Some providers append a pitch/field number to a training-ground venue
+  // (e.g. API-Football's "Sportcomplex Varkenoord 1"); retry against the base
+  // name when the exact string isn't a known venue.
+  if (!coords) {
+    const base = venueName.replace(/\s+\d+$/, '');
+    if (base !== venueName) coords = KNOWN_VENUES[base] || null;
+  }
   if (coords) {
     _evictCacheIfNeeded(VENUE_CACHE);
     VENUE_CACHE.set(venueName, coords);
