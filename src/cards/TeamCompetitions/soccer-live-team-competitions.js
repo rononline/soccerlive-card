@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang, parseMatchTimestamp } from "../../i18n.js";
+import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from "../card-error.js";
@@ -111,7 +112,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
           <div class="match-score">
             ${isLive ? html`<span class="live-badge"><span class="live-dot"></span>${m.clock || this._t('status.live')}</span>` : ''}
             ${isLive || isFt
-              ? html`<span class="score-text">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
+              ? html`<span class="score-text">${scoreText(m.home_score)}–${scoreText(m.away_score)}</span>`
               : html`<span class="date-text">${m.date || this._t('match.vs')}</span>`}
             ${isFt ? html`<span class="ft-badge">${this._t('status.full_time')}</span>` : ''}
           </div>

@@ -1,5 +1,6 @@
 import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang, formatMatchDate, parseMatchDate } from "../../i18n.js";
+import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
@@ -409,7 +410,7 @@ class SoccerLiveMatchesCard extends LitElement {
     // Live ticker content
     const liveMatches = limited.filter(m => m.state === 'in');
     const tickerText = liveMatches.map(m =>
-      `${m.home_abbrev || m.home_team}  ${m.home_score ?? '-'} - ${m.away_score ?? '-'}  ${m.away_abbrev || m.away_team}`
+      `${m.home_abbrev || m.home_team}  ${scoreText(m.home_score, '-')} - ${scoreText(m.away_score, '-')}  ${m.away_abbrev || m.away_team}`
     ).join('     ·     ');
 
     return html`
@@ -700,7 +701,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const isPre  = m.state === 'pre';
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
-    const score = s => (s == null || s === '' || s === 'N/A') ? '-' : s;
+    const score = s => (s === '' || s === 'N/A') ? '-' : scoreText(s, '-');
     const clock = !isPre && ((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : ''));
 
     const kickoffLabel = formatMatchDate(m.date, resolveLang(this.hass, this._config)) || '—';

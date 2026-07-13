@@ -5,6 +5,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
+import { scoreText } from "../shared-score.js";
 
 class SoccerLiveTimelineCard extends LitElement {
   static get properties() {
@@ -91,7 +92,7 @@ class SoccerLiveTimelineCard extends LitElement {
               resolveLang(this.hass, this._config)
             ),
             badge: (m.state === 'in' || m.state === 'post')
-              ? renderSoccerBadge(`${m.home_score ?? 0}–${m.away_score ?? 0}`, m.state === 'in' ? 'live' : 'ft')
+              ? renderSoccerBadge(`${scoreText(m.home_score)}–${scoreText(m.away_score)}`, m.state === 'in' ? 'live' : 'ft')
               : renderSoccerBadge(m.date || '', 'date'),
             fallbackIcon: '⏱',
           })}

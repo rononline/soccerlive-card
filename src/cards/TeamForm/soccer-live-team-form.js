@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { t, resolveLang } from '../../i18n.js';
+import { scoreText } from '../shared-score.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
@@ -161,7 +162,7 @@ class SoccerLiveTeamFormCard extends LitElement {
         <div class="section">
           <div class="section-label">${this._t('team.form_trend')} (${results.length})</div>
           <div class="form-dots">
-            ${results.map(r => html`<span class="dot ${r.r.toLowerCase()}" title="${r.m.home_team} ${r.m.home_score}-${r.m.away_score} ${r.m.away_team}">${r.r}</span>`)}
+            ${results.map(r => html`<span class="dot ${r.r.toLowerCase()}" title="${r.m.home_team} ${scoreText(r.m.home_score, '-')}-${scoreText(r.m.away_score, '-')} ${r.m.away_team}">${r.r}</span>`)}
           </div>
           <div class="wdl-row">
             <span class="wdl w">${wins}${this._t('col.wins')}</span>

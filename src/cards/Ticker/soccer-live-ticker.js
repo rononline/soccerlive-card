@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang, formatMatchDate } from "../../i18n.js";
+import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError } from "../card-error.js";
@@ -49,7 +50,7 @@ class SoccerLiveTickerCard extends LitElement {
         <div class="tick-mid">
           ${isLive ? html`<span class="tick-live"><span class="live-dot"></span>${m.clock || ''}</span>` : ''}
           ${isLive || isFt
-            ? html`<span class="tick-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>`
+            ? html`<span class="tick-score">${scoreText(m.home_score)}–${scoreText(m.away_score)}</span>`
             : html`<span class="tick-time">${this._formatMatchTime(m.date)}</span>`}
           ${isFt ? html`<span class="tick-ft">${this._t('status.ft')}</span>` : ''}
         </div>
@@ -80,9 +81,9 @@ class SoccerLiveTickerCard extends LitElement {
           <div class="td-center">
             ${isLive ? html`
               <span class="td-live"><span class="live-dot"></span>${m.clock || ''}</span>
-              <span class="td-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>
+              <span class="td-score">${scoreText(m.home_score)}–${scoreText(m.away_score)}</span>
             ` : isFt ? html`
-              <span class="td-score">${m.home_score ?? 0}–${m.away_score ?? 0}</span>
+              <span class="td-score">${scoreText(m.home_score)}–${scoreText(m.away_score)}</span>
               <span class="td-ft">${this._t('status.ft')}</span>
             ` : html`
               <span class="td-time">${this._formatMatchTime(m.date)}</span>

@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
+import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
@@ -124,7 +125,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
         <div class="score-block">
           ${isLive ? html`<div><span class="live-dot"></span><span class="status">${match.clock || this._t('status.live')}</span></div>` : ''}
           ${showScore
-            ? html`<div class="score">${match.home_score ?? 0} - ${match.away_score ?? 0}</div>`
+            ? html`<div class="score">${scoreText(match.home_score)} - ${scoreText(match.away_score)}</div>`
             : html`<div class="status">${dateStr || this._t('match.vs')}</div>`
           }
           ${isFinished ? html`<div class="status">${this._t('status.full_time')}</div>` : ''}

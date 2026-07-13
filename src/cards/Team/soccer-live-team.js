@@ -1,5 +1,6 @@
 import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang, parseMatchDate, formatMatchDate, formatDateOnly } from "../../i18n.js";
+import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
@@ -602,7 +603,7 @@ class SoccerLiveTeamCard extends LitElement {
 
           <div class="score-center">
             ${showScore
-              ? html`<div class="score-numbers">${match.home_score} <span class="dash">-</span> ${match.away_score}</div>`
+              ? html`<div class="score-numbers">${scoreText(match.home_score)} <span class="dash">-</span> ${scoreText(match.away_score)}</div>`
               : html`<div class="score-vs">${this._t('match.vs')}</div>`
             }
             ${this._renderClock(match)}
@@ -732,7 +733,7 @@ class SoccerLiveTeamCard extends LitElement {
                 ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
               </span>
               <span class="prev-score ${scoreClass}">
-                ${m.home_score ?? '-'}-${m.away_score ?? '-'}
+                ${scoreText(m.home_score, '-')}-${scoreText(m.away_score, '-')}
               </span>
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
                 ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
@@ -790,7 +791,7 @@ class SoccerLiveTeamCard extends LitElement {
                 ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
               </span>
               ${isLiveRow
-                ? html`<span class="upcoming-live-score">${m.home_score}<span class="live-dot">●</span>${m.away_score}</span>`
+                ? html`<span class="upcoming-live-score">${scoreText(m.home_score)}<span class="live-dot">●</span>${scoreText(m.away_score)}</span>`
                 : html`<span class="upcoming-vs">-</span>`
               }
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
@@ -841,7 +842,7 @@ class SoccerLiveTeamCard extends LitElement {
             <div class="h2h-row">
               <span class="h2h-date">${dateLabel}</span>
               <span class="h2h-team ${homeWon ? 'winner' : ''}">${g.home_team || ''}</span>
-              <span class="h2h-score">${g.home_score} - ${g.away_score}</span>
+              <span class="h2h-score">${scoreText(g.home_score, '-')} - ${scoreText(g.away_score, '-')}</span>
               <span class="h2h-team away ${awayWon ? 'winner' : ''}">${g.away_team || ''}</span>
             </div>
           `;
@@ -984,7 +985,7 @@ class SoccerLiveTeamCard extends LitElement {
               <div class="popup-team-name">${m.home_team}</div>
             </div>
             <div class="popup-score-center">
-              <div class="popup-score">${m.home_score ?? '-'}<span class="popup-score-sep"> - </span>${m.away_score ?? '-'}</div>
+              <div class="popup-score">${scoreText(m.home_score, '-')}<span class="popup-score-sep"> - </span>${scoreText(m.away_score, '-')}</div>
               ${clock ? html`<div class="popup-clock">${clock}</div>` : ''}
             </div>
             <div class="popup-team-col">
@@ -1295,7 +1296,7 @@ class SoccerLiveTeamCard extends LitElement {
             return html`
               <li class="popup-h2h-row">
                 <span class="popup-h2h-team ${hs > as ? 'winner' : ''}">${g.home_team}</span>
-                <span class="popup-h2h-score">${g.home_score ?? '-'} - ${g.away_score ?? '-'}</span>
+                <span class="popup-h2h-score">${scoreText(g.home_score, '-')} - ${scoreText(g.away_score, '-')}</span>
                 <span class="popup-h2h-team away ${as > hs ? 'winner' : ''}">${g.away_team}</span>
               </li>
               <li class="popup-h2h-date">${dt}</li>`;

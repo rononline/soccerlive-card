@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
+import { scoreText } from '../shared-score.js';
 
 class SoccerLiveBracketCard extends LitElement {
   static get properties() {
@@ -199,7 +200,7 @@ class SoccerLiveBracketCard extends LitElement {
           ${next.home_logo ? html`<img src="${next.home_logo}" class="mnb-logo">` : ''}
           <span class="mnb-name">${next.home_team}</span>
           ${isLive
-            ? html`<span class="mnb-score">${next.home_score ?? 0} – ${next.away_score ?? 0}</span>`
+            ? html`<span class="mnb-score">${scoreText(next.home_score)} – ${scoreText(next.away_score)}</span>`
             : html`<span class="mnb-vs">vs</span>`}
           <span class="mnb-name away">${next.away_team}</span>
           ${next.away_logo ? html`<img src="${next.away_logo}" class="mnb-logo">` : ''}
@@ -307,7 +308,7 @@ class SoccerLiveBracketCard extends LitElement {
                 const awayName = m.away_team || 'TBD';
                 const matchMyTeam = this._matchesMyTeam(homeName) || this._matchesMyTeam(awayName);
                 const scoreOrTime = (isDone || isLive)
-                  ? `${m.home_score ?? '-'} – ${m.away_score ?? '-'}`
+                  ? `${scoreText(m.home_score, '-')} – ${scoreText(m.away_score, '-')}`
                   : this._formatTime(m.date);
                 return html`
                   <div class="sched-match ${isLive ? 'live' : ''} ${isDone ? 'done' : ''} ${matchMyTeam && this._myTeam ? 'my-team' : ''}">

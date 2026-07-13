@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang, parseMatchDate } from "../../i18n.js";
+import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
@@ -328,9 +329,9 @@ class SoccerLiveCountdownCard extends LitElement {
             <span class="cd-live-sep">·</span>
             <span class="cd-live-teams">${match.home_team || '?'} – ${match.away_team || '?'}</span>
             ${isLive
-              ? html`<span class="cd-live-clock">${match.home_score ?? 0}–${match.away_score ?? 0}${match.clock ? html`<span class="cd-live-min"> ${match.clock}'</span>` : ''}</span>`
+              ? html`<span class="cd-live-clock">${scoreText(match.home_score)}–${scoreText(match.away_score)}${match.clock ? html`<span class="cd-live-min"> ${match.clock}'</span>` : ''}</span>`
               : isFinished
-                ? html`<span class="cd-live-clock">${match.home_score ?? 0}–${match.away_score ?? 0}</span>`
+                ? html`<span class="cd-live-clock">${scoreText(match.home_score)}–${scoreText(match.away_score)}</span>`
                 : ''}
           </div>
         </ha-card>

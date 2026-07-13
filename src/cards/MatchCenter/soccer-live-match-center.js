@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { t, resolveLang, formatMatchDateFull, formatDateOnly } from '../../i18n.js';
+import { scoreText } from '../shared-score.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
@@ -174,7 +175,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         </div>
         <div class="mc-score">
           ${isLive || isFinished
-            ? html`<span class="mc-num">${match.home_score ?? 0} – ${match.away_score ?? 0}</span>`
+            ? html`<span class="mc-num">${scoreText(match.home_score)} – ${scoreText(match.away_score)}</span>`
             : html`<span class="mc-vs">${this._t('match.vs')}</span>`}
         </div>
         <div class="mc-team away">
