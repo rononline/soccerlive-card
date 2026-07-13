@@ -29,13 +29,14 @@ export async function renderWeatherBadge(venue, hass = null, config = null, venu
   if (!venue || venue === 'N/A') return html``;
 
   try {
-    // Use server-provided coordinates if available (from integration), otherwise geocode
-    let coords = null;
-    if (venue_lat !== null && venue_lon !== null) {
-      coords = { lat: venue_lat, lon: venue_lon };
-    } else {
-      coords = await getVenueCoordinates(venue);
-    }
+    // Use server-provided coordinates when they are real numbers (from the
+    // integration); otherwise fall back to the known-venue lookup. Guard against
+    // null/undefined/""/"N/A" so a non-numeric value doesn't trigger a bad fetch.
+    const latNum = (venue_lat === null || venue_lat === undefined || venue_lat === '') ? NaN : Number(venue_lat);
+    const lonNum = (venue_lon === null || venue_lon === undefined || venue_lon === '') ? NaN : Number(venue_lon);
+    let coords = (Number.isFinite(latNum) && Number.isFinite(lonNum))
+      ? { lat: latNum, lon: lonNum }
+      : await getVenueCoordinates(venue);
 
     if (!coords) return html``;
 
