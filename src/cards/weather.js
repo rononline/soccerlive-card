@@ -73,6 +73,10 @@ const KNOWN_VENUES = {
   'Hard Rock Stadium': { lat: 25.9580, lon: -80.2389 },        // Miami
   'Lincoln Financial Field': { lat: 39.9008, lon: -75.1675 },  // Philadelphia
   'Arrowhead Stadium': { lat: 39.0490, lon: -94.4839 },        // Kansas City
+  'GEHA Field at Arrowhead Stadium': { lat: 39.0490, lon: -94.4839 }, // Kansas City (WC naming)
+  'NRG Stadium': { lat: 29.6847, lon: -95.4107 },              // Houston
+  'Mercedes-Benz Stadium': { lat: 33.7554, lon: -84.4008 },    // Atlanta
+  'Estadio Banorte': { lat: 19.3030, lon: -99.1506 },          // Mexico City (Azteca renamed for WC)
   'Allegiant Stadium': { lat: 36.0908, lon: -115.1839 },       // Las Vegas
   'Gillette Stadium': { lat: 42.0909, lon: -71.2643 },         // Boston
   'Century Link Field': { lat: 47.5952, lon: -122.3316 },      // Seattle
