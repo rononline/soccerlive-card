@@ -868,7 +868,7 @@ class SoccerLiveTeamCard extends LitElement {
       }
     }
     if (changedProperties.has('activeMatch') && this.activeMatch) {
-      this._loadWeather(this.activeMatch.venue, this.activeMatch.venue_lat, this.activeMatch.venue_lon);
+      this._loadWeather(this.activeMatch.venue, this.activeMatch.venue_lat, this.activeMatch.venue_lon, this.activeMatch.date_iso);
     }
     // Subscribe to HA events on first hass (connectedCallback fires before hass is set)
     if (changedProperties.has('hass') && this.hass && !this._eventSubscriptions?.length) {
@@ -884,7 +884,7 @@ class SoccerLiveTeamCard extends LitElement {
       if (stateObj && stateObj.attributes.matches && stateObj.attributes.matches[0]) {
         const match = stateObj.attributes.matches[0];
         if (match.venue !== this._lastWeatherVenue) {
-          this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
+          this._loadWeather(match.venue, match.venue_lat, match.venue_lon, match.date_iso);
         }
       }
     }
@@ -950,10 +950,10 @@ class SoccerLiveTeamCard extends LitElement {
     this._popupPortal = null;
   }
 
-  async _loadWeather(venue, venue_lat = null, venue_lon = null) {
+  async _loadWeather(venue, venue_lat = null, venue_lon = null, kickoffISO = null) {
     this._lastWeatherVenue = venue;
     try {
-      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon);
+      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon, kickoffISO);
       this.requestUpdate();
     } catch (e) {
       console.warn('Weather load failed:', e);

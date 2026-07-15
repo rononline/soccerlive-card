@@ -166,8 +166,63 @@ function getVenueCoordinates(venueName) {
   return coords;
 }
 
-async function getWeather(lat, lon) {
-  const cacheKey = `${lat},${lon}`;
+function _buildWeather(temperature, weather_code, wind_speed, forecast = false) {
+  return {
+    temp: Math.round(temperature),
+    code: weather_code,
+    wind: kmhToBeaufort(wind_speed),
+    wind_unit: 'BFT',
+    icon: getWeatherIcon(weather_code),
+    description: getWeatherDescription(weather_code),
+    forecast,
+    timestamp: Date.now()
+  };
+}
+
+// Decide whether to show a kickoff-time forecast (returns unix seconds) or the
+// current conditions (null). Matches within ~1h, already started/past, or
+// beyond the Open-Meteo forecast horizon fall back to current weather.
+function _forecastTargetSeconds(kickoffISO) {
+  if (!kickoffISO) return null;
+  const t = Date.parse(kickoffISO);
+  if (Number.isNaN(t)) return null;
+  const ahead = t - Date.now();
+  if (ahead <= 3600000) return null;        // live / imminent / past → current
+  if (ahead > 16 * 86400000) return null;   // beyond forecast horizon → current
+  return Math.floor(t / 1000);
+}
+
+async function _fetchCurrentWeather(lat, lon) {
+  const response = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`
+  );
+  const data = await response.json();
+  if (data.current) {
+    return _buildWeather(data.current.temperature_2m, data.current.weather_code, data.current.wind_speed_10m, false);
+  }
+  return null;
+}
+
+async function _fetchForecastWeather(lat, lon, targetSeconds) {
+  // Query the UTC day of kickoff in unixtime, then pick the hour nearest kickoff.
+  const day = new Date(targetSeconds * 1000).toISOString().slice(0, 10);
+  const response = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,wind_speed_10m&timezone=GMT&timeformat=unixtime&start_date=${day}&end_date=${day}`
+  );
+  const data = await response.json();
+  const h = data.hourly;
+  if (!h || !Array.isArray(h.time) || !h.time.length) return null;
+  let best = 0, bestDiff = Infinity;
+  for (let i = 0; i < h.time.length; i++) {
+    const diff = Math.abs(h.time[i] - targetSeconds);
+    if (diff < bestDiff) { bestDiff = diff; best = i; }
+  }
+  return _buildWeather(h.temperature_2m[best], h.weather_code[best], h.wind_speed_10m[best], true);
+}
+
+async function getWeather(lat, lon, kickoffISO = null) {
+  const target = _forecastTargetSeconds(kickoffISO);
+  const cacheKey = target ? `${lat},${lon},@${target}` : `${lat},${lon}`;
 
   if (WEATHER_CACHE.has(cacheKey)) {
     const cached = WEATHER_CACHE.get(cacheKey);
@@ -175,25 +230,15 @@ async function getWeather(lat, lon) {
   }
 
   // Share a single in-flight request across concurrent callers for the same
-  // venue, so multiple cards mounting at once don't each hit the API.
+  // venue+time, so multiple cards mounting at once don't each hit the API.
   if (WEATHER_INFLIGHT.has(cacheKey)) return WEATHER_INFLIGHT.get(cacheKey);
 
   const request = (async () => {
     try {
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`
-      );
-      const data = await response.json();
-      if (data.current) {
-        const weather = {
-          temp: Math.round(data.current.temperature_2m),
-          code: data.current.weather_code,
-          wind: kmhToBeaufort(data.current.wind_speed_10m),
-          wind_unit: 'BFT',
-          icon: getWeatherIcon(data.current.weather_code),
-          description: getWeatherDescription(data.current.weather_code),
-          timestamp: Date.now()
-        };
+      const weather = target
+        ? await _fetchForecastWeather(lat, lon, target)
+        : await _fetchCurrentWeather(lat, lon);
+      if (weather) {
         _evictCacheIfNeeded(WEATHER_CACHE);
         WEATHER_CACHE.set(cacheKey, { data: weather, timestamp: Date.now() });
         return weather;

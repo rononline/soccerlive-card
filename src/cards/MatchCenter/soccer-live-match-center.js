@@ -67,7 +67,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         OfflineCache.set(this._config.entity, s.attributes);
         const match = (s.attributes.matches || [])[0];
         if (match?.venue && match.venue !== this._lastWeatherVenue) {
-          this._loadWeather(match.venue, match.venue_lat, match.venue_lon);
+          this._loadWeather(match.venue, match.venue_lat, match.venue_lon, match.date_iso);
         }
         if (this._lastMatchState === 'pre' && match?.state === 'in' && this._activeTab === 'overview') {
           this._activeTab = 'timeline';
@@ -77,10 +77,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
     }
   }
 
-  async _loadWeather(venue, venue_lat = null, venue_lon = null) {
+  async _loadWeather(venue, venue_lat = null, venue_lon = null, kickoffISO = null) {
     this._lastWeatherVenue = venue;
     try {
-      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon);
+      this._weatherBadge = await renderWeatherBadge(venue, this.hass, this._config, venue_lat, venue_lon, kickoffISO);
     } catch (_) {
       this._weatherBadge = null;
     }

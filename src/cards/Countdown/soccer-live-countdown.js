@@ -99,7 +99,7 @@ class SoccerLiveCountdownCard extends LitElement {
     if (match && match.venue) {
       this._lastWeatherVenue = match.venue;
       try {
-        this._weatherBadge = await renderWeatherBadge(match.venue, this.hass, this._config, match.venue_lat, match.venue_lon);
+        this._weatherBadge = await renderWeatherBadge(match.venue, this.hass, this._config, match.venue_lat, match.venue_lon, match.date_iso);
         this.requestUpdate();
       } catch (e) {
         console.warn('Weather load failed:', e);

@@ -25,7 +25,7 @@ export const weatherBadgeStyles = css`
   }
 `;
 
-export async function renderWeatherBadge(venue, hass = null, config = null, venue_lat = null, venue_lon = null) {
+export async function renderWeatherBadge(venue, hass = null, config = null, venue_lat = null, venue_lon = null, kickoffISO = null) {
   if (!venue || venue === 'N/A') return html``;
 
   try {
@@ -40,13 +40,14 @@ export async function renderWeatherBadge(venue, hass = null, config = null, venu
 
     if (!coords) return html``;
 
-    const weather = await getWeather(coords.lat, coords.lon);
+    const weather = await getWeather(coords.lat, coords.lon, kickoffISO);
     if (!weather) return html``;
 
     const windTooltip = hass ? t('weather.wind', resolveLang(hass, config)) : 'Wind speed (Beaufort)';
+    const title = weather.forecast ? `${venue}: ${weather.description} (⏱)` : `${venue}: ${weather.description}`;
 
     return html`
-      <div class="weather-badge" title="${venue}: ${weather.description}">
+      <div class="weather-badge" title="${title}">
         <span class="weather-icon">${weather.icon}</span>
         <span class="weather-temp">${weather.temp}°</span>
         <span class="weather-wind" title="${windTooltip}">${weather.wind} ${weather.wind_unit || 'BFT'}</span>
