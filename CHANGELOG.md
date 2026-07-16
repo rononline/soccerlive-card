@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.140 (2026-07-16)
+- Match Center card: show the pre-match prediction, odds and unavailable-players sections in the overview tab for upcoming matches (only when data exists), matching the Team card
+- Refactor: extract the shared pre-match sections into shared-prematch.js, used by both the Team and Match Center cards
+
 ## v3.21.139 (2026-07-16)
 - Team card: translate "goals" to "doelpunten" in the Dutch prediction advice (was left untranslated)
 

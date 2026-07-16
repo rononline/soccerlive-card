@@ -7,6 +7,7 @@ import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
@@ -233,6 +234,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
         weatherBadge: this._weatherBadge || null,
         hideBroadcasts: this._config.hide_broadcasts === true,
       })}
+      ${renderPrediction(match, { t: k => this._t(k), lang: resolveLang(this.hass, this._config) })}
+      ${renderOdds(match, { t: k => this._t(k) })}
+      ${renderInjuries(match, { t: k => this._t(k) })}
     `;
   }
 
@@ -417,7 +421,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
       .mc-hero-section { position: relative; overflow: hidden; }
