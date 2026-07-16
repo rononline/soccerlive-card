@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.148 (2026-07-16)
+- Tests: add targeted frontend unit tests (`node --test`) for `standingText`, `translateAdvice`, `scoreText` and the odds/prediction models — covering structured vs ESPN standing, N/A / zero points, advice word combinations + regional language codes, missing/tied/single odds, single bookmaker, and prediction percentages that don't sum to 100
+- Prediction bar: normalize the segment widths so the bar always fills its track even when the percentages don't add up to 100; show a dash for a missing percentage instead of `0%`
+- Refactor: extract the pure odds/prediction decision logic into `shared-prematch-model.js` (lit-free, unit-tested)
+
 ## v3.21.147 (2026-07-16)
 - Odds subtitle: with a single bookmaker use "From {n}" instead of "Average of {n}" (there is no average of one source); more natural German phrasing ("Durchschnitt von … Buchmachern", "Von 1 Buchmacher")
 

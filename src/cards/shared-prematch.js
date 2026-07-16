@@ -3,31 +3,32 @@
 // 'pre') and actually carries the data, so nothing shows when there is none.
 import { html, css } from 'lit-element';
 import { translateAdvice } from './shared-advice.js';
+import { predictionModel, oddsModel } from './shared-prematch-model.js';
+
+const _pct = v => (v === null || v === undefined) ? '–' : `${v}%`;
 
 export function renderPrediction(match, { t, lang }) {
   const p = match.prediction;
   if (!p || match.state !== 'pre') return '';
-  const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
-  const h = num(p.percent_home), d = num(p.percent_draw), a = num(p.percent_away);
-  const hasBar = h !== null || d !== null || a !== null;
+  const m = predictionModel(p);
   const rawAdvice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
   const advice = translateAdvice(rawAdvice, lang);
-  if (!hasBar && !advice) return '';
+  if (!m.hasBar && !advice) return '';
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
   return html`
     <div class="pred">
       <div class="pred-title">${t('team.prediction')}</div>
-      ${hasBar ? html`
+      ${m.hasBar ? html`
         <div class="pred-bar">
-          <div class="pred-seg home" style="width:${h ?? 0}%"></div>
-          <div class="pred-seg draw" style="width:${d ?? 0}%"></div>
-          <div class="pred-seg away" style="width:${a ?? 0}%"></div>
+          <div class="pred-seg home" style="width:${m.wHome}%"></div>
+          <div class="pred-seg draw" style="width:${m.wDraw}%"></div>
+          <div class="pred-seg away" style="width:${m.wAway}%"></div>
         </div>
         <div class="pred-legend">
-          <span class="pred-l home">${homeAbbr} ${h ?? 0}%</span>
-          <span class="pred-l draw">${t('match.draw')} ${d ?? 0}%</span>
-          <span class="pred-l away">${a ?? 0}% ${awayAbbr}</span>
+          <span class="pred-l home">${homeAbbr} ${_pct(m.home)}</span>
+          <span class="pred-l draw">${t('match.draw')} ${_pct(m.draw)}</span>
+          <span class="pred-l away">${_pct(m.away)} ${awayAbbr}</span>
         </div>
       ` : ''}
       ${advice ? html`<div class="pred-advice">${advice}</div>` : ''}
@@ -39,21 +40,14 @@ export function renderOdds(match, { t }) {
   if (match.state !== 'pre') return '';
   const o = match.odds;
   if (!o) return '';
-  const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
-  const h = num(o.home), d = num(o.draw), a = num(o.away);
-  const present = [h, d, a].filter(v => v !== null);
-  if (!present.length) return '';
-  const min = Math.min(...present);
-  // Only mark a favourite when there are at least two odds to compare and one
-  // is uniquely the lowest — a single odd, or a tie, has no clear favourite.
-  const showFav = present.length >= 2 && present.filter(v => v === min).length === 1;
+  const m = oddsModel(o);
+  if (!m.present) return '';
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
-  const count = (typeof o.bookmaker_count === 'number' && o.bookmaker_count > 0) ? o.bookmaker_count : null;
-  const avgKey = count === 1 ? 'team.odds_avg_one' : 'team.odds_avg';
+  const avgKey = m.singular ? 'team.odds_avg_one' : 'team.odds_avg';
   // 1 / X / 2 is the international betting notation (home / draw / away).
   const col = (cls, sign, label, v) => html`
-    <div class="odds-col ${cls}${showFav && v !== null && v === min ? ' fav' : ''}">
+    <div class="odds-col ${cls}${m.showFav && v !== null && v === m.min ? ' fav' : ''}">
       <div class="odds-sign">${sign}</div>
       <div class="odds-team">${label}</div>
       <div class="odds-val">${v !== null ? v.toFixed(2) : '–'}</div>
@@ -62,12 +56,12 @@ export function renderOdds(match, { t }) {
     <div class="odds">
       <div class="odds-head">
         <span class="odds-title">${t('team.odds')}</span>
-        ${count ? html`<span class="odds-sub">${t(avgKey, { n: count })}</span>` : ''}
+        ${m.count ? html`<span class="odds-sub">${t(avgKey, { n: m.count })}</span>` : ''}
       </div>
       <div class="odds-row">
-        ${col('home', '1', homeAbbr, h)}
-        ${col('draw', 'X', t('match.draw'), d)}
-        ${col('away', '2', awayAbbr, a)}
+        ${col('home', '1', homeAbbr, m.home)}
+        ${col('draw', 'X', t('match.draw'), m.draw)}
+        ${col('away', '2', awayAbbr, m.away)}
       </div>
     </div>
   `;
