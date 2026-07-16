@@ -424,7 +424,16 @@ class SoccerLiveTeamCard extends LitElement {
     return html`<div class="record"><span class="rec">${record}</span></div>`;
   }
 
-  _renderStandingSummary(summary) {
+  _renderStandingSummary(match, side) {
+    // Prefer structured rank/points (API-Football) so the label is localizable;
+    // fall back to the provider's ready-made summary string (ESPN).
+    const rank = match[`${side}_rank`];
+    if (rank !== undefined && rank !== null) {
+      const points = match[`${side}_points`];
+      const pts = (points !== undefined && points !== null) ? ` · ${points} ${this._t('team.pts')}` : '';
+      return html`<div class="standing-summary">#${rank}${pts}</div>`;
+    }
+    const summary = match[`${side}_standing_summary`];
     return summary && summary !== 'N/A' ? html`<div class="standing-summary">${summary}</div>` : '';
   }
 
@@ -609,7 +618,7 @@ class SoccerLiveTeamCard extends LitElement {
                 : html`<div class="team-logo-fallback">${match.home_abbrev || '?'}</div>`}
             </div>
             <div class="team-name-big ${homeIsMyTeam ? 'my-team' : ''}">${match.home_team}</div>
-            ${!isLive ? this._renderStandingSummary(match.home_standing_summary) : ''}
+            ${!isLive ? this._renderStandingSummary(match, 'home') : ''}
             ${this._renderRecord(match.home_record)}
             ${!isLive ? (this._renderForm(match.last_five_home) || this._renderForm(match.home_form)) : this._renderForm(match.home_form)}
             ${!isLive ? this._renderTopScorer(match.home_top_scorer) : ''}
@@ -630,7 +639,7 @@ class SoccerLiveTeamCard extends LitElement {
                 : html`<div class="team-logo-fallback">${match.away_abbrev || '?'}</div>`}
             </div>
             <div class="team-name-big ${awayIsMyTeam ? 'my-team' : ''}">${match.away_team}</div>
-            ${!isLive ? this._renderStandingSummary(match.away_standing_summary) : ''}
+            ${!isLive ? this._renderStandingSummary(match, 'away') : ''}
             ${this._renderRecord(match.away_record)}
             ${!isLive ? (this._renderForm(match.last_five_away) || this._renderForm(match.away_form)) : this._renderForm(match.away_form)}
             ${!isLive ? this._renderTopScorer(match.away_top_scorer) : ''}

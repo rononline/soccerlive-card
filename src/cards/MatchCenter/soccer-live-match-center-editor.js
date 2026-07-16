@@ -53,6 +53,18 @@ class SoccerLiveMatchCenterEditor extends LitElement {
           <label>${this._t('editor.hide_broadcasts')}</label>
           <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._toggleChanged}></ha-switch>
         </div>
+        <div class="option">
+          <label>${this._t('editor.show_prediction')}</label>
+          <ha-switch .checked=${this._config.show_prediction !== false} data-config-value="show_prediction" @change=${this._toggleChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_odds')}</label>
+          <ha-switch .checked=${this._config.show_odds !== false} data-config-value="show_odds" @change=${this._toggleChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_injuries')}</label>
+          <ha-switch .checked=${this._config.show_injuries !== false} data-config-value="show_injuries" @change=${this._toggleChanged}></ha-switch>
+        </div>
 
         <h3>${this._t('editor.appearance')}</h3>
         <div>

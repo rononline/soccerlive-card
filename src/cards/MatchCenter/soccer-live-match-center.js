@@ -234,9 +234,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
         weatherBadge: this._weatherBadge || null,
         hideBroadcasts: this._config.hide_broadcasts === true,
       })}
-      ${renderPrediction(match, { t: k => this._t(k), lang: resolveLang(this.hass, this._config) })}
-      ${renderOdds(match, { t: k => this._t(k) })}
-      ${renderInjuries(match, { t: k => this._t(k) })}
+      ${this._config.show_prediction !== false ? renderPrediction(match, { t: k => this._t(k), lang: resolveLang(this.hass, this._config) }) : ''}
+      ${this._config.show_odds !== false ? renderOdds(match, { t: k => this._t(k) }) : ''}
+      ${this._config.show_injuries !== false ? renderInjuries(match, { t: k => this._t(k) }) : ''}
     `;
   }
 
