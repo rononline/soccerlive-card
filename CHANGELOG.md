@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.143 (2026-07-16)
+- Localize the odds label: Dutch "Quotering" and Portuguese "Cotações" instead of the English "Odds" (other languages already had a translation)
+
 ## v3.21.142 (2026-07-16)
 - Team & Match Center cards: redesign the odds section into three even columns (outcome label on top, odd below) with the favourite (lowest odd) highlighted, instead of a cramped single line
 
