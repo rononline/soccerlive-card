@@ -493,6 +493,29 @@ class SoccerLiveTeamCard extends LitElement {
     `;
   }
 
+  _renderOdds(match) {
+    // Averaged 1X2 odds for upcoming matches, only when bookmaker data exists.
+    if (match.state !== 'pre') return '';
+    const o = match.odds;
+    if (!o) return '';
+    const fmt = v => (typeof v === 'number' && isFinite(v)) ? v.toFixed(2) : null;
+    const h = fmt(o.home), d = fmt(o.draw), a = fmt(o.away);
+    if (!h && !d && !a) return '';
+    const homeAbbr = match.home_abbrev || match.home_team || '';
+    const awayAbbr = match.away_abbrev || match.away_team || '';
+    const chip = (k, v) => v ? html`<span class="odds-chip"><span class="odds-k">${k}</span>${v}</span>` : '';
+    return html`
+      <div class="odds">
+        <span class="odds-label">${this._t('team.odds')}</span>
+        <div class="odds-chips">
+          ${chip(homeAbbr, h)}
+          ${chip(this._t('match.draw'), d)}
+          ${chip(awayAbbr, a)}
+        </div>
+      </div>
+    `;
+  }
+
   _renderInjuries(match) {
     // Injuries/suspensions for upcoming matches only, and only when present.
     if (match.state !== 'pre') return '';
@@ -698,6 +721,7 @@ class SoccerLiveTeamCard extends LitElement {
         ` : ''}
 
         ${!this.compact ? this._renderPrediction(match) : ''}
+        ${!this.compact ? this._renderOdds(match) : ''}
         ${!this.compact ? this._renderInjuries(match) : ''}
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
@@ -1696,6 +1720,25 @@ class SoccerLiveTeamCard extends LitElement {
         overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       }
       .inj-none { color: var(--cl-text-2, #94a3b8); font-size: 11px; }
+      .odds {
+        display: flex; align-items: center; gap: 8px;
+        margin: 6px 12px 4px; padding: 6px 12px;
+        background: var(--cl-card-2, rgba(255,255,255,0.03)); border-radius: 10px;
+      }
+      .odds-label {
+        font-size: 10px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); flex-shrink: 0;
+      }
+      .odds-chips { display: flex; gap: 6px; margin-left: auto; }
+      .odds-chip {
+        display: inline-flex; align-items: baseline; gap: 4px;
+        font-size: 12px; font-weight: 700; color: var(--cl-text, #e2e8f0);
+        font-variant-numeric: tabular-nums;
+      }
+      .odds-k {
+        font-size: 9px; font-weight: 800; text-transform: uppercase;
+        color: var(--cl-text-2, #94a3b8);
+      }
       .score-numbers {
         font-size: 48px;
         font-weight: 900;
