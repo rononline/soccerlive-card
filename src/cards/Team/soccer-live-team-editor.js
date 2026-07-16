@@ -162,6 +162,26 @@ class SoccerLiveTeamCardEditor extends LitElement {
             data-config-value="show_previous_matches" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
+          <label>${this._t('editor.show_weather')}</label>
+          <ha-switch .checked=${this._config.show_weather !== false}
+            data-config-value="show_weather" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_prediction')}</label>
+          <ha-switch .checked=${this._config.show_prediction !== false}
+            data-config-value="show_prediction" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_odds')}</label>
+          <ha-switch .checked=${this._config.show_odds !== false}
+            data-config-value="show_odds" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_injuries')}</label>
+          <ha-switch .checked=${this._config.show_injuries !== false}
+            data-config-value="show_injuries" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
           <label>${this._t('editor.show_event_toasts')}</label>
           <ha-switch
             .checked=${this._config.show_event_toasts === true}

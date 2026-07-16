@@ -559,6 +559,7 @@ class SoccerLiveTeamCard extends LitElement {
       stats.push({ label, home: hs[hKey], away: as[aKey], hNum: h, aNum: a, suffix });
     };
     pushStat(this._t('team.possession'), 'possessionPct', 'possessionPct', '%');
+    pushStat(this._t('team.xg'), 'expectedGoals', 'expectedGoals');
     pushStat(this._t('team.shots'), 'totalShots', 'totalShots');
     pushStat(this._t('team.on_target'), 'shotsOnTarget', 'shotsOnTarget');
     if (stats.length === 0) return '';
@@ -710,7 +711,7 @@ class SoccerLiveTeamCard extends LitElement {
         ${renderMatchMeta(match, {
           lang: resolveLang(this.hass, this._config),
           t: k => this._t(k),
-              weatherBadge: this._weatherBadge || null,
+              weatherBadge: (this._config.show_weather !== false) ? (this._weatherBadge || null) : null,
           showDate: !showScore,
           hideBroadcasts: this._config.hide_broadcasts === true,
         })}
@@ -720,9 +721,9 @@ class SoccerLiveTeamCard extends LitElement {
           </div>
         ` : ''}
 
-        ${!this.compact ? this._renderPrediction(match) : ''}
-        ${!this.compact ? this._renderOdds(match) : ''}
-        ${!this.compact ? this._renderInjuries(match) : ''}
+        ${!this.compact && this._config.show_prediction !== false ? this._renderPrediction(match) : ''}
+        ${!this.compact && this._config.show_odds !== false ? this._renderOdds(match) : ''}
+        ${!this.compact && this._config.show_injuries !== false ? this._renderInjuries(match) : ''}
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact ? this._renderH2H(match.head_to_head, match.home_team) : ''}
