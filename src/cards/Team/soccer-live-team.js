@@ -9,6 +9,7 @@ import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
+import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { displayCompetitionName } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
@@ -425,16 +426,8 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _renderStandingSummary(match, side) {
-    // Prefer structured rank/points (API-Football) so the label is localizable;
-    // fall back to the provider's ready-made summary string (ESPN).
-    const rank = match[`${side}_rank`];
-    if (rank !== undefined && rank !== null) {
-      const points = match[`${side}_points`];
-      const pts = (points !== undefined && points !== null) ? ` · ${points} ${this._t('team.pts')}` : '';
-      return html`<div class="standing-summary">#${rank}${pts}</div>`;
-    }
-    const summary = match[`${side}_standing_summary`];
-    return summary && summary !== 'N/A' ? html`<div class="standing-summary">${summary}</div>` : '';
+    const text = standingText(match, side, (k) => this._t(k));
+    return text ? html`<div class="standing-summary">${text}</div>` : '';
   }
 
   _hexToRgb(hex) {

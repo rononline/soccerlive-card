@@ -8,6 +8,7 @@ import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
+import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
@@ -191,8 +192,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const clean = value => value && value !== 'N/A' ? value : '';
     const homeRec = clean(match.home_record_summary || match.home_record);
     const awayRec = clean(match.away_record_summary || match.away_record);
-    const homeStd = clean(match.home_standing_summary);
-    const awayStd = clean(match.away_standing_summary);
+    const homeStd = standingText(match, 'home', k => this._t(k));
+    const awayStd = standingText(match, 'away', k => this._t(k));
     const homeForm = clean(match.home_form || match.last_five_home);
     const awayForm = clean(match.away_form || match.last_five_away);
     const formDots = str => str ? html`<div class="ov-form-dots">${str.split('').slice(-5).map(c => {

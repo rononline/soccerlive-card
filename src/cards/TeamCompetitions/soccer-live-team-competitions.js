@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang, parseMatchTimestamp } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
+import { standingText } from "../shared-standing.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from "../card-error.js";
@@ -87,8 +88,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     if (!m || !teamName) return '';
     const tn = teamName.toLowerCase();
     const isHome = m.home_team?.toLowerCase().includes(tn);
-    const standing = isHome ? m.home_standing_summary : m.away_standing_summary;
-    return standing && standing !== 'N/A' ? standing : '';
+    return standingText(m, isHome ? 'home' : 'away', k => this._t(k));
   }
 
   _renderForm(form) {

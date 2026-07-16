@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { t, resolveLang } from '../../i18n.js';
 import { scoreText } from '../shared-score.js';
+import { standingText } from '../shared-standing.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
@@ -110,12 +111,8 @@ class SoccerLiveTeamFormCard extends LitElement {
     const logo = attrs.team_logo
       || (trackedIsHome ? next?.home_logo : trackedIsAway ? next?.away_logo : null)
       || next?.home_logo || '';
-    const rawStandingSummary = trackedIsHome
-      ? (next?.home_standing_summary || '')
-      : trackedIsAway
-        ? (next?.away_standing_summary || '')
-        : (next?.home_standing_summary || '');
-    const standingSummary = rawStandingSummary && rawStandingSummary !== 'N/A' ? rawStandingSummary : '';
+    const standingSide = trackedIsAway ? 'away' : 'home';
+    const standingSummary = standingText(next, standingSide, k => this._t(k));
     const hideHeader = this._config.hide_header === true;
 
     // Compute W/D/L per previous match (oldest → newest)

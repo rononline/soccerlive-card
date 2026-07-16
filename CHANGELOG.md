@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.146 (2026-07-16)
+- Fix: Match Center, Team Competitions and Team Form cards now also show the API-Football standing (structured rank/points), not only ESPN summary string — the standing had disappeared from these three cards for API-Football after v3.21.141. Standing formatting is now shared via shared-standing.js across all four cards
+
 ## v3.21.145 (2026-07-16)
 - Odds: use the singular form for the bookmaker-average subtitle when there is exactly one bookmaker (e.g. "1 bookmaker" instead of "1 bookmakers")
 - Odds: only highlight a favourite when at least two odds are present and one is uniquely the lowest (no favourite for a single odd or a tie)
