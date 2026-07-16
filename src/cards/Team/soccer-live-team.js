@@ -462,6 +462,37 @@ class SoccerLiveTeamCard extends LitElement {
     `;
   }
 
+  _renderPrediction(match) {
+    // Only for upcoming matches that actually carry a prediction (API-Football).
+    const p = match.prediction;
+    if (!p || match.state !== 'pre') return '';
+    const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
+    const h = num(p.percent_home), d = num(p.percent_draw), a = num(p.percent_away);
+    const hasBar = h !== null || d !== null || a !== null;
+    const advice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
+    if (!hasBar && !advice) return '';
+    const homeAbbr = match.home_abbrev || match.home_team || '';
+    const awayAbbr = match.away_abbrev || match.away_team || '';
+    return html`
+      <div class="pred">
+        <div class="pred-title">${this._t('team.prediction')}</div>
+        ${hasBar ? html`
+          <div class="pred-bar">
+            <div class="pred-seg home" style="width:${h ?? 0}%"></div>
+            <div class="pred-seg draw" style="width:${d ?? 0}%"></div>
+            <div class="pred-seg away" style="width:${a ?? 0}%"></div>
+          </div>
+          <div class="pred-legend">
+            <span class="pred-l home">${homeAbbr} ${h ?? 0}%</span>
+            <span class="pred-l draw">${this._t('match.draw')} ${d ?? 0}%</span>
+            <span class="pred-l away">${a ?? 0}% ${awayAbbr}</span>
+          </div>
+        ` : ''}
+        ${advice ? html`<div class="pred-advice">${advice}</div>` : ''}
+      </div>
+    `;
+  }
+
   _renderStatsRow(match) {
     const hs = match.home_statistics || {};
     const as = match.away_statistics || {};
@@ -638,6 +669,7 @@ class SoccerLiveTeamCard extends LitElement {
           </div>
         ` : ''}
 
+        ${!this.compact ? this._renderPrediction(match) : ''}
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact ? this._renderH2H(match.head_to_head, match.home_team) : ''}
@@ -1583,6 +1615,34 @@ class SoccerLiveTeamCard extends LitElement {
         display: flex; flex-direction: column;
         align-items: center; gap: 8px;
         padding: 0 4px;
+      }
+      .pred {
+        margin: 10px 12px 4px;
+        padding: 10px 12px;
+        background: var(--cl-card-2, rgba(255,255,255,0.03));
+        border-radius: 10px;
+      }
+      .pred-title {
+        font-size: 10px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 8px;
+      }
+      .pred-bar {
+        display: flex; height: 10px; border-radius: 5px; overflow: hidden;
+        background: var(--cl-divider, rgba(255,255,255,0.08));
+      }
+      .pred-seg { height: 100%; }
+      .pred-seg.home { background: var(--cl-accent, #6366f1); }
+      .pred-seg.draw { background: #64748b; }
+      .pred-seg.away { background: var(--cl-live, #ef4444); }
+      .pred-legend {
+        display: flex; justify-content: space-between; margin-top: 5px;
+        font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8);
+      }
+      .pred-l.home { color: var(--cl-accent, #6366f1); }
+      .pred-l.away { color: var(--cl-live, #ef4444); }
+      .pred-advice {
+        margin-top: 8px; font-size: 11px; color: var(--cl-text, #e2e8f0);
+        font-style: italic; text-align: center;
       }
       .score-numbers {
         font-size: 48px;
