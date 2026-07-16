@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.147 (2026-07-16)
+- Odds subtitle: with a single bookmaker use "From {n}" instead of "Average of {n}" (there is no average of one source); more natural German phrasing ("Durchschnitt von … Buchmachern", "Von 1 Buchmacher")
+
 ## v3.21.146 (2026-07-16)
 - Fix: Match Center, Team Competitions and Team Form cards now also show the API-Football standing (structured rank/points), not only ESPN summary string — the standing had disappeared from these three cards for API-Football after v3.21.141. Standing formatting is now shared via shared-standing.js across all four cards
 
