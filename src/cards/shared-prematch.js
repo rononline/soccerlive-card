@@ -43,13 +43,17 @@ export function renderOdds(match, { t }) {
   const h = num(o.home), d = num(o.draw), a = num(o.away);
   const present = [h, d, a].filter(v => v !== null);
   if (!present.length) return '';
-  const min = Math.min(...present); // lowest odd = market favourite
+  const min = Math.min(...present);
+  // Only mark a favourite when there are at least two odds to compare and one
+  // is uniquely the lowest — a single odd, or a tie, has no clear favourite.
+  const showFav = present.length >= 2 && present.filter(v => v === min).length === 1;
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
   const count = (typeof o.bookmaker_count === 'number' && o.bookmaker_count > 0) ? o.bookmaker_count : null;
+  const avgKey = count === 1 ? 'team.odds_avg_one' : 'team.odds_avg';
   // 1 / X / 2 is the international betting notation (home / draw / away).
   const col = (cls, sign, label, v) => html`
-    <div class="odds-col ${cls}${v !== null && v === min ? ' fav' : ''}">
+    <div class="odds-col ${cls}${showFav && v !== null && v === min ? ' fav' : ''}">
       <div class="odds-sign">${sign}</div>
       <div class="odds-team">${label}</div>
       <div class="odds-val">${v !== null ? v.toFixed(2) : '–'}</div>
@@ -58,7 +62,7 @@ export function renderOdds(match, { t }) {
     <div class="odds">
       <div class="odds-head">
         <span class="odds-title">${t('team.odds')}</span>
-        ${count ? html`<span class="odds-sub">${t('team.odds_avg', { n: count })}</span>` : ''}
+        ${count ? html`<span class="odds-sub">${t(avgKey, { n: count })}</span>` : ''}
       </div>
       <div class="odds-row">
         ${col('home', '1', homeAbbr, h)}

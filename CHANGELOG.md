@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.145 (2026-07-16)
+- Odds: use the singular form for the bookmaker-average subtitle when there is exactly one bookmaker (e.g. "1 bookmaker" instead of "1 bookmakers")
+- Odds: only highlight a favourite when at least two odds are present and one is uniquely the lowest (no favourite for a single odd or a tie)
+
 ## v3.21.144 (2026-07-16)
 - Odds section: use the international 1 – X – 2 notation above the team names; plural Dutch label "Quoteringen"; show a small "Average of N bookmakers" subtitle (from bookmaker_count); soften the favourite marker to a subtle tint (no strong accent border)
 
