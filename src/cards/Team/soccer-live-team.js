@@ -493,6 +493,34 @@ class SoccerLiveTeamCard extends LitElement {
     `;
   }
 
+  _renderInjuries(match) {
+    // Injuries/suspensions for upcoming matches only, and only when present.
+    if (match.state !== 'pre') return '';
+    const home = match.injuries_home || [];
+    const away = match.injuries_away || [];
+    if (!home.length && !away.length) return '';
+    const row = p => html`
+      <div class="inj-row">
+        <span class="inj-ic">${p.suspended ? '🚫' : '🩹'}</span>
+        <span class="inj-name">${p.player}</span>
+        ${p.reason ? html`<span class="inj-reason">${p.reason}</span>` : ''}
+      </div>`;
+    const col = (team, list) => html`
+      <div class="inj-col">
+        <div class="inj-team">${team}</div>
+        ${list.length ? list.map(row) : html`<div class="inj-none">–</div>`}
+      </div>`;
+    return html`
+      <div class="inj">
+        <div class="inj-title">${this._t('team.injuries')}</div>
+        <div class="inj-cols">
+          ${col(match.home_team || '', home)}
+          ${col(match.away_team || '', away)}
+        </div>
+      </div>
+    `;
+  }
+
   _renderStatsRow(match) {
     const hs = match.home_statistics || {};
     const as = match.away_statistics || {};
@@ -670,6 +698,7 @@ class SoccerLiveTeamCard extends LitElement {
         ` : ''}
 
         ${!this.compact ? this._renderPrediction(match) : ''}
+        ${!this.compact ? this._renderInjuries(match) : ''}
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact ? this._renderH2H(match.head_to_head, match.home_team) : ''}
@@ -1644,6 +1673,29 @@ class SoccerLiveTeamCard extends LitElement {
         margin-top: 8px; font-size: 11px; color: var(--cl-text, #e2e8f0);
         font-style: italic; text-align: center;
       }
+      .inj {
+        margin: 8px 12px 4px;
+        padding: 10px 12px;
+        background: var(--cl-card-2, rgba(255,255,255,0.03));
+        border-radius: 10px;
+      }
+      .inj-title {
+        font-size: 10px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 8px;
+      }
+      .inj-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .inj-team {
+        font-size: 10px; font-weight: 800; color: var(--cl-text, #e2e8f0);
+        margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .inj-row { display: flex; align-items: baseline; gap: 5px; padding: 2px 0; font-size: 11px; }
+      .inj-ic { font-size: 10px; flex-shrink: 0; }
+      .inj-name { font-weight: 600; color: var(--cl-text, #e2e8f0); white-space: nowrap; }
+      .inj-reason {
+        color: var(--cl-text-2, #94a3b8); font-size: 10px;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .inj-none { color: var(--cl-text-2, #94a3b8); font-size: 11px; }
       .score-numbers {
         font-size: 48px;
         font-weight: 900;
