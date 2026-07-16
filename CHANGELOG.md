@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.139 (2026-07-16)
+- Team card: translate "goals" to "doelpunten" in the Dutch prediction advice (was left untranslated)
+
 ## v3.21.138 (2026-07-16)
 - Team card: localize the API-Football prediction advice by translating its fixed vocabulary (Combo Winner, Double chance, and, or draw, goals, ...) while leaving team names and goal figures intact; English/unmapped phrases pass through
 

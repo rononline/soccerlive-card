@@ -10,7 +10,7 @@ const ADVICE_TOKENS = {
     'Winner': 'Winnaar',
     ' or draw': ' of gelijkspel',
     ' and ': ' en ',
-    ' goals': ' goals',
+    ' goals': ' doelpunten',
     'No predictions available': 'Geen voorspelling beschikbaar',
   },
   de: {
