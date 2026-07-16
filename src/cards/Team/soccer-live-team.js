@@ -8,6 +8,7 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { translateAdvice } from '../shared-advice.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { displayCompetitionName } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
@@ -469,7 +470,8 @@ class SoccerLiveTeamCard extends LitElement {
     const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
     const h = num(p.percent_home), d = num(p.percent_draw), a = num(p.percent_away);
     const hasBar = h !== null || d !== null || a !== null;
-    const advice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
+    const rawAdvice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
+    const advice = translateAdvice(rawAdvice, resolveLang(this.hass, this._config));
     if (!hasBar && !advice) return '';
     const homeAbbr = match.home_abbrev || match.home_team || '';
     const awayAbbr = match.away_abbrev || match.away_team || '';
