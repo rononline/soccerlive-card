@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.142 (2026-07-16)
+- Team & Match Center cards: redesign the odds section into three even columns (outcome label on top, odd below) with the favourite (lowest odd) highlighted, instead of a cramped single line
+
 ## v3.21.141 (2026-07-16)
 - Match Center card: add editor toggles to hide the prediction, odds and unavailable-players sections individually (all default on)
 - Team card: localize the standing label — format the structured rank/points (API-Football) with a translated "pts" label (all 7 languages) instead of showing the backend string; ESPN summaries still shown as-is

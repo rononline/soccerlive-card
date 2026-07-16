@@ -39,19 +39,25 @@ export function renderOdds(match, { t }) {
   if (match.state !== 'pre') return '';
   const o = match.odds;
   if (!o) return '';
-  const fmt = v => (typeof v === 'number' && isFinite(v)) ? v.toFixed(2) : null;
-  const h = fmt(o.home), d = fmt(o.draw), a = fmt(o.away);
-  if (!h && !d && !a) return '';
+  const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
+  const h = num(o.home), d = num(o.draw), a = num(o.away);
+  const present = [h, d, a].filter(v => v !== null);
+  if (!present.length) return '';
+  const min = Math.min(...present); // lowest odd = favourite
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
-  const chip = (k, v) => v ? html`<span class="odds-chip"><span class="odds-k">${k}</span>${v}</span>` : '';
+  const col = (cls, label, v) => html`
+    <div class="odds-col ${cls}${v !== null && v === min ? ' fav' : ''}">
+      <div class="odds-team">${label}</div>
+      <div class="odds-val">${v !== null ? v.toFixed(2) : '–'}</div>
+    </div>`;
   return html`
     <div class="odds">
-      <span class="odds-label">${t('team.odds')}</span>
-      <div class="odds-chips">
-        ${chip(homeAbbr, h)}
-        ${chip(t('match.draw'), d)}
-        ${chip(awayAbbr, a)}
+      <div class="odds-title">${t('team.odds')}</div>
+      <div class="odds-row">
+        ${col('home', homeAbbr, h)}
+        ${col('draw', t('match.draw'), d)}
+        ${col('away', awayAbbr, a)}
       </div>
     </div>
   `;
@@ -114,24 +120,36 @@ export const prematchStyles = css`
     font-style: italic; text-align: center;
   }
   .odds {
-    display: flex; align-items: center; gap: 8px;
-    margin: 6px 12px 4px; padding: 6px 12px;
+    margin: 8px 12px 4px; padding: 10px 12px;
     background: var(--cl-card-2, rgba(255,255,255,0.03)); border-radius: 10px;
   }
-  .odds-label {
+  .odds-title {
     font-size: 10px; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); flex-shrink: 0;
+    letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 8px;
   }
-  .odds-chips { display: flex; gap: 6px; margin-left: auto; }
-  .odds-chip {
-    display: inline-flex; align-items: baseline; gap: 4px;
-    font-size: 12px; font-weight: 700; color: var(--cl-text, #e2e8f0);
+  .odds-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .odds-col {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 7px 4px; border-radius: 8px;
+    background: var(--cl-card, rgba(255,255,255,0.02));
+    border: 1px solid transparent;
+  }
+  .odds-team {
+    font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em;
+    color: var(--cl-text-2, #94a3b8);
+    max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .odds-col.home .odds-team { color: var(--cl-accent, #6366f1); }
+  .odds-col.away .odds-team { color: var(--cl-live, #ef4444); }
+  .odds-val {
+    font-size: 17px; font-weight: 800; color: var(--cl-text, #e2e8f0);
     font-variant-numeric: tabular-nums;
   }
-  .odds-k {
-    font-size: 9px; font-weight: 800; text-transform: uppercase;
-    color: var(--cl-text-2, #94a3b8);
+  .odds-col.fav {
+    background: var(--cl-accent-soft, rgba(99,102,241,0.14));
+    border-color: var(--cl-accent, #6366f1);
   }
+  .odds-col.fav .odds-val { color: var(--cl-accent, #6366f1); }
   .inj {
     margin: 8px 12px 4px;
     padding: 10px 12px;
