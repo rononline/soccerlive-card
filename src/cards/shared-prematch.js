@@ -43,21 +43,27 @@ export function renderOdds(match, { t }) {
   const h = num(o.home), d = num(o.draw), a = num(o.away);
   const present = [h, d, a].filter(v => v !== null);
   if (!present.length) return '';
-  const min = Math.min(...present); // lowest odd = favourite
+  const min = Math.min(...present); // lowest odd = market favourite
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
-  const col = (cls, label, v) => html`
+  const count = (typeof o.bookmaker_count === 'number' && o.bookmaker_count > 0) ? o.bookmaker_count : null;
+  // 1 / X / 2 is the international betting notation (home / draw / away).
+  const col = (cls, sign, label, v) => html`
     <div class="odds-col ${cls}${v !== null && v === min ? ' fav' : ''}">
+      <div class="odds-sign">${sign}</div>
       <div class="odds-team">${label}</div>
       <div class="odds-val">${v !== null ? v.toFixed(2) : '–'}</div>
     </div>`;
   return html`
     <div class="odds">
-      <div class="odds-title">${t('team.odds')}</div>
+      <div class="odds-head">
+        <span class="odds-title">${t('team.odds')}</span>
+        ${count ? html`<span class="odds-sub">${t('team.odds_avg', { n: count })}</span>` : ''}
+      </div>
       <div class="odds-row">
-        ${col('home', homeAbbr, h)}
-        ${col('draw', t('match.draw'), d)}
-        ${col('away', awayAbbr, a)}
+        ${col('home', '1', homeAbbr, h)}
+        ${col('draw', 'X', t('match.draw'), d)}
+        ${col('away', '2', awayAbbr, a)}
       </div>
     </div>
   `;
@@ -123,33 +129,36 @@ export const prematchStyles = css`
     margin: 8px 12px 4px; padding: 10px 12px;
     background: var(--cl-card-2, rgba(255,255,255,0.03)); border-radius: 10px;
   }
+  .odds-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
   .odds-title {
     font-size: 10px; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 8px;
+    letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8);
+  }
+  .odds-sub {
+    font-size: 9px; font-weight: 600; color: var(--cl-text-2, #94a3b8); opacity: 0.75;
   }
   .odds-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   .odds-col {
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
     padding: 7px 4px; border-radius: 8px;
     background: var(--cl-card, rgba(255,255,255,0.02));
-    border: 1px solid transparent;
   }
+  .odds-sign {
+    font-size: 12px; font-weight: 900; line-height: 1; color: var(--cl-text-2, #94a3b8);
+  }
+  .odds-col.home .odds-sign { color: var(--cl-accent, #6366f1); }
+  .odds-col.away .odds-sign { color: var(--cl-live, #ef4444); }
   .odds-team {
-    font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em;
+    font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;
     color: var(--cl-text-2, #94a3b8);
     max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .odds-col.home .odds-team { color: var(--cl-accent, #6366f1); }
-  .odds-col.away .odds-team { color: var(--cl-live, #ef4444); }
   .odds-val {
-    font-size: 17px; font-weight: 800; color: var(--cl-text, #e2e8f0);
-    font-variant-numeric: tabular-nums;
+    font-size: 16px; font-weight: 800; color: var(--cl-text, #e2e8f0);
+    font-variant-numeric: tabular-nums; margin-top: 1px;
   }
-  .odds-col.fav {
-    background: var(--cl-accent-soft, rgba(99,102,241,0.14));
-    border-color: var(--cl-accent, #6366f1);
-  }
-  .odds-col.fav .odds-val { color: var(--cl-accent, #6366f1); }
+  /* Subtle marker for the lowest (favourite) odd — not a recommendation. */
+  .odds-col.fav { background: var(--cl-accent-soft, rgba(99,102,241,0.10)); }
   .inj {
     margin: 8px 12px 4px;
     padding: 10px 12px;

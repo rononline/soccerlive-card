@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.144 (2026-07-16)
+- Odds section: use the international 1 – X – 2 notation above the team names; plural Dutch label "Quoteringen"; show a small "Average of N bookmakers" subtitle (from bookmaker_count); soften the favourite marker to a subtle tint (no strong accent border)
+
 ## v3.21.143 (2026-07-16)
 - Localize the odds label: Dutch "Quotering" and Portuguese "Cotações" instead of the English "Odds" (other languages already had a translation)
 
