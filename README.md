@@ -44,7 +44,9 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
-- 🌦️ **Weather** — current conditions at the match venue (Team, Countdown and Match Center cards)
+- 🌦️ **Weather** — venue conditions on the Team, Countdown and Match Center cards; for an upcoming match it shows the forecast for kickoff time (⏱ in the tooltip), otherwise current conditions
+- 🔮 **Match preview** (API-Football, Team card) — for upcoming matches: win-probability prediction + advice, averaged 1X2 odds, and injured/suspended players — each shown only when data exists
+- 📊 **xG** — expected goals in the live stats row when the provider supplies it
 
 ---
 
@@ -137,12 +139,18 @@ show_event_toasts: true
 score_size: normal    # normal / big / huge
 show_previous_matches: true
 show_form_trend: true
+show_weather: true      # weather badge (default on)
+show_prediction: true   # win-probability prediction (default on)
+show_odds: true         # 1X2 odds (default on)
+show_injuries: true     # injured/suspended players (default on)
 ```
 
 With `show_event_toasts: true`, a goal triggers a full celebration:
 confetti burst, flashing card border, large "GOAL!" banner, score animation and vibration on mobile.
 
-The card shows a **weather badge** (temperature, wind) for the match venue when conditions are available.
+The card shows a **weather badge** (temperature, wind) for the match venue. For an upcoming match it shows the **forecast for kickoff time**; for live/finished matches it shows current conditions.
+
+For **upcoming matches**, when the API-Football provider supplies the data, the card also shows a **prediction** (home/draw/away win-probability bar + betting advice), averaged **1X2 odds**, and an **"Unavailable"** list of injured (🩹) and suspended (🚫) players. Each section appears only when real data exists (predictions/injuries/odds populate close to competitive matches, not friendlies) and can be turned off with `show_prediction`, `show_odds`, `show_injuries` and `show_weather` (all default on). During a match, **xG** (expected goals) appears in the stats row when available.
 
 **Upcoming matches** show a row per fixture with team badge, date and live score when in progress. The opponent's last-5 form dots appear below each row (green = win, grey = draw, red = loss). With `show_previous_matches: true`, finished matches are shown with score coloured from the tracked team's perspective and a competition label in the date column.
 

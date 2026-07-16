@@ -1,5 +1,64 @@
 # Changelog
 
+## v3.21.137 (2026-07-16)
+- Team card: show xG (expected goals) in the live stats row when both teams have a value
+- Team card: add editor toggles to show/hide the weather, prediction, odds and unavailable-players sections (all default on, so existing cards are unchanged)
+
+## v3.21.136 (2026-07-16)
+- Team card: show averaged 1X2 odds (home/draw/away) for upcoming matches when odds data exists (competitive matches within ~2 weeks of kickoff); `team.odds` label in all 7 languages
+
+## v3.21.135 (2026-07-16)
+- Team card: show an "Unavailable" section (injured 🩹 / suspended 🚫 players with reason) for upcoming matches when injury data exists; `team.injuries` label in all 7 languages
+
+## v3.21.134 (2026-07-16)
+- Team card: show a pre-match prediction (home/draw/away win-probability bar + betting advice) for upcoming matches when prediction data exists; `team.prediction` label in all 7 languages
+
+## v3.21.133 (2026-07-15)
+- Weather badge: show the forecast for kickoff time on upcoming matches (nearest Open-Meteo hourly forecast, 1h–16 days out) instead of current conditions; live/imminent/past matches keep current conditions; forecast marked with a clock icon in the tooltip
+
+## v3.21.132 (2026-07-13)
+- Weather badge: add FC Dordrecht's ground (M-Scores Stadion / Stadion Krommedijk); every venue returned by the ESPN and API-Football sensors now resolves to coordinates
+
+## v3.21.131 (2026-07-13)
+- Weather badge: resolve training-ground venues that carry a pitch/field number (e.g. "Sportcomplex Varkenoord 1") by retrying against the base name
+
+## v3.21.130 (2026-07-13)
+- Weather badge: cover all 16 FIFA World Cup 2026 stadiums (NRG Stadium, Mercedes-Benz Stadium, Estadio Banorte, GEHA Field at Arrowhead)
+
+## v3.21.129 (2026-07-13)
+- Weather badge: add stadium coordinates and venue-name aliases for ESPN/API-Football name variants (NEC, Telstar, ADO Den Haag, Sparta, Excelsior, SC Cambuur, Feyenoord's Varkenoord, plus English/sponsor variants)
+
+## v3.21.128 (2026-07-13)
+- Weather badge: validate server-provided venue coordinates as real numbers before use, otherwise fall back to the known-venue lookup
+
+## v3.21.127 (2026-07-13)
+- All cards: guard every score render with a shared `scoreText()` helper so an object score (as ESPN can send during live matches) can never render as "[object Object]"
+
+## v3.21.126 (2026-07-10)
+- Countdown card: only repaint per-second while a match is counting down (state `pre`); clear the tick timer defensively before re-creating it
+- Countdown / Match Center / Team Form: fix "NaN–NaN" score rendering for non-numeric head-to-head / previous-match scores
+
+## v3.21.125 (2026-07-10)
+- Timeline / Matches / Match Center / Team popup: no longer badge missed penalties or VAR-disallowed goals as goals (shared `isGoalEvent()` helper)
+
+## v3.21.124 (2026-07-10)
+- Apply competition-name localization to the Scorers card title, Bracket card title and MiniStandings heading
+
+## v3.21.123 (2026-07-10)
+- Shorten the Dutch club-friendlies label to "Oefenwedstrijd"
+
+## v3.21.122 (2026-07-10)
+- Team card: wrap competition labels in the previous/next match rows instead of cutting them off mid-word
+
+## v3.21.121 (2026-07-10)
+- Shared formation pitch: consistent jersey-number fallback for bench players
+
+## v3.21.120 (2026-07-08)
+- Extract the formation pitch into a shared module used by the Lineup card, Team/Matches popups and Match Center
+
+## v3.21.119 (2026-07-06)
+- Team card: fix the match-details popup header on mobile — hide the stats grid when neither team has stats and show team names centered under the logos
+
 ## v3.21.118 (2026-07-05)
 - Cards: translate API-Football competition labels consistently in Countdown, News, Lineup and Timeline headers as well, so friendly fixtures no longer leak raw provider names in those views
 
