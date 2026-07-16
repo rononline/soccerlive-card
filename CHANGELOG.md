@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.138 (2026-07-16)
+- Team card: localize the API-Football prediction advice by translating its fixed vocabulary (Combo Winner, Double chance, and, or draw, goals, ...) while leaving team names and goal figures intact; English/unmapped phrases pass through
+
 ## v3.21.137 (2026-07-16)
 - Team card: show xG (expected goals) in the live stats row when both teams have a value
 - Team card: add editor toggles to show/hide the weather, prediction, odds and unavailable-players sections (all default on, so existing cards are unchanged)
