@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.149 (2026-07-17)
+- Accessibility: the pre-match sections no longer rely on colour alone — injury/suspension icons carry an `aria-label`/`title` (Injured / Suspended), the odds favourite has a `Favourite` label (in addition to the lowest number), and the prediction bar segments have per-outcome titles. Added `team.injured`, `team.suspended` and `team.favourite` labels in all 7 languages
+
 ## v3.21.148 (2026-07-16)
 - Tests: add targeted frontend unit tests (`node --test`) for `standingText`, `translateAdvice`, `scoreText` and the odds/prediction models — covering structured vs ESPN standing, N/A / zero points, advice word combinations + regional language codes, missing/tied/single odds, single bookmaker, and prediction percentages that don't sum to 100
 - Prediction bar: normalize the segment widths so the bar always fills its track even when the percentages don't add up to 100; show a dash for a missing percentage instead of `0%`

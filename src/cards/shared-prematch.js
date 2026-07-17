@@ -21,9 +21,9 @@ export function renderPrediction(match, { t, lang }) {
       <div class="pred-title">${t('team.prediction')}</div>
       ${m.hasBar ? html`
         <div class="pred-bar">
-          <div class="pred-seg home" style="width:${m.wHome}%"></div>
-          <div class="pred-seg draw" style="width:${m.wDraw}%"></div>
-          <div class="pred-seg away" style="width:${m.wAway}%"></div>
+          <div class="pred-seg home" style="width:${m.wHome}%" title="${homeAbbr} ${_pct(m.home)}"></div>
+          <div class="pred-seg draw" style="width:${m.wDraw}%" title="${t('match.draw')} ${_pct(m.draw)}"></div>
+          <div class="pred-seg away" style="width:${m.wAway}%" title="${awayAbbr} ${_pct(m.away)}"></div>
         </div>
         <div class="pred-legend">
           <span class="pred-l home">${homeAbbr} ${_pct(m.home)}</span>
@@ -46,12 +46,16 @@ export function renderOdds(match, { t }) {
   const awayAbbr = match.away_abbrev || match.away_team || '';
   const avgKey = m.singular ? 'team.odds_avg_one' : 'team.odds_avg';
   // 1 / X / 2 is the international betting notation (home / draw / away).
-  const col = (cls, sign, label, v) => html`
-    <div class="odds-col ${cls}${m.showFav && v !== null && v === m.min ? ' fav' : ''}">
-      <div class="odds-sign">${sign}</div>
-      <div class="odds-team">${label}</div>
-      <div class="odds-val">${v !== null ? v.toFixed(2) : '–'}</div>
-    </div>`;
+  const col = (cls, sign, label, v) => {
+    const isFav = m.showFav && v !== null && v === m.min;
+    const favLabel = isFav ? t('team.favourite') : '';
+    return html`
+      <div class="odds-col ${cls}${isFav ? ' fav' : ''}" title="${favLabel}" aria-label="${favLabel}">
+        <div class="odds-sign">${sign}</div>
+        <div class="odds-team">${label}</div>
+        <div class="odds-val">${v !== null ? v.toFixed(2) : '–'}</div>
+      </div>`;
+  };
   return html`
     <div class="odds">
       <div class="odds-head">
@@ -72,12 +76,15 @@ export function renderInjuries(match, { t }) {
   const home = match.injuries_home || [];
   const away = match.injuries_away || [];
   if (!home.length && !away.length) return '';
-  const row = p => html`
-    <div class="inj-row">
-      <span class="inj-ic">${p.suspended ? '🚫' : '🩹'}</span>
-      <span class="inj-name">${p.player}</span>
-      ${p.reason ? html`<span class="inj-reason">${p.reason}</span>` : ''}
-    </div>`;
+  const row = p => {
+    const label = p.suspended ? t('team.suspended') : t('team.injured');
+    return html`
+      <div class="inj-row">
+        <span class="inj-ic" role="img" aria-label="${label}" title="${label}">${p.suspended ? '🚫' : '🩹'}</span>
+        <span class="inj-name">${p.player}</span>
+        ${p.reason ? html`<span class="inj-reason">${p.reason}</span>` : ''}
+      </div>`;
+  };
   const col = (team, list) => html`
     <div class="inj-col">
       <div class="inj-team">${team}</div>
