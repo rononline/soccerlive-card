@@ -237,7 +237,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       })}
       ${this._config.show_prediction !== false ? renderPrediction(match, { t: k => this._t(k), lang: resolveLang(this.hass, this._config) }) : ''}
       ${this._config.show_odds !== false ? renderOdds(match, { t: (k, v) => this._t(k, v) }) : ''}
-      ${this._config.show_injuries !== false ? renderInjuries(match, { t: k => this._t(k) }) : ''}
+      ${this._config.show_injuries !== false ? renderInjuries(match, { t: (k, v) => this._t(k, v) }) : ''}
     `;
   }
 

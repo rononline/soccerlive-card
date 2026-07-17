@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.150 (2026-07-17)
+- Unavailable-players section: cap each team's list at 6 with a "+N more" line so it can't grow unbounded (e.g. ten or more absentees); `team.and_more` label in all 7 languages
+- Preview: the upcoming-match mock now includes the pre-match sections with deliberately extreme content (many absentees, a long injury reason, one missing odd, high standing) to check layout on narrow columns
+
 ## v3.21.149 (2026-07-17)
 - Accessibility: the pre-match sections no longer rely on colour alone — injury/suspension icons carry an `aria-label`/`title` (Injured / Suspended), the odds favourite has a `Favourite` label (in addition to the lowest number), and the prediction bar segments have per-outcome titles. Added `team.injured`, `team.suspended` and `team.favourite` labels in all 7 languages
 

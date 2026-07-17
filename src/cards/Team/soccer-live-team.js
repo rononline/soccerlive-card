@@ -474,7 +474,7 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _renderInjuries(match) {
-    return renderInjuries(match, { t: (k) => this._t(k) });
+    return renderInjuries(match, { t: (k, v) => this._t(k, v) });
   }
 
   _renderStatsRow(match) {

@@ -3,7 +3,10 @@
 // 'pre') and actually carries the data, so nothing shows when there is none.
 import { html, css } from 'lit-element';
 import { translateAdvice } from './shared-advice.js';
-import { predictionModel, oddsModel } from './shared-prematch-model.js';
+import { predictionModel, oddsModel, capList } from './shared-prematch-model.js';
+
+// Cap each team's absentee list so the section can't grow unbounded.
+const MAX_INJURIES = 6;
 
 const _pct = v => (v === null || v === undefined) ? '–' : `${v}%`;
 
@@ -85,11 +88,15 @@ export function renderInjuries(match, { t }) {
         ${p.reason ? html`<span class="inj-reason">${p.reason}</span>` : ''}
       </div>`;
   };
-  const col = (team, list) => html`
-    <div class="inj-col">
-      <div class="inj-team">${team}</div>
-      ${list.length ? list.map(row) : html`<div class="inj-none">–</div>`}
-    </div>`;
+  const col = (team, list) => {
+    const { shown, extra } = capList(list, MAX_INJURIES);
+    return html`
+      <div class="inj-col">
+        <div class="inj-team">${team}</div>
+        ${shown.length ? shown.map(row) : html`<div class="inj-none">–</div>`}
+        ${extra > 0 ? html`<div class="inj-more">${t('team.and_more', { n: extra })}</div>` : ''}
+      </div>`;
+  };
   return html`
     <div class="inj">
       <div class="inj-title">${t('team.injuries')}</div>
@@ -187,4 +194,5 @@ export const prematchStyles = css`
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .inj-none { color: var(--cl-text-2, #94a3b8); font-size: 11px; }
+  .inj-more { color: var(--cl-text-2, #94a3b8); font-size: 10px; font-weight: 700; padding-top: 2px; opacity: 0.85; }
 `;

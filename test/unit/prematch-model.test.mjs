@@ -1,6 +1,25 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { predictionModel, oddsModel } from '../../src/cards/shared-prematch-model.js';
+import { predictionModel, oddsModel, capList } from '../../src/cards/shared-prematch-model.js';
+
+test('capList: caps the list and reports the hidden count', () => {
+  const list = Array.from({ length: 11 }, (_, i) => i);
+  const { shown, extra } = capList(list, 6);
+  assert.equal(shown.length, 6);
+  assert.equal(extra, 5);
+});
+
+test('capList: short lists are unchanged with no extra', () => {
+  const { shown, extra } = capList([1, 2], 6);
+  assert.deepEqual(shown, [1, 2]);
+  assert.equal(extra, 0);
+});
+
+test('capList: non-array input is handled', () => {
+  const { shown, extra } = capList(undefined, 6);
+  assert.deepEqual(shown, []);
+  assert.equal(extra, 0);
+});
 
 test('predictionModel: normalizes bar widths to fill the track', () => {
   const m = predictionModel({ percent_home: 50, percent_draw: 30, percent_away: 20 });

@@ -212,6 +212,28 @@
       lineup_home: [],
       lineup_away: [],
       match_details: [],
+      // Pre-match sections with deliberately extreme content (many absentees,
+      // long injury reasons, one missing odd) to check layout on narrow columns.
+      home_rank: 2, home_points: 65,
+      away_rank: 14, away_points: 21,
+      prediction: {
+        percent_home: 62, percent_draw: 24, percent_away: 14,
+        advice: "Combo Winner : Netherlands and +2.5 goals", winner_name: "Netherlands",
+      },
+      odds: { home: 1.42, draw: 4.80, away: null, bookmaker_count: 9 },
+      injuries_home: [
+        { player: "Virgil van Dijk", reason: "Achilles tendon problems – expected back next month", suspended: false },
+        { player: "Frenkie de Jong", reason: "Hamstring", suspended: false },
+        { player: "Memphis Depay", reason: "Suspended", suspended: true },
+        { player: "Matthijs de Ligt", reason: "Knock", suspended: false },
+        { player: "Cody Gakpo", reason: "Ankle", suspended: false },
+        { player: "Nathan Aké", reason: "Calf", suspended: false },
+        { player: "Denzel Dumfries", reason: "Suspended", suspended: true },
+        { player: "Xavi Simons", reason: "Illness", suspended: false },
+      ],
+      injuries_away: [
+        { player: "Youssef Msakni", reason: "Thigh", suspended: false },
+      ],
       head_to_head: [
         { date: "23-06-2022 14:00", home_team: "Netherlands", away_team: "Tunisia", home_score: "3", away_score: "1" },
         { date: "16-06-2010 08:30", home_team: "Netherlands", away_team: "Denmark", home_score: "2", away_score: "0" },

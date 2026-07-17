@@ -3,6 +3,12 @@
 
 const _num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
 
+/** Cap a list to `max` items, reporting how many are hidden (for "+N more"). */
+export function capList(list, max) {
+  const arr = Array.isArray(list) ? list : [];
+  return { shown: arr.slice(0, max), extra: Math.max(0, arr.length - max) };
+}
+
 /**
  * Model for the prediction win-probability bar.
  * Keeps the raw percentages for the labels, and derives normalized widths so
