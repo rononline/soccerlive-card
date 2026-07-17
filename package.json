@@ -8,7 +8,7 @@
     "preview": "npm run build && python3 -m http.server 4173",
     "smoke:preview": "node scripts/smoke-preview.mjs",
     "smoke:i18n": "node scripts/smoke-i18n.mjs",
-    "test:unit": "node --test test/unit/*.test.mjs",
+    "test:unit": "node --test --disable-warning=MODULE_TYPELESS_PACKAGE_JSON test/unit/*.test.mjs",
     "test": "npm run test:unit && npm run smoke:i18n && npm run smoke:preview"
   },
   "repository": {
