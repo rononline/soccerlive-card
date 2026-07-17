@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.152 (2026-07-17)
+- Team & Match Center cards: show the prediction, odds and unavailable-players sections during a live match too (as pre-match context), not only before kick-off; hidden once the match is finished. Pairs with integration v3.6.82 which keeps the pre-match snapshot attached during the game
+
 ## v3.21.151 (2026-07-17)
 - Data provenance: the prediction and odds section titles now carry a subtle explanatory tooltip / aria-label ("Provider estimate, not a guarantee" / "Averaged market odds, may be delayed") with a dotted-underline affordance, so the strong visual presentation doesn't suggest more certainty than the source provides. Added `team.prediction_note` and `team.odds_note` in all 7 languages
 

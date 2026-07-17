@@ -1,6 +1,7 @@
 // Shared pre-match sections (prediction, odds, injuries) used by the Team and
-// Match Center cards. Each returns '' unless the match is upcoming (state
-// 'pre') and actually carries the data, so nothing shows when there is none.
+// Match Center cards. Shown for upcoming and live matches (hidden once finished)
+// so the pre-match snapshot stays visible as context during the game; each
+// returns '' when the match doesn't carry the data, so nothing shows when empty.
 import { html, css } from 'lit-element';
 import { translateAdvice } from './shared-advice.js';
 import { predictionModel, oddsModel, capList } from './shared-prematch-model.js';
@@ -12,7 +13,7 @@ const _pct = v => (v === null || v === undefined) ? '–' : `${v}%`;
 
 export function renderPrediction(match, { t, lang }) {
   const p = match.prediction;
-  if (!p || match.state !== 'pre') return '';
+  if (!p || match.state === 'post') return '';
   const m = predictionModel(p);
   const rawAdvice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
   const advice = translateAdvice(rawAdvice, lang);
@@ -40,7 +41,7 @@ export function renderPrediction(match, { t, lang }) {
 }
 
 export function renderOdds(match, { t }) {
-  if (match.state !== 'pre') return '';
+  if (match.state === 'post') return '';
   const o = match.odds;
   if (!o) return '';
   const m = oddsModel(o);
@@ -75,7 +76,7 @@ export function renderOdds(match, { t }) {
 }
 
 export function renderInjuries(match, { t }) {
-  if (match.state !== 'pre') return '';
+  if (match.state === 'post') return '';
   const home = match.injuries_home || [];
   const away = match.injuries_away || [];
   if (!home.length && !away.length) return '';
