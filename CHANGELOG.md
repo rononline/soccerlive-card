@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.151 (2026-07-17)
+- Data provenance: the prediction and odds section titles now carry a subtle explanatory tooltip / aria-label ("Provider estimate, not a guarantee" / "Averaged market odds, may be delayed") with a dotted-underline affordance, so the strong visual presentation doesn't suggest more certainty than the source provides. Added `team.prediction_note` and `team.odds_note` in all 7 languages
+
 ## v3.21.150 (2026-07-17)
 - Unavailable-players section: cap each team's list at 6 with a "+N more" line so it can't grow unbounded (e.g. ten or more absentees); `team.and_more` label in all 7 languages
 - Preview: the upcoming-match mock now includes the pre-match sections with deliberately extreme content (many absentees, a long injury reason, one missing odd, high standing) to check layout on narrow columns

@@ -21,7 +21,7 @@ export function renderPrediction(match, { t, lang }) {
   const awayAbbr = match.away_abbrev || match.away_team || '';
   return html`
     <div class="pred">
-      <div class="pred-title">${t('team.prediction')}</div>
+      <div class="pred-title info" title="${t('team.prediction_note')}" aria-label="${t('team.prediction_note')}">${t('team.prediction')}</div>
       ${m.hasBar ? html`
         <div class="pred-bar">
           <div class="pred-seg home" style="width:${m.wHome}%" title="${homeAbbr} ${_pct(m.home)}"></div>
@@ -62,7 +62,7 @@ export function renderOdds(match, { t }) {
   return html`
     <div class="odds">
       <div class="odds-head">
-        <span class="odds-title">${t('team.odds')}</span>
+        <span class="odds-title info" title="${t('team.odds_note')}" aria-label="${t('team.odds_note')}">${t('team.odds')}</span>
         ${m.count ? html`<span class="odds-sub">${t(avgKey, { n: m.count })}</span>` : ''}
       </div>
       <div class="odds-row">
@@ -118,6 +118,13 @@ export const prematchStyles = css`
   .pred-title {
     font-size: 10px; font-weight: 800; text-transform: uppercase;
     letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 8px;
+  }
+  /* Subtle affordance that the section title carries an explanatory tooltip. */
+  .info {
+    cursor: help;
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--cl-divider, rgba(148,163,184,0.5));
   }
   .pred-bar {
     display: flex; height: 10px; border-radius: 5px; overflow: hidden;
