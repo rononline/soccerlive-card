@@ -148,6 +148,15 @@ class SoccerLiveScorersEditor extends LitElement {
 
         <h3>${this._t("editor.settings")}</h3>
         <div>
+          <label class="field-label">${this._t('editor.ranking')}</label>
+          <select data-config-value="ranking" @change=${this._selectChanged}>
+            ${[['goals', this._t('card.scorers')], ['assists', this._t('card.assists')]].map(
+              ([val, label]) => html`<option value="${val}" ?selected=${(this._config.ranking || 'goals') === val}>${label}</option>`
+            )}
+          </select>
+        </div>
+
+        <div>
           <label class="field-label">${this._t('editor.max_items')}</label>
           <input type="number" min="1" max="25"
             .value=${this._config.max_items ?? 10}

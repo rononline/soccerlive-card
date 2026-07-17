@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.153 (2026-07-17)
+- Scorers card: add a `ranking` option (`goals` (default) / `assists`) so one card can show top scorers or top assists instead of needing separate cards — the list is re-sorted and re-ranked client-side from the data the sensor already provides (assists come from API-Football). `yellow_cards`/`red_cards` are already accepted and will work once the integration exposes those counts. Editor gets a ranking selector; `card.assists` and `editor.ranking` added in all 7 languages
+
 ## v3.21.152 (2026-07-17)
 - Team & Match Center cards: show the prediction, odds and unavailable-players sections during a live match too (as pre-match context), not only before kick-off; hidden once the match is finished. Pairs with integration v3.6.82 which keeps the pre-match snapshot attached during the game
 

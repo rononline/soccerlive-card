@@ -7,6 +7,7 @@ import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from '../card-shell.js';
 import { displayCompetitionName } from '../shared-competition.js';
+import { rankScorers } from '../shared-scorers.js';
 
 class SoccerLiveScorersCard extends LitElement {
   static get properties() {
@@ -74,10 +75,11 @@ class SoccerLiveScorersCard extends LitElement {
   }
 
   _renderCard(attrs) {
-    const scorers = attrs.scorers || [];
+    const ranking = ['assists', 'yellow_cards', 'red_cards'].includes(this._config.ranking)
+      ? this._config.ranking : 'goals';
     const max = this._config.max_items ?? 10;
     const hideHeader = this._config.hide_header === true;
-    const visible = scorers.slice(0, max);
+    const visible = rankScorers(attrs.scorers || [], ranking).slice(0, max);
 
     if (!visible.length) {
       return renderInfoState('🥇', this._t('scorers.empty'), '', '');
@@ -89,7 +91,7 @@ class SoccerLiveScorersCard extends LitElement {
         <div class="card-content">
         ${!hideHeader ? renderSoccerHeader({
           logo: attrs.league_logo,
-          title: displayCompetitionName(attrs.league_name, resolveLang(this.hass, this._config)) || this._t('card.scorers'),
+          title: displayCompetitionName(attrs.league_name, resolveLang(this.hass, this._config)) || this._t(ranking === 'assists' ? 'card.assists' : 'card.scorers'),
           badge: renderSoccerBadge(`${visible.length}`, 'neutral'),
           fallbackIcon: '🥇',
         }) : ''}
@@ -107,7 +109,7 @@ class SoccerLiveScorersCard extends LitElement {
               ${s.team_logo
                 ? html`<img class="slc-team-logo" src="${s.team_logo}" alt="" @error="${e => e.target.style.display='none'}">`
                 : ''}
-              <span class="slc-goals">${s.goals}</span>
+              <span class="slc-goals">${s.value}</span>
             </div>
           `)}
         </div>
