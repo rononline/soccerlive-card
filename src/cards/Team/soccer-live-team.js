@@ -526,6 +526,13 @@ class SoccerLiveTeamCard extends LitElement {
     if (!this.hass || !this._config) return renderLoading('Loading...');
     const entityId = this._config.entity;
     const stateObj = this.hass.states[entityId];
+    // Resolve compact here (needs hass): the card's own setting wins; otherwise
+    // fall back to the sensor's shared card_defaults.compact.
+    if (this._config.compact !== undefined) {
+      this.compact = this._config.compact === true;
+    } else {
+      this.compact = stateObj?.attributes?.card_defaults?.compact === true;
+    }
     if (!stateObj) {
       const cached = OfflineCache.get(entityId);
       if (cached && cached.data.matches) {

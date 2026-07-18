@@ -155,13 +155,32 @@ export const skinStyles = css`
   }
 `;
 
+/**
+ * Fill appearance/palette from the sensor's shared `card_defaults` only when
+ * this card sets neither of them nor a legacy `skin` — so a card's own choice
+ * always wins over the shared per-sensor default.
+ */
+function withCardDefaults(el, config) {
+  const cfg = config || {};
+  const entityId = cfg.entity || (cfg.entities && cfg.entities[0]);
+  const defaults = entityId && el?.hass?.states?.[entityId]?.attributes?.card_defaults;
+  if (!defaults || typeof defaults !== 'object') return cfg;
+  const cardChoosesLook = typeof cfg.skin === 'string' || cfg.appearance != null || cfg.palette != null;
+  if (cardChoosesLook) return cfg;
+  const out = { ...cfg };
+  if (defaults.appearance) out.appearance = defaults.appearance;
+  if (defaults.palette) out.palette = defaults.palette;
+  return out;
+}
+
 export function applySkin(el, config) {
-  const appearance = resolveAppearance(config);
-  const palette = resolvePalette(config);
+  const merged = withCardDefaults(el, config);
+  const appearance = resolveAppearance(merged);
+  const palette = resolvePalette(merged);
   if (el && el.setAttribute) {
     el.setAttribute('data-appearance', appearance);
     el.setAttribute('data-palette', palette);
-    applyCustomPaletteVars(el, config, palette);
+    applyCustomPaletteVars(el, merged, palette);
   }
   return { appearance, palette };
 }

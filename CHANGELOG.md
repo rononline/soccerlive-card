@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.168 (2026-07-18)
+- Shared per-sensor preferences: cards now inherit appearance, palette, language and (Team card) compact mode from the sensor's `card_defaults` attribute (integration v3.6.93) when the card itself doesn't set them — so you can set the look once in the integration options instead of on every card. A card's own setting always wins
+
 ## v3.21.167 (2026-07-18)
 - Editor: the Team and Match Center editors now group their growing list of switches into labelled sections — Match info, Prediction & odds, Display and Appearance — instead of one long "Settings" list, so options are easier to find. Section labels added in English and Dutch
 

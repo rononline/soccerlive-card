@@ -2661,6 +2661,12 @@ const SUPPORTED_LANGS = ['en', 'it', 'fr', 'es', 'nl', 'de', 'pt'];
 export function resolveLang(hass, config) {
   const candidates = [];
   if (config && typeof config.language === 'string') candidates.push(config.language);
+  // Shared per-sensor default (card_defaults.language) wins over the HA locale
+  // but not over an explicit card language.
+  const entityId = config && (config.entity || (config.entities && config.entities[0]));
+  const shared = entityId && hass && hass.states && hass.states[entityId] &&
+    hass.states[entityId].attributes && hass.states[entityId].attributes.card_defaults;
+  if (shared && typeof shared.language === 'string') candidates.push(shared.language);
   if (hass && hass.locale && hass.locale.language) candidates.push(hass.locale.language);
   if (hass && hass.language) candidates.push(hass.language);
   for (const c of candidates) {
