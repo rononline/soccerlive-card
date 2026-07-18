@@ -4,21 +4,23 @@
 // returns '' when the match doesn't carry the data, so nothing shows when empty.
 import { html, css } from 'lit-element';
 import { translateAdvice } from './shared-advice.js';
-import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals } from './shared-prematch-model.js';
+import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals, formatGoalLine } from './shared-prematch-model.js';
 
 // Cap each team's absentee list so the section can't grow unbounded.
 const MAX_INJURIES = 6;
 
 const _pct = v => (v === null || v === undefined) ? '–' : `${v}%`;
 
-export function renderPrediction(match, { t, lang }) {
+export function renderPrediction(match, { t, lang, showDetails = true }) {
   const p = match.prediction;
   if (!p || match.state === 'post') return '';
   const m = predictionModel(p);
   const rawAdvice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
   const advice = translateAdvice(rawAdvice, lang);
-  const cmp = comparisonModel(p);
-  const xg = expectedGoals(p);
+  // The comparison bars and goal lines are the tall "details"; hide them when
+  // show_prediction_details is off (the win-probability bar and advice stay).
+  const cmp = showDetails ? comparisonModel(p) : [];
+  const xg = showDetails ? expectedGoals(p) : null;
   if (!m.hasBar && !advice && !cmp.length && !xg) return '';
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
@@ -53,9 +55,9 @@ export function renderPrediction(match, { t, lang }) {
         </div>
       ` : ''}
       ${xg ? html`
-        <div class="pred-xg" title="${t('team.exp_goals_note')}" aria-label="${t('team.exp_goals_note')}">
-          <span class="pred-xg-label info">${t('team.exp_goals')}</span>
-          <span class="pred-xg-val">${homeAbbr} ${xg.home || '—'} · ${awayAbbr} ${xg.away || '—'}${xg.line ? ` · O/U ${xg.line}` : ''}</span>
+        <div class="pred-xg" title="${t('team.goal_lines_note')}" aria-label="${t('team.goal_lines_note')}">
+          <span class="pred-xg-label info">${t('team.goal_lines')}</span>
+          <span class="pred-xg-val">${homeAbbr} ${formatGoalLine(xg.home, lang) || '—'} · ${awayAbbr} ${formatGoalLine(xg.away, lang) || '—'}${xg.line ? ` · ${t('team.goal_lines_total')} ${formatGoalLine(xg.line, lang)}` : ''}</span>
         </div>
       ` : ''}
       ${advice ? html`<div class="pred-advice">${advice}</div>` : ''}

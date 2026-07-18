@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals } from '../../src/cards/shared-prematch-model.js';
+import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals, formatGoalLine } from '../../src/cards/shared-prematch-model.js';
 
 test('capList: caps the list and reports the hidden count', () => {
   const list = Array.from({ length: 11 }, (_, i) => i);
@@ -98,16 +98,17 @@ test('oddsModel: pre-match odds are not flagged live', () => {
 });
 
 
-test('comparisonModel: returns ordered rows with normalized widths', () => {
+test('comparisonModel: returns form/att/def in order (total dropped)', () => {
   const rows = comparisonModel({ comparison: {
-    total: { home: 28, away: 72 },
-    form: { home: 40, away: 60 },
+    def: { home: 20, away: 80 },
+    form: { home: 28, away: 72 },
+    att: { home: 46, away: 54 },
+    total: { home: 30, away: 70 },
   }});
-  // Display order is form, att, def, total -> present ones keep that order.
-  assert.deepEqual(rows.map(r => r.key), ['form', 'total']);
-  const total = rows.find(r => r.key === 'total');
-  assert.equal(Math.round(total.wHome), 28);
-  assert.equal(Math.round(total.wAway), 72);
+  assert.deepEqual(rows.map(r => r.key), ['form', 'att', 'def']);
+  const form = rows.find(r => r.key === 'form');
+  assert.equal(Math.round(form.wHome), 28);
+  assert.equal(Math.round(form.wAway), 72);
 });
 
 test('comparisonModel: no comparison -> empty', () => {
@@ -119,4 +120,11 @@ test('expectedGoals: returns lines when present, else null', () => {
   assert.deepEqual(expectedGoals({ goals_home: '-2.5', goals_away: '-1.5', under_over: '-3.5' }),
     { home: '-2.5', away: '-1.5', line: '-3.5' });
   assert.equal(expectedGoals({}), null);
+});
+
+test('formatGoalLine: converts thresholds and localizes the decimal', () => {
+  assert.equal(formatGoalLine('-2.5', 'en'), '< 2.5');
+  assert.equal(formatGoalLine('+2.5', 'en'), '> 2.5');
+  assert.equal(formatGoalLine('-2.5', 'nl'), '< 2,5');  // comma locale
+  assert.equal(formatGoalLine('', 'en'), '');
 });

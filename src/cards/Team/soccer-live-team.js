@@ -466,7 +466,7 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _renderPrediction(match) {
-    return renderPrediction(match, { t: (k) => this._t(k), lang: resolveLang(this.hass, this._config) });
+    return renderPrediction(match, { t: (k) => this._t(k), lang: resolveLang(this.hass, this._config), showDetails: this._config.show_prediction_details !== false });
   }
 
   _renderOdds(match) {

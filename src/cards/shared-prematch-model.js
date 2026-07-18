@@ -3,8 +3,27 @@
 
 const _num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
 
-// Strength-comparison metrics we surface, in display order.
-const COMPARISON_METRICS = ['form', 'att', 'def', 'total'];
+// Strength-comparison metrics we surface, in display order. `total` is left out
+// (it largely repeats the other three and adds height).
+const COMPARISON_METRICS = ['form', 'att', 'def'];
+
+// Locales that use a decimal comma (English keeps the dot).
+const COMMA_LANGS = new Set(['nl', 'de', 'fr', 'it', 'es', 'pt']);
+
+/**
+ * Format a provider goal line ("-2.5" / "+2.5") as a threshold, not a fake xG:
+ * "-2.5" -> "< 2.5", "+2.5" -> "> 2.5". Uses a decimal comma for comma-locales.
+ */
+export function formatGoalLine(raw, lang) {
+  if (raw === null || raw === undefined || raw === '') return '';
+  const s = String(raw).trim();
+  let prefix = '';
+  let num = s;
+  if (s.startsWith('-')) { prefix = '< '; num = s.slice(1); }
+  else if (s.startsWith('+')) { prefix = '> '; num = s.slice(1); }
+  if (COMMA_LANGS.has(lang)) num = num.replace('.', ',');
+  return prefix + num;
+}
 
 /**
  * Home-vs-away strength comparison rows from the prediction's `comparison`

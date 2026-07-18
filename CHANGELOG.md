@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.159 (2026-07-18)
+- Prediction section: relabelled the goal figures from "Expected goals" to "Goal lines" and format them as thresholds (`-2.5` → `< 2.5`, `+2.5` → `> 2.5`, with a decimal comma in comma-locales), so they're no longer mistaken for xG; the tooltip clarifies they are bookmaker goal lines, not xG. Comparison now shows only form/attack/defense (total dropped). New `show_prediction_details` toggle (Team + Match Center) hides the comparison bars and goal lines while keeping the win-probability bar and advice. Labels updated/added in all 7 languages
+
 ## v3.21.158 (2026-07-18)
 - Team & Match Center cards: the prediction section now shows a home-vs-away strength comparison (form/attack/defense/overall as paired bars) and the predicted goal lines (home/away + over-under), from the extra prediction data in integration v3.6.91 — no extra API requests. Added `team.cmp_form/att/def/total`, `team.exp_goals` and `team.exp_goals_note` in all 7 languages
 

@@ -172,6 +172,11 @@ class SoccerLiveTeamCardEditor extends LitElement {
             data-config-value="show_prediction" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
+          <label>${this._t('editor.show_prediction_details')}</label>
+          <ha-switch .checked=${this._config.show_prediction_details !== false}
+            data-config-value="show_prediction_details" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
           <label>${this._t('editor.show_odds')}</label>
           <ha-switch .checked=${this._config.show_odds !== false}
             data-config-value="show_odds" @change=${this._switchChanged}></ha-switch>
