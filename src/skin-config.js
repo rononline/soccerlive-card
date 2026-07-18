@@ -44,7 +44,7 @@ const SKIN_ALIASES = {
 // Old single `skin` value -> the {appearance, palette} pair it now means.
 const LEGACY_SKIN_MAP = {
   dark: { appearance: 'dark', palette: 'purple' },
-  light: { appearance: 'light', palette: 'purple' },
+  light: { appearance: 'light', palette: 'blue' },
   auto: { appearance: 'dark', palette: 'team' },
   custom: { appearance: 'dark', palette: 'custom' },
   'red-white': { appearance: 'dark', palette: 'red-white' },
@@ -80,7 +80,9 @@ export function resolvePalette(config) {
   const p = config && typeof config.palette === 'string' ? config.palette.toLowerCase() : '';
   if (PALETTES.includes(p)) return p;
   const legacy = legacyPair(config);
-  return legacy ? legacy.palette : 'purple';
+  if (legacy) return legacy.palette;
+  // No palette and no legacy skin: light defaults to blue, dark to purple.
+  return resolveAppearance(config) === 'light' ? 'blue' : 'purple';
 }
 
 /** Palettes whose accent colours come from config/entity rather than CSS. */

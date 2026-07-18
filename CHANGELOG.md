@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.162 (2026-07-18)
+- Skins: the light appearance now defaults to a blue accent (as the old `light` skin did) instead of purple; dark still defaults to purple. Applies to both `skin: light` and a bare `appearance: light`
+
 ## v3.21.161 (2026-07-18)
 - Skins split into two independent axes: **appearance** (`dark` / `light` / `ha` Home Assistant theme) and **palette** (`purple` / `red-white` / `orange` / `blue` / `team` / `custom` / …). Any combination now works — e.g. a light red-white card — instead of a fixed set of bundled skins. Surfaces are accent-tinted so every palette looks right on every appearance
 - New Home Assistant appearance follows `--ha-card-background`, `--primary-text-color`, `--divider-color` etc., so the cards blend into the active HA theme

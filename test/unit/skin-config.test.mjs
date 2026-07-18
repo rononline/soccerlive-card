@@ -23,9 +23,16 @@ test('defaults when nothing is set', () => {
   assert.equal(resolvePalette(undefined), 'purple');
 });
 
+test('light defaults to blue, dark to purple', () => {
+  // legacy skin:light preserved its blue accent; a bare appearance:light matches
+  assert.equal(resolvePalette({ skin: 'light' }), 'blue');
+  assert.equal(resolvePalette({ appearance: 'light' }), 'blue');
+  assert.equal(resolvePalette({ appearance: 'dark' }), 'purple');
+  assert.equal(resolvePalette({}), 'purple');
+});
+
 test('legacy skin maps to appearance + palette', () => {
   assert.equal(resolveAppearance({ skin: 'light' }), 'light');
-  assert.equal(resolvePalette({ skin: 'light' }), 'purple');
   assert.equal(resolveAppearance({ skin: 'red-white' }), 'dark');
   assert.equal(resolvePalette({ skin: 'red-white' }), 'red-white');
   // auto -> team palette (Auto renamed to Team colours)
