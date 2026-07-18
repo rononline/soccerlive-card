@@ -23,8 +23,9 @@ const ADVANCED_FIELDS = [
 ];
 const RESET_KEYS = [...SIMPLE_FIELDS, ...ADVANCED_FIELDS].map(([k]) => k);
 
-// Below this WCAG ratio, text on the chosen background is hard to read.
+// WCAG AA: 4.5 for normal text, 3 for large text / UI accents.
 const MIN_TEXT_CONTRAST = 4.5;
+const MIN_UI_CONTRAST = 3;
 
 function fireConfig(host, next) {
   if (typeof host._fireConfigChanged === 'function') return host._fireConfigChanged(next);
@@ -59,13 +60,21 @@ export function renderSkinControls(host, config, t) {
   const palette = resolvePalette(config);
   const setField = (key, value) => fireConfig(host, { ...config, [key]: value });
 
-  // Contrast check for a custom palette with a user-set background.
+  // Contrast check for a custom palette: warn if text, secondary text or the
+  // accent doesn't stand out enough against the chosen background.
   let contrastWarn = false;
   if (palette === 'custom') {
     const bg = normalizeCssColor(config?.background_color);
-    const text = normalizeCssColor(config?.text_color);
-    const ratio = bg && text ? contrastRatio(bg, text) : null;
-    contrastWarn = ratio !== null && ratio < MIN_TEXT_CONTRAST;
+    if (bg) {
+      const low = (key, min) => {
+        const c = normalizeCssColor(config?.[key]);
+        const r = c ? contrastRatio(bg, c) : null;
+        return r !== null && r < min;
+      };
+      contrastWarn = low('text_color', MIN_TEXT_CONTRAST)
+        || low('secondary_text_color', MIN_TEXT_CONTRAST)
+        || low('accent_color', MIN_UI_CONTRAST);
+    }
   }
 
   return html`

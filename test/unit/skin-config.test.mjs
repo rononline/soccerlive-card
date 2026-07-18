@@ -4,9 +4,38 @@ import {
   resolveAppearance,
   resolvePalette,
   paletteUsesCustomColors,
+  mergeCardDefaults,
   APPEARANCES,
   PALETTES,
 } from '../../src/skin-config.js';
+
+test('mergeCardDefaults: inherits per field, not all-or-nothing', () => {
+  const shared = { appearance: 'dark', palette: 'red-white' };
+  // Card sets only appearance -> still inherits the shared palette.
+  const m = mergeCardDefaults({ appearance: 'light' }, shared);
+  assert.equal(m.appearance, 'light');
+  assert.equal(m.palette, 'red-white');
+  assert.equal(resolvePalette(m), 'red-white');
+  // Card sets only palette -> still inherits the shared appearance.
+  const m2 = mergeCardDefaults({ palette: 'blue' }, shared);
+  assert.equal(m2.appearance, 'dark');
+  assert.equal(m2.palette, 'blue');
+});
+
+test('mergeCardDefaults: card values and legacy skin win over shared', () => {
+  const shared = { appearance: 'dark', palette: 'red-white' };
+  // A legacy skin sets both axes -> opts out of both shared values.
+  const m = mergeCardDefaults({ skin: 'blue' }, shared);
+  assert.equal(m.appearance, undefined);
+  assert.equal(m.palette, undefined);
+  assert.equal(resolvePalette(m), 'blue');
+  // Nothing set -> inherits both.
+  const m2 = mergeCardDefaults({}, shared);
+  assert.equal(m2.appearance, 'dark');
+  assert.equal(m2.palette, 'red-white');
+  // No shared defaults -> config unchanged.
+  assert.deepEqual(mergeCardDefaults({ palette: 'gold' }, null), { palette: 'gold' });
+});
 
 test('new fields win and are validated', () => {
   assert.equal(resolveAppearance({ appearance: 'light' }), 'light');

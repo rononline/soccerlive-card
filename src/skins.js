@@ -1,6 +1,6 @@
 import { css } from "lit-element";
 import { normalizeCssColor, hexToRgbTriplet, getAutoColors } from "./skin-colors.js";
-import { resolveAppearance, resolvePalette, paletteUsesCustomColors } from "./skin-config.js";
+import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults } from "./skin-config.js";
 
 // Two independent axes drive the look:
 //   data-appearance = dark | light | ha  -> neutrals (background, text, surfaces)
@@ -155,22 +155,13 @@ export const skinStyles = css`
   }
 `;
 
-/**
- * Fill appearance/palette from the sensor's shared `card_defaults` only when
- * this card sets neither of them nor a legacy `skin` — so a card's own choice
- * always wins over the shared per-sensor default.
- */
+// Read the sensor's shared card_defaults and fill appearance/palette per field
+// (see mergeCardDefaults), so a card's own choice wins only for the axis it sets.
 function withCardDefaults(el, config) {
   const cfg = config || {};
   const entityId = cfg.entity || (cfg.entities && cfg.entities[0]);
   const defaults = entityId && el?.hass?.states?.[entityId]?.attributes?.card_defaults;
-  if (!defaults || typeof defaults !== 'object') return cfg;
-  const cardChoosesLook = typeof cfg.skin === 'string' || cfg.appearance != null || cfg.palette != null;
-  if (cardChoosesLook) return cfg;
-  const out = { ...cfg };
-  if (defaults.appearance) out.appearance = defaults.appearance;
-  if (defaults.palette) out.palette = defaults.palette;
-  return out;
+  return mergeCardDefaults(cfg, defaults);
 }
 
 export function applySkin(el, config) {

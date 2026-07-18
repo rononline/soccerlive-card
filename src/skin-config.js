@@ -107,3 +107,19 @@ export function resolvePalette(config) {
 export function paletteUsesCustomColors(palette) {
   return palette === 'custom' || palette === 'team';
 }
+
+/**
+ * Fill appearance/palette from the sensor's shared `card_defaults`, per field,
+ * so a card that only sets one axis still inherits the other (e.g. a card with
+ * `appearance: light` keeps the shared `palette: red-white`). A legacy `skin`
+ * sets both axes, so it opts the card out of both shared values.
+ */
+export function mergeCardDefaults(config, defaults) {
+  const cfg = config || {};
+  if (!defaults || typeof defaults !== 'object') return cfg;
+  const hasSkin = typeof cfg.skin === 'string';
+  const out = { ...cfg };
+  if (cfg.appearance == null && !hasSkin && defaults.appearance) out.appearance = defaults.appearance;
+  if (cfg.palette == null && !hasSkin && defaults.palette) out.palette = defaults.palette;
+  return out;
+}

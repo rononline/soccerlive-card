@@ -34,13 +34,15 @@ class SoccerLiveTimelineCard extends LitElement {
   }
 
   _getEventInfo(ev) {
+    // Diagnostics are opt-in (`debug: true`) so odd provider data doesn't log on
+    // every update for every viewer.
+    const debug = this._config && this._config.debug === true;
     const c = classifyEvent(ev);
     if (!c) {
-      // Skipped (unknown/empty) — surface it for diagnostics, don't show a blank row.
-      if (ev && (ev.type || ev.type_text)) console.debug('[soccer-live] timeline: skipped event', ev.type || ev.type_text);
+      if (debug && ev && (ev.type || ev.type_text)) console.debug('[soccer-live] timeline: skipped event', ev.type || ev.type_text);
       return null;
     }
-    if (!c.known) console.debug('[soccer-live] timeline: unrecognised event shown neutrally', ev.type || ev.type_text);
+    if (debug && !c.known) console.debug('[soccer-live] timeline: unrecognised event shown neutrally', ev.type || ev.type_text);
     const text = c.athletes.length ? c.athletes.join(', ') : (c.i18nKey ? this._t(c.i18nKey) : c.fallbackText);
     return { btype: c.btype, text };
   }

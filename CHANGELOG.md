@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.169 (2026-07-18)
+- Shared defaults: appearance and palette are now inherited from the sensor per field, not all-or-nothing — a card that sets only `appearance: light` still inherits the shared `palette: red-white` (previously it fell back to the default). A legacy `skin` still opts the card out of both. Covered by unit tests
+- Skin editor: the custom-palette contrast warning now also checks secondary text and the accent against the background, not just the main text
+- Timeline: the diagnostic console logging of unknown/odd events is now opt-in (`debug: true`), so unusual provider data no longer logs on every update
+
 ## v3.21.168 (2026-07-18)
 - Shared per-sensor preferences: cards now inherit appearance, palette, language and (Team card) compact mode from the sensor's `card_defaults` attribute (integration v3.6.93) when the card itself doesn't set them — so you can set the look once in the integration options instead of on every card. A card's own setting always wins
 
