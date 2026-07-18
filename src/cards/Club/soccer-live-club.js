@@ -6,14 +6,13 @@ import { renderCardError, renderInfoState } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader } from '../shared-header.js';
 import { soccerCardShellStyles } from '../card-shell.js';
-
-// Squad position groups, in the order the sensor already sorts them.
-const POSITION_GROUPS = [
-  ['Goalkeeper', 'club.goalkeepers'],
-  ['Defender', 'club.defenders'],
-  ['Midfielder', 'club.midfielders'],
-  ['Attacker', 'club.attackers'],
-];
+import {
+  hasClubContent,
+  groupSquad,
+  visibleTransfers,
+  transferCounterparty,
+  formatTransferDate,
+} from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
   static get properties() {
@@ -69,7 +68,7 @@ class SoccerLiveClubCard extends LitElement {
     }
 
     const club = attrs?.club;
-    if (!club || (!club.profile && !club.squad && !club.transfers)) {
+    if (!hasClubContent(club)) {
       if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
       return renderInfoState('🏟️', this._t('club.empty'), this._t('club.empty_hint'), '');
     }
@@ -112,13 +111,12 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _renderSquad(squad) {
-    if (!squad.length) return '';
+    const groups = groupSquad(squad);
+    if (!groups.length) return '';
     return html`
       <div class="clb-section">
         <div class="clb-title">${this._t('club.squad')}</div>
-        ${POSITION_GROUPS.map(([pos, key]) => {
-          const players = squad.filter(p => p.position === pos);
-          if (!players.length) return '';
+        ${groups.map(({ key, players }) => {
           return html`
             <div class="clb-pos-group">
               <div class="clb-pos">${this._t(key)}</div>
@@ -137,21 +135,21 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _renderTransfers(transfers) {
-    if (!transfers.length) return '';
-    const max = this._config.max_transfers ?? 8;
+    const visible = visibleTransfers(transfers, this._config.max_transfers ?? 8);
+    if (!visible.length) return '';
     return html`
       <div class="clb-section">
         <div class="clb-title">${this._t('club.transfers')}</div>
-        ${transfers.slice(0, max).map(tr => html`
+        ${visible.map(tr => html`
           <div class="clb-transfer">
             <span class="clb-dir ${tr.direction}" title="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}"
                   aria-label="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}">${tr.direction === 'in' ? '↓' : '↑'}</span>
             <div class="clb-tinfo">
               <span class="clb-tplayer">${tr.player}</span>
-              <span class="clb-tclubs">${tr.direction === 'in' ? tr.from : tr.to}</span>
+              <span class="clb-tclubs">${transferCounterparty(tr)}</span>
             </div>
             <span class="clb-ttype">${tr.type && tr.type !== 'N/A' ? tr.type : ''}</span>
-            <span class="clb-tdate">${(tr.date || '').split('-').reverse().join('-')}</span>
+            <span class="clb-tdate">${formatTransferDate(tr.date)}</span>
           </div>
         `)}
       </div>

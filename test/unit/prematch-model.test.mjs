@@ -85,3 +85,14 @@ test('oddsModel: no odds -> not present', () => {
   assert.equal(oddsModel({}).present, false);
   assert.equal(oddsModel({ home: null, draw: null, away: null }).present, false);
 });
+
+test('oddsModel: live odds set the live flag and drop the bookmaker count', () => {
+  const m = oddsModel({ home: 2.5, draw: 3.1, away: 2.7, live: true });
+  assert.equal(m.live, true);
+  assert.equal(m.count, null);
+  assert.equal(m.present, true);
+});
+
+test('oddsModel: pre-match odds are not flagged live', () => {
+  assert.equal(oddsModel({ home: 1.5, draw: 4.0, away: 6.0, bookmaker_count: 3 }).live, false);
+});

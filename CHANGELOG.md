@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.21.156 (2026-07-18)
+- Team & Match Center cards: the odds section now shows a pulsing "Live" badge and a "Live in-play odds" title/tooltip when the integration provides live in-play odds during a match (integration v3.6.88), instead of the "averaged market odds" label and bookmaker count used for pre-match odds. Added `team.odds_live`, `team.odds_live_note` and `team.odds_live_badge` in all 7 languages
+
+## v3.21.155 (2026-07-18)
+- Scorers card: the `assists` ranking now reads the real top-assists ranking from the sensor's new `assists` attribute (integration v3.6.87) instead of re-sorting the top scorers by their assists, so assist leaders with few goals are no longer missed
+- Club card: extracted the squad grouping and transfer display into a pure `shared-club-model.js` module and added unit tests (grouping order, empty groups, transfer capping/counterparty/date formatting)
+
 ## v3.21.154 (2026-07-18)
 - New Club card (card_type: club): shows the club profile (stadium, founded year, coach), the full squad grouped by position (GK/DEF/MID/ATT) with shirt number and age, and recent transfers (in/out, player, fee, from/to, date). Reads the club attribute from an API-Football team sensor (integration v3.6.86); editor toggles for squad/transfers and a max_transfers option. Labels in all 7 languages
 

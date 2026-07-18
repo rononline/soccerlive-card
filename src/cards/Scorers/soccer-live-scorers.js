@@ -79,7 +79,10 @@ class SoccerLiveScorersCard extends LitElement {
       ? this._config.ranking : 'goals';
     const max = this._config.max_items ?? 10;
     const hideHeader = this._config.hide_header === true;
-    const visible = rankScorers(attrs.scorers || [], ranking).slice(0, max);
+    // Assists use the real top-assists ranking (a separate sensor attribute),
+    // not the top scorers re-sorted by their assists.
+    const source = ranking === 'assists' ? (attrs.assists || []) : (attrs.scorers || []);
+    const visible = rankScorers(source, ranking).slice(0, max);
 
     if (!visible.length) {
       return renderInfoState('🥇', this._t('scorers.empty'), '', '');

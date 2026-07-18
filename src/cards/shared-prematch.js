@@ -63,8 +63,8 @@ export function renderOdds(match, { t }) {
   return html`
     <div class="odds">
       <div class="odds-head">
-        <span class="odds-title info" title="${t('team.odds_note')}" aria-label="${t('team.odds_note')}">${t('team.odds')}</span>
-        ${m.count ? html`<span class="odds-sub">${t(avgKey, { n: m.count })}</span>` : ''}
+        <span class="odds-title info" title="${m.live ? t('team.odds_live_note') : t('team.odds_note')}" aria-label="${m.live ? t('team.odds_live_note') : t('team.odds_note')}">${m.live ? t('team.odds_live') : t('team.odds')}</span>
+        ${m.live ? html`<span class="odds-sub live">${t('team.odds_live_badge')}</span>` : (m.count ? html`<span class="odds-sub">${t(avgKey, { n: m.count })}</span>` : '')}
       </div>
       <div class="odds-row">
         ${col('home', '1', homeAbbr, m.home)}
@@ -157,6 +157,16 @@ export const prematchStyles = css`
   .odds-sub {
     font-size: 9px; font-weight: 600; color: var(--cl-text-2, #94a3b8); opacity: 0.75;
   }
+  .odds-sub.live {
+    color: var(--cl-live, #ef4444); opacity: 1; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .odds-sub.live::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cl-live, #ef4444); animation: odds-live-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes odds-live-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
   .odds-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   .odds-col {
     display: flex; flex-direction: column; align-items: center; gap: 2px;

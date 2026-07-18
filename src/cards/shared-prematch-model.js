@@ -43,11 +43,14 @@ export function oddsModel(odds) {
   const min = present.length ? Math.min(...present) : null;
   const showFav = present.length >= 2 && present.filter(v => v === min).length === 1;
   const count = (typeof o.bookmaker_count === 'number' && o.bookmaker_count > 0) ? o.bookmaker_count : null;
+  const live = o.live === true;
   return {
     present: present.length > 0,
     home, draw, away,
     min, showFav,
-    count,
+    // Live in-play odds come from a single feed, so there's no bookmaker count.
+    count: live ? null : count,
     singular: count === 1,
+    live,
   };
 }
