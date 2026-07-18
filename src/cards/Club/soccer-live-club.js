@@ -9,14 +9,20 @@ import { soccerCardShellStyles } from '../card-shell.js';
 import {
   hasClubContent,
   groupSquad,
+  collapseGroups,
   visibleTransfers,
+  filterTransfers,
+  countTransfers,
   transferCounterparty,
   formatTransferDate,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
   static get properties() {
-    return { hass: {}, _config: {}, _isLoading: { type: Boolean } };
+    return {
+      hass: {}, _config: {}, _isLoading: { type: Boolean },
+      _squadExpanded: { type: Boolean }, _transferFilter: { type: String },
+    };
   }
 
   setConfig(config) {
@@ -24,6 +30,8 @@ class SoccerLiveClubCard extends LitElement {
     this._config = config;
     applySkin(this, config);
     this._isLoading = true;
+    if (this._squadExpanded === undefined) this._squadExpanded = false;
+    if (this._transferFilter === undefined) this._transferFilter = 'all';
   }
 
   connectedCallback() {
@@ -90,6 +98,7 @@ class SoccerLiveClubCard extends LitElement {
           ${this._renderProfile(profile, club.coach)}
           ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
           ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
+          <div class="clb-note">${this._t('club.cache_note')}</div>
         </div>
       </ha-card>
     `;
@@ -111,8 +120,15 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _renderSquad(squad) {
-    const groups = groupSquad(squad);
-    if (!groups.length) return '';
+    const allGroups = groupSquad(squad);
+    if (!allGroups.length) return '';
+    // Collapsed by default to keep the card short: first N players per position,
+    // with an expand toggle. `squad_collapsed: false` shows everyone up front.
+    const perPos = this._config.squad_collapsed === false ? 0 : (this._config.squad_preview ?? 3);
+    const { groups, hidden } = this._squadExpanded
+      ? { groups: allGroups, hidden: 0 }
+      : collapseGroups(allGroups, perPos);
+    const collapsedHidden = this._squadExpanded ? 0 : collapseGroups(allGroups, perPos).hidden;
     return html`
       <div class="clb-section">
         <div class="clb-title">${this._t('club.squad')}</div>
@@ -130,16 +146,37 @@ class SoccerLiveClubCard extends LitElement {
             </div>
           `;
         })}
+        ${(collapsedHidden > 0 || this._squadExpanded) && perPos > 0 ? html`
+          <button class="clb-more" @click=${() => { this._squadExpanded = !this._squadExpanded; }}>
+            ${this._squadExpanded ? this._t('club.show_less') : this._t('club.show_all', { n: collapsedHidden })}
+          </button>
+        ` : ''}
       </div>
     `;
   }
 
   _renderTransfers(transfers) {
-    const visible = visibleTransfers(transfers, this._config.max_transfers ?? 8);
-    if (!visible.length) return '';
+    const counts = countTransfers(transfers);
+    if (!counts.all) return '';
+    const filter = ['in', 'out'].includes(this._transferFilter) ? this._transferFilter : 'all';
+    const filtered = filterTransfers(transfers, filter);
+    const visible = visibleTransfers(filtered, this._config.max_transfers ?? 8);
+    const tab = (val, labelKey, count) => html`
+      <button class="clb-filter ${filter === val ? 'sel' : ''}" @click=${() => { this._transferFilter = val; }}>
+        ${this._t(labelKey)} ${count}
+      </button>`;
     return html`
       <div class="clb-section">
-        <div class="clb-title">${this._t('club.transfers')}</div>
+        <div class="clb-transfers-head">
+          <div class="clb-title">${this._t('club.transfers')}</div>
+          ${counts.in && counts.out ? html`
+            <div class="clb-filters">
+              ${tab('all', 'club.filter_all', counts.all)}
+              ${tab('in', 'club.filter_in', counts.in)}
+              ${tab('out', 'club.filter_out', counts.out)}
+            </div>
+          ` : ''}
+        </div>
         ${visible.map(tr => html`
           <div class="clb-transfer">
             <span class="clb-dir ${tr.direction}" title="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}"
@@ -198,6 +235,21 @@ class SoccerLiveClubCard extends LitElement {
       .clb-tclubs { font-size: 10px; color: var(--cl-text-2, #94a3b8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .clb-ttype { font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8); white-space: nowrap; }
       .clb-tdate { font-size: 10px; color: var(--cl-text-2, #94a3b8); font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .clb-more {
+        margin: 8px 0 2px; padding: 5px 12px; border-radius: 8px; cursor: pointer;
+        border: 1px solid var(--cl-divider, rgba(255,255,255,0.12)); background: transparent;
+        color: var(--cl-accent, #6366f1); font-size: 11px; font-weight: 700;
+      }
+      .clb-transfers-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+      .clb-filters { display: inline-flex; gap: 4px; }
+      .clb-filter {
+        padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700;
+        border: 1px solid var(--cl-divider, rgba(255,255,255,0.12)); background: transparent; color: var(--cl-text-2, #94a3b8);
+      }
+      .clb-filter.sel { background: var(--cl-accent-soft, rgba(99,102,241,0.12)); color: var(--cl-accent, #6366f1); border-color: var(--cl-accent, #6366f1); }
+      .clb-note {
+        padding: 8px 14px 12px; font-size: 10px; color: var(--cl-text-2, #94a3b8); opacity: 0.8; text-align: center;
+      }
     `];
   }
 }

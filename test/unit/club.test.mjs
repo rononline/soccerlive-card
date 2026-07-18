@@ -3,10 +3,37 @@ import assert from 'node:assert/strict';
 import {
   hasClubContent,
   groupSquad,
+  collapseGroups,
   visibleTransfers,
+  filterTransfers,
+  countTransfers,
   transferCounterparty,
   formatTransferDate,
 } from '../../src/cards/shared-club-model.js';
+
+test('collapseGroups: caps players per position and counts hidden', () => {
+  const groups = [
+    { key: 'club.goalkeepers', players: [{ name: 'A' }, { name: 'B' }, { name: 'C' }] },
+    { key: 'club.defenders', players: [{ name: 'D' }, { name: 'E' }] },
+  ];
+  const { groups: capped, hidden } = collapseGroups(groups, 2);
+  assert.equal(capped[0].players.length, 2);
+  assert.equal(capped[1].players.length, 2);
+  assert.equal(hidden, 1);  // one keeper hidden
+  // perPosition < 1 => no cap
+  assert.equal(collapseGroups(groups, 0).hidden, 0);
+});
+
+test('filterTransfers / countTransfers: by direction', () => {
+  const tr = [
+    { direction: 'in', player: 'A' }, { direction: 'out', player: 'B' }, { direction: 'in', player: 'C' },
+  ];
+  assert.deepEqual(countTransfers(tr), { all: 3, in: 2, out: 1 });
+  assert.equal(filterTransfers(tr, 'in').length, 2);
+  assert.equal(filterTransfers(tr, 'out').length, 1);
+  assert.equal(filterTransfers(tr, 'all').length, 3);
+  assert.equal(filterTransfers(null, 'in').length, 0);
+});
 
 test('hasClubContent: true when profile/coach/non-empty squad/transfers present', () => {
   assert.equal(hasClubContent(null), false);

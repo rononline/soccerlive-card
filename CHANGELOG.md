@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.164 (2026-07-18)
+- Club card: the squad is collapsed by default (first 3 per position) with a "Show all" / "Show less" toggle, so a full squad no longer makes the card very tall (`squad_collapsed: false` shows everyone, `squad_preview` sets the count)
+- Club card: transfers get In / Out / All filter tabs (with counts) when both directions are present
+- Club card: a small footnote notes that club data refreshes about once a day (it's cached ~24h), so slightly stale data isn't confusing. Squad/transfer/filter logic added to the pure club model with tests
+
 ## v3.21.163 (2026-07-18)
 - Skin editor: the palette is now chosen from colour swatches (a two-colour dot per palette) instead of a plain dropdown, and the appearance is a segmented button row — so you can see what you pick
 - Custom palette: added an expandable "Advanced colours" section (live, gold, surface, card, secondary text, divider, chip) on top of the simple accent/accent-2/background/text fields, plus a reset button

@@ -40,6 +40,41 @@ export function visibleTransfers(transfers, max = 8) {
   return arr.slice(0, Math.max(0, max));
 }
 
+/**
+ * Cap each position group to `perPosition` players (for the collapsed squad
+ * view) and report how many players are hidden. perPosition < 1 means no cap.
+ */
+export function collapseGroups(groups, perPosition) {
+  const arr = Array.isArray(groups) ? groups : [];
+  if (!perPosition || perPosition < 1) return { groups: arr, hidden: 0 };
+  let hidden = 0;
+  const limited = arr.map((g) => {
+    const shown = (g.players || []).slice(0, perPosition);
+    hidden += (g.players || []).length - shown.length;
+    return { ...g, players: shown };
+  });
+  return { groups: limited, hidden };
+}
+
+/** Filter transfers by direction: 'in' | 'out' | anything else = all. */
+export function filterTransfers(transfers, filter) {
+  const arr = Array.isArray(transfers) ? transfers : [];
+  if (filter === 'in' || filter === 'out') return arr.filter((t) => t && t.direction === filter);
+  return arr;
+}
+
+/** Count transfers by direction: { all, in, out }. */
+export function countTransfers(transfers) {
+  const arr = Array.isArray(transfers) ? transfers : [];
+  let inc = 0;
+  let out = 0;
+  for (const t of arr) {
+    if (t?.direction === 'in') inc += 1;
+    else if (t?.direction === 'out') out += 1;
+  }
+  return { all: arr.length, in: inc, out };
+}
+
 /** The counterparty club for a transfer, relative to the tracked team. */
 export function transferCounterparty(tr) {
   const t = tr || {};
