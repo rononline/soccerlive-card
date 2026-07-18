@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.154 (2026-07-18)
+- New Club card (card_type: club): shows the club profile (stadium, founded year, coach), the full squad grouped by position (GK/DEF/MID/ATT) with shirt number and age, and recent transfers (in/out, player, fee, from/to, date). Reads the club attribute from an API-Football team sensor (integration v3.6.86); editor toggles for squad/transfers and a max_transfers option. Labels in all 7 languages
+
 ## v3.21.153 (2026-07-17)
 - Scorers card: add a `ranking` option (`goals` (default) / `assists`) so one card can show top scorers or top assists instead of needing separate cards — the list is re-sorted and re-ranked client-side from the data the sensor already provides (assists come from API-Football). `yellow_cards`/`red_cards` are already accepted and will work once the integration exposes those counts. Editor gets a ranking selector; `card.assists` and `editor.ranking` added in all 7 languages
 

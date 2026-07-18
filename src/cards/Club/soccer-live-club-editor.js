@@ -1,0 +1,131 @@
+import { LitElement, html, css } from 'lit-element';
+import { SKIN_OPTIONS, resolveSkin } from '../../skins.js';
+import { renderSkinColorControls } from '../skin-editor.js';
+import { t, resolveLang } from '../../i18n.js';
+
+class SoccerLiveClubEditor extends LitElement {
+  static get properties() {
+    return { _config: { type: Object }, hass: { type: Object }, entities: { type: Array } };
+  }
+
+  constructor() {
+    super();
+    this.entities = [];
+  }
+
+  static get styles() {
+    return css`
+      .card-config { display: flex; flex-direction: column; gap: 16px; }
+      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      label { font-size: 14px; color: var(--primary-text-color); }
+      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
+      select, input[type="number"] {
+        width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px;
+        border: 1px solid var(--divider-color); background: var(--secondary-background-color); color: var(--primary-text-color);
+      }
+      h3 { margin: 0; font-size: 15px; }
+    `;
+  }
+
+  setConfig(config) {
+    if (!config) throw new Error('Invalid configuration');
+    this._config = { ...config };
+  }
+
+  _t(key) { return t(key, resolveLang(this.hass, this._config)); }
+
+  updated(changedProperties) {
+    if (changedProperties.has('hass')) this._fetchEntities();
+  }
+
+  _fetchEntities() {
+    if (!this.hass) return;
+    this.entities = Object.keys(this.hass.states)
+      .filter(id =>
+        id.includes('soccerlive_next') || id.includes('soccer_live_next') ||
+        id.includes('soccerlive_all_manual') || id.includes('soccerlive_all_mixed') ||
+        id.includes('soccer_live_all_manual') || id.includes('soccer_live_all_mixed'))
+      .sort();
+  }
+
+  _fire(newConfig) {
+    this._config = newConfig;
+    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: newConfig }, bubbles: true, composed: true }));
+    this.requestUpdate();
+  }
+
+  _entityChanged(ev) {
+    const value = ev.target.value;
+    if (value === this._config.entity) return;
+    this._fire({ ...this._config, entity: value });
+  }
+
+  _selectChanged(ev) {
+    const { configValue } = ev.target.dataset;
+    if (!configValue) return;
+    if (this._config[configValue] === ev.target.value) return;
+    this._fire({ ...this._config, [configValue]: ev.target.value });
+  }
+
+  _numberChanged(ev) {
+    const { configValue } = ev.target.dataset;
+    if (!configValue) return;
+    const value = parseInt(ev.target.value, 10);
+    if (isNaN(value) || this._config[configValue] === value) return;
+    this._fire({ ...this._config, [configValue]: value });
+  }
+
+  _switchChanged(ev) {
+    const { configValue } = ev.target.dataset;
+    if (!configValue) return;
+    if (this._config[configValue] === ev.target.checked) return;
+    this._fire({ ...this._config, [configValue]: ev.target.checked });
+  }
+
+  render() {
+    if (!this._config || !this.hass) return html``;
+    const current = this._config.entity || '';
+    const inList = current && this.entities.includes(current);
+    return html`
+      <div class="card-config">
+        <h3>${this._t('editor.sensor')}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.entity')}</label>
+          <select @change=${this._entityChanged}>
+            ${!inList ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
+            ${this.entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
+          </select>
+        </div>
+
+        <div class="option">
+          <label>${this._t('editor.show_squad')}</label>
+          <ha-switch .checked=${this._config.show_squad !== false} data-config-value="show_squad" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_transfers')}</label>
+          <ha-switch .checked=${this._config.show_transfers !== false} data-config-value="show_transfers" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.max_transfers')}</label>
+          <input type="number" min="1" max="25" .value=${this._config.max_transfers ?? 8} data-config-value="max_transfers" @change=${this._numberChanged}>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.hide_header')}</label>
+          <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._switchChanged}></ha-switch>
+        </div>
+
+        <div>
+          <label class="field-label">${this._t('editor.skin')}</label>
+          <select data-config-value="skin" @change=${this._selectChanged}>
+            ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
+          </select>
+        </div>
+        ${renderSkinColorControls(this._config, (c) => this._fire(c))}
+      </div>
+    `;
+  }
+}
+
+if (!customElements.get('soccer-live-club-editor')) {
+  customElements.define('soccer-live-club-editor', SoccerLiveClubEditor);
+}

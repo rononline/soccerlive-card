@@ -519,8 +519,31 @@
       finished_matches_count: 1,
     };
 
+    const clubAttrs = {
+      team_name: "Feyenoord",
+      club: {
+        profile: { name: "Feyenoord", logo: logo(449), founded: 1908, country: "Netherlands", venue: "Stadion Feijenoord", venue_city: "Rotterdam" },
+        coach: "B. Priske",
+        squad: [
+          { name: "T. Wellenreuther", number: 1, position: "Goalkeeper", age: 29 },
+          { name: "G. Trauner", number: 4, position: "Defender", age: 34 },
+          { name: "D. Hancko", number: 33, position: "Defender", age: 28 },
+          { name: "Q. Timber", number: 20, position: "Midfielder", age: 23 },
+          { name: "M. Hwang", number: 18, position: "Midfielder", age: 26 },
+          { name: "S. Gimenez", number: 29, position: "Attacker", age: 25 },
+          { name: "I. Paixao", number: 7, position: "Attacker", age: 25 },
+        ],
+        transfers: [
+          { player: "L. Sauer", date: "2025-07-01", type: "€ 6M", from: "Salzburg", to: "Feyenoord", direction: "in" },
+          { player: "M. Wieffer", date: "2024-07-15", type: "€ 30M", from: "Feyenoord", to: "Brighton", direction: "out" },
+          { player: "J. Bueno", date: "2024-08-20", type: "Loan", from: "Feyenoord", to: "Southampton", direction: "out" },
+        ],
+      },
+    };
+
     const states = {
       "sensor.preview_team": { state: "Netherlands", attributes: attrs },
+      "sensor.preview_club": { state: "Feyenoord", attributes: clubAttrs },
       "sensor.preview_matches": { state: "3", attributes: attrs },
       "sensor.preview_standings": { state: "FIFA World Cup", attributes: attrs },
       "sensor.preview_scorers": { state: "FIFA World Cup", attributes: attrs },
@@ -545,6 +568,7 @@
       ["Ticker", "ticker", { entity: "sensor.preview_matches", auto_scroll: false }],
       ["Team Competitions", "team-competitions", { entity: "sensor.preview_matches" }, "wide"],
       ["Team Form", "team-form", { entity: "sensor.preview_team", team_name: "Netherlands" }],
+      ["Club", "club", { entity: "sensor.preview_club" }],
       ["Multi Team", "multi-team", { entities: ["sensor.preview_team", "sensor.preview_matches"], title: "My teams" }],
       ["Standings", "standings", { entity: "sensor.preview_standings", max_teams_visible: 4 }],
       ["Mini Standings", "mini-standings", { entity: "sensor.preview_standings", max_rows: 4, highlight_team: "Netherlands" }],

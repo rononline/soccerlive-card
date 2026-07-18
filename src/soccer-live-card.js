@@ -13,6 +13,8 @@ import "./cards/Bracket/soccer-live-bracket.js";
 import "./cards/Bracket/soccer-live-bracket-editor.js";
 import "./cards/Scorers/soccer-live-scorers.js";
 import "./cards/Scorers/soccer-live-scorers-editor.js";
+import "./cards/Club/soccer-live-club.js";
+import "./cards/Club/soccer-live-club-editor.js";
 import "./cards/MiniStandings/soccer-live-mini-standings.js";
 import "./cards/MiniStandings/soccer-live-mini-standings-editor.js";
 import "./cards/Countdown/soccer-live-countdown.js";
@@ -49,6 +51,7 @@ const CARD_REGISTRY = [
   { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector', sensorTypes: ['team_matches_mixed'] },
   { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H', sensorTypes: ['team_match'] },
   { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
+  { value: 'club',              element: 'soccer-live-club',              editor: 'soccer-live-club-editor',              label: 'Club',              description: 'Club profile, coach, squad and recent transfers (API-Football)', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'diagnostics',       element: 'soccer-live-diagnostics',       editor: 'soccer-live-diagnostics-editor',       label: 'Diagnostics',       description: 'Sensor health, update status and schedule counters', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today', 'standings', 'top_scorers', 'bracket', 'news'] },
   { value: 'ticker',            element: 'soccer-live-ticker',            editor: 'soccer-live-ticker-editor',            label: 'Ticker',            description: "Horizontal scrollable strip of today's matches", sensorTypes: ['all_matches_today', 'team_matches', 'team_matches_mixed'] },
   { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams', sensorTypes: ['team_match'] },

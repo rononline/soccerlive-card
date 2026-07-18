@@ -28,6 +28,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
 | Match Center | `match-center` | Tabbed match view: Overview (with form strips), Stats, Timeline (filterable), Lineup (pitch view), H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
+| Club | `club` | Club profile (venue, founded, coach), squad by position and recent transfers (API-Football) |
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
 | Timeline | `timeline` | Minute-by-minute match events |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
