@@ -1,4 +1,5 @@
 import { css } from "lit-element";
+import { normalizeCssColor, hexToRgbTriplet, getAutoColors } from "./skin-colors.js";
 
 // Available skins. Club-specific legacy names remain backwards-compatible aliases
 // for the generic palette names shown in the editor.
@@ -21,6 +22,15 @@ export const skinStyles = css`
     --cl-el: #f97316;
     --cl-rel: #ef4444;
     --cl-conf: #a855f7;
+    /* Semantic form/result colors — kept constant across skins so W/D/L stays
+       recognisable (green/grey/red), independent of the accent palette. */
+    --cl-win: #22c55e;
+    --cl-draw: #94a3b8;
+    --cl-loss: #ef4444;
+    /* Accent-tinted soft fill (e.g. the favourite highlight). Defined once with
+       a var() reference so it follows each skin's accent automatically instead
+       of being stuck on the default purple. */
+    --cl-accent-soft: rgba(var(--cl-accent-rgb),0.12);
   }
 
   /* ---------- DARK (standaard) ---------- */
@@ -523,33 +533,3 @@ function getEntityAttributes(el, config) {
   };
 }
 
-function getAutoColors(config) {
-  const colors = Array.isArray(config.team_colors)
-    ? config.team_colors
-    : [config.team_color, config.home_color, config.away_color, config.primary_color, config.secondary_color];
-  const validColors = colors.map(normalizeCssColor).filter(Boolean);
-  return {
-    accent_color: validColors[0],
-    accent_2_color: validColors[1] || validColors[0],
-  };
-}
-
-function normalizeCssColor(value) {
-  if (typeof value !== 'string') return null;
-  const color = value.trim();
-  if (/^#[0-9a-f]{3}$/i.test(color)) {
-    return `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`.toLowerCase();
-  }
-  if (/^#[0-9a-f]{6}$/i.test(color)) return color.toLowerCase();
-  if (/^[0-9a-f]{6}$/i.test(color)) return `#${color.toLowerCase()}`;
-  if (/^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)$/i.test(color)) return color;
-  return null;
-}
-
-function hexToRgbTriplet(color) {
-  if (!/^#[0-9a-f]{6}$/i.test(color)) return null;
-  const r = parseInt(color.slice(1, 3), 16);
-  const g = parseInt(color.slice(3, 5), 16);
-  const b = parseInt(color.slice(5, 7), 16);
-  return `${r},${g},${b}`;
-}

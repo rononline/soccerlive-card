@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.160 (2026-07-18)
+- Skins: define the semantic form colours (`--cl-win`/`--cl-draw`/`--cl-loss`) centrally so W/D/L stays green/grey/red on every skin, and make `--cl-accent-soft` (the favourite highlight) follow each skin's accent instead of being stuck on the default purple
+- Skins: auto (team-colour) accents are now contrast-aware — near-black/near-white kit colours are skipped so an all-black or all-white kit can't produce an unreadable card, near-identical colours no longer collapse into a flat card (a lighter second accent is derived), and with no usable colour the skin's own defaults are kept. Colour logic moved to a pure `skin-colors.js` with unit tests
+
 ## v3.21.159 (2026-07-18)
 - Prediction section: relabelled the goal figures from "Expected goals" to "Goal lines" and format them as thresholds (`-2.5` → `< 2.5`, `+2.5` → `> 2.5`, with a decimal comma in comma-locales), so they're no longer mistaken for xG; the tooltip clarifies they are bookmaker goal lines, not xG. Comparison now shows only form/attack/defense (total dropped). New `show_prediction_details` toggle (Team + Match Center) hides the comparison bars and goal lines while keeping the win-probability bar and advice. Labels updated/added in all 7 languages
 
