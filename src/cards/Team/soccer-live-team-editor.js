@@ -30,6 +30,17 @@ class SoccerLiveTeamCardEditor extends LitElement {
         justify-content: space-between;
         gap: 12px;
       }
+      .tri {
+        display: inline-flex; border: 1px solid var(--divider-color, rgba(127,127,127,0.3));
+        border-radius: 8px; overflow: hidden; flex-shrink: 0;
+      }
+      .tri button {
+        border: 0; border-right: 1px solid var(--divider-color, rgba(127,127,127,0.3));
+        padding: 6px 10px; font-size: 12px; cursor: pointer;
+        background: transparent; color: var(--primary-text-color);
+      }
+      .tri button:last-child { border-right: 0; }
+      .tri button.sel { background: var(--primary-color, #3b82f6); color: #fff; }
       label {
         font-size: 14px;
         color: var(--primary-text-color);
@@ -129,6 +140,9 @@ class SoccerLiveTeamCardEditor extends LitElement {
     if (!this._config || !this.hass) return html``;
     const currentEntity = this._config.entity || '';
     const entityInList = currentEntity && this.entities.includes(currentEntity);
+    // Shared compact default from the sensor, for the compact tri-state's "inherit" hint.
+    const sharedCompact = this.hass?.states?.[currentEntity]?.attributes?.card_defaults?.compact;
+    const compactVal = this._config.compact;
 
     return html`
       <div class="card-config">
@@ -201,7 +215,16 @@ class SoccerLiveTeamCardEditor extends LitElement {
         </div>
         <div class="option">
           <label>${this._t('editor.compact')}</label>
-          <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>
+          <div class="tri">
+            <button class=${compactVal === undefined ? 'sel' : ''}
+              @click=${() => { const c = { ...this._config }; delete c.compact; this._fireConfigChanged(c); }}>
+              ${this._t('editor.inherit')}${sharedCompact !== undefined ? ` (${sharedCompact ? this._t('editor.on') : this._t('editor.off')})` : ''}
+            </button>
+            <button class=${compactVal === true ? 'sel' : ''}
+              @click=${() => this._fireConfigChanged({ ...this._config, compact: true })}>${this._t('editor.on')}</button>
+            <button class=${compactVal === false ? 'sel' : ''}
+              @click=${() => this._fireConfigChanged({ ...this._config, compact: false })}>${this._t('editor.off')}</button>
+          </div>
         </div>
         <h3>${this._t('editor.appearance')}</h3>
         <div>

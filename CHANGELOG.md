@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.170 (2026-07-18)
+- Skin editor: appearance and palette now have an explicit "inherit" option that shows what the sensor shares, e.g. "Red & White · shared". Picking a value overrides just that axis; choosing inherit clears it so the card follows the shared default again — making it visible when a value comes from the sensor
+- Team editor: the compact setting is now a three-way control — Shared / On / Off — so a card can explicitly opt out of a globally-shared compact mode (or in), and the inherited value is shown on the Shared option
+- Labels (`skin.default`, `skin.shared`, `editor.inherit/on/off`) added in English and Dutch
+
 ## v3.21.169 (2026-07-18)
 - Shared defaults: appearance and palette are now inherited from the sensor per field, not all-or-nothing — a card that sets only `appearance: light` still inherits the shared `palette: red-white` (previously it fell back to the default). A legacy `skin` still opts the card out of both. Covered by unit tests
 - Skin editor: the custom-palette contrast warning now also checks secondary text and the accent against the background, not just the main text

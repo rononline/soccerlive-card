@@ -59,6 +59,20 @@ export function renderSkinControls(host, config, t) {
   const appearance = resolveAppearance(config);
   const palette = resolvePalette(config);
   const setField = (key, value) => fireConfig(host, { ...config, [key]: value });
+  const clearField = (key) => { const next = { ...config }; delete next[key]; fireConfig(host, next); };
+
+  // Shared per-sensor defaults, so the editor can show what each axis inherits.
+  const entityId = config?.entity || (config?.entities && config.entities[0]);
+  const shared = (entityId && host?.hass?.states?.[entityId]?.attributes?.card_defaults) || {};
+  const appearanceSet = typeof config?.appearance === 'string';
+  const paletteSet = typeof config?.palette === 'string';
+  // Legacy skin fixes both axes, so "inherit" isn't meaningful then.
+  const legacySkin = typeof config?.skin === 'string';
+  const inheritLabel = (sharedVal, options) => {
+    if (!sharedVal) return label('skin.default');
+    const opt = options.find(([v]) => v === sharedVal);
+    return `${opt ? label(opt[1]) : sharedVal} · ${label('skin.shared')}`;
+  };
 
   // Contrast check for a custom palette: warn if text, secondary text or the
   // accent doesn't stand out enough against the chosen background.
@@ -119,18 +133,29 @@ export function renderSkinControls(host, config, t) {
       <div class="skin-row">
         <div class="skin-label">${label('skin.appearance')}</div>
         <div class="skin-seg">
+          ${!legacySkin ? html`
+            <button class=${!appearanceSet ? 'sel' : ''} @click=${() => clearField('appearance')}>${inheritLabel(shared.appearance, APPEARANCE_OPTIONS)}</button>
+          ` : ''}
           ${APPEARANCE_OPTIONS.map(([val, key]) => html`
-            <button class=${appearance === val ? 'sel' : ''} @click=${() => setField('appearance', val)}>${label(key)}</button>
+            <button class=${config?.appearance === val ? 'sel' : ''} @click=${() => setField('appearance', val)}>${label(key)}</button>
           `)}
         </div>
       </div>
       <div class="skin-row">
         <div class="skin-label">${label('skin.palette')}</div>
         <div class="skin-swatches">
+          ${!legacySkin ? html`
+            <button class="skin-swatch ${!paletteSet ? 'sel' : ''}" @click=${() => clearField('palette')}>
+              <span class="dot" style="background:${shared.palette && PALETTE_SWATCHES[shared.palette]
+                ? `linear-gradient(135deg, ${PALETTE_SWATCHES[shared.palette][0]} 50%, ${PALETTE_SWATCHES[shared.palette][1]} 50%)`
+                : 'repeating-linear-gradient(135deg,#888 0 4px,#aaa 4px 8px)'}"></span>
+              <span>${inheritLabel(shared.palette, PALETTE_OPTIONS)}</span>
+            </button>
+          ` : ''}
           ${PALETTE_OPTIONS.map(([val, key]) => {
             const [c1, c2] = PALETTE_SWATCHES[val] || ['#6366f1', '#ec4899'];
             return html`
-              <button class="skin-swatch ${palette === val ? 'sel' : ''}" title=${label(key)} @click=${() => setField('palette', val)}>
+              <button class="skin-swatch ${config?.palette === val ? 'sel' : ''}" title=${label(key)} @click=${() => setField('palette', val)}>
                 <span class="dot" style="background:linear-gradient(135deg, ${c1} 50%, ${c2} 50%)"></span>
                 <span>${label(key)}</span>
               </button>
