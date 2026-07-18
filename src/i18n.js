@@ -329,6 +329,9 @@ const TRANSLATIONS = {
     // Editor labels
     'editor.sensor': 'Sensor',
     'editor.settings': 'Settings',
+    'editor.section_display': 'Display',
+    'editor.section_match': 'Match info',
+    'editor.section_prediction': 'Prediction & odds',
     'editor.appearance': 'Appearance',
     'editor.entity': 'Entity',
     'editor.hide_header': 'Hide header',
@@ -732,6 +735,9 @@ const TRANSLATIONS = {
     // Editorlabels
     'editor.sensor': 'Sensor',
     'editor.settings': 'Instellingen',
+    'editor.section_display': 'Weergave',
+    'editor.section_match': 'Wedstrijdinformatie',
+    'editor.section_prediction': 'Voorspelling en odds',
     'editor.appearance': 'Weergave',
     'editor.entity': 'Entiteit',
     'editor.hide_header': 'Koptekst verbergen',

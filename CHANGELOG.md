@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.167 (2026-07-18)
+- Editor: the Team and Match Center editors now group their growing list of switches into labelled sections — Match info, Prediction & odds, Display and Appearance — instead of one long "Settings" list, so options are easier to find. Section labels added in English and Dutch
+
 ## v3.21.166 (2026-07-18)
 - Prediction and odds sections show a small "Pre-match" status chip during a live match, making clear that these are the pre-kickoff snapshot kept as context (they don't update live), unlike the live in-play odds which keep their own Live badge. `team.status_prematch` added in English and Dutch
 

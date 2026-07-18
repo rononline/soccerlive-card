@@ -143,7 +143,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
           </select>
         </div>
 
-        <h3>${this._t('editor.settings')}</h3>
+        <h3>${this._t('editor.section_match')}</h3>
         <div>
           <label class="field-label">${this._t('editor.my_team')}</label>
           <input type="text" placeholder="${this._t('editor.my_team_hint')}"
@@ -165,6 +165,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
           <ha-switch .checked=${this._config.show_weather !== false}
             data-config-value="show_weather" @change=${this._switchChanged}></ha-switch>
         </div>
+        <h3>${this._t('editor.section_prediction')}</h3>
         <div class="option">
           <label>${this._t('editor.show_prediction')}</label>
           <ha-switch .checked=${this._config.show_prediction !== false}
@@ -185,6 +186,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
           <ha-switch .checked=${this._config.show_injuries !== false}
             data-config-value="show_injuries" @change=${this._switchChanged}></ha-switch>
         </div>
+        <h3>${this._t('editor.section_display')}</h3>
         <div class="option">
           <label>${this._t('editor.show_event_toasts')}</label>
           <ha-switch
@@ -201,8 +203,8 @@ class SoccerLiveTeamCardEditor extends LitElement {
           <label>${this._t('editor.compact')}</label>
           <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>
         </div>
+        <h3>${this._t('editor.appearance')}</h3>
         <div>
-          <label class="field-label">${this._t('editor.skin')}</label>
           ${renderSkinControls(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
         <div>
