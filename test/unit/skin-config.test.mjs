@@ -5,9 +5,18 @@ import {
   resolvePalette,
   paletteUsesCustomColors,
   mergeCardDefaults,
+  resolveCompact,
   APPEARANCES,
   PALETTES,
 } from '../../src/skin-config.js';
+
+test('resolveCompact: card value wins, else inherits shared', () => {
+  assert.equal(resolveCompact({ compact: true }, { compact: false }), true);
+  assert.equal(resolveCompact({ compact: false }, { compact: true }), false);   // explicit off overrides shared on
+  assert.equal(resolveCompact({}, { compact: true }), true);                    // inherit shared on
+  assert.equal(resolveCompact({}, { compact: false }), false);
+  assert.equal(resolveCompact({}, null), false);                                // nothing -> off
+});
 
 test('mergeCardDefaults: inherits per field, not all-or-nothing', () => {
   const shared = { appearance: 'dark', palette: 'red-white' };

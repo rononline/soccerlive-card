@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.171 (2026-07-18)
+- Skin editor: the picker now computes the effective look (including values inherited from the sensor), so the selected appearance/palette matches what the card actually renders instead of showing the local fallback
+- Skin editor: the custom-palette contrast check now also fires when only the text or only the background is customised — the missing colour is taken from the chosen appearance's default (skipped for the Home Assistant appearance, whose colours come from the theme)
+- Accessibility: appearance buttons, palette swatches and the compact tri-state expose `aria-pressed`, and all editor buttons are `type="button"` so they can't accidentally submit a surrounding form
+- Compact resolution and shared-language inheritance moved to pure helpers with direct unit tests (alongside the existing appearance/palette tests)
+
 ## v3.21.170 (2026-07-18)
 - Skin editor: appearance and palette now have an explicit "inherit" option that shows what the sensor shares, e.g. "Red & White · shared". Picking a value overrides just that axis; choosing inherit clears it so the card follows the shared default again — making it visible when a value comes from the sensor
 - Team editor: the compact setting is now a three-way control — Shared / On / Off — so a card can explicitly opt out of a globally-shared compact mode (or in), and the inherited value is shown on the Shared option

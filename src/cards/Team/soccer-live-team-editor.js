@@ -215,14 +215,14 @@ class SoccerLiveTeamCardEditor extends LitElement {
         </div>
         <div class="option">
           <label>${this._t('editor.compact')}</label>
-          <div class="tri">
-            <button class=${compactVal === undefined ? 'sel' : ''}
+          <div class="tri" role="group" aria-label=${this._t('editor.compact')}>
+            <button type="button" class=${compactVal === undefined ? 'sel' : ''} aria-pressed=${compactVal === undefined}
               @click=${() => { const c = { ...this._config }; delete c.compact; this._fireConfigChanged(c); }}>
               ${this._t('editor.inherit')}${sharedCompact !== undefined ? ` (${sharedCompact ? this._t('editor.on') : this._t('editor.off')})` : ''}
             </button>
-            <button class=${compactVal === true ? 'sel' : ''}
+            <button type="button" class=${compactVal === true ? 'sel' : ''} aria-pressed=${compactVal === true}
               @click=${() => this._fireConfigChanged({ ...this._config, compact: true })}>${this._t('editor.on')}</button>
-            <button class=${compactVal === false ? 'sel' : ''}
+            <button type="button" class=${compactVal === false ? 'sel' : ''} aria-pressed=${compactVal === false}
               @click=${() => this._fireConfigChanged({ ...this._config, compact: false })}>${this._t('editor.off')}</button>
           </div>
         </div>

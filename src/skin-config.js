@@ -123,3 +123,10 @@ export function mergeCardDefaults(config, defaults) {
   if (cfg.palette == null && !hasSkin && defaults.palette) out.palette = defaults.palette;
   return out;
 }
+
+/** Effective compact mode: the card's explicit value wins; otherwise inherit
+ * the sensor's shared card_defaults.compact. */
+export function resolveCompact(config, defaults) {
+  if (config && config.compact !== undefined) return config.compact === true;
+  return !!(defaults && defaults.compact === true);
+}

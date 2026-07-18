@@ -2,6 +2,7 @@ import { LitElement, html, css, render } from "lit-element";
 import { t, resolveLang, parseMatchDate, formatMatchDate, formatDateOnly } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { resolveCompact } from "../../skin-config.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
@@ -528,11 +529,7 @@ class SoccerLiveTeamCard extends LitElement {
     const stateObj = this.hass.states[entityId];
     // Resolve compact here (needs hass): the card's own setting wins; otherwise
     // fall back to the sensor's shared card_defaults.compact.
-    if (this._config.compact !== undefined) {
-      this.compact = this._config.compact === true;
-    } else {
-      this.compact = stateObj?.attributes?.card_defaults?.compact === true;
-    }
+    this.compact = resolveCompact(this._config, stateObj?.attributes?.card_defaults);
     if (!stateObj) {
       const cached = OfflineCache.get(entityId);
       if (cached && cached.data.matches) {
