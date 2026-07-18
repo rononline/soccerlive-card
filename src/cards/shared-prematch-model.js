@@ -3,6 +3,44 @@
 
 const _num = v => (typeof v === 'number' && isFinite(v)) ? v : null;
 
+// Strength-comparison metrics we surface, in display order.
+const COMPARISON_METRICS = ['form', 'att', 'def', 'total'];
+
+/**
+ * Home-vs-away strength comparison rows from the prediction's `comparison`
+ * block. Each row keeps the raw percentages and derives normalized bar widths.
+ * Returns [] when there's nothing to compare.
+ */
+export function comparisonModel(prediction) {
+  const c = (prediction && prediction.comparison) || {};
+  const rows = [];
+  for (const key of COMPARISON_METRICS) {
+    const pair = c[key];
+    if (!pair) continue;
+    const home = _num(pair.home);
+    const away = _num(pair.away);
+    if (home === null && away === null) continue;
+    const total = (home || 0) + (away || 0);
+    rows.push({
+      key,
+      home, away,
+      wHome: total > 0 ? ((home || 0) / total) * 100 : 50,
+      wAway: total > 0 ? ((away || 0) / total) * 100 : 50,
+    });
+  }
+  return rows;
+}
+
+/** Predicted goal lines (provider thresholds) from the prediction, or null. */
+export function expectedGoals(prediction) {
+  const p = prediction || {};
+  const home = p.goals_home || '';
+  const away = p.goals_away || '';
+  const line = p.under_over || '';
+  if (!home && !away && !line) return null;
+  return { home, away, line };
+}
+
 /** Cap a list to `max` items, reporting how many are hidden (for "+N more"). */
 export function capList(list, max) {
   const arr = Array.isArray(list) ? list : [];

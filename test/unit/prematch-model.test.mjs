@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { predictionModel, oddsModel, capList } from '../../src/cards/shared-prematch-model.js';
+import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals } from '../../src/cards/shared-prematch-model.js';
 
 test('capList: caps the list and reports the hidden count', () => {
   const list = Array.from({ length: 11 }, (_, i) => i);
@@ -95,4 +95,28 @@ test('oddsModel: live odds set the live flag and drop the bookmaker count', () =
 
 test('oddsModel: pre-match odds are not flagged live', () => {
   assert.equal(oddsModel({ home: 1.5, draw: 4.0, away: 6.0, bookmaker_count: 3 }).live, false);
+});
+
+
+test('comparisonModel: returns ordered rows with normalized widths', () => {
+  const rows = comparisonModel({ comparison: {
+    total: { home: 28, away: 72 },
+    form: { home: 40, away: 60 },
+  }});
+  // Display order is form, att, def, total -> present ones keep that order.
+  assert.deepEqual(rows.map(r => r.key), ['form', 'total']);
+  const total = rows.find(r => r.key === 'total');
+  assert.equal(Math.round(total.wHome), 28);
+  assert.equal(Math.round(total.wAway), 72);
+});
+
+test('comparisonModel: no comparison -> empty', () => {
+  assert.deepEqual(comparisonModel({}), []);
+  assert.deepEqual(comparisonModel(null), []);
+});
+
+test('expectedGoals: returns lines when present, else null', () => {
+  assert.deepEqual(expectedGoals({ goals_home: '-2.5', goals_away: '-1.5', under_over: '-3.5' }),
+    { home: '-2.5', away: '-1.5', line: '-3.5' });
+  assert.equal(expectedGoals({}), null);
 });

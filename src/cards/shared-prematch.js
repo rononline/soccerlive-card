@@ -4,7 +4,7 @@
 // returns '' when the match doesn't carry the data, so nothing shows when empty.
 import { html, css } from 'lit-element';
 import { translateAdvice } from './shared-advice.js';
-import { predictionModel, oddsModel, capList } from './shared-prematch-model.js';
+import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals } from './shared-prematch-model.js';
 
 // Cap each team's absentee list so the section can't grow unbounded.
 const MAX_INJURIES = 6;
@@ -17,7 +17,9 @@ export function renderPrediction(match, { t, lang }) {
   const m = predictionModel(p);
   const rawAdvice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
   const advice = translateAdvice(rawAdvice, lang);
-  if (!m.hasBar && !advice) return '';
+  const cmp = comparisonModel(p);
+  const xg = expectedGoals(p);
+  if (!m.hasBar && !advice && !cmp.length && !xg) return '';
   const homeAbbr = match.home_abbrev || match.home_team || '';
   const awayAbbr = match.away_abbrev || match.away_team || '';
   return html`
@@ -33,6 +35,27 @@ export function renderPrediction(match, { t, lang }) {
           <span class="pred-l home">${homeAbbr} ${_pct(m.home)}</span>
           <span class="pred-l draw">${t('match.draw')} ${_pct(m.draw)}</span>
           <span class="pred-l away">${_pct(m.away)} ${awayAbbr}</span>
+        </div>
+      ` : ''}
+      ${cmp.length ? html`
+        <div class="pred-cmp">
+          ${cmp.map(r => html`
+            <div class="pred-cmp-head">
+              <span class="pred-cmp-v home">${_pct(r.home)}</span>
+              <span class="pred-cmp-label">${t('team.cmp_' + r.key)}</span>
+              <span class="pred-cmp-v away">${_pct(r.away)}</span>
+            </div>
+            <div class="pred-cmp-bar">
+              <div class="pred-cmp-seg home" style="width:${r.wHome}%"></div>
+              <div class="pred-cmp-seg away" style="width:${r.wAway}%"></div>
+            </div>
+          `)}
+        </div>
+      ` : ''}
+      ${xg ? html`
+        <div class="pred-xg" title="${t('team.exp_goals_note')}" aria-label="${t('team.exp_goals_note')}">
+          <span class="pred-xg-label info">${t('team.exp_goals')}</span>
+          <span class="pred-xg-val">${homeAbbr} ${xg.home || '—'} · ${awayAbbr} ${xg.away || '—'}${xg.line ? ` · O/U ${xg.line}` : ''}</span>
         </div>
       ` : ''}
       ${advice ? html`<div class="pred-advice">${advice}</div>` : ''}
@@ -141,6 +164,27 @@ export const prematchStyles = css`
   }
   .pred-l.home { color: var(--cl-accent, #6366f1); }
   .pred-l.away { color: var(--cl-live, #ef4444); }
+  .pred-cmp { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .pred-cmp-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8);
+  }
+  .pred-cmp-label { text-transform: uppercase; letter-spacing: 0.05em; font-size: 9px; }
+  .pred-cmp-v.home { color: var(--cl-accent, #6366f1); }
+  .pred-cmp-v.away { color: var(--cl-live, #ef4444); }
+  .pred-cmp-bar {
+    display: flex; height: 5px; border-radius: 3px; overflow: hidden;
+    background: var(--cl-divider, rgba(255,255,255,0.08)); margin-top: 2px;
+  }
+  .pred-cmp-seg { height: 100%; }
+  .pred-cmp-seg.home { background: var(--cl-accent, #6366f1); }
+  .pred-cmp-seg.away { background: var(--cl-live, #ef4444); }
+  .pred-xg {
+    margin-top: 8px; display: flex; justify-content: space-between; align-items: baseline;
+    gap: 8px; font-size: 10px; color: var(--cl-text-2, #94a3b8);
+  }
+  .pred-xg-label { font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 9px; }
+  .pred-xg-val { font-weight: 700; color: var(--cl-text, #e2e8f0); }
   .pred-advice {
     margin-top: 8px; font-size: 11px; color: var(--cl-text, #e2e8f0);
     font-style: italic; text-align: center;

@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.158 (2026-07-18)
+- Team & Match Center cards: the prediction section now shows a home-vs-away strength comparison (form/attack/defense/overall as paired bars) and the predicted goal lines (home/away + over-under), from the extra prediction data in integration v3.6.91 — no extra API requests. Added `team.cmp_form/att/def/total`, `team.exp_goals` and `team.exp_goals_note` in all 7 languages
+
 ## v3.21.157 (2026-07-18)
 - Club card: `hasClubContent()` now treats a usable coach as content and no longer treats an empty squad/transfers list as content, so a club with only a coach still renders and an empty squad no longer forces an empty card. Tests updated accordingly
 
