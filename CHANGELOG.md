@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.166 (2026-07-18)
+- Prediction and odds sections show a small "Pre-match" status chip during a live match, making clear that these are the pre-kickoff snapshot kept as context (they don't update live), unlike the live in-play odds which keep their own Live badge. `team.status_prematch` added in English and Dutch
+
 ## v3.21.165 (2026-07-18)
 - Timeline: unknown/odd events are handled more gracefully — events with nothing meaningful to show are skipped instead of rendering a blank row, unrecognised types show neutrally with a meta badge, and skipped/unrecognised events are logged to the browser console for diagnostics without bothering the viewer. Classification moved to a pure, tested helper
 - Lineup card: the empty state now distinguishes "not published yet" (before kickoff — line-ups usually appear ~1h before) from "not available", using the match status, so an upcoming match doesn't look broken

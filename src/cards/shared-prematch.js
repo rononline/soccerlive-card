@@ -11,6 +11,14 @@ const MAX_INJURIES = 6;
 
 const _pct = v => (v === null || v === undefined) ? '–' : `${v}%`;
 
+// A small "pre-match" chip shown during a live match, where prediction/odds are
+// the pre-kickoff snapshot kept as context (they don't update live), so viewers
+// don't read them as live numbers.
+function sectionStatus(match, t) {
+  if (match && match.state === 'in') return html`<span class="sec-status">${t('team.status_prematch')}</span>`;
+  return '';
+}
+
 export function renderPrediction(match, { t, lang, showDetails = true }) {
   const p = match.prediction;
   if (!p || match.state === 'post') return '';
@@ -26,7 +34,10 @@ export function renderPrediction(match, { t, lang, showDetails = true }) {
   const awayAbbr = match.away_abbrev || match.away_team || '';
   return html`
     <div class="pred">
-      <div class="pred-title info" title="${t('team.prediction_note')}" aria-label="${t('team.prediction_note')}">${t('team.prediction')}</div>
+      <div class="sec-head">
+        <span class="pred-title info" title="${t('team.prediction_note')}" aria-label="${t('team.prediction_note')}">${t('team.prediction')}</span>
+        ${sectionStatus(match, t)}
+      </div>
       ${m.hasBar ? html`
         <div class="pred-bar">
           <div class="pred-seg home" style="width:${m.wHome}%" title="${homeAbbr} ${_pct(m.home)}"></div>
@@ -90,6 +101,7 @@ export function renderOdds(match, { t }) {
       <div class="odds-head">
         <span class="odds-title info" title="${m.live ? t('team.odds_live_note') : t('team.odds_note')}" aria-label="${m.live ? t('team.odds_live_note') : t('team.odds_note')}">${m.live ? t('team.odds_live') : t('team.odds')}</span>
         ${m.live ? html`<span class="odds-sub live">${t('team.odds_live_badge')}</span>` : (m.count ? html`<span class="odds-sub">${t(avgKey, { n: m.count })}</span>` : '')}
+        ${!m.live ? sectionStatus(match, t) : ''}
       </div>
       <div class="odds-row">
         ${col('home', '1', homeAbbr, m.home)}
@@ -143,7 +155,13 @@ export const prematchStyles = css`
   }
   .pred-title {
     font-size: 10px; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8); margin-bottom: 8px;
+    letter-spacing: 0.08em; color: var(--cl-text-2, #94a3b8);
+  }
+  .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .sec-status {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--cl-text-2, #94a3b8); background: var(--cl-chip-bg, rgba(255,255,255,0.08));
+    border: 1px solid var(--cl-chip-border, rgba(255,255,255,0.12)); border-radius: 5px; padding: 2px 6px; white-space: nowrap;
   }
   /* Subtle affordance that the section title carries an explanatory tooltip. */
   .info {
