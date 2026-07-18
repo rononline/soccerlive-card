@@ -44,6 +44,17 @@ export function relativeLuminance(hex) {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 }
 
+/** WCAG contrast ratio (1..21) between two #rrggbb colours, or null if either
+ * isn't a hex colour. 4.5 is the AA threshold for normal text, 3 for large. */
+export function contrastRatio(a, b) {
+  const la = relativeLuminance(a);
+  const lb = relativeLuminance(b);
+  if (la === null || lb === null) return null;
+  const hi = Math.max(la, lb);
+  const lo = Math.min(la, lb);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 /** Euclidean distance in RGB space between two #rrggbb colours (0..441). */
 export function colorDistance(a, b) {
   if (!/^#[0-9a-f]{6}$/i.test(a) || !/^#[0-9a-f]{6}$/i.test(b)) return Infinity;

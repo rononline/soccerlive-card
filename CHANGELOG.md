@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.163 (2026-07-18)
+- Skin editor: the palette is now chosen from colour swatches (a two-colour dot per palette) instead of a plain dropdown, and the appearance is a segmented button row — so you can see what you pick
+- Custom palette: added an expandable "Advanced colours" section (live, gold, surface, card, secondary text, divider, chip) on top of the simple accent/accent-2/background/text fields, plus a reset button
+- Custom palette: a low-contrast warning appears when the chosen text and background don't meet the WCAG AA ratio (4.5:1), so a light custom background with light text is flagged
+- Removed the deprecated `renderSkinColorControls` alias (all editors use `renderSkinControls`). New editor labels added in English and Dutch
+
 ## v3.21.162 (2026-07-18)
 - Skins: the light appearance now defaults to a blue accent (as the old `light` skin did) instead of purple; dark still defaults to purple. Applies to both `skin: light` and a bare `appearance: light`
 

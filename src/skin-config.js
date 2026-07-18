@@ -33,6 +33,24 @@ export const PALETTE_OPTIONS = [
   ['custom', 'skin.palette_custom'],
 ];
 
+// Representative [accent, accent-2] colours per palette, for editor swatches.
+// team/custom are dynamic, so they show the default accent pair as a hint.
+export const PALETTE_SWATCHES = {
+  purple: ['#6366f1', '#ec4899'],
+  'red-white': ['#e50000', '#ff4444'],
+  'red-gold': ['#ef0107', '#c8a232'],
+  'blue-red': ['#004d98', '#a50044'],
+  'white-gold': ['#e2e8f0', '#c8a951'],
+  blue: ['#2563eb', '#60a5fa'],
+  orange: ['#f97316', '#fb923c'],
+  'black-white': ['#e2e8f0', '#111111'],
+  classic: ['#16a34a', '#22c55e'],
+  neon: ['#00e5ff', '#ff00aa'],
+  gold: ['#f59e0b', '#fcd34d'],
+  team: ['#6366f1', '#ec4899'],
+  custom: ['#6366f1', '#ec4899'],
+};
+
 // Club-name aliases kept working: they map to the old single skin value.
 const SKIN_ALIASES = {
   feyenoord: 'red-white',

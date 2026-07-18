@@ -7,7 +7,14 @@ import {
   colorDistance,
   lighten,
   getAutoColors,
+  contrastRatio,
 } from '../../src/skin-colors.js';
+
+test('contrastRatio: 21 for black/white, low for similar, null for non-hex', () => {
+  assert.equal(Math.round(contrastRatio('#000000', '#ffffff')), 21);
+  assert.ok(contrastRatio('#ffffff', '#f5f5f5') < 1.2);   // near-identical -> ~1
+  assert.equal(contrastRatio('#000000', 'rgba(1,2,3,1)'), null);
+});
 
 test('normalizeCssColor: expands #rgb, lowercases, accepts bare hex and rgba', () => {
   assert.equal(normalizeCssColor('#ABC'), '#aabbcc');
