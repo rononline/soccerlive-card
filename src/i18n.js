@@ -195,6 +195,8 @@ const TRANSLATIONS = {
     // Lineup
     'lineup.bench': 'Bench',
     'lineup.empty.title': 'Lineups not available',
+    'lineup.pre.title': 'Line-ups not published yet',
+    'lineup.pre.sub': 'They usually appear about an hour before kickoff.',
     'lineup.empty.sub': 'Lineups are published shortly before kick-off',
 
     // Timeline
@@ -608,6 +610,8 @@ const TRANSLATIONS = {
 
     'lineup.bench': 'Bank',
     'lineup.empty.title': 'Opstellingen niet beschikbaar',
+    'lineup.pre.title': 'Opstellingen nog niet bekend',
+    'lineup.pre.sub': 'Meestal verschijnen ze ongeveer een uur voor de aftrap.',
     'lineup.empty.sub': 'Opstellingen worden kort voor de aftrap gepubliceerd',
 
     'timeline.empty.title': 'Nog geen gebeurtenissen',

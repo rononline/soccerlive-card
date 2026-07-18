@@ -153,13 +153,16 @@ class SoccerLiveLineupCard extends LitElement {
     const formationAway = m.formation_away || stateObj.attributes.formation_away || '';
 
     if (lineupHome.length === 0 && lineupAway.length === 0) {
+      // Before kickoff the line-up simply isn't published yet; explain that
+      // rather than implying it's unavailable for this match/competition.
+      const preMatch = m.state === 'pre' || m.state === 'scheduled';
       return html`
         <ha-card class="empty">
           <div class="hero-bg"></div>
           <div class="empty-state">
             <div class="empty-icon">👥</div>
-            <div class="empty-title">${this._t('lineup.empty.title')}</div>
-            <div class="empty-sub">${this._t('lineup.empty.sub')}</div>
+            <div class="empty-title">${this._t(preMatch ? 'lineup.pre.title' : 'lineup.empty.title')}</div>
+            <div class="empty-sub">${this._t(preMatch ? 'lineup.pre.sub' : 'lineup.empty.sub')}</div>
           </div>
         </ha-card>
       `;

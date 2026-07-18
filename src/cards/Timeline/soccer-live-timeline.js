@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
+import { classifyEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
 import { scoreText } from "../shared-score.js";
@@ -34,18 +34,15 @@ class SoccerLiveTimelineCard extends LitElement {
   }
 
   _getEventInfo(ev) {
-    const ty = (ev.type || '').toLowerCase();
-    const txt = (ev.type_text || '').toLowerCase();
-    if (SKIP.some(s => txt.includes(s))) return null;
-    let btype = 'meta';
-    if (isGoalEvent(ev)) btype = 'goal';
-    else if (txt.includes('yellow')) btype = 'yellow';
-    else if (txt.includes('red card')) btype = 'red';
-    else if (ty === 'substitution' || txt.includes('substitut')) btype = 'sub';
-    const athletes = (ev.athletes || []).filter(Boolean);
-    const i18nKey = EVENT_I18N[txt];
-    const text = athletes.length ? athletes.join(', ') : (i18nKey ? this._t(i18nKey) : (ev.type_text || ev.short_text || ''));
-    return { btype, text };
+    const c = classifyEvent(ev);
+    if (!c) {
+      // Skipped (unknown/empty) — surface it for diagnostics, don't show a blank row.
+      if (ev && (ev.type || ev.type_text)) console.debug('[soccer-live] timeline: skipped event', ev.type || ev.type_text);
+      return null;
+    }
+    if (!c.known) console.debug('[soccer-live] timeline: unrecognised event shown neutrally', ev.type || ev.type_text);
+    const text = c.athletes.length ? c.athletes.join(', ') : (c.i18nKey ? this._t(c.i18nKey) : c.fallbackText);
+    return { btype: c.btype, text };
   }
 
   render() {

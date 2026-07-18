@@ -11,6 +11,36 @@ export function isGoalEvent(ev) {
   return !!ev.scoring_play || ty === 'goal' || txt.includes('penalty - scored');
 }
 
+/**
+ * Classify a key_event for the timeline, tolerant of odd/unknown data.
+ * Returns null when the event should be skipped (a SKIP type, or nothing
+ * meaningful to show — so no blank rows), otherwise:
+ *   { btype, i18nKey, athletes, fallbackText, known }
+ * `known` is false for unrecognised types (shown neutrally with a meta badge).
+ * The caller resolves the final label (needs translations).
+ */
+export function classifyEvent(ev) {
+  if (!ev) return null;
+  const ty = (ev.type || '').toLowerCase();
+  const txt = (ev.type_text || '').toLowerCase();
+  if (SKIP.some(s => txt.includes(s))) return null;
+
+  let btype = 'meta';
+  if (isGoalEvent(ev)) btype = 'goal';
+  else if (txt.includes('yellow')) btype = 'yellow';
+  else if (txt.includes('red card')) btype = 'red';
+  else if (ty === 'substitution' || txt.includes('substitut')) btype = 'sub';
+
+  const athletes = (ev.athletes || []).filter(Boolean);
+  const i18nKey = EVENT_I18N[txt] || null;
+  const fallbackText = ev.type_text || ev.short_text || '';
+  const known = btype !== 'meta' || !!i18nKey;
+
+  // Nothing meaningful to render -> skip rather than show an empty row.
+  if (!athletes.length && !i18nKey && !fallbackText.trim()) return null;
+  return { btype, i18nKey, athletes, fallbackText, known };
+}
+
 export const EVENT_I18N = {
   'kickoff': 'status.kickoff',
   'halftime': 'status.halftime',

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.165 (2026-07-18)
+- Timeline: unknown/odd events are handled more gracefully — events with nothing meaningful to show are skipped instead of rendering a blank row, unrecognised types show neutrally with a meta badge, and skipped/unrecognised events are logged to the browser console for diagnostics without bothering the viewer. Classification moved to a pure, tested helper
+- Lineup card: the empty state now distinguishes "not published yet" (before kickoff — line-ups usually appear ~1h before) from "not available", using the match status, so an upcoming match doesn't look broken
+
 ## v3.21.164 (2026-07-18)
 - Club card: the squad is collapsed by default (first 3 per position) with a "Show all" / "Show less" toggle, so a full squad no longer makes the card very tall (`squad_collapsed: false` shows everyone, `squad_preview` sets the count)
 - Club card: transfers get In / Out / All filter tabs (with counts) when both directions are present
