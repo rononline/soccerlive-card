@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.157 (2026-07-18)
+- Club card: `hasClubContent()` now treats a usable coach as content and no longer treats an empty squad/transfers list as content, so a club with only a coach still renders and an empty squad no longer forces an empty card. Tests updated accordingly
+
 ## v3.21.156 (2026-07-18)
 - Team & Match Center cards: the odds section now shows a pulsing "Live" badge and a "Live in-play odds" title/tooltip when the integration provides live in-play odds during a match (integration v3.6.88), instead of the "averaged market odds" label and bookmaker count used for pre-match odds. Added `team.odds_live`, `team.odds_live_note` and `team.odds_live_badge` in all 7 languages
 

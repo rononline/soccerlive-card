@@ -8,12 +8,14 @@ import {
   formatTransferDate,
 } from '../../src/cards/shared-club-model.js';
 
-test('hasClubContent: true only when profile/squad/transfers present', () => {
+test('hasClubContent: true when profile/coach/non-empty squad/transfers present', () => {
   assert.equal(hasClubContent(null), false);
   assert.equal(hasClubContent({}), false);
-  assert.equal(hasClubContent({ coach: 'X' }), false);
+  assert.equal(hasClubContent({ squad: [] }), false);      // empty list is not content
+  assert.equal(hasClubContent({ transfers: [] }), false);
+  assert.equal(hasClubContent({ coach: 'Van Bronckhorst' }), true); // a coach is usable
   assert.equal(hasClubContent({ profile: { name: 'A' } }), true);
-  assert.equal(hasClubContent({ squad: [] }), true);
+  assert.equal(hasClubContent({ squad: [{ name: 'P' }] }), true);
 });
 
 test('groupSquad: keeps position order and drops empty groups', () => {

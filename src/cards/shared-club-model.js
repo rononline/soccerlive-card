@@ -9,9 +9,17 @@ export const POSITION_GROUPS = [
   ['Attacker', 'club.attackers'],
 ];
 
-/** Whether a club blob carries anything worth rendering. */
+/** Whether a club blob carries anything worth rendering. A usable coach counts,
+ * while an empty squad/transfers list does not. */
 export function hasClubContent(club) {
-  return !!(club && (club.profile || club.squad || club.transfers));
+  return Boolean(
+    club && (
+      club.profile ||
+      club.coach ||
+      club.squad?.length ||
+      club.transfers?.length
+    )
+  );
 }
 
 /**
