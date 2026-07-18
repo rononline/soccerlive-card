@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.21.161 (2026-07-18)
+- Skins split into two independent axes: **appearance** (`dark` / `light` / `ha` Home Assistant theme) and **palette** (`purple` / `red-white` / `orange` / `blue` / `team` / `custom` / …). Any combination now works — e.g. a light red-white card — instead of a fixed set of bundled skins. Surfaces are accent-tinted so every palette looks right on every appearance
+- New Home Assistant appearance follows `--ha-card-background`, `--primary-text-color`, `--divider-color` etc., so the cards blend into the active HA theme
+- Renamed Auto to **Team colours** (palette `team`), which is what it does — derive accents from the team's colours (now contrast-aware, see v3.21.160)
+- The skin picker is now a single shared, localised control (appearance + palette selectors, plus custom colour inputs with a Reset button) used by every card editor; labels added in English and Dutch (other languages fall back to English)
+- Backwards compatible: the old `skin:` field keeps working and maps to the matching appearance + palette (e.g. `skin: red-white` → dark + red-white; club aliases like `feyenoord` still resolve). Setting `appearance:`/`palette:` overrides it
+
 ## v3.21.160 (2026-07-18)
 - Skins: define the semantic form colours (`--cl-win`/`--cl-draw`/`--cl-loss`) centrally so W/D/L stays green/grey/red on every skin, and make `--cl-accent-soft` (the favourite highlight) follow each skin's accent instead of being stuck on the default purple
 - Skins: auto (team-colour) accents are now contrast-aware — near-black/near-white kit colours are skipped so an all-black or all-white kit can't produce an unreadable card, near-identical colours no longer collapse into a flat card (a lighter second accent is derived), and with no usable colour the skin's own defaults are kept. Colour logic moved to a pure `skin-colors.js` with unit tests

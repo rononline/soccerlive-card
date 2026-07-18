@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { SKIN_OPTIONS, resolveSkin } from '../../skins.js';
-import { renderSkinColorControls } from '../skin-editor.js';
+import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
 
 const LANGS  = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
@@ -176,11 +175,8 @@ class SoccerLiveScorersEditor extends LitElement {
         <h3>${this._t("editor.appearance")}</h3>
         <div>
           <label class="field-label">${this._t('editor.theme')}</label>
-          <select data-config-value="skin" @change=${this._selectChanged}>
-            ${SKIN_OPTIONS.map(([val, label]) => html`<option value="${val}" ?selected=${resolveSkin(this._config) === val}>${label}</option>`)}
-          </select>
+          ${renderSkinControls(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
-        ${renderSkinColorControls(this, this._config)}
 
         <div>
           <label class="field-label">${this._t('editor.language')}</label>

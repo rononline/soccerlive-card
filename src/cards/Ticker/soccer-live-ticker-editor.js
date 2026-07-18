@@ -1,6 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { SKIN_OPTIONS } from '../../skins.js';
-import { renderSkinColorControls } from '../skin-editor.js';
+import { renderSkinControls } from '../skin-editor.js';
 import { editorStyles } from '../editor-helper.js';
 
 class SoccerLiveTickerEditor extends LitElement {
@@ -116,14 +115,7 @@ class SoccerLiveTickerEditor extends LitElement {
           </select>
         ` : ''}
 
-        <label>Skin</label>
-        <select data-config-value="skin" @change=${this._selectChanged}>
-          ${SKIN_OPTIONS.map(([v, l]) => html`
-            <option value="${v}" ?selected=${this._config.skin === v}>${l}</option>
-          `)}
-        </select>
-
-        ${renderSkinColorControls(this._config, (k, v) => this._fire({ ...this._config, [k]: v }))}
+        ${renderSkinControls(this, this._config, (k) => (this._t ? this._t(k) : k))}
       </div>
     `;
   }
