@@ -40,6 +40,29 @@ test('team card — inline names + tracked underline (light + white-gold)', asyn
   await expect(target(page)).toHaveScreenshot('team-light-white-gold-tracked.png');
 });
 
+test('team card — tracked underline visible (light + black-white)', async ({ page }) => {
+  // Guards the --cl-accent-visible fix: black-white's accent is white, so the
+  // underline must use the explicit slate, not the (white) secondary.
+  await open(page, { mode: 'card', appearance: 'light', palette: 'black-white', my_team: 'Feyenoord' });
+  await expect(target(page)).toHaveScreenshot('team-light-black-white-tracked.png');
+});
+
+test('team card — missing abbreviation and colour', async ({ page }) => {
+  await open(page, { mode: 'card', variant: 'missing' });
+  await expect(target(page)).toHaveScreenshot('team-missing-abbrev.png');
+});
+
+test('team card — very long team name at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 1000 });
+  await open(page, { mode: 'card', variant: 'longname' });
+  await expect(target(page)).toHaveScreenshot('team-longname-320.png');
+});
+
+test('team card — Home Assistant appearance with a real theme', async ({ page }) => {
+  await open(page, { mode: 'card', appearance: 'ha', palette: 'blue', ha_theme: '1' });
+  await expect(target(page)).toHaveScreenshot('team-ha-themed.png');
+});
+
 // --- Editor: swatches, custom contrast warning, shared inheritance ---
 
 test('editor — palette swatches (desktop)', async ({ page }) => {
@@ -63,4 +86,14 @@ test('editor — shared inheritance shown', async ({ page }) => {
   // Sensor shares red-white; the card sets nothing -> inherit shows "· shared".
   await open(page, { mode: 'editor', card_defaults: JSON.stringify({ palette: 'red-white', language: 'nl' }) });
   await expect(target(page)).toHaveScreenshot('editor-shared.png');
+});
+
+test('editor — multi-entity shows the shared source', async ({ page }) => {
+  // A multi-entity card names the sensor its shared defaults come from: "(via ...)".
+  await open(page, {
+    mode: 'editor',
+    entities: JSON.stringify(['sensor.preview_team', 'sensor.preview_team_2']),
+    card_defaults: JSON.stringify({ palette: 'red-white', language: 'nl' }),
+  });
+  await expect(target(page)).toHaveScreenshot('editor-multi-via.png');
 });

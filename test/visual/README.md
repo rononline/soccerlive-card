@@ -31,6 +31,18 @@ npm run test:visual -- --update-snapshots
 ```
 
 Baselines are **platform-specific** — Playwright suffixes them with the OS (e.g.
-`-darwin.png`). The committed baselines are generated on macOS. To run in CI on
-Linux, generate Linux baselines there (e.g. in the official
-`mcr.microsoft.com/playwright` container) and commit the `-linux.png` variants.
+`-darwin.png`). The committed baselines are generated on macOS.
+
+## CI (Linux baselines)
+
+`.github/workflows/visual.yml` runs the suite in the official
+`mcr.microsoft.com/playwright` container on push/PR. It gates on `-linux.png`
+baselines, which don't exist yet. To bootstrap them once:
+
+1. Run the **Visual** workflow manually (`workflow_dispatch`) with `update: true`.
+2. Download the `visual-results` artifact — it contains the generated
+   `*-linux.png` files.
+3. Commit them under `test/visual/__snapshots__/…`.
+
+After that, push/PR runs gate against the Linux baselines. Regenerate them the
+same way after an intentional visual change.

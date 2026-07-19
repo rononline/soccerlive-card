@@ -11,8 +11,8 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       animations: 'disabled',
-      // Allow a tiny amount of anti-aliasing noise between runs.
-      maxDiffPixelRatio: 0.02,
+      // Allow only a little anti-aliasing noise between runs.
+      maxDiffPixelRatio: 0.01,
     },
   },
   use: {

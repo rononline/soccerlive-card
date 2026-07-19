@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.178 (2026-07-19)
+- Visual tests: `test:visual` now builds first so screenshots never run against a stale bundle (added `test:visual:update` too); tightened the diff tolerance from 2% to 1%
+- Visual tests: added snapshots for light + black-white (guards the `--cl-accent-visible` fix), a missing abbreviation/colour (name fallback), a very long team name at 320px (ellipsis), a multi-entity editor showing the shared source "(via …)", and the Home Assistant appearance with an explicit HA theme (not just fallback colours)
+- CI: added a GitHub Actions **Visual** workflow that runs the suite in the official Playwright Linux container; see `test/visual/README.md` for the one-time Linux-baseline bootstrap
+
 ## v3.21.177 (2026-07-19)
 - Added a Playwright visual-regression layer (`npm run test:visual`) with a parameterised harness and committed baselines, covering the dark/light/HA appearances, a legacy skin, the inline team names + tracked underline (light + white-gold), and the editor (palette swatches on desktop/mobile, the custom-palette contrast warning, and the shared-inheritance status). Kept out of `npm test` so the default suite stays browser-free; see `test/visual/README.md`
 

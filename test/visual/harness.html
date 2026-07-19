@@ -51,18 +51,47 @@
     };
 
     const params = new URLSearchParams(location.search);
+
+    // Variant tweaks to the mock for targeted cases.
+    const variant = params.get("variant") || "";
+    if (variant === "missing") {
+      // No abbreviation and no colour -> falls back to the team name + accent tint.
+      attrs.previous_matches[0] = { ...attrs.previous_matches[0], home_abbrev: "", home_color: undefined };
+    } else if (variant === "longname") {
+      attrs.previous_matches[0] = { ...attrs.previous_matches[0], home_abbrev: "Borussia Mönchengladbach" };
+      attrs.upcoming_matches[0] = { ...attrs.upcoming_matches[0], away_abbrev: "Real Sociedad de Fútbol" };
+    }
+    attrs.friendly_name = "Feyenoord — next";
+
+    // Explicit Home Assistant theme variables so the ha appearance reflects a real
+    // theme instead of only its fallback colours.
+    if (params.has("ha_theme")) {
+      const s = document.documentElement.style;
+      s.setProperty("--ha-card-background", "#ffffff");
+      s.setProperty("--card-background-color", "#ffffff");
+      s.setProperty("--secondary-background-color", "#f5f5f5");
+      s.setProperty("--primary-text-color", "#212121");
+      s.setProperty("--secondary-text-color", "#727272");
+      s.setProperty("--divider-color", "#e0e0e0");
+      document.body.style.background = "#fafafa";
+    }
+
     const cardDefaults = params.get("card_defaults");
+    const entitiesParam = params.get("entities");
+    const entities = entitiesParam ? JSON.parse(entitiesParam) : null;
+    const primaryEntity = entities ? entities[0] : "sensor.preview_team";
     const stateObj = { state: "Feyenoord", attributes: { ...attrs } };
     if (cardDefaults) stateObj.attributes.card_defaults = JSON.parse(cardDefaults);
 
     const hass = {
-      states: { "sensor.preview_team": stateObj },
+      states: { [primaryEntity]: stateObj },
       language: params.get("lang") || "en",
       locale: { language: params.get("lang") || "en" },
     };
 
     // Build the config from URL params (only set the axes that are provided).
-    const config = { entity: "sensor.preview_team", show_previous_matches: true, show_form_trend: true };
+    const config = { show_previous_matches: true, show_form_trend: true };
+    if (entities) config.entities = entities; else config.entity = "sensor.preview_team";
     for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language"]) {
       if (params.has(key)) config[key] = params.get(key);
     }
