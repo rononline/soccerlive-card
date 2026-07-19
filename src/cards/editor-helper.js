@@ -11,8 +11,18 @@ export const editorStyles = css`
   .field-warning { background: rgba(255, 152, 0, 0.1); border-left: 3px solid #ff9800; padding: 8px 12px; border-radius: 2px; font-size: 12px; margin-top: 8px; }
 `;
 
-// Languages offered by the cards (besides "" = inherit / HA locale).
-const LANGUAGE_CODES = ['en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
+// Languages offered by the cards (besides "" = inherit / HA locale), shown by
+// their endonym rather than the bare code.
+const LANGUAGES = [
+  ['en', 'English'],
+  ['nl', 'Nederlands'],
+  ['de', 'Deutsch'],
+  ['pt', 'Português'],
+  ['fr', 'Français'],
+  ['es', 'Español'],
+  ['it', 'Italiano'],
+];
+const LANGUAGE_NAME = Object.fromEntries(LANGUAGES);
 
 function _fireConfig(host, next) {
   if (typeof host._fireConfigChanged === 'function') return host._fireConfigChanged(next);
@@ -32,12 +42,14 @@ export function renderLanguageControl(host, config, t) {
   const entityId = config?.entity || (config?.entities && config.entities[0]);
   const sharedLang = entityId && host?.hass?.states?.[entityId]?.attributes?.card_defaults?.language;
   const current = config?.language || '';
-  const autoLabel = sharedLang ? `${sharedLang} · ${label('skin.shared')}` : label('lang.auto');
+  const autoLabel = sharedLang
+    ? `${LANGUAGE_NAME[sharedLang] || sharedLang} · ${label('skin.shared')}`
+    : label('lang.auto');
   return html`
     <label class="field-label">${label('editor.language')}</label>
     <select @change=${(e) => _fireConfig(host, { ...config, language: e.target.value })}>
       <option value="" ?selected=${!current}>${autoLabel}</option>
-      ${LANGUAGE_CODES.map((l) => html`<option value="${l}" ?selected=${current === l}>${l}</option>`)}
+      ${LANGUAGES.map(([code, name]) => html`<option value="${code}" ?selected=${current === code}>${name}</option>`)}
     </select>
   `;
 }

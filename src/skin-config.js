@@ -142,9 +142,12 @@ export function buildMigratedConfig(config, effectiveAppearance, effectivePalett
   return next;
 }
 
-/** Next index in a radio group for an arrow key (wraps around). */
+/** Next index in a radio group for an arrow/Home/End key (wraps around). */
 export function nextRadioIndex(idx, count, key) {
-  if (idx < 0 || count <= 0) return idx;
+  if (count <= 0) return idx;
+  if (key === 'Home') return 0;
+  if (key === 'End') return count - 1;
+  if (idx < 0) return idx;
   if (key === 'ArrowRight' || key === 'ArrowDown') return (idx + 1) % count;
   if (key === 'ArrowLeft' || key === 'ArrowUp') return (idx - 1 + count) % count;
   return idx;

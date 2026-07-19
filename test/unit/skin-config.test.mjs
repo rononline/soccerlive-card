@@ -32,6 +32,8 @@ test('nextRadioIndex: wraps forward/back, ignores non-arrow keys', () => {
   assert.equal(nextRadioIndex(1, 3, 'ArrowUp'), 0);
   assert.equal(nextRadioIndex(1, 3, 'Enter'), 1);        // unchanged
   assert.equal(nextRadioIndex(-1, 3, 'ArrowRight'), -1); // no focused button
+  assert.equal(nextRadioIndex(1, 4, 'Home'), 0);         // Home -> first
+  assert.equal(nextRadioIndex(1, 4, 'End'), 3);          // End -> last
 });
 
 test('resolveCompact: card value wins, else inherits shared', () => {

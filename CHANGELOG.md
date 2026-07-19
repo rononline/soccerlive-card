@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.174 (2026-07-19)
+- Team card: the tracked team in the match lists is no longer coloured with the accent (which can be near-white on light appearances and unreadable) — it keeps the readable text colour and is emphasised with bold weight and an accent underline stripe
+- Team card: `_teamBadge` now normalises team colours, so a valid `rgb(255,0,0)` stays valid instead of being turned into `#rgb(255,0,0)`; invalid/missing colours fall back to the accent tint. Long names in the match lists truncate with an ellipsis so they don't break the row on narrow screens
+- Editors: the shared language selector shows full language names again (English, Nederlands, Deutsch, …) instead of bare codes, and the shared status reads "Nederlands · shared" instead of "nl · shared"
+- Accessibility: the appearance/palette/compact radio groups now also support Home/End keys
+
 ## v3.21.173 (2026-07-19)
 - Team card: the team names in the previous/upcoming match lists are now inline — a small team-colour marker plus the name as plain text — instead of a heavy coloured pill. The tracked team is highlighted with the accent colour instead of an outline box, and the names now stay readable on the light appearance
 - Editors: the language selector is a single shared `renderLanguageControl()` used by all card editors, so every editor (Timeline, Scorers, Standings, Club, …) shows the shared-language inherited status ("nl · shared"), not just Team and Match Center. Removed the duplicated per-editor language lists

@@ -3,6 +3,7 @@ import { t, resolveLang, parseMatchDate, formatMatchDate, formatDateOnly } from 
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { resolveCompact } from "../../skin-config.js";
+import { normalizeCssColor } from "../../skin-colors.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError, renderInfoState } from "../card-error.js";
@@ -685,8 +686,10 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _teamBadge(abbrev, color) {
-    const c = color && color !== 'N/A' ? `#${color.replace('#', '')}` : 'rgba(var(--cl-accent-rgb),0.7)';
-    return html`<span class="abbrev-badge" style="--team-c:${c}">${abbrev}</span>`;
+    // Accept #rrggbb, bare rrggbb and rgb()/rgba(); fall back to the accent tint
+    // when the colour is missing or invalid.
+    const c = normalizeCssColor(color) || 'rgba(var(--cl-accent-rgb),0.7)';
+    return html`<span class="abbrev-badge" style="--team-c:${c}"><span class="abbrev-name">${abbrev}</span></span>`;
   }
 
   _renderFormTrend(previousMatches, fallbackMatches, trackedTeam) {
@@ -1834,7 +1837,13 @@ class SoccerLiveTeamCard extends LitElement {
       /* Uitploeg: links uitgelijnd — badge links richting het streepje, logo rechts */
       .upcoming-team.away-side { justify-content: flex-start; }
       .upcoming-team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-      .upcoming-team.tracked .abbrev-badge { color: var(--cl-accent, #6366f1); font-weight: 800; }
+      /* Keep the tracked team readable on any skin (accent can be near-white on
+         light appearances): emphasise with weight + an accent underline stripe,
+         not an accent text colour. */
+      .upcoming-team.tracked .abbrev-badge {
+        font-weight: 800;
+        box-shadow: inset 0 -2px 0 var(--cl-accent, #6366f1);
+      }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
       .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; display: block; max-width: 68px; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; }
@@ -1905,7 +1914,7 @@ class SoccerLiveTeamCard extends LitElement {
         font-weight: 700;
         color: var(--cl-text, #f8fafc);
         letter-spacing: 0.01em;
-        flex-shrink: 0;
+        min-width: 0;
       }
       .abbrev-badge::before {
         content: '';
@@ -1913,6 +1922,9 @@ class SoccerLiveTeamCard extends LitElement {
         background: var(--team-c, var(--cl-accent, #6366f1));
         flex-shrink: 0;
       }
+      /* Keep long names (e.g. manual sensors that put a full name in the abbrev)
+         from breaking the row on narrow screens. */
+      .abbrev-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; }
       .h2h-section {
         border-top: 1px solid var(--cl-divider);
         padding: 10px 16px 14px;
