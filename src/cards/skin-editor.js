@@ -83,12 +83,37 @@ export function renderSkinControls(host, config, t) {
     const opt = options.find(([v]) => v === sharedVal);
     return `${opt ? label(opt[1]) : sharedVal} · ${label('skin.shared')}`;
   };
+  // With a legacy skin, config.appearance/palette are absent, so highlight the
+  // effective (resolved) values instead — otherwise nothing looks selected.
+  const selectedAppearance = legacySkin ? appearance : config?.appearance;
+  const selectedPalette = legacySkin ? palette : config?.palette;
+  // Picking a value on a legacy-skin card migrates it to explicit appearance +
+  // palette and drops `skin`, so the new fields aren't shadowed by the old one.
+  const migrateFromSkin = (over) => {
+    const next = { ...config, appearance, palette, ...over };
+    delete next.skin;
+    fireConfig(host, next);
+  };
+  const pickAppearance = (val) => (legacySkin ? migrateFromSkin({ appearance: val }) : setField('appearance', val));
+  const pickPalette = (val) => (legacySkin ? migrateFromSkin({ palette: val }) : setField('palette', val));
+  // Arrow-key navigation across a radiogroup: move focus and select the sibling.
+  const onGroupKeydown = (e) => {
+    if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(e.key)) return;
+    e.preventDefault();
+    const btns = [...e.currentTarget.querySelectorAll('button')];
+    const idx = btns.indexOf(e.target);
+    if (idx < 0) return;
+    const dir = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1;
+    const next = btns[(idx + dir + btns.length) % btns.length];
+    next.focus();
+    next.click();
+  };
 
   // Contrast check for a custom palette: warn if text, secondary text or the
   // accent doesn't stand out against the background. Missing colours are filled
   // from the chosen appearance, so a change to only the text OR the background is
   // still checked. (ha appearance uses theme colours we can't know here.)
-  let contrastWarn = false;
+  const contrastIssues = [];
   if (palette === 'custom') {
     const bg = normalizeCssColor(config?.background_color) || APPEARANCE_BG[appearance];
     if (bg) {
@@ -97,9 +122,9 @@ export function renderSkinControls(host, config, t) {
         const r = c ? contrastRatio(bg, c) : null;
         return r !== null && r < min;
       };
-      contrastWarn = low('text_color', APPEARANCE_TEXT[appearance], MIN_TEXT_CONTRAST)
-        || low('secondary_text_color', APPEARANCE_TEXT2[appearance], MIN_TEXT_CONTRAST)
-        || low('accent_color', CUSTOM_DEFAULT_ACCENT, MIN_UI_CONTRAST);
+      if (low('text_color', APPEARANCE_TEXT[appearance], MIN_TEXT_CONTRAST)) contrastIssues.push('skin.custom_text');
+      if (low('secondary_text_color', APPEARANCE_TEXT2[appearance], MIN_TEXT_CONTRAST)) contrastIssues.push('skin.custom_text_2');
+      if (low('accent_color', CUSTOM_DEFAULT_ACCENT, MIN_UI_CONTRAST)) contrastIssues.push('skin.custom_accent');
     }
   }
 
@@ -144,20 +169,20 @@ export function renderSkinControls(host, config, t) {
     <div class="skin-controls">
       <div class="skin-row">
         <div class="skin-label">${label('skin.appearance')}</div>
-        <div class="skin-seg" role="group" aria-label=${label('skin.appearance')}>
+        <div class="skin-seg" role="radiogroup" aria-label=${label('skin.appearance')} @keydown=${onGroupKeydown}>
           ${!legacySkin ? html`
-            <button type="button" class=${!appearanceSet ? 'sel' : ''} aria-pressed=${!appearanceSet} @click=${() => clearField('appearance')}>${inheritLabel(shared.appearance, APPEARANCE_OPTIONS)}</button>
+            <button type="button" role="radio" class=${!appearanceSet ? 'sel' : ''} aria-checked=${!appearanceSet} tabindex=${!appearanceSet ? '0' : '-1'} @click=${() => clearField('appearance')}>${inheritLabel(shared.appearance, APPEARANCE_OPTIONS)}</button>
           ` : ''}
           ${APPEARANCE_OPTIONS.map(([val, key]) => html`
-            <button type="button" class=${config?.appearance === val ? 'sel' : ''} aria-pressed=${config?.appearance === val} @click=${() => setField('appearance', val)}>${label(key)}</button>
+            <button type="button" role="radio" class=${selectedAppearance === val ? 'sel' : ''} aria-checked=${selectedAppearance === val} tabindex=${selectedAppearance === val ? '0' : '-1'} @click=${() => pickAppearance(val)}>${label(key)}</button>
           `)}
         </div>
       </div>
       <div class="skin-row">
         <div class="skin-label">${label('skin.palette')}</div>
-        <div class="skin-swatches" role="group" aria-label=${label('skin.palette')}>
+        <div class="skin-swatches" role="radiogroup" aria-label=${label('skin.palette')} @keydown=${onGroupKeydown}>
           ${!legacySkin ? html`
-            <button type="button" class="skin-swatch ${!paletteSet ? 'sel' : ''}" aria-pressed=${!paletteSet} @click=${() => clearField('palette')}>
+            <button type="button" role="radio" class="skin-swatch ${!paletteSet ? 'sel' : ''}" aria-checked=${!paletteSet} tabindex=${!paletteSet ? '0' : '-1'} @click=${() => clearField('palette')}>
               <span class="dot" style="background:${shared.palette && PALETTE_SWATCHES[shared.palette]
                 ? `linear-gradient(135deg, ${PALETTE_SWATCHES[shared.palette][0]} 50%, ${PALETTE_SWATCHES[shared.palette][1]} 50%)`
                 : 'repeating-linear-gradient(135deg,#888 0 4px,#aaa 4px 8px)'}"></span>
@@ -167,7 +192,7 @@ export function renderSkinControls(host, config, t) {
           ${PALETTE_OPTIONS.map(([val, key]) => {
             const [c1, c2] = PALETTE_SWATCHES[val] || ['#6366f1', '#ec4899'];
             return html`
-              <button type="button" class="skin-swatch ${config?.palette === val ? 'sel' : ''}" aria-pressed=${config?.palette === val} title=${label(key)} @click=${() => setField('palette', val)}>
+              <button type="button" role="radio" class="skin-swatch ${selectedPalette === val ? 'sel' : ''}" aria-checked=${selectedPalette === val} tabindex=${selectedPalette === val ? '0' : '-1'} title=${label(key)} @click=${() => pickPalette(val)}>
                 <span class="dot" style="background:linear-gradient(135deg, ${c1} 50%, ${c2} 50%)"></span>
                 <span>${label(key)}</span>
               </button>
@@ -180,7 +205,7 @@ export function renderSkinControls(host, config, t) {
           <div class="custom-skin-fields">
             ${SIMPLE_FIELDS.map(([key, lkey]) => colorField(config, key, lkey, label, setField))}
           </div>
-          ${contrastWarn ? html`<div class="skin-warn">⚠️ ${label('skin.contrast_warning')}</div>` : ''}
+          ${contrastIssues.length ? html`<div class="skin-warn">⚠️ ${label('skin.contrast_warning')}: ${contrastIssues.map((k) => label(k)).join(', ')}</div>` : ''}
           <details class="skin-adv">
             <summary>${label('skin.advanced')}</summary>
             <div class="custom-skin-fields">

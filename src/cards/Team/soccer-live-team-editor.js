@@ -141,7 +141,9 @@ class SoccerLiveTeamCardEditor extends LitElement {
     const currentEntity = this._config.entity || '';
     const entityInList = currentEntity && this.entities.includes(currentEntity);
     // Shared compact default from the sensor, for the compact tri-state's "inherit" hint.
-    const sharedCompact = this.hass?.states?.[currentEntity]?.attributes?.card_defaults?.compact;
+    const sharedDefaults = this.hass?.states?.[currentEntity]?.attributes?.card_defaults || {};
+    const sharedCompact = sharedDefaults.compact;
+    const sharedLang = sharedDefaults.language;
     const compactVal = this._config.compact;
 
     return html`
@@ -241,7 +243,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.language')}</label>
           <select data-config-value="language" @change=${this._selectChanged}>
-            <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
+            <option value="" ?selected=${!this._config.language}>${sharedLang ? `${sharedLang} · ${this._t('skin.shared')}` : 'Auto (HA locale)'}</option>
             <option value="en" ?selected=${this._config.language === 'en'}>English</option>
             <option value="it" ?selected=${this._config.language === 'it'}>Italiano</option>
             <option value="fr" ?selected=${this._config.language === 'fr'}>Français</option>

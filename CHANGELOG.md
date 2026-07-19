@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.172 (2026-07-19)
+- Skin editor: fix legacy `skin:` configs showing no appearance/palette as selected — the picker now highlights the effective (resolved) values, so `skin: red-white` correctly shows Dark and Red & White selected. Picking a value on a legacy-skin card migrates it to explicit `appearance`/`palette` and drops `skin`, so the old field no longer shadows the new ones
+- Skin editor: the low-contrast warning now names which parts fail (main text, secondary text and/or accent) instead of a single generic message
+- Editor: shared language now shows the same explicit inherited status as compact/skins (e.g. "nl · shared") in the Team and Match Center language selectors, instead of just "Auto"
+- Accessibility: appearance and palette are now real radio groups (`role="radiogroup"`/`radio`, `aria-checked`, roving tabindex) with arrow-key navigation
+
 ## v3.21.171 (2026-07-18)
 - Skin editor: the picker now computes the effective look (including values inherited from the sensor), so the selected appearance/palette matches what the card actually renders instead of showing the local fallback
 - Skin editor: the custom-palette contrast check now also fires when only the text or only the background is customised — the missing colour is taken from the chosen appearance's default (skipped for the Home Assistant appearance, whose colours come from the theme)
