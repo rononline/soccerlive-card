@@ -43,15 +43,34 @@ export function renderLanguageControl(host, config, t) {
   const sharedLang = entityId && host?.hass?.states?.[entityId]?.attributes?.card_defaults?.language;
   const current = config?.language || '';
   const autoLabel = sharedLang
-    ? `${LANGUAGE_NAME[sharedLang] || sharedLang} · ${label('skin.shared')}`
+    ? `${LANGUAGE_NAME[sharedLang] || sharedLang} · ${label('skin.shared')}${sharedVia(host, config, label)}`
     : label('lang.auto');
+  const onChange = (e) => {
+    const v = e.target.value;
+    const next = { ...config };
+    if (v) next.language = v; else delete next.language;  // clear the key, don't store ''
+    _fireConfig(host, next);
+  };
   return html`
     <label class="field-label">${label('editor.language')}</label>
-    <select @change=${(e) => _fireConfig(host, { ...config, language: e.target.value })}>
+    <select @change=${onChange}>
       <option value="" ?selected=${!current}>${autoLabel}</option>
       ${LANGUAGES.map(([code, name]) => html`<option value="${code}" ?selected=${current === code}>${name}</option>`)}
     </select>
   `;
+}
+
+/** For a multi-entity card, a " (via <sensor>)" suffix naming the sensor whose
+ * shared defaults are used (the first one), so it's clear where they come from.
+ * Empty for single-entity cards, where it's obvious. */
+export function sharedVia(host, config, label) {
+  const entities = config?.entities;
+  if (!Array.isArray(entities) || entities.length <= 1) return '';
+  const id = entities[0];
+  if (!id) return '';
+  const name = host?.hass?.states?.[id]?.attributes?.friendly_name || id;
+  const via = typeof label === 'function' ? label('skin.via') : 'via';
+  return ` (${via} ${name})`;
 }
 
 export const renderFieldGroup = (label, hint, content) => html`

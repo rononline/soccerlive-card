@@ -25,6 +25,16 @@ export const skinStyles = css`
     --cl-loss: #ef4444;
     /* Accent-tinted soft fill (favourite highlight) follows the palette. */
     --cl-accent-soft: rgba(var(--cl-accent-rgb),0.12);
+    /* A version of the accent guaranteed to stay visible for decorative marks
+       (underlines, dots). Overridden where the accent is near-white on a light
+       background (white-gold, black-white). */
+    --cl-accent-visible: var(--cl-accent);
+  }
+
+  /* Near-white accents vanish on a light background: use the darker secondary. */
+  :host([data-appearance="light"][data-palette="white-gold"]),
+  :host([data-appearance="light"][data-palette="black-white"]) {
+    --cl-accent-visible: var(--cl-accent-2);
   }
 
   /* ============================ PALETTES (accent hue) ============================ */

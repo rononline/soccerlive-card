@@ -685,11 +685,15 @@ class SoccerLiveTeamCard extends LitElement {
     return `${day} ${this._t(monthKey)}`;
   }
 
-  _teamBadge(abbrev, color) {
+  _teamBadge(abbrev, color, fallbackName) {
     // Accept #rrggbb, bare rrggbb and rgb()/rgba(); fall back to the accent tint
     // when the colour is missing or invalid.
     const c = normalizeCssColor(color) || 'rgba(var(--cl-accent-rgb),0.7)';
-    return html`<span class="abbrev-badge" style="--team-c:${c}"><span class="abbrev-name">${abbrev}</span></span>`;
+    const clean = (v) => (v && v !== 'N/A') ? v : '';
+    // Fall back to the team name (then '?') when there's no usable abbreviation,
+    // so an empty abbrev doesn't leave just a coloured marker.
+    const text = clean(abbrev) || clean(fallbackName) || '?';
+    return html`<span class="abbrev-badge" style="--team-c:${c}"><span class="abbrev-name">${text}</span></span>`;
   }
 
   _renderFormTrend(previousMatches, fallbackMatches, trackedTeam) {
@@ -756,13 +760,13 @@ class SoccerLiveTeamCard extends LitElement {
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
                 ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
-                ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
+                ${this._teamBadge(m.home_abbrev, m.home_color, m.home_team)}
               </span>
               <span class="prev-score ${scoreClass}">
                 ${scoreText(m.home_score, '-')}-${scoreText(m.away_score, '-')}
               </span>
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
-                ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
+                ${this._teamBadge(m.away_abbrev, m.away_color, m.away_team)}
                 ${m.away_logo ? html`<img src="${m.away_logo}" alt="" />` : ''}
               </span>
             </div>
@@ -814,14 +818,14 @@ class SoccerLiveTeamCard extends LitElement {
               </span>
               <span class="upcoming-team home-side ${homeTracked ? 'tracked' : ''}">
                 ${m.home_logo ? html`<img src="${m.home_logo}" alt="" />` : ''}
-                ${this._teamBadge(m.home_abbrev || '?', m.home_color)}
+                ${this._teamBadge(m.home_abbrev, m.home_color, m.home_team)}
               </span>
               ${isLiveRow
                 ? html`<span class="upcoming-live-score">${scoreText(m.home_score)}<span class="live-dot">●</span>${scoreText(m.away_score)}</span>`
                 : html`<span class="upcoming-vs">-</span>`
               }
               <span class="upcoming-team away-side ${awayTracked ? 'tracked' : ''}">
-                ${this._teamBadge(m.away_abbrev || '?', m.away_color)}
+                ${this._teamBadge(m.away_abbrev, m.away_color, m.away_team)}
                 ${m.away_logo ? html`<img src="${m.away_logo}" alt="" />` : ''}
               </span>
               ${renderOppDots(oppForm, homeTracked ? 'side-right' : 'side-left')}
@@ -1842,7 +1846,7 @@ class SoccerLiveTeamCard extends LitElement {
          not an accent text colour. */
       .upcoming-team.tracked .abbrev-badge {
         font-weight: 800;
-        box-shadow: inset 0 -2px 0 var(--cl-accent, #6366f1);
+        box-shadow: inset 0 -2px 0 var(--cl-accent-visible, var(--cl-accent, #6366f1));
       }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }

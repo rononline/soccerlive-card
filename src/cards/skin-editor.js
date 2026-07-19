@@ -5,6 +5,7 @@ import {
   buildMigratedConfig, nextRadioIndex,
 } from '../skin-config.js';
 import { normalizeCssColor, contrastRatio } from '../skin-colors.js';
+import { sharedVia } from './editor-helper.js';
 
 // Default background / text per appearance, so the contrast check can fill the
 // colour the user didn't customise (ha uses theme colours, unknown at edit time).
@@ -79,10 +80,11 @@ export function renderSkinControls(host, config, t) {
   const paletteSet = typeof config?.palette === 'string';
   // Legacy skin fixes both axes, so "inherit" isn't meaningful then.
   const legacySkin = typeof config?.skin === 'string';
+  const via = sharedVia(host, config, label);
   const inheritLabel = (sharedVal, options) => {
     if (!sharedVal) return label('skin.default');
     const opt = options.find(([v]) => v === sharedVal);
-    return `${opt ? label(opt[1]) : sharedVal} · ${label('skin.shared')}`;
+    return `${opt ? label(opt[1]) : sharedVal} · ${label('skin.shared')}${via}`;
   };
   // With a legacy skin, config.appearance/palette are absent, so highlight the
   // effective (resolved) values instead — otherwise nothing looks selected.

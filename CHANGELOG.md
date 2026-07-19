@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.175 (2026-07-19)
+- Multi-entity cards: the shared appearance/palette/language status now names its source, e.g. "Nederlands · shared (via <sensor>)", so it's clear the first sensor's defaults are used (single-entity cards are unchanged)
+- Skins: the tracked-team underline uses a new contrast-aware `--cl-accent-visible` token, which falls back to the darker secondary colour on light appearances where the accent is near-white (white-gold, black-white), so the marker stays visible
+- Team card: an empty/`N/A` abbreviation now falls back to the team name instead of leaving just a coloured marker; team colours are normalised so `rgb(...)` values stay valid
+- Editors: choosing the shared/auto language now removes the `language` key instead of storing an empty string, keeping the config clean (consistent with appearance/compact)
+
 ## v3.21.174 (2026-07-19)
 - Team card: the tracked team in the match lists is no longer coloured with the accent (which can be near-white on light appearances and unreadable) — it keeps the readable text colour and is emphasised with bold weight and an accent underline stripe
 - Team card: `_teamBadge` now normalises team colours, so a valid `rgb(255,0,0)` stays valid instead of being turned into `#rgb(255,0,0)`; invalid/missing colours fall back to the accent tint. Long names in the match lists truncate with an ellipsis so they don't break the row on narrow screens
