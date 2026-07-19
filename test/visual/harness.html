@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin: 0; background: #0b0e17; }
+    /* A neutral wrapper so element screenshots have consistent padding. A card
+       gets a fixed dashboard-column width; the editor fills the viewport so the
+       mobile vs desktop layouts actually differ. */
+    #target { display: block; padding: 12px; box-sizing: border-box; }
+    #target.card { width: 404px; }
+    #target.editor { width: 100%; }
+    * { scrollbar-width: none; }
+  </style>
+  <!-- Built bundle registers all soccer-live-* custom elements. -->
+  <script src="../../dist/soccer-live-card.bundle.js"></script>
+</head>
+<body>
+  <div id="target"></div>
+  <script>
+    // Compact but representative mock: a team with an upcoming match (prediction),
+    // recent and upcoming fixtures, and team colours — enough for the visual cases.
+    const attrs = {
+      team_name: "Feyenoord",
+      matches: [{
+        state: "pre", home_team: "Feyenoord", away_team: "Rayo Vallecano",
+        home_abbrev: "FEY", away_abbrev: "RAY", home_color: "#e50000", away_color: "#ffffff",
+        home_score: "", away_score: "", date: "02-08-2026 15:00",
+        prediction: {
+          percent_home: 62, percent_draw: 24, percent_away: 14,
+          advice: "Combo Winner : Feyenoord and +1.5 goals", winner_name: "Feyenoord",
+          comparison: { form: { home: 58, away: 42 }, att: { home: 61, away: 39 }, def: { home: 50, away: 50 } },
+          goals_home: "-2.5", goals_away: "-1.5", under_over: "-3.5",
+        },
+        odds: { home: 1.42, draw: 4.80, away: null, bookmaker_count: 9 },
+      }],
+      previous_matches: [
+        { state: "post", home_team: "Feyenoord", away_team: "Charleroi", home_abbrev: "FEY", away_abbrev: "CHA",
+          home_color: "#e50000", away_color: "#111111", home_score: "3", away_score: "1", date: "17-07-2026 18:00", league_abbrev: "FRIENDLY" },
+        { state: "post", home_team: "Dordrecht", away_team: "Feyenoord", home_abbrev: "DOR", away_abbrev: "FEY",
+          home_color: "#d81e05", away_color: "#e50000", home_score: "0", away_score: "6", date: "04-07-2026 18:00", league_abbrev: "FRIENDLY" },
+      ],
+      upcoming_matches: [
+        { state: "pre", home_team: "Sparta Rotterdam", away_team: "Feyenoord", home_abbrev: "SPA", away_abbrev: "FEY",
+          home_color: "#ffffff", away_color: "#e50000", date: "09-08-2026 12:15", league_abbrev: "ERE" },
+        { state: "pre", home_team: "Feyenoord", away_team: "GO Ahead Eagles", home_abbrev: "FEY", away_abbrev: "GAE",
+          home_color: "#e50000", away_color: "#ce1126", date: "16-08-2026 14:30", league_abbrev: "ERE" },
+      ],
+      league_name: "Eredivisie",
+    };
+
+    const params = new URLSearchParams(location.search);
+    const cardDefaults = params.get("card_defaults");
+    const stateObj = { state: "Feyenoord", attributes: { ...attrs } };
+    if (cardDefaults) stateObj.attributes.card_defaults = JSON.parse(cardDefaults);
+
+    const hass = {
+      states: { "sensor.preview_team": stateObj },
+      language: params.get("lang") || "en",
+      locale: { language: params.get("lang") || "en" },
+    };
+
+    // Build the config from URL params (only set the axes that are provided).
+    const config = { entity: "sensor.preview_team", show_previous_matches: true, show_form_trend: true };
+    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language"]) {
+      if (params.has(key)) config[key] = params.get(key);
+    }
+
+    const mode = params.get("mode") || "card";       // card | editor
+    document.getElementById("target").className = mode === "editor" ? "editor" : "card";
+    const tag = mode === "editor" ? "soccer-live-team-editor" : "soccer-live-team";
+    const el = document.createElement(tag);
+    el.setConfig(mode === "editor" ? { type: "custom:soccer-live-card", card_type: "team", ...config } : config);
+    el.hass = hass;
+    document.getElementById("target").appendChild(el);
+
+    // Signal readiness for the test runner once rendered.
+    requestAnimationFrame(() => requestAnimationFrame(() => { document.body.dataset.ready = "1"; }));
+  </script>
+</body>
+</html>

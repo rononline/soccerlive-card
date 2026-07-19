@@ -1,3 +1,7 @@
 node_modules
 # AI tooling
 .claude/
+
+test-results/
+playwright-report/
+blob-report/

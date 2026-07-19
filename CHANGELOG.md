@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.177 (2026-07-19)
+- Added a Playwright visual-regression layer (`npm run test:visual`) with a parameterised harness and committed baselines, covering the dark/light/HA appearances, a legacy skin, the inline team names + tracked underline (light + white-gold), and the editor (palette swatches on desktop/mobile, the custom-palette contrast warning, and the shared-inheritance status). Kept out of `npm test` so the default suite stays browser-free; see `test/visual/README.md`
+
 ## v3.21.176 (2026-07-19)
 - Skins: fix `--cl-accent-visible` for the light + black-white combination — its secondary colour is white too, so it now falls back to an explicit slate (`#475569`) instead of an equally-invisible white. white-gold still uses its (gold) secondary
 
