@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.176 (2026-07-19)
+- Skins: fix `--cl-accent-visible` for the light + black-white combination — its secondary colour is white too, so it now falls back to an explicit slate (`#475569`) instead of an equally-invisible white. white-gold still uses its (gold) secondary
+
 ## v3.21.175 (2026-07-19)
 - Multi-entity cards: the shared appearance/palette/language status now names its source, e.g. "Nederlands · shared (via <sensor>)", so it's clear the first sensor's defaults are used (single-entity cards are unchanged)
 - Skins: the tracked-team underline uses a new contrast-aware `--cl-accent-visible` token, which falls back to the darker secondary colour on light appearances where the accent is near-white (white-gold, black-white), so the marker stays visible

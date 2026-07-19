@@ -31,10 +31,13 @@ export const skinStyles = css`
     --cl-accent-visible: var(--cl-accent);
   }
 
-  /* Near-white accents vanish on a light background: use the darker secondary. */
-  :host([data-appearance="light"][data-palette="white-gold"]),
-  :host([data-appearance="light"][data-palette="black-white"]) {
+  /* Near-white accents vanish on a light background. white-gold's secondary is a
+     visible gold; black-white's secondary is white too, so use an explicit slate. */
+  :host([data-appearance="light"][data-palette="white-gold"]) {
     --cl-accent-visible: var(--cl-accent-2);
+  }
+  :host([data-appearance="light"][data-palette="black-white"]) {
+    --cl-accent-visible: #475569;
   }
 
   /* ============================ PALETTES (accent hue) ============================ */
