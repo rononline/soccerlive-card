@@ -685,8 +685,8 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _teamBadge(abbrev, color) {
-    const bg = color && color !== 'N/A' ? `#${color.replace('#', '')}` : 'rgba(var(--cl-accent-rgb),0.25)';
-    return html`<span class="abbrev-badge" style="background:${bg}">${abbrev}</span>`;
+    const c = color && color !== 'N/A' ? `#${color.replace('#', '')}` : 'rgba(var(--cl-accent-rgb),0.7)';
+    return html`<span class="abbrev-badge" style="--team-c:${c}">${abbrev}</span>`;
   }
 
   _renderFormTrend(previousMatches, fallbackMatches, trackedTeam) {
@@ -1834,7 +1834,7 @@ class SoccerLiveTeamCard extends LitElement {
       /* Uitploeg: links uitgelijnd — badge links richting het streepje, logo rechts */
       .upcoming-team.away-side { justify-content: flex-start; }
       .upcoming-team img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-      .upcoming-team.tracked .abbrev-badge { outline: 2px solid rgba(255,255,255,0.5); }
+      .upcoming-team.tracked .abbrev-badge { color: var(--cl-accent, #6366f1); font-weight: 800; }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
       .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; display: block; max-width: 68px; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; }
@@ -1897,15 +1897,20 @@ class SoccerLiveTeamCard extends LitElement {
         color: var(--cl-text-2);
         text-align: center;
       }
+      /* Inline team name: a small team-colour marker + the name as plain text,
+         instead of a heavy coloured pill. */
       .abbrev-badge {
-        display: inline-flex; align-items: center; justify-content: center;
-        padding: 2px 6px;
-        border-radius: 5px;
-        font-size: 10px;
-        font-weight: 800;
-        color: white;
-        letter-spacing: 0.03em;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--cl-text, #f8fafc);
+        letter-spacing: 0.01em;
+        flex-shrink: 0;
+      }
+      .abbrev-badge::before {
+        content: '';
+        width: 7px; height: 7px; border-radius: 2px;
+        background: var(--team-c, var(--cl-accent, #6366f1));
         flex-shrink: 0;
       }
       .h2h-section {

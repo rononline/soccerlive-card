@@ -1,9 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
-import { editorStyles } from '../editor-helper.js';
+import { editorStyles, renderLanguageControl } from '../editor-helper.js';
 
-const LANGS = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
 
 class SoccerLiveMatchCenterEditor extends LitElement {
   static get properties() {
@@ -32,7 +31,6 @@ class SoccerLiveMatchCenterEditor extends LitElement {
       id.includes('soccer_live_all_mixed') || id.includes('soccerlive_all_mixed')
     ).sort();
     const current = this._config.entity || '';
-    const sharedLang = this.hass?.states?.[current]?.attributes?.card_defaults?.language;
     return html`
       <div class="card-config">
         <h3>${this._t('editor.sensor')}</h3>
@@ -78,10 +76,7 @@ class SoccerLiveMatchCenterEditor extends LitElement {
           ${renderSkinControls(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
         <div>
-          <label class="field-label">${this._t('editor.language')}</label>
-          <select data-config-value="language" @change=${this._selectChanged}>
-            ${LANGS.map(l => html`<option value="${l === 'auto' ? '' : l}" ?selected=${(this._config.language || '') === (l === 'auto' ? '' : l)}>${l === 'auto' && sharedLang ? `${sharedLang} · ${this._t('skin.shared')}` : l}</option>`)}
-          </select>
+          ${renderLanguageControl(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
       </div>
     `;

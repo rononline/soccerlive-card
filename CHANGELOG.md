@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.173 (2026-07-19)
+- Team card: the team names in the previous/upcoming match lists are now inline — a small team-colour marker plus the name as plain text — instead of a heavy coloured pill. The tracked team is highlighted with the accent colour instead of an outline box, and the names now stay readable on the light appearance
+- Editors: the language selector is a single shared `renderLanguageControl()` used by all card editors, so every editor (Timeline, Scorers, Standings, Club, …) shows the shared-language inherited status ("nl · shared"), not just Team and Match Center. Removed the duplicated per-editor language lists
+- Team editor: the compact control is now a real radio group (`role="radiogroup"`/`radio`, `aria-checked`, roving tabindex, arrow keys), consistent with appearance and palette
+- The legacy-skin migration and radio arrow-key navigation moved to pure helpers (`buildMigratedConfig`, `nextRadioIndex`) with direct unit tests
+
 ## v3.21.172 (2026-07-19)
 - Skin editor: fix legacy `skin:` configs showing no appearance/palette as selected — the picker now highlights the effective (resolved) values, so `skin: red-white` correctly shows Dark and Red & White selected. Picking a value on a legacy-skin card migrates it to explicit `appearance`/`palette` and drops `skin`, so the old field no longer shadows the new ones
 - Skin editor: the low-contrast warning now names which parts fail (main text, secondary text and/or accent) instead of a single generic message

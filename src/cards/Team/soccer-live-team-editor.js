@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit';
-import { editorStyles } from '../editor-helper.js';
+import { editorStyles, renderLanguageControl } from '../editor-helper.js';
 import { t, resolveLang } from '../../i18n.js';
 import { renderSkinControls } from '../skin-editor.js';
+import { nextRadioIndex } from '../../skin-config.js';
 
 class SoccerLiveTeamCardEditor extends LitElement {
   static get properties() {
@@ -126,6 +127,16 @@ class SoccerLiveTeamCardEditor extends LitElement {
     this._fireConfigChanged({ ...this._config, [key]: value });
   }
 
+  _triKeydown(ev) {
+    const btns = [...ev.currentTarget.querySelectorAll('button')];
+    const cur = btns.indexOf(ev.target);
+    const idx = nextRadioIndex(cur, btns.length, ev.key);
+    if (idx === cur) return;
+    ev.preventDefault();
+    btns[idx].focus();
+    btns[idx].click();
+  }
+
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
@@ -143,7 +154,6 @@ class SoccerLiveTeamCardEditor extends LitElement {
     // Shared compact default from the sensor, for the compact tri-state's "inherit" hint.
     const sharedDefaults = this.hass?.states?.[currentEntity]?.attributes?.card_defaults || {};
     const sharedCompact = sharedDefaults.compact;
-    const sharedLang = sharedDefaults.language;
     const compactVal = this._config.compact;
 
     return html`
@@ -217,14 +227,14 @@ class SoccerLiveTeamCardEditor extends LitElement {
         </div>
         <div class="option">
           <label>${this._t('editor.compact')}</label>
-          <div class="tri" role="group" aria-label=${this._t('editor.compact')}>
-            <button type="button" class=${compactVal === undefined ? 'sel' : ''} aria-pressed=${compactVal === undefined}
+          <div class="tri" role="radiogroup" aria-label=${this._t('editor.compact')} @keydown=${this._triKeydown}>
+            <button type="button" role="radio" class=${compactVal === undefined ? 'sel' : ''} aria-checked=${compactVal === undefined} tabindex=${compactVal === undefined ? '0' : '-1'}
               @click=${() => { const c = { ...this._config }; delete c.compact; this._fireConfigChanged(c); }}>
               ${this._t('editor.inherit')}${sharedCompact !== undefined ? ` (${sharedCompact ? this._t('editor.on') : this._t('editor.off')})` : ''}
             </button>
-            <button type="button" class=${compactVal === true ? 'sel' : ''} aria-pressed=${compactVal === true}
+            <button type="button" role="radio" class=${compactVal === true ? 'sel' : ''} aria-checked=${compactVal === true} tabindex=${compactVal === true ? '0' : '-1'}
               @click=${() => this._fireConfigChanged({ ...this._config, compact: true })}>${this._t('editor.on')}</button>
-            <button type="button" class=${compactVal === false ? 'sel' : ''} aria-pressed=${compactVal === false}
+            <button type="button" role="radio" class=${compactVal === false ? 'sel' : ''} aria-checked=${compactVal === false} tabindex=${compactVal === false ? '0' : '-1'}
               @click=${() => this._fireConfigChanged({ ...this._config, compact: false })}>${this._t('editor.off')}</button>
           </div>
         </div>
@@ -241,17 +251,7 @@ class SoccerLiveTeamCardEditor extends LitElement {
           </select>
         </div>
         <div>
-          <label class="field-label">${this._t('editor.language')}</label>
-          <select data-config-value="language" @change=${this._selectChanged}>
-            <option value="" ?selected=${!this._config.language}>${sharedLang ? `${sharedLang} · ${this._t('skin.shared')}` : 'Auto (HA locale)'}</option>
-            <option value="en" ?selected=${this._config.language === 'en'}>English</option>
-            <option value="it" ?selected=${this._config.language === 'it'}>Italiano</option>
-            <option value="fr" ?selected=${this._config.language === 'fr'}>Français</option>
-            <option value="es" ?selected=${this._config.language === 'es'}>Español</option>
-            <option value="nl" ?selected=${this._config.language === 'nl'}>Nederlands</option>
-            <option value="de" ?selected=${this._config.language === 'de'}>Deutsch</option>
-            <option value="pt" ?selected=${this._config.language === 'pt'}>Português</option>
-          </select>
+          ${renderLanguageControl(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
       </div>
     `;

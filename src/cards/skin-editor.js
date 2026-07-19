@@ -2,6 +2,7 @@ import { html } from 'lit';
 import {
   APPEARANCE_OPTIONS, PALETTE_OPTIONS, PALETTE_SWATCHES,
   resolveAppearance, resolvePalette, mergeCardDefaults,
+  buildMigratedConfig, nextRadioIndex,
 } from '../skin-config.js';
 import { normalizeCssColor, contrastRatio } from '../skin-colors.js';
 
@@ -89,24 +90,18 @@ export function renderSkinControls(host, config, t) {
   const selectedPalette = legacySkin ? palette : config?.palette;
   // Picking a value on a legacy-skin card migrates it to explicit appearance +
   // palette and drops `skin`, so the new fields aren't shadowed by the old one.
-  const migrateFromSkin = (over) => {
-    const next = { ...config, appearance, palette, ...over };
-    delete next.skin;
-    fireConfig(host, next);
-  };
+  const migrateFromSkin = (over) => fireConfig(host, buildMigratedConfig(config, appearance, palette, over));
   const pickAppearance = (val) => (legacySkin ? migrateFromSkin({ appearance: val }) : setField('appearance', val));
   const pickPalette = (val) => (legacySkin ? migrateFromSkin({ palette: val }) : setField('palette', val));
   // Arrow-key navigation across a radiogroup: move focus and select the sibling.
   const onGroupKeydown = (e) => {
-    if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(e.key)) return;
-    e.preventDefault();
     const btns = [...e.currentTarget.querySelectorAll('button')];
-    const idx = btns.indexOf(e.target);
-    if (idx < 0) return;
-    const dir = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1;
-    const next = btns[(idx + dir + btns.length) % btns.length];
-    next.focus();
-    next.click();
+    const cur = btns.indexOf(e.target);
+    const idx = nextRadioIndex(cur, btns.length, e.key);
+    if (idx === cur) return;
+    e.preventDefault();
+    btns[idx].focus();
+    btns[idx].click();
   };
 
   // Contrast check for a custom palette: warn if text, secondary text or the

@@ -11,6 +11,37 @@ export const editorStyles = css`
   .field-warning { background: rgba(255, 152, 0, 0.1); border-left: 3px solid #ff9800; padding: 8px 12px; border-radius: 2px; font-size: 12px; margin-top: 8px; }
 `;
 
+// Languages offered by the cards (besides "" = inherit / HA locale).
+const LANGUAGE_CODES = ['en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
+
+function _fireConfig(host, next) {
+  if (typeof host._fireConfigChanged === 'function') return host._fireConfigChanged(next);
+  if (typeof host._fire === 'function') return host._fire(next);
+  host._config = next;
+  host.dispatchEvent(new CustomEvent('config-changed', { detail: { config: next }, bubbles: true, composed: true }));
+  host.requestUpdate?.();
+}
+
+/**
+ * Shared language selector. The empty option inherits the language (the sensor's
+ * shared card_defaults.language if set, else the HA locale) and shows that
+ * explicitly, e.g. "nl · shared", consistently across every card editor.
+ */
+export function renderLanguageControl(host, config, t) {
+  const label = (k) => (typeof t === 'function' ? t(k) : k);
+  const entityId = config?.entity || (config?.entities && config.entities[0]);
+  const sharedLang = entityId && host?.hass?.states?.[entityId]?.attributes?.card_defaults?.language;
+  const current = config?.language || '';
+  const autoLabel = sharedLang ? `${sharedLang} · ${label('skin.shared')}` : label('lang.auto');
+  return html`
+    <label class="field-label">${label('editor.language')}</label>
+    <select @change=${(e) => _fireConfig(host, { ...config, language: e.target.value })}>
+      <option value="" ?selected=${!current}>${autoLabel}</option>
+      ${LANGUAGE_CODES.map((l) => html`<option value="${l}" ?selected=${current === l}>${l}</option>`)}
+    </select>
+  `;
+}
+
 export const renderFieldGroup = (label, hint, content) => html`
   <div class="editor-field">
     <label class="field-label">${label}</label>

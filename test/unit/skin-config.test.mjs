@@ -6,9 +6,33 @@ import {
   paletteUsesCustomColors,
   mergeCardDefaults,
   resolveCompact,
+  buildMigratedConfig,
+  nextRadioIndex,
   APPEARANCES,
   PALETTES,
 } from '../../src/skin-config.js';
+
+test('buildMigratedConfig: seeds both axes from effective, applies pick, drops skin', () => {
+  // Legacy skin:red-white -> effective dark + red-white. Picking appearance=light.
+  const next = buildMigratedConfig({ skin: 'red-white', entity: 'sensor.x' }, 'dark', 'red-white', { appearance: 'light' });
+  assert.equal(next.appearance, 'light');   // the pick
+  assert.equal(next.palette, 'red-white');  // seeded from effective
+  assert.equal(next.skin, undefined);       // legacy skin removed
+  assert.equal(next.entity, 'sensor.x');    // other keys kept
+  // Picking a palette keeps the effective appearance.
+  const next2 = buildMigratedConfig({ skin: 'red-white' }, 'dark', 'red-white', { palette: 'blue' });
+  assert.equal(next2.appearance, 'dark');
+  assert.equal(next2.palette, 'blue');
+});
+
+test('nextRadioIndex: wraps forward/back, ignores non-arrow keys', () => {
+  assert.equal(nextRadioIndex(0, 3, 'ArrowRight'), 1);
+  assert.equal(nextRadioIndex(2, 3, 'ArrowRight'), 0);   // wrap
+  assert.equal(nextRadioIndex(0, 3, 'ArrowLeft'), 2);    // wrap back
+  assert.equal(nextRadioIndex(1, 3, 'ArrowUp'), 0);
+  assert.equal(nextRadioIndex(1, 3, 'Enter'), 1);        // unchanged
+  assert.equal(nextRadioIndex(-1, 3, 'ArrowRight'), -1); // no focused button
+});
 
 test('resolveCompact: card value wins, else inherits shared', () => {
   assert.equal(resolveCompact({ compact: true }, { compact: false }), true);

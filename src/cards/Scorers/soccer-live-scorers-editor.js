@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
+import { renderLanguageControl } from '../editor-helper.js';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
 
-const LANGS  = ['auto', 'en', 'nl', 'de', 'pt', 'fr', 'es', 'it'];
 
 class SoccerLiveScorersEditor extends LitElement {
   static get properties() {
@@ -179,14 +179,7 @@ class SoccerLiveScorersEditor extends LitElement {
         </div>
 
         <div>
-          <label class="field-label">${this._t('editor.language')}</label>
-          <select data-config-value="language" @change=${this._selectChanged}>
-            ${LANGS.map(l => html`
-              <option value="${l === 'auto' ? '' : l}" ?selected=${(this._config.language || '') === (l === 'auto' ? '' : l)}>
-                ${l}
-              </option>
-            `)}
-          </select>
+          ${renderLanguageControl(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
       </div>
     `;

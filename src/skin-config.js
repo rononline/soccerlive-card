@@ -130,3 +130,22 @@ export function resolveCompact(config, defaults) {
   if (config && config.compact !== undefined) return config.compact === true;
   return !!(defaults && defaults.compact === true);
 }
+
+/**
+ * Build the config for migrating a legacy `skin` to explicit appearance+palette:
+ * seed both axes from the effective values, apply the picked override, and drop
+ * `skin` so it no longer shadows the new fields.
+ */
+export function buildMigratedConfig(config, effectiveAppearance, effectivePalette, over) {
+  const next = { ...(config || {}), appearance: effectiveAppearance, palette: effectivePalette, ...(over || {}) };
+  delete next.skin;
+  return next;
+}
+
+/** Next index in a radio group for an arrow key (wraps around). */
+export function nextRadioIndex(idx, count, key) {
+  if (idx < 0 || count <= 0) return idx;
+  if (key === 'ArrowRight' || key === 'ArrowDown') return (idx + 1) % count;
+  if (key === 'ArrowLeft' || key === 'ArrowUp') return (idx - 1 + count) % count;
+  return idx;
+}

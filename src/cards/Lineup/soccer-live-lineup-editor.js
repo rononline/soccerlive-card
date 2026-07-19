@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from '../../i18n.js';
-import { editorStyles } from '../editor-helper.js';
+import { editorStyles, renderLanguageControl } from '../editor-helper.js';
 import { renderSkinControls } from '../skin-editor.js';
 
 class SoccerLiveLineupEditor extends LitElement {
@@ -118,17 +118,7 @@ class SoccerLiveLineupEditor extends LitElement {
           ${renderSkinControls(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
         <div>
-          <label class="field-label">${this._t('editor.language')}</label>
-          <select data-config-value="language" @change=${this._selectChanged}>
-            <option value="" ?selected=${!this._config.language}>Auto (HA locale)</option>
-            <option value="en" ?selected=${this._config.language === 'en'}>English</option>
-            <option value="it" ?selected=${this._config.language === 'it'}>Italiano</option>
-            <option value="fr" ?selected=${this._config.language === 'fr'}>Français</option>
-            <option value="es" ?selected=${this._config.language === 'es'}>Español</option>
-            <option value="nl" ?selected=${this._config.language === 'nl'}>Nederlands</option>
-            <option value="de" ?selected=${this._config.language === 'de'}>Deutsch</option>
-            <option value="pt" ?selected=${this._config.language === 'pt'}>Português</option>
-          </select>
+          ${renderLanguageControl(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>
       </div>
     `;
