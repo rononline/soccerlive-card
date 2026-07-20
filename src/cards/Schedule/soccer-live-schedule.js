@@ -5,6 +5,7 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { renderLoading } from "../loading-spinner.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
+import { pickNextMatch, nextWhenKind, computeForm, standingsRows } from "../shared-minimal-model.js";
 
 // Text-size presets -> [font-size px, vertical row padding px].
 const TEXT_SIZES = { xs: [11, 3], small: [12.5, 5], normal: [14, 7], large: [16, 9] };
@@ -83,23 +84,15 @@ class SoccerLiveScheduleCard extends LitElement {
     return rows.map((m, i) => this._row(m, i, dateFmt, showComp));
   }
 
-  _nextMatch(attrs) {
-    const up = attrs.upcoming_matches || [];
-    if (up.length) return up[0];
-    const all = attrs.matches || [];
-    return all.find((m) => m.state === "in") || all.find((m) => m.state === "pre") || attrs.next_match || null;
-  }
-
   _renderNext(attrs, lang) {
-    const m = this._nextMatch(attrs);
+    const m = pickNextMatch(attrs);
     if (!m) return null;
+    const kind = nextWhenKind(m);
     let when;
-    if (m.state === "in") when = html`<span class="mn-live">${this._t("status.live")} ${m.home_score ?? ""}–${m.away_score ?? ""}</span>`;
-    else if (m.time_tbd) when = this._relativeDay(m) + " · " + this._t("generic.unknown");
-    else {
-      const t = (m.date || "").split(" ")[1] || "";
-      when = this._relativeDay(m) + (t ? " · " + t : "");
-    }
+    if (kind === "live") when = html`<span class="mn-live">${this._t("status.live")} ${m.home_score ?? ""}–${m.away_score ?? ""}</span>`;
+    else if (kind === "tbd") when = this._relativeDay(m) + " · " + this._t("generic.unknown");
+    else if (kind === "time") when = this._relativeDay(m) + " · " + (m.date || "").split(" ")[1];
+    else when = this._relativeDay(m);
     return html`
       <div class="mn-next">
         <div class="mn-teams">${m.home_team} <span class="mn-dash">–</span> ${m.away_team}</div>
@@ -121,9 +114,8 @@ class SoccerLiveScheduleCard extends LitElement {
   }
 
   _renderStandings(attrs, lang) {
-    const table = attrs.standings || (attrs.standings_groups && attrs.standings_groups[0] && attrs.standings_groups[0].standings) || [];
-    if (!table.length) return null;
-    const rows = table.slice(0, this._config.max_matches ?? 20);
+    const rows = standingsRows(attrs, this._config.max_matches ?? 20);
+    if (!rows.length) return null;
     const my = (this._config.my_team || attrs.team_name || "").toLowerCase();
     return html`
       <div class="mn-tbl-head">
@@ -133,43 +125,27 @@ class SoccerLiveScheduleCard extends LitElement {
         <span class="num">${this._t("mini.pts") || "Pts"}</span>
       </div>
       ${rows.map((r, i) => {
-        const played = (r.played != null) ? r.played : ((r.wins || 0) + (r.draws || 0) + (r.losses || 0));
-        const gd = r.goal_difference;
-        const mine = my && (r.team_name || "").toLowerCase().includes(my);
+        const mine = my && (r.team || "").toLowerCase().includes(my);
         return html`
           <div class="mn-tbl-row ${i % 2 ? "odd" : ""} ${mine ? "mine" : ""}">
-            <span class="mn-rank">${r.rank ?? i + 1}</span>
-            <span class="mn-team">${r.team_name || r.team || ""}</span>
-            <span class="num">${played}</span>
-            <span class="num">${gd > 0 ? "+" + gd : (gd ?? "")}</span>
+            <span class="mn-rank">${r.rank}</span>
+            <span class="mn-team">${r.team}</span>
+            <span class="num">${r.played}</span>
+            <span class="num">${r.gd > 0 ? "+" + r.gd : (r.gd ?? "")}</span>
             <span class="num pts">${r.points ?? ""}</span>
           </div>`;
       })}`;
   }
 
   _renderForm(attrs, lang) {
-    const tracked = (this._config.my_team || attrs.team_name || "").toLowerCase();
-    const finished = (attrs.previous_matches && attrs.previous_matches.length)
-      ? attrs.previous_matches
-      : (attrs.matches || []).filter((m) => m.state === "post");
-    const results = finished.map((m) => {
-      const isHome = (m.home_team || "").toLowerCase().includes(tracked);
-      const isAway = (m.away_team || "").toLowerCase().includes(tracked);
-      if (!isHome && !isAway) return null;
-      const hs = parseInt(m.home_score), as = parseInt(m.away_score);
-      if (isNaN(hs) || isNaN(as)) return null;
-      if (hs === as) return "D";
-      return ((isHome && hs > as) || (isAway && as > hs)) ? "W" : "L";
-    }).filter(Boolean).slice(0, this._config.max_matches ?? 10);
-    if (results.length < 1) return null;
-    const w = results.filter((r) => r === "W").length;
-    const d = results.filter((r) => r === "D").length;
-    const l = results.filter((r) => r === "L").length;
+    const team = this._config.my_team || attrs.team_name || "";
+    const form = computeForm(attrs, team, this._config.max_matches ?? 10);
+    if (!form) return null;
     return html`
       <div class="mn-form">
-        <span class="mn-form-team">${this._config.my_team || attrs.team_name || ""}</span>
-        <span class="mn-form-dots">${results.map((r) => html`<span class="mn-fd ${r.toLowerCase()}">${this._t("form." + r)}</span>`)}</span>
-        <span class="mn-form-sum">${w}${this._t("form.W")} ${d}${this._t("form.D")} ${l}${this._t("form.L")}</span>
+        <span class="mn-form-team">${team}</span>
+        <span class="mn-form-dots">${form.results.map((r) => html`<span class="mn-fd ${r.toLowerCase()}">${this._t("form." + r)}</span>`)}</span>
+        <span class="mn-form-sum">${form.w}${this._t("form.W")} ${form.d}${this._t("form.D")} ${form.l}${this._t("form.L")}</span>
       </div>`;
   }
 

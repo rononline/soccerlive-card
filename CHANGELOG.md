@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.21.182 (2026-07-20)
+- Minimal card `next` variant: a live match now takes priority over the next upcoming match, so the current live score is shown instead of the following fixture
+- Minimal card `form` variant: fixed a case where, without a tracked team, every match could be counted as the team's (an empty name matched all) — it now shows the empty state instead
+- Minimal card logic (live priority, form, standings, variant/sensor rules) moved to a pure `shared-minimal-model.js` with unit tests
+- Editor: the variant list is now limited to what the sensor supports (a standings sensor only offers `standings`), and `max_matches` is hidden for the `next` variant where it has no effect
+- Added Playwright snapshots for the four Minimal variants at 320px; the Minimal labels are now translated in all seven languages; the visual workflow also triggers on package/build changes
+
 ## v3.21.181 (2026-07-20)
 - Renamed the **Schedule** card to **Minimal** and gave it a `variant` selector, so several minimalist text views live under one entry in the card picker instead of cluttering the list: `fixtures` (the schedule list, default), `next` (single-line next match with a relative date/countdown or live score), `standings` (plain text table: rank · team · played · goal difference · points, your team bold), and `form` (recent W/D/L for your team). All share the `text_size`, `my_team`, `hide_header` and skin/language options. Existing `card_type: schedule` configs keep working (aliased to `minimal`). Variant labels + a text mini-table header added in English and Dutch
 

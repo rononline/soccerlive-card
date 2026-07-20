@@ -97,3 +97,13 @@ test('editor — multi-entity shows the shared source', async ({ page }) => {
   });
   await expect(target(page)).toHaveScreenshot('editor-multi-via.png');
 });
+
+// --- Minimal card variants (narrow / 320px) ---
+
+for (const variant of ['fixtures', 'next', 'standings', 'form']) {
+  test(`minimal — ${variant} at 320px`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 900 });
+    await open(page, { mode: 'minimal', variant, my_team: 'Feyenoord' });
+    await expect(target(page)).toHaveScreenshot(`minimal-${variant}-320.png`);
+  });
+}

@@ -10,7 +10,7 @@
        mobile vs desktop layouts actually differ. */
     #target { display: block; padding: 12px; box-sizing: border-box; }
     #target.card { width: 404px; }
-    #target.editor { width: 100%; }
+    #target.editor, #target.minimal { width: 100%; }
     * { scrollbar-width: none; }
   </style>
   <!-- Built bundle registers all soccer-live-* custom elements. -->
@@ -48,6 +48,12 @@
           home_color: "#e50000", away_color: "#ce1126", date: "16-08-2026 14:30", league_abbrev: "ERE" },
       ],
       league_name: "Eredivisie",
+      standings: [
+        { rank: 1, team_name: "PSV", wins: 3, draws: 0, losses: 0, points: "9", goal_difference: 7 },
+        { rank: 2, team_name: "Feyenoord", wins: 2, draws: 1, losses: 0, points: "7", goal_difference: 5 },
+        { rank: 3, team_name: "Ajax", wins: 2, draws: 0, losses: 1, points: "6", goal_difference: 2 },
+        { rank: 4, team_name: "AZ Alkmaar", wins: 1, draws: 1, losses: 1, points: "4", goal_difference: -1 },
+      ],
     };
 
     const params = new URLSearchParams(location.search);
@@ -92,13 +98,15 @@
     // Build the config from URL params (only set the axes that are provided).
     const config = { show_previous_matches: true, show_form_trend: true };
     if (entities) config.entities = entities; else config.entity = "sensor.preview_team";
-    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language"]) {
+    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language", "variant", "text_size"]) {
       if (params.has(key)) config[key] = params.get(key);
     }
 
-    const mode = params.get("mode") || "card";       // card | editor
-    document.getElementById("target").className = mode === "editor" ? "editor" : "card";
-    const tag = mode === "editor" ? "soccer-live-team-editor" : "soccer-live-team";
+    const mode = params.get("mode") || "card";       // card | editor | minimal
+    document.getElementById("target").className = mode;
+    const tag = mode === "editor" ? "soccer-live-team-editor"
+      : mode === "minimal" ? "soccer-live-schedule"
+      : "soccer-live-team";
     const el = document.createElement(tag);
     el.setConfig(mode === "editor" ? { type: "custom:soccer-live-card", card_type: "team", ...config } : config);
     el.hass = hass;

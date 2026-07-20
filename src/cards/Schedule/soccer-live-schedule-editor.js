@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { editorStyles, renderLanguageControl } from "../editor-helper.js";
 import { renderSkinControls } from "../skin-editor.js";
+import { variantsForSensorType } from "../shared-minimal-model.js";
 
 class SoccerLiveScheduleEditor extends LitElement {
   static get properties() { return { _config: { type: Object }, hass: { type: Object } }; }
@@ -44,6 +45,11 @@ class SoccerLiveScheduleEditor extends LitElement {
     const current = this._config.entity || "";
     const show = this._config.show || "upcoming";
     const variant = this._config.variant || "fixtures";
+    // Offer only variants that make sense for the selected sensor (a standings
+    // sensor has no fixtures for next/form); keep the current one if it's set.
+    const sensorType = this.hass?.states?.[current]?.attributes?.sensor_type;
+    const allowed = variantsForSensorType(sensorType);
+    const variantOpts = allowed.includes(variant) ? allowed : [variant, ...allowed];
     return html`
       <div class="card-config">
         <h3>${this._t("editor.sensor")}</h3>
@@ -59,7 +65,7 @@ class SoccerLiveScheduleEditor extends LitElement {
         <div>
           <label class="field-label">${this._t("minimal.variant")}</label>
           <select data-config-value="variant" @change=${this._selectChanged}>
-            ${["fixtures", "next", "standings", "form"].map((v) => html`
+            ${variantOpts.map((v) => html`
               <option value="${v}" ?selected=${variant === v}>${this._t("minimal.variant_" + v)}</option>`)}
           </select>
         </div>
@@ -72,11 +78,12 @@ class SoccerLiveScheduleEditor extends LitElement {
             <option value="all" ?selected=${show === "all"}>${this._t("schedule.show_all")}</option>
           </select>
         </div>` : ""}
+        ${variant !== "next" ? html`
         <div>
           <label class="field-label">${this._t("editor.max_matches")}</label>
           <input type="number" min="1" max="50" data-config-value="max_matches"
             .value=${this._config.max_matches ?? 15} @change=${this._numberChanged} />
-        </div>
+        </div>` : ""}
         <div>
           <label class="field-label">${this._t("editor.text_size")}</label>
           <select data-config-value="text_size" @change=${this._selectChanged}>
