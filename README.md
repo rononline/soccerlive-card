@@ -10,6 +10,18 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 
 ---
 
+## 🚀 Quick start
+
+1. Install the **[Soccer Live integration](https://github.com/rononline/soccerlive)** via HACS and add it: choose **ESPN** (free, no API key) → **Team** → your league and team (for example *Eredivisie → Feyenoord*).
+2. Install **Soccer Live Card** via HACS (see [Installation](#-installation-via-hacs) below).
+3. On your dashboard: **Add card → Soccer Live Card**.
+4. Select your team's **`next_*`** entity (`soccer_live_next_{competition}_{team}`) — that's the sensor the Team, Countdown and Match Center cards use.
+5. Done — the Team card renders automatically. Switch the **card type** in the editor to explore the others.
+
+![Team card](images/team.png)
+
+---
+
 ## ✨ Cards
 
 All cards share the same wrapper — add one **Soccer Live Card** via the HA picker, then choose the type in the editor.
