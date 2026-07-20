@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.184 (2026-07-20)
+- Custom palette: added a **background gradient** (`gradient_from` / `gradient_to`, optional `gradient_angle`, default 135°) and a **crest watermark** (`background_image` URL, `watermark_opacity`, `watermark_size`), so cards can get a club-branded look — a red gradient with a faint centred crest — matching a custom-styled dashboard. Applied through the shared card background, so it works on every card. Editor fields added under the custom palette's advanced section (EN/NL); pure `buildGradient` helper with a test; visual snapshot added
+
 ## v3.21.183 (2026-07-20)
 - Minimal card standings: an empty `standings` array no longer blocks a populated `standings_groups` fallback
 - Minimal card team recognition: matching now prefers team ids and, for names, uses whole-word/normalised comparison instead of substring — so "Inter" no longer matches "Internacional" (genuinely ambiguous cases like "Inter" vs "Inter Miami" still need an id). The form variant uses the sensor's team_id when no name is typed

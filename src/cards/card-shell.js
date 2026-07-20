@@ -19,6 +19,19 @@ export const soccerCardShellStyles = css`
     pointer-events: none;
     z-index: 0;
   }
+  /* Optional crest watermark (custom palette background_image), centred and faint
+     behind the content, like a club-branded card. Absent by default. */
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--cl-bg-image, none);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: var(--cl-bg-image-size, 80%) auto;
+    opacity: var(--cl-bg-image-opacity, 0.07);
+    pointer-events: none;
+  }
 
   .bg-logos {
     position: absolute;

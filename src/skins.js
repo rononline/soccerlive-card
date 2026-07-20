@@ -1,5 +1,5 @@
 import { css } from "lit-element";
-import { normalizeCssColor, hexToRgbTriplet, getAutoColors } from "./skin-colors.js";
+import { normalizeCssColor, hexToRgbTriplet, getAutoColors, buildGradient } from "./skin-colors.js";
 import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults } from "./skin-config.js";
 
 // Two independent axes drive the look:
@@ -206,7 +206,12 @@ const CUSTOM_COLOR_KEYS = [
   ['chip_border_color', '--cl-chip-border', null],
 ];
 
-const CUSTOM_COLOR_VARS = new Set(CUSTOM_COLOR_KEYS.flatMap(([, colorVar, rgbVar]) => rgbVar ? [colorVar, rgbVar] : [colorVar]));
+// Extra custom vars (gradient/watermark) that aren't a plain colour mapping.
+const CUSTOM_EXTRA_VARS = ['--cl-bg', '--cl-bg-image', '--cl-bg-image-opacity', '--cl-bg-image-size'];
+const CUSTOM_COLOR_VARS = new Set(
+  CUSTOM_COLOR_KEYS.flatMap(([, colorVar, rgbVar]) => rgbVar ? [colorVar, rgbVar] : [colorVar])
+    .concat(CUSTOM_EXTRA_VARS)
+);
 
 function applyCustomPaletteVars(el, config, palette) {
   for (const cssVar of CUSTOM_COLOR_VARS) el.style.removeProperty(cssVar);
@@ -224,6 +229,19 @@ function applyCustomPaletteVars(el, config, palette) {
     el.style.setProperty(colorVar, color);
     const rgb = rgbVar ? hexToRgbTriplet(color) : null;
     if (rgb) el.style.setProperty(rgbVar, rgb);
+  }
+
+  // A two-colour gradient background (overrides the flat background_color).
+  const gradient = buildGradient(mergedConfig.gradient_from, mergedConfig.gradient_to, mergedConfig.gradient_angle);
+  if (gradient) el.style.setProperty('--cl-bg', gradient);
+
+  // A faint centred crest/watermark image behind the content.
+  const img = typeof mergedConfig.background_image === 'string' ? mergedConfig.background_image.trim() : '';
+  if (img) {
+    el.style.setProperty('--cl-bg-image', `url("${img}")`);
+    const op = mergedConfig.watermark_opacity;
+    if (op !== undefined && op !== null && op !== '') el.style.setProperty('--cl-bg-image-opacity', String(op));
+    if (mergedConfig.watermark_size) el.style.setProperty('--cl-bg-image-size', String(mergedConfig.watermark_size));
   }
 }
 

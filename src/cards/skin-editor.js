@@ -30,7 +30,9 @@ const ADVANCED_FIELDS = [
   ['divider_color', 'skin.custom_divider'],
   ['chip_color', 'skin.custom_chip'],
 ];
-const RESET_KEYS = [...SIMPLE_FIELDS, ...ADVANCED_FIELDS].map(([k]) => k);
+// Background gradient + crest watermark (a club-branded look).
+const BACKGROUND_KEYS = ['gradient_from', 'gradient_to', 'gradient_angle', 'background_image', 'watermark_opacity', 'watermark_size'];
+const RESET_KEYS = [...SIMPLE_FIELDS, ...ADVANCED_FIELDS].map(([k]) => k).concat(BACKGROUND_KEYS);
 
 // WCAG AA: 4.5 for normal text, 3 for large text / UI accents.
 const MIN_TEXT_CONTRAST = 4.5;
@@ -160,6 +162,10 @@ export function renderSkinControls(host, config, t) {
       .skin-adv { margin-top: 8px; }
       .skin-adv summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--secondary-text-color); margin: 4px 0 8px; }
       .skin-warn { display: flex; gap: 6px; align-items: center; margin-top: 8px; font-size: 12px; color: var(--warning-color, #f59e0b); }
+      .skin-bg-title { font-size: 11px; font-weight: 700; color: var(--secondary-text-color); margin: 10px 0 6px; }
+      .skin-bg-field { display: grid; gap: 4px; margin-top: 8px; }
+      .skin-bg-field span { font-size: 11px; font-weight: 600; color: var(--secondary-text-color); }
+      .skin-bg-field input { padding: 8px 9px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: var(--card-background-color, #1c1c1c); color: var(--primary-text-color, #fff); font-size: 13px; box-sizing: border-box; }
       .skin-reset { margin-top: 10px; justify-self: start; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: transparent; color: var(--primary-text-color, #fff); font-size: 12px; cursor: pointer; }
       @media (max-width: 520px) { .custom-skin-fields { grid-template-columns: 1fr; } }
     </style>
@@ -208,6 +214,21 @@ export function renderSkinControls(host, config, t) {
             <div class="custom-skin-fields">
               ${ADVANCED_FIELDS.map(([key, lkey]) => colorField(config, key, lkey, label, setField))}
             </div>
+            <div class="skin-bg-title">${label('skin.background')}</div>
+            <div class="custom-skin-fields">
+              ${colorField(config, 'gradient_from', 'skin.gradient_from', label, setField)}
+              ${colorField(config, 'gradient_to', 'skin.gradient_to', label, setField)}
+            </div>
+            <label class="skin-bg-field">
+              <span>${label('skin.watermark_url')}</span>
+              <input type="text" .value=${config?.background_image || ''} placeholder="/local/crest.png"
+                @change=${(e) => setField('background_image', e.target.value)}>
+            </label>
+            <label class="skin-bg-field">
+              <span>${label('skin.watermark_opacity')}</span>
+              <input type="number" min="0" max="1" step="0.01" .value=${config?.watermark_opacity ?? ''} placeholder="0.07"
+                @change=${(e) => setField('watermark_opacity', e.target.value === '' ? '' : Number(e.target.value))}>
+            </label>
           </details>
           <button type="button" class="skin-reset" @click=${() => {
             const next = { ...config };

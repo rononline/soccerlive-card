@@ -8,7 +8,15 @@ import {
   lighten,
   getAutoColors,
   contrastRatio,
+  buildGradient,
 } from '../../src/skin-colors.js';
+
+test('buildGradient: composes a linear-gradient, default 135deg, null on bad input', () => {
+  assert.equal(buildGradient('#8e0e00', '#1f1c18'), 'linear-gradient(135deg, #8e0e00, #1f1c18)');
+  assert.equal(buildGradient('#8e0e00', '#1f1c18', '90deg'), 'linear-gradient(90deg, #8e0e00, #1f1c18)');
+  assert.equal(buildGradient('#8e0e00', 'notacolor'), null);
+  assert.equal(buildGradient('', '#1f1c18'), null);
+});
 
 test('contrastRatio: 21 for black/white, low for similar, null for non-hex', () => {
   assert.equal(Math.round(contrastRatio('#000000', '#ffffff')), 21);

@@ -107,6 +107,17 @@
       if (params.has(key)) config[key] = params.get(key);
     }
 
+    // A club-branded custom palette: red gradient + a faint crest watermark.
+    if (params.has("branded")) {
+      config.palette = "custom";
+      config.accent_color = "#ff2222";
+      config.text_color = "#ffffff";
+      config.gradient_from = "#8e0e00";
+      config.gradient_to = "#1f1c18";
+      config.background_image = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='none' stroke='white' stroke-width='4'/><text x='50' y='66' font-size='60' text-anchor='middle' fill='white' font-family='serif'>F</text></svg>";
+      config.watermark_opacity = 0.12;
+    }
+
     const mode = params.get("mode") || "card";       // card | editor | minimal
     document.getElementById("target").className = mode;
     const tag = mode === "editor" ? "soccer-live-team-editor"

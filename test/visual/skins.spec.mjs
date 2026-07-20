@@ -113,3 +113,8 @@ test('minimal — next prefers a live match (320px)', async ({ page }) => {
   await open(page, { mode: 'minimal', variant: 'next', live: '1', my_team: 'Feyenoord' });
   await expect(target(page)).toHaveScreenshot('minimal-next-live-320.png');
 });
+
+test('team card — branded custom gradient + crest watermark', async ({ page }) => {
+  await open(page, { mode: 'card', branded: '1' });
+  await expect(target(page)).toHaveScreenshot('team-branded.png');
+});

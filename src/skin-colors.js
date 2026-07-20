@@ -75,6 +75,16 @@ export function isUsableAccent(hex) {
   return L > 0.05 && L < 0.92;
 }
 
+/** A `linear-gradient(angle, from, to)` from two normalised colours, or null if
+ * either colour is invalid. Angle defaults to 135deg (diagonal). */
+export function buildGradient(from, to, angle) {
+  const f = normalizeCssColor(from);
+  const t = normalizeCssColor(to);
+  if (!f || !t) return null;
+  const a = (typeof angle === "string" && angle.trim()) ? angle.trim() : "135deg";
+  return `linear-gradient(${a}, ${f}, ${t})`;
+}
+
 /** Lighten a #rrggbb colour toward white by `amount` (0..1). */
 export function lighten(hex, amount) {
   if (!/^#[0-9a-f]{6}$/i.test(hex)) return hex;
