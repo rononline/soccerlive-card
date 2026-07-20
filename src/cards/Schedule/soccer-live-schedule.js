@@ -6,6 +6,9 @@ import { renderLoading } from "../loading-spinner.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
 
+// Text-size presets -> [font-size px, vertical row padding px].
+const TEXT_SIZES = { xs: [11, 3], small: [12.5, 5], normal: [14, 7], large: [16, 9] };
+
 // Minimalist fixtures list: date · time · home – away · competition, as a plain
 // zebra-striped text table (no logos or colours).
 class SoccerLiveScheduleCard extends LitElement {
@@ -48,10 +51,16 @@ class SoccerLiveScheduleCard extends LitElement {
     const showComp = this._config.show_competition !== false;
     const dateFmt = new Intl.DateTimeFormat(lang, { weekday: "short", day: "2-digit", month: "short" });
 
+    // Text size: a preset (xs/small/normal/large) or a raw font-size in px.
+    const ts = this._config.text_size;
+    const [fs, pad] = typeof ts === "number"
+      ? [ts, Math.max(2, Math.round(ts * 0.42))]
+      : (TEXT_SIZES[ts] || TEXT_SIZES.normal);
+
     return html`
       <ha-card>
         <div class="hero-bg"></div>
-        <div class="sch ${showComp ? "" : "no-comp"}">
+        <div class="sch ${showComp ? "" : "no-comp"}" style="--sch-fs:${fs}px;--sch-pad:${pad}px">
           ${!hideHeader ? html`
             <div class="sch-title">
               ${displayCompetitionName(attrs.league_name || attrs.team_name || "", lang) || this._t("card.schedule")}
@@ -101,7 +110,7 @@ class SoccerLiveScheduleCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 16px; overflow: hidden; padding: 0; }
-      .sch { position: relative; z-index: 1; padding: 6px 0; font-variant-numeric: tabular-nums; }
+      .sch { position: relative; z-index: 1; padding: 6px 0; font-variant-numeric: tabular-nums; font-size: var(--sch-fs, 14px); }
       .sch-title {
         font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
         color: var(--cl-text-2, #94a3b8); padding: 8px 14px 6px;
@@ -110,7 +119,7 @@ class SoccerLiveScheduleCard extends LitElement {
         display: grid;
         grid-template-columns: minmax(72px, auto) minmax(52px, auto) 1fr auto 1fr auto;
         align-items: baseline; gap: 10px;
-        padding: 7px 14px; font-size: 14px;
+        padding: var(--sch-pad, 7px) 14px; font-size: var(--sch-fs, 14px);
       }
       .sch.no-comp .sch-row { grid-template-columns: minmax(72px, auto) minmax(52px, auto) 1fr auto 1fr; }
       .sch-row.odd { background: var(--cl-surface, rgba(255,255,255,0.04)); }

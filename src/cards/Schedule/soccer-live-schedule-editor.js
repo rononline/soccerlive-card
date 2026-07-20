@@ -69,6 +69,13 @@ class SoccerLiveScheduleEditor extends LitElement {
             .value=${this._config.max_matches ?? 15} @change=${this._numberChanged} />
         </div>
         <div>
+          <label class="field-label">${this._t("editor.text_size")}</label>
+          <select data-config-value="text_size" @change=${this._selectChanged}>
+            ${["xs", "small", "normal", "large"].map((s) => html`
+              <option value="${s}" ?selected=${(this._config.text_size || "normal") === s}>${this._t("schedule.size_" + s)}</option>`)}
+          </select>
+        </div>
+        <div>
           <label class="field-label">${this._t("editor.my_team")}</label>
           <input type="text" placeholder="${this._t("editor.my_team_hint")}"
             .value=${this._config.my_team || ""} @change=${(e) => this._set("my_team", e.target.value)} />

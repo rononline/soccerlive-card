@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.180 (2026-07-20)
+- Schedule card: added a `text_size` option (Extra small / Small / Normal / Large, or a raw px number) that scales both the font and the row height, so the list can be made more compact (or larger). Labels in English and Dutch
+
 ## v3.21.179 (2026-07-20)
 - New **Schedule** card (`card_type: schedule`): a minimalist fixtures list — date · time · home – away · competition — as a plain zebra-striped text table, no logos or colours. Options: `show` (upcoming/previous/all), `max_matches`, `my_team` (bold highlight), `show_competition`, `hide_header`. Shows "unknown" for fixtures without a confirmed time (integration v3.6.96) and the score for finished matches. Labels in English and Dutch
 
