@@ -35,6 +35,8 @@ import "./cards/Lineup/soccer-live-lineup.js";
 import "./cards/Lineup/soccer-live-lineup-editor.js";
 import "./cards/Timeline/soccer-live-timeline.js";
 import "./cards/Timeline/soccer-live-timeline-editor.js";
+import "./cards/Schedule/soccer-live-schedule.js";
+import "./cards/Schedule/soccer-live-schedule-editor.js";
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -56,6 +58,7 @@ const CARD_REGISTRY = [
   { value: 'ticker',            element: 'soccer-live-ticker',            editor: 'soccer-live-ticker-editor',            label: 'Ticker',            description: "Horizontal scrollable strip of today's matches", sensorTypes: ['all_matches_today', 'team_matches', 'team_matches_mixed'] },
   { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams', sensorTypes: ['team_match'] },
   { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events', sensorTypes: ['team_match'] },
+  { value: 'schedule',          element: 'soccer-live-schedule',          editor: 'soccer-live-schedule-editor',          label: 'Schedule',          description: 'Minimalist fixtures list: date, time, teams, competition', sensorTypes: ['team_matches', 'team_matches_mixed', 'team_match'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)

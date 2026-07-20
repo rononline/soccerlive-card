@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.179 (2026-07-20)
+- New **Schedule** card (`card_type: schedule`): a minimalist fixtures list — date · time · home – away · competition — as a plain zebra-striped text table, no logos or colours. Options: `show` (upcoming/previous/all), `max_matches`, `my_team` (bold highlight), `show_competition`, `hide_header`. Shows "unknown" for fixtures without a confirmed time (integration v3.6.96) and the score for finished matches. Labels in English and Dutch
+
 ## v3.21.178 (2026-07-19)
 - Visual tests: `test:visual` now builds first so screenshots never run against a stale bundle (added `test:visual:update` too); tightened the diff tolerance from 2% to 1%
 - Visual tests: added snapshots for light + black-white (guards the `--cl-accent-visible` fix), a missing abbreviation/colour (name fallback), a very long team name at 320px (ellipsis), a multi-entity editor showing the shared source "(via …)", and the Home Assistant appearance with an explicit HA theme (not just fallback colours)
