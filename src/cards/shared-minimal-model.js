@@ -22,22 +22,61 @@ export function nextWhenKind(m) {
   return time ? "time" : "date";
 }
 
+/** Normalise a team name: lowercase, strip accents/punctuation, collapse spaces. */
+export function normalizeTeamName(s) {
+  return (s || "")
+    .toString()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/**
+ * Whether a team name refers to the tracked team, avoiding substring false
+ * positives (e.g. "Inter" vs "Internacional"): exact after normalisation, or
+ * one name's whole-word tokens being a subset of the other's (so "Feyenoord"
+ * matches "Feyenoord Rotterdam"). Genuinely ambiguous cases like "Inter" vs
+ * "Inter Miami" still need an id.
+ */
+export function teamMatchesName(name, tracked) {
+  const a = normalizeTeamName(name);
+  const b = normalizeTeamName(tracked);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const at = a.split(" "), bt = b.split(" ");
+  const subset = (x, y) => x.every((t) => y.includes(t));
+  return subset(at, bt) || subset(bt, at);
+}
+
+/** Whether the given side of a match is the tracked team. Prefers ids. */
+export function matchSideIsTeam(match, side, tracked) {
+  const id = match && match[side + "_id"];
+  if (tracked && tracked.id != null && id != null) return String(id) === String(tracked.id);
+  return teamMatchesName(match && match[side + "_team"], tracked && tracked.name);
+}
+
+function _toTracked(t) {
+  if (t && typeof t === "object") return { name: t.name || "", id: t.id != null ? t.id : null };
+  return { name: t || "", id: null };
+}
+
 /**
  * Recent W/D/L for the tracked team (newest-first) with a W/D/L summary.
- * Returns null when there's no tracked team (an empty name must not match every
- * team) or no usable finished result.
+ * `tracked` is a name or `{ name, id }`. Returns null when there's no tracked
+ * team (an empty name must not match every team) or no usable finished result.
  */
 export function computeForm(attrs, trackedTeam, max = 10) {
-  const tracked = (trackedTeam || "").toLowerCase();
-  if (!tracked) return null;
+  const tracked = _toTracked(trackedTeam);
+  if (!tracked.name && tracked.id == null) return null;
   const a = attrs || {};
   const finished = (Array.isArray(a.previous_matches) && a.previous_matches.length)
     ? a.previous_matches
     : (Array.isArray(a.matches) ? a.matches : []).filter((m) => m.state === "post");
   const results = [];
   for (const m of finished) {
-    const isHome = (m.home_team || "").toLowerCase().includes(tracked);
-    const isAway = (m.away_team || "").toLowerCase().includes(tracked);
+    const isHome = matchSideIsTeam(m, "home", tracked);
+    const isAway = matchSideIsTeam(m, "away", tracked);
     if (!isHome && !isAway) continue;
     const hs = parseInt(m.home_score, 10);
     const as = parseInt(m.away_score, 10);
@@ -57,8 +96,11 @@ export function computeForm(attrs, trackedTeam, max = 10) {
 /** Normalised standings rows (rank, team, played, gd, points), capped. */
 export function standingsRows(attrs, max = 20) {
   const a = attrs || {};
-  const table = Array.isArray(a.standings) ? a.standings
-    : (a.standings_groups && a.standings_groups[0] && a.standings_groups[0].standings) || [];
+  // Only use the direct list when it actually has rows, so an empty standings
+  // array doesn't block a populated standings_groups fallback.
+  const direct = Array.isArray(a.standings) ? a.standings : [];
+  const grouped = a.standings_groups && a.standings_groups[0] && a.standings_groups[0].standings;
+  const table = direct.length ? direct : (Array.isArray(grouped) ? grouped : []);
   return table.slice(0, Math.max(0, max)).map((r, i) => ({
     rank: r.rank != null ? r.rank : i + 1,
     team: r.team_name || r.team || "",

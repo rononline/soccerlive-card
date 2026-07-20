@@ -68,6 +68,7 @@ class SoccerLiveScheduleEditor extends LitElement {
             ${variantOpts.map((v) => html`
               <option value="${v}" ?selected=${variant === v}>${this._t("minimal.variant_" + v)}</option>`)}
           </select>
+          ${!allowed.includes(variant) ? html`<div class="field-warning">${this._t("minimal.variant_unsupported")}</div>` : ""}
         </div>
         ${variant === "fixtures" ? html`
         <div>

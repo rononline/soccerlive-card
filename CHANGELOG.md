@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.183 (2026-07-20)
+- Minimal card standings: an empty `standings` array no longer blocks a populated `standings_groups` fallback
+- Minimal card team recognition: matching now prefers team ids and, for names, uses whole-word/normalised comparison instead of substring — so "Inter" no longer matches "Internacional" (genuinely ambiguous cases like "Inter" vs "Inter Miami" still need an id). The form variant uses the sensor's team_id when no name is typed
+- Editor: an unsupported variant for the chosen sensor now shows a warning instead of being slipped silently between the allowed options
+- Added pure helpers/tests for team matching and the standings fallback, and a Playwright snapshot for the `next` variant with a live match (guards live priority at render time)
+
 ## v3.21.182 (2026-07-20)
 - Minimal card `next` variant: a live match now takes priority over the next upcoming match, so the current live score is shown instead of the following fixture
 - Minimal card `form` variant: fixed a case where, without a tracked team, every match could be counted as the team's (an empty name matched all) — it now shows the empty state instead

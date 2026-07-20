@@ -69,6 +69,11 @@
     }
     attrs.friendly_name = "Feyenoord — next";
 
+    // Inject a live match so the next variant can be checked to prefer it.
+    if (params.has("live")) {
+      attrs.matches = [{ state: "in", home_team: "Feyenoord", away_team: "Ajax", home_score: "1", away_score: "0" }, ...(attrs.matches || [])];
+    }
+
     // Explicit Home Assistant theme variables so the ha appearance reflects a real
     // theme instead of only its fallback colours.
     if (params.has("ha_theme")) {

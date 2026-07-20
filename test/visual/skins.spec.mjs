@@ -107,3 +107,9 @@ for (const variant of ['fixtures', 'next', 'standings', 'form']) {
     await expect(target(page)).toHaveScreenshot(`minimal-${variant}-320.png`);
   });
 }
+
+test('minimal — next prefers a live match (320px)', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await open(page, { mode: 'minimal', variant: 'next', live: '1', my_team: 'Feyenoord' });
+  await expect(target(page)).toHaveScreenshot('minimal-next-live-320.png');
+});

@@ -2,7 +2,30 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   pickNextMatch, nextWhenKind, computeForm, standingsRows, variantsForSensorType,
+  teamMatchesName, matchSideIsTeam,
 } from '../../src/cards/shared-minimal-model.js';
+
+test('teamMatchesName: exact, subset, but not substring false positives', () => {
+  assert.equal(teamMatchesName('Feyenoord', 'Feyenoord'), true);
+  assert.equal(teamMatchesName('Feyenoord Rotterdam', 'Feyenoord'), true);   // subset
+  assert.equal(teamMatchesName('Feyenoord', 'Feyenoord Rotterdam'), true);   // subset (reverse)
+  assert.equal(teamMatchesName('Internacional', 'Inter'), false);            // was a substring false positive
+  assert.equal(teamMatchesName('Atlético', 'Atletico'), true);              // accent-insensitive
+  assert.equal(teamMatchesName('', 'Inter'), false);
+});
+
+test('matchSideIsTeam: prefers ids over names', () => {
+  const m = { home_id: 209, home_team: 'Feyenoord', away_id: 194, away_team: 'Ajax' };
+  assert.equal(matchSideIsTeam(m, 'home', { id: 209 }), true);
+  assert.equal(matchSideIsTeam(m, 'home', { id: 999, name: 'Feyenoord' }), false); // id wins
+  assert.equal(matchSideIsTeam(m, 'away', { name: 'Ajax' }), true);                 // name fallback
+});
+
+test('standingsRows: empty direct list falls back to standings_groups', () => {
+  const rows = standingsRows({ standings: [], standings_groups: [{ standings: [{ rank: 1, team_name: 'A' }] }] });
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].team, 'A');
+});
 
 test('pickNextMatch: a live match wins over upcoming_matches', () => {
   const attrs = {

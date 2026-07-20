@@ -5,7 +5,7 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { renderLoading } from "../loading-spinner.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
-import { pickNextMatch, nextWhenKind, computeForm, standingsRows } from "../shared-minimal-model.js";
+import { pickNextMatch, nextWhenKind, computeForm, standingsRows, teamMatchesName, matchSideIsTeam } from "../shared-minimal-model.js";
 
 // Text-size presets -> [font-size px, vertical row padding px].
 const TEXT_SIZES = { xs: [11, 3], small: [12.5, 5], normal: [14, 7], large: [16, 9] };
@@ -116,7 +116,7 @@ class SoccerLiveScheduleCard extends LitElement {
   _renderStandings(attrs, lang) {
     const rows = standingsRows(attrs, this._config.max_matches ?? 20);
     if (!rows.length) return null;
-    const my = (this._config.my_team || attrs.team_name || "").toLowerCase();
+    const myName = this._config.my_team || attrs.team_name || "";
     return html`
       <div class="mn-tbl-head">
         <span></span><span>${this._t("mini.team") || ""}</span>
@@ -125,7 +125,7 @@ class SoccerLiveScheduleCard extends LitElement {
         <span class="num">${this._t("mini.pts") || "Pts"}</span>
       </div>
       ${rows.map((r, i) => {
-        const mine = my && (r.team || "").toLowerCase().includes(my);
+        const mine = myName && teamMatchesName(r.team, myName);
         return html`
           <div class="mn-tbl-row ${i % 2 ? "odd" : ""} ${mine ? "mine" : ""}">
             <span class="mn-rank">${r.rank}</span>
@@ -139,7 +139,9 @@ class SoccerLiveScheduleCard extends LitElement {
 
   _renderForm(attrs, lang) {
     const team = this._config.my_team || attrs.team_name || "";
-    const form = computeForm(attrs, team, this._config.max_matches ?? 10);
+    // Use the sensor's team_id for exact matching when the user hasn't typed a name.
+    const trackedId = this._config.my_team ? null : attrs.team_id;
+    const form = computeForm(attrs, { name: team, id: trackedId }, this._config.max_matches ?? 10);
     if (!form) return null;
     return html`
       <div class="mn-form">
@@ -152,9 +154,9 @@ class SoccerLiveScheduleCard extends LitElement {
   _row(m, i, dateFmt, showComp) {
     const d = parseMatchDate(m.date);
     const dateLabel = (d ? dateFmt.format(d) : (m.date ? m.date.split(" ")[0] : "")).replace(/\.$/, "");
-    const my = (this._config.my_team || "").toLowerCase();
-    const isHome = my && (m.home_team || "").toLowerCase().includes(my);
-    const isAway = my && (m.away_team || "").toLowerCase().includes(my);
+    const tracked = { name: this._config.my_team || "", id: null };
+    const isHome = tracked.name && matchSideIsTeam(m, "home", tracked);
+    const isAway = tracked.name && matchSideIsTeam(m, "away", tracked);
     return html`
       <div class="sch-row ${i % 2 ? "odd" : ""}">
         <span class="sch-date">${dateLabel}</span>
