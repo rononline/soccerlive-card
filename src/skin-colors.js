@@ -75,14 +75,27 @@ export function isUsableAccent(hex) {
   return L > 0.05 && L < 0.92;
 }
 
+/** Normalise a gradient angle to a safe CSS value: a number or "<n>deg" clamped
+ * to -360..360, a "to <side>" keyword, else the 135deg default. */
+export function normalizeGradientAngle(angle) {
+  const clamp = (n) => `${Math.max(-360, Math.min(360, n))}deg`;
+  if (typeof angle === "number" && Number.isFinite(angle)) return clamp(angle);
+  if (typeof angle === "string") {
+    const s = angle.trim();
+    const m = s.match(/^(-?\d+(?:\.\d+)?)deg$/i);
+    if (m) return clamp(parseFloat(m[1]));
+    if (/^to\s+(top|bottom|left|right)(\s+(top|bottom|left|right))?$/i.test(s)) return s.toLowerCase();
+  }
+  return "135deg";
+}
+
 /** A `linear-gradient(angle, from, to)` from two normalised colours, or null if
- * either colour is invalid. Angle defaults to 135deg (diagonal). */
+ * either colour is invalid. The angle is validated (defaults to 135deg). */
 export function buildGradient(from, to, angle) {
   const f = normalizeCssColor(from);
   const t = normalizeCssColor(to);
   if (!f || !t) return null;
-  const a = (typeof angle === "string" && angle.trim()) ? angle.trim() : "135deg";
-  return `linear-gradient(${a}, ${f}, ${t})`;
+  return `linear-gradient(${normalizeGradientAngle(angle)}, ${f}, ${t})`;
 }
 
 /** Lighten a #rrggbb colour toward white by `amount` (0..1). */

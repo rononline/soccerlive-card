@@ -239,9 +239,12 @@ function applyCustomPaletteVars(el, config, palette) {
   const img = typeof mergedConfig.background_image === 'string' ? mergedConfig.background_image.trim() : '';
   if (img) {
     el.style.setProperty('--cl-bg-image', `url("${img}")`);
-    const op = mergedConfig.watermark_opacity;
-    if (op !== undefined && op !== null && op !== '') el.style.setProperty('--cl-bg-image-opacity', String(op));
-    if (mergedConfig.watermark_size) el.style.setProperty('--cl-bg-image-size', String(mergedConfig.watermark_size));
+    // Opacity clamped to 0..1.
+    const op = Number(mergedConfig.watermark_opacity);
+    if (Number.isFinite(op)) el.style.setProperty('--cl-bg-image-opacity', String(Math.max(0, Math.min(1, op))));
+    // Size limited to safe values: contain/cover, a percentage or a px length.
+    const size = typeof mergedConfig.watermark_size === 'string' ? mergedConfig.watermark_size.trim() : '';
+    if (/^(contain|cover|\d{1,3}%|\d{1,4}px)$/i.test(size)) el.style.setProperty('--cl-bg-image-size', size);
   }
 }
 

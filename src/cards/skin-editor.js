@@ -69,6 +69,13 @@ export function renderSkinControls(host, config, t) {
   const label = (k) => (typeof t === 'function' ? t(k) : k);
   const setField = (key, value) => fireConfig(host, { ...config, [key]: value });
   const clearField = (key) => { const next = { ...config }; delete next[key]; fireConfig(host, next); };
+  // Set a key, or remove it when the value is empty (keeps the config clean).
+  const setOrClear = (key, value) => {
+    const next = { ...config };
+    if (value === '' || value === null || value === undefined) delete next[key];
+    else next[key] = value;
+    fireConfig(host, next);
+  };
 
   // Shared per-sensor defaults, so the editor shows the EFFECTIVE look (what the
   // card actually renders, including inherited values) rather than the local
@@ -165,7 +172,8 @@ export function renderSkinControls(host, config, t) {
       .skin-bg-title { font-size: 11px; font-weight: 700; color: var(--secondary-text-color); margin: 10px 0 6px; }
       .skin-bg-field { display: grid; gap: 4px; margin-top: 8px; }
       .skin-bg-field span { font-size: 11px; font-weight: 600; color: var(--secondary-text-color); }
-      .skin-bg-field input { padding: 8px 9px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: var(--card-background-color, #1c1c1c); color: var(--primary-text-color, #fff); font-size: 13px; box-sizing: border-box; }
+      .skin-bg-field input, .skin-bg-field select { padding: 8px 9px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: var(--card-background-color, #1c1c1c); color: var(--primary-text-color, #fff); font-size: 13px; box-sizing: border-box; }
+      .skin-hint { font-size: 10px; color: var(--secondary-text-color); opacity: 0.8; }
       .skin-reset { margin-top: 10px; justify-self: start; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: transparent; color: var(--primary-text-color, #fff); font-size: 12px; cursor: pointer; }
       @media (max-width: 520px) { .custom-skin-fields { grid-template-columns: 1fr; } }
     </style>
@@ -220,14 +228,28 @@ export function renderSkinControls(host, config, t) {
               ${colorField(config, 'gradient_to', 'skin.gradient_to', label, setField)}
             </div>
             <label class="skin-bg-field">
+              <span>${label('skin.gradient_angle')}</span>
+              <input type="number" min="0" max="360" step="5" .value=${config?.gradient_angle ?? ''} placeholder="135"
+                @change=${(e) => setOrClear('gradient_angle', e.target.value === '' ? '' : Number(e.target.value))}>
+            </label>
+            <label class="skin-bg-field">
               <span>${label('skin.watermark_url')}</span>
               <input type="text" .value=${config?.background_image || ''} placeholder="/local/crest.png"
-                @change=${(e) => setField('background_image', e.target.value)}>
+                title=${label('skin.watermark_url_hint')}
+                @change=${(e) => setOrClear('background_image', e.target.value.trim())}>
+              <span class="skin-hint">${label('skin.watermark_url_hint')}</span>
             </label>
             <label class="skin-bg-field">
               <span>${label('skin.watermark_opacity')}</span>
               <input type="number" min="0" max="1" step="0.01" .value=${config?.watermark_opacity ?? ''} placeholder="0.07"
-                @change=${(e) => setField('watermark_opacity', e.target.value === '' ? '' : Number(e.target.value))}>
+                @change=${(e) => setOrClear('watermark_opacity', e.target.value === '' ? '' : Number(e.target.value))}>
+            </label>
+            <label class="skin-bg-field">
+              <span>${label('skin.watermark_size')}</span>
+              <select @change=${(e) => setOrClear('watermark_size', e.target.value)}>
+                ${['', '40%', '60%', '80%', 'contain'].map((s) => html`
+                  <option value="${s}" ?selected=${(config?.watermark_size || '') === s}>${s || label('skin.default')}</option>`)}
+              </select>
             </label>
           </details>
           <button type="button" class="skin-reset" @click=${() => {

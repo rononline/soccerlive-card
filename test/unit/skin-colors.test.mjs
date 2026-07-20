@@ -9,6 +9,7 @@ import {
   getAutoColors,
   contrastRatio,
   buildGradient,
+  normalizeGradientAngle,
 } from '../../src/skin-colors.js';
 
 test('buildGradient: composes a linear-gradient, default 135deg, null on bad input', () => {
@@ -82,3 +83,14 @@ test('getAutoColors: derives a second accent when kit colours are near-identical
 test('getAutoColors: no colours -> empty (skin defaults kept)', () => {
   assert.deepEqual(getAutoColors({}), {});
 });
+
+test('normalizeGradientAngle: numbers, deg strings clamped, keywords, default', () => {
+  assert.equal(normalizeGradientAngle(90), '90deg');
+  assert.equal(normalizeGradientAngle('45deg'), '45deg');
+  assert.equal(normalizeGradientAngle(999), '360deg');      // clamped
+  assert.equal(normalizeGradientAngle(-999), '-360deg');    // clamped
+  assert.equal(normalizeGradientAngle('to bottom right'), 'to bottom right');
+  assert.equal(normalizeGradientAngle('junk'), '135deg');   // default
+  assert.equal(normalizeGradientAngle(undefined), '135deg');
+});
+

@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.185 (2026-07-20)
+- Custom palette background: the editor now has fields for the gradient angle (0–360°) and the watermark size (40% / 60% / 80% / contain), which were already applied but not editable, plus a help hint that the watermark URL is a URL or /local/… path served by Home Assistant
+- Custom palette background: hardened the values — the gradient angle is validated and clamped (numbers, `<n>deg` −360..360, or a `to <side>` keyword; else 135°), the watermark opacity is clamped to 0–1 and the size restricted to safe values (contain/cover/%/px), and empty fields are removed from the config instead of stored. Pure `normalizeGradientAngle` helper with a test
+- Note: the crest watermark already works on every card that uses the shared card shell (including Countdown, Match Center and Team Competitions, which render the background layer via `renderCardHero`) — no per-card change was needed
+
 ## v3.21.184 (2026-07-20)
 - Custom palette: added a **background gradient** (`gradient_from` / `gradient_to`, optional `gradient_angle`, default 135°) and a **crest watermark** (`background_image` URL, `watermark_opacity`, `watermark_size`), so cards can get a club-branded look — a red gradient with a faint centred crest — matching a custom-styled dashboard. Applied through the shared card background, so it works on every card. Editor fields added under the custom palette's advanced section (EN/NL); pure `buildGradient` helper with a test; visual snapshot added
 

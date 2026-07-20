@@ -20,7 +20,9 @@ export const soccerCardShellStyles = css`
     z-index: 0;
   }
   /* Optional crest watermark (custom palette background_image), centred and faint
-     behind the content, like a club-branded card. Absent by default. */
+     behind the content. Rendered on the .hero-bg layer (z-index:0), so the
+     content — which every card places above it — stays on top. Absent by
+     default (background-image: none). */
   .hero-bg::after {
     content: '';
     position: absolute;
