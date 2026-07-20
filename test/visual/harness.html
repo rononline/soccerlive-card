@@ -103,7 +103,7 @@
     // Build the config from URL params (only set the axes that are provided).
     const config = { show_previous_matches: true, show_form_trend: true };
     if (entities) config.entities = entities; else config.entity = "sensor.preview_team";
-    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language", "variant", "text_size"]) {
+    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language", "variant", "text_size", "gradient_from", "gradient_to", "watermark_opacity"]) {
       if (params.has(key)) config[key] = params.get(key);
     }
 

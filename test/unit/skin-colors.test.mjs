@@ -92,5 +92,9 @@ test('normalizeGradientAngle: numbers, deg strings clamped, keywords, default', 
   assert.equal(normalizeGradientAngle('to bottom right'), 'to bottom right');
   assert.equal(normalizeGradientAngle('junk'), '135deg');   // default
   assert.equal(normalizeGradientAngle(undefined), '135deg');
+  // Invalid direction combinations must be rejected (not passed through).
+  assert.equal(normalizeGradientAngle('to top bottom'), '135deg');
+  assert.equal(normalizeGradientAngle('to left right'), '135deg');
+  assert.equal(normalizeGradientAngle('to top top'), '135deg');
 });
 

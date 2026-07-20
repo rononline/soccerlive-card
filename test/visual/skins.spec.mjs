@@ -118,3 +118,16 @@ test('team card — branded custom gradient + crest watermark', async ({ page })
   await open(page, { mode: 'card', branded: '1' });
   await expect(target(page)).toHaveScreenshot('team-branded.png');
 });
+
+test('editor — custom palette advanced background fields', async ({ page }) => {
+  await open(page, { mode: 'editor', palette: 'custom', gradient_from: '#8e0e00', gradient_to: '#1f1c18', watermark_opacity: '0.12' });
+  // Expand the "Advanced colours" details (inside the editor's shadow DOM) so
+  // the gradient/watermark input fields themselves are captured.
+  await page.evaluate(() => {
+    const ed = document.querySelector('soccer-live-team-editor');
+    const d = ed && ed.shadowRoot && ed.shadowRoot.querySelector('details.skin-adv');
+    if (d) d.open = true;
+  });
+  await page.waitForTimeout(80);
+  await expect(target(page)).toHaveScreenshot('editor-custom-advanced.png');
+});

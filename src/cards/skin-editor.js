@@ -121,12 +121,18 @@ export function renderSkinControls(host, config, t) {
   // still checked. (ha appearance uses theme colours we can't know here.)
   const contrastIssues = [];
   if (palette === 'custom') {
-    const bg = normalizeCssColor(config?.background_color) || APPEARANCE_BG[appearance];
-    if (bg) {
+    // Check against both gradient endpoints when a gradient is set, else the
+    // flat background / appearance default.
+    const gFrom = normalizeCssColor(config?.gradient_from);
+    const gTo = normalizeCssColor(config?.gradient_to);
+    const bgs = (gFrom && gTo)
+      ? [gFrom, gTo]
+      : [normalizeCssColor(config?.background_color) || APPEARANCE_BG[appearance]].filter(Boolean);
+    if (bgs.length) {
       const low = (key, fallback, min) => {
         const c = normalizeCssColor(config?.[key]) || fallback;
-        const r = c ? contrastRatio(bg, c) : null;
-        return r !== null && r < min;
+        if (!c) return false;
+        return bgs.some((bg) => { const r = contrastRatio(bg, c); return r !== null && r < min; });
       };
       if (low('text_color', APPEARANCE_TEXT[appearance], MIN_TEXT_CONTRAST)) contrastIssues.push('skin.custom_text');
       if (low('secondary_text_color', APPEARANCE_TEXT2[appearance], MIN_TEXT_CONTRAST)) contrastIssues.push('skin.custom_text_2');

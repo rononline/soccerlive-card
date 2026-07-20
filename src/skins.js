@@ -238,9 +238,12 @@ function applyCustomPaletteVars(el, config, palette) {
   // A faint centred crest/watermark image behind the content.
   const img = typeof mergedConfig.background_image === 'string' ? mergedConfig.background_image.trim() : '';
   if (img) {
-    el.style.setProperty('--cl-bg-image', `url("${img}")`);
-    // Opacity clamped to 0..1.
-    const op = Number(mergedConfig.watermark_opacity);
+    // JSON.stringify quotes and escapes the URL, so quotes/backslashes in it
+    // can't break out of the CSS value.
+    el.style.setProperty('--cl-bg-image', `url(${JSON.stringify(img)})`);
+    // Opacity clamped to 0..1. Guard against '' (Number('') === 0 would hide it).
+    const rawOp = mergedConfig.watermark_opacity;
+    const op = (rawOp === '' || rawOp === null || rawOp === undefined) ? NaN : Number(rawOp);
     if (Number.isFinite(op)) el.style.setProperty('--cl-bg-image-opacity', String(Math.max(0, Math.min(1, op))));
     // Size limited to safe values: contain/cover, a percentage or a px length.
     const size = typeof mergedConfig.watermark_size === 'string' ? mergedConfig.watermark_size.trim() : '';

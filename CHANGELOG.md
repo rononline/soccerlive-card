@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.21.186 (2026-07-20)
+- Custom background: the gradient-angle validator now uses an explicit set of valid CSS direction keywords, so invalid combinations like "to top bottom" are rejected (fall back to 135°) instead of being passed through
+- Custom background: an empty `watermark_opacity` (e.g. `""` in YAML) now keeps the default instead of becoming 0 (invisible); the watermark URL is escaped safely so quotes in it can't break the CSS
+- Custom background: the low-contrast warning now checks the text/secondary/accent colours against both gradient endpoints, not just the flat background
+- Added an expanded-editor visual snapshot that captures the gradient/watermark input fields themselves, and a test that invalid gradient directions are rejected
+- Note: the new custom-background editor labels are English + Dutch; other languages fall back to English, consistent with the rest of the skin editor
+
 ## v3.21.185 (2026-07-20)
 - Custom palette background: the editor now has fields for the gradient angle (0–360°) and the watermark size (40% / 60% / 80% / contain), which were already applied but not editable, plus a help hint that the watermark URL is a URL or /local/… path served by Home Assistant
 - Custom palette background: hardened the values — the gradient angle is validated and clamped (numbers, `<n>deg` −360..360, or a `to <side>` keyword; else 135°), the watermark opacity is clamped to 0–1 and the size restricted to safe values (contain/cover/%/px), and empty fields are removed from the config instead of stored. Pure `normalizeGradientAngle` helper with a test

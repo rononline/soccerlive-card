@@ -75,8 +75,16 @@ export function isUsableAccent(hex) {
   return L > 0.05 && L < 0.92;
 }
 
+// The only valid CSS gradient direction keywords (a regex would also accept
+// nonsense like "to top bottom").
+const GRADIENT_DIRECTIONS = new Set([
+  "to top", "to bottom", "to left", "to right",
+  "to top left", "to top right", "to bottom left", "to bottom right",
+  "to left top", "to right top", "to left bottom", "to right bottom",
+]);
+
 /** Normalise a gradient angle to a safe CSS value: a number or "<n>deg" clamped
- * to -360..360, a "to <side>" keyword, else the 135deg default. */
+ * to -360..360, a valid "to <side>" keyword, else the 135deg default. */
 export function normalizeGradientAngle(angle) {
   const clamp = (n) => `${Math.max(-360, Math.min(360, n))}deg`;
   if (typeof angle === "number" && Number.isFinite(angle)) return clamp(angle);
@@ -84,7 +92,8 @@ export function normalizeGradientAngle(angle) {
     const s = angle.trim();
     const m = s.match(/^(-?\d+(?:\.\d+)?)deg$/i);
     if (m) return clamp(parseFloat(m[1]));
-    if (/^to\s+(top|bottom|left|right)(\s+(top|bottom|left|right))?$/i.test(s)) return s.toLowerCase();
+    const lower = s.toLowerCase().replace(/\s+/g, " ");
+    if (GRADIENT_DIRECTIONS.has(lower)) return lower;
   }
   return "135deg";
 }
