@@ -58,7 +58,7 @@ const CARD_REGISTRY = [
   { value: 'ticker',            element: 'soccer-live-ticker',            editor: 'soccer-live-ticker-editor',            label: 'Ticker',            description: "Horizontal scrollable strip of today's matches", sensorTypes: ['all_matches_today', 'team_matches', 'team_matches_mixed'] },
   { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams', sensorTypes: ['team_match'] },
   { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events', sensorTypes: ['team_match'] },
-  { value: 'schedule',          element: 'soccer-live-schedule',          editor: 'soccer-live-schedule-editor',          label: 'Schedule',          description: 'Minimalist fixtures list: date, time, teams, competition', sensorTypes: ['team_matches', 'team_matches_mixed', 'team_match'] },
+  { value: 'minimal',           element: 'soccer-live-schedule',          editor: 'soccer-live-schedule-editor',          label: 'Minimal',           description: 'Minimalist text views: fixtures, next match, standings or form', sensorTypes: ['team_matches', 'team_matches_mixed', 'team_match', 'all_matches_today', 'standings'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)
@@ -67,9 +67,16 @@ const LEGACY_ELEMENTS = new Set(CARD_REGISTRY.map(c => c.element));
 const CARD_TYPES      = CARD_REGISTRY.map(({ value, label, description }) => ({ value, label, description }));
 const CARD_EDITORS    = Object.fromEntries(CARD_REGISTRY.filter(c => c.editor).map(c => [c.value, c.editor]));
 
-// Resolve card_type (short or known legacy long) → element name
+// Backwards-compatible card_type aliases (renamed types).
+const CARD_TYPE_ALIASES = { schedule: 'minimal' };
+function normalizeCardType(cardType) {
+  return CARD_TYPE_ALIASES[cardType] || cardType;
+}
+
+// Resolve card_type (short, alias, or known legacy long) → element name
 function resolveElement(cardType) {
-  return TYPE_TO_ELEMENT[cardType] || (LEGACY_ELEMENTS.has(cardType) ? cardType : null);
+  const t = normalizeCardType(cardType);
+  return TYPE_TO_ELEMENT[t] || (LEGACY_ELEMENTS.has(t) ? t : null);
 }
 
 // Shared config fields preserved when switching card type
@@ -201,7 +208,7 @@ class SoccerLiveCardEditor extends LitElement {
   _syncSubEditor() {
     const container = this.shadowRoot?.getElementById('sub-editor');
     if (!container) return;
-    const raw = this._config.card_type;
+    const raw = normalizeCardType(this._config.card_type);
     // Normalize legacy long names to short key for editor lookup
     const type = CARD_EDITORS[raw]
       ? raw

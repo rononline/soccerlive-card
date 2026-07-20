@@ -43,6 +43,7 @@ class SoccerLiveScheduleEditor extends LitElement {
     const entities = this._entities();
     const current = this._config.entity || "";
     const show = this._config.show || "upcoming";
+    const variant = this._config.variant || "fixtures";
     return html`
       <div class="card-config">
         <h3>${this._t("editor.sensor")}</h3>
@@ -56,13 +57,21 @@ class SoccerLiveScheduleEditor extends LitElement {
 
         <h3>${this._t("editor.settings")}</h3>
         <div>
+          <label class="field-label">${this._t("minimal.variant")}</label>
+          <select data-config-value="variant" @change=${this._selectChanged}>
+            ${["fixtures", "next", "standings", "form"].map((v) => html`
+              <option value="${v}" ?selected=${variant === v}>${this._t("minimal.variant_" + v)}</option>`)}
+          </select>
+        </div>
+        ${variant === "fixtures" ? html`
+        <div>
           <label class="field-label">${this._t("schedule.show")}</label>
           <select data-config-value="show" @change=${this._selectChanged}>
             <option value="upcoming" ?selected=${show === "upcoming"}>${this._t("schedule.show_upcoming")}</option>
             <option value="previous" ?selected=${show === "previous"}>${this._t("schedule.show_previous")}</option>
             <option value="all" ?selected=${show === "all"}>${this._t("schedule.show_all")}</option>
           </select>
-        </div>
+        </div>` : ""}
         <div>
           <label class="field-label">${this._t("editor.max_matches")}</label>
           <input type="number" min="1" max="50" data-config-value="max_matches"
@@ -80,10 +89,11 @@ class SoccerLiveScheduleEditor extends LitElement {
           <input type="text" placeholder="${this._t("editor.my_team_hint")}"
             .value=${this._config.my_team || ""} @change=${(e) => this._set("my_team", e.target.value)} />
         </div>
+        ${variant === "fixtures" ? html`
         <div class="option">
           <label>${this._t("schedule.show_competition")}</label>
           <ha-switch .checked=${this._config.show_competition !== false} data-config-value="show_competition" @change=${this._toggleChanged}></ha-switch>
-        </div>
+        </div>` : ""}
         <div class="option">
           <label>${this._t("editor.hide_header")}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._toggleChanged}></ha-switch>

@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.181 (2026-07-20)
+- Renamed the **Schedule** card to **Minimal** and gave it a `variant` selector, so several minimalist text views live under one entry in the card picker instead of cluttering the list: `fixtures` (the schedule list, default), `next` (single-line next match with a relative date/countdown or live score), `standings` (plain text table: rank · team · played · goal difference · points, your team bold), and `form` (recent W/D/L for your team). All share the `text_size`, `my_team`, `hide_header` and skin/language options. Existing `card_type: schedule` configs keep working (aliased to `minimal`). Variant labels + a text mini-table header added in English and Dutch
+
 ## v3.21.180 (2026-07-20)
 - Schedule card: added a `text_size` option (Extra small / Small / Normal / Large, or a raw px number) that scales both the font and the row height, so the list can be made more compact (or larger). Labels in English and Dutch
 
