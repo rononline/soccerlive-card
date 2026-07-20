@@ -10,6 +10,9 @@ import {
   contrastRatio,
   buildGradient,
   normalizeGradientAngle,
+  clampOpacity,
+  normalizeWatermarkSize,
+  sanitizeWatermarkUrl,
 } from '../../src/skin-colors.js';
 
 test('buildGradient: composes a linear-gradient, default 135deg, null on bad input', () => {
@@ -96,5 +99,32 @@ test('normalizeGradientAngle: numbers, deg strings clamped, keywords, default', 
   assert.equal(normalizeGradientAngle('to top bottom'), '135deg');
   assert.equal(normalizeGradientAngle('to left right'), '135deg');
   assert.equal(normalizeGradientAngle('to top top'), '135deg');
+});
+
+test('clampOpacity: clamps 0..1, null for empty/invalid', () => {
+  assert.equal(clampOpacity(0.5), 0.5);
+  assert.equal(clampOpacity('0.12'), 0.12);
+  assert.equal(clampOpacity(2), 1);
+  assert.equal(clampOpacity(-1), 0);
+  assert.equal(clampOpacity(''), null);      // empty -> use default, not 0
+  assert.equal(clampOpacity('x'), null);
+  assert.equal(clampOpacity(undefined), null);
+});
+
+test('normalizeWatermarkSize: only safe values', () => {
+  assert.equal(normalizeWatermarkSize('80%'), '80%');
+  assert.equal(normalizeWatermarkSize('contain'), 'contain');
+  assert.equal(normalizeWatermarkSize('120px'), '120px');
+  assert.equal(normalizeWatermarkSize('url(x)'), null);
+  assert.equal(normalizeWatermarkSize(''), null);
+});
+
+test('sanitizeWatermarkUrl: only /local, http(s), data:image', () => {
+  assert.equal(sanitizeWatermarkUrl('/local/crest.png'), '/local/crest.png');
+  assert.equal(sanitizeWatermarkUrl('https://x/y.png'), 'https://x/y.png');
+  assert.equal(sanitizeWatermarkUrl('data:image/svg+xml,<svg/>'), 'data:image/svg+xml,<svg/>');
+  assert.equal(sanitizeWatermarkUrl('javascript:alert(1)'), null);
+  assert.equal(sanitizeWatermarkUrl('data:text/html,x'), null);
+  assert.equal(sanitizeWatermarkUrl(''), null);
 });
 

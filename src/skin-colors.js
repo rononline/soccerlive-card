@@ -98,6 +98,29 @@ export function normalizeGradientAngle(angle) {
   return "135deg";
 }
 
+/** Watermark opacity clamped to 0..1, or null (use the default) for empty/invalid
+ * input. Guards against Number('') === 0 hiding the watermark. */
+export function clampOpacity(v) {
+  if (v === '' || v === null || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : null;
+}
+
+/** A safe background-size value (contain/cover, a percentage or a px length), or
+ * null when it isn't one of those. */
+export function normalizeWatermarkSize(v) {
+  const s = typeof v === 'string' ? v.trim() : '';
+  return /^(contain|cover|\d{1,3}%|\d{1,4}px)$/i.test(s) ? s : null;
+}
+
+/** Allow only local (/local/…), http(s) and inline data:image watermark URLs,
+ * else null — defensive validation of a config-provided URL. */
+export function sanitizeWatermarkUrl(v) {
+  const s = typeof v === 'string' ? v.trim() : '';
+  if (!s) return null;
+  return /^(\/local\/|https?:\/\/|data:image\/)/i.test(s) ? s : null;
+}
+
 /** A `linear-gradient(angle, from, to)` from two normalised colours, or null if
  * either colour is invalid. The angle is validated (defaults to 135deg). */
 export function buildGradient(from, to, angle) {

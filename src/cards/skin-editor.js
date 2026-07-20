@@ -139,6 +139,9 @@ export function renderSkinControls(host, config, t) {
       if (low('accent_color', CUSTOM_DEFAULT_ACCENT, MIN_UI_CONTRAST)) contrastIssues.push('skin.custom_accent');
     }
   }
+  // The gradient only applies when both colours are valid; warn when only one is
+  // set, so a half-filled gradient isn't silently ignored.
+  const gradientPartial = !!normalizeCssColor(config?.gradient_from) !== !!normalizeCssColor(config?.gradient_to);
 
   return html`
     <style>
@@ -180,6 +183,7 @@ export function renderSkinControls(host, config, t) {
       .skin-bg-field span { font-size: 11px; font-weight: 600; color: var(--secondary-text-color); }
       .skin-bg-field input, .skin-bg-field select { padding: 8px 9px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: var(--card-background-color, #1c1c1c); color: var(--primary-text-color, #fff); font-size: 13px; box-sizing: border-box; }
       .skin-hint { font-size: 10px; color: var(--secondary-text-color); opacity: 0.8; }
+      .skin-hint-warn { color: var(--warning-color, #f59e0b); opacity: 1; margin-top: 6px; }
       .skin-reset { margin-top: 10px; justify-self: start; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--divider-color, rgba(255,255,255,0.12)); background: transparent; color: var(--primary-text-color, #fff); font-size: 12px; cursor: pointer; }
       @media (max-width: 520px) { .custom-skin-fields { grid-template-columns: 1fr; } }
     </style>
@@ -220,23 +224,24 @@ export function renderSkinControls(host, config, t) {
       ${palette === 'custom' ? html`
         <div>
           <div class="custom-skin-fields">
-            ${SIMPLE_FIELDS.map(([key, lkey]) => colorField(config, key, lkey, label, setField))}
+            ${SIMPLE_FIELDS.map(([key, lkey]) => colorField(config, key, lkey, label, setOrClear))}
           </div>
           ${contrastIssues.length ? html`<div class="skin-warn">⚠️ ${label('skin.contrast_warning')}: ${contrastIssues.map((k) => label(k)).join(', ')}</div>` : ''}
           <details class="skin-adv">
             <summary>${label('skin.advanced')}</summary>
             <div class="custom-skin-fields">
-              ${ADVANCED_FIELDS.map(([key, lkey]) => colorField(config, key, lkey, label, setField))}
+              ${ADVANCED_FIELDS.map(([key, lkey]) => colorField(config, key, lkey, label, setOrClear))}
             </div>
             <div class="skin-bg-title">${label('skin.background')}</div>
             <div class="custom-skin-fields">
-              ${colorField(config, 'gradient_from', 'skin.gradient_from', label, setField)}
-              ${colorField(config, 'gradient_to', 'skin.gradient_to', label, setField)}
+              ${colorField(config, "gradient_from", "skin.gradient_from", label, setOrClear)}
+              ${colorField(config, "gradient_to", "skin.gradient_to", label, setOrClear)}
             </div>
+            ${gradientPartial ? html`<div class="skin-hint skin-hint-warn">${label('skin.gradient_incomplete')}</div>` : ''}
             <label class="skin-bg-field">
               <span>${label('skin.gradient_angle')}</span>
               <input type="number" min="0" max="360" step="5" .value=${config?.gradient_angle ?? ''} placeholder="135"
-                @change=${(e) => setOrClear('gradient_angle', e.target.value === '' ? '' : Number(e.target.value))}>
+                @change=${(e) => setOrClear('gradient_angle', e.target.value === '' ? '' : Math.max(0, Math.min(360, Number(e.target.value))))}>
             </label>
             <label class="skin-bg-field">
               <span>${label('skin.watermark_url')}</span>
@@ -248,7 +253,7 @@ export function renderSkinControls(host, config, t) {
             <label class="skin-bg-field">
               <span>${label('skin.watermark_opacity')}</span>
               <input type="number" min="0" max="1" step="0.01" .value=${config?.watermark_opacity ?? ''} placeholder="0.07"
-                @change=${(e) => setOrClear('watermark_opacity', e.target.value === '' ? '' : Number(e.target.value))}>
+                @change=${(e) => setOrClear('watermark_opacity', e.target.value === '' ? '' : Math.max(0, Math.min(1, Number(e.target.value))))}>
             </label>
             <label class="skin-bg-field">
               <span>${label('skin.watermark_size')}</span>

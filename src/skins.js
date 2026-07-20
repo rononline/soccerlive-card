@@ -1,5 +1,5 @@
 import { css } from "lit-element";
-import { normalizeCssColor, hexToRgbTriplet, getAutoColors, buildGradient } from "./skin-colors.js";
+import { normalizeCssColor, hexToRgbTriplet, getAutoColors, buildGradient, clampOpacity, normalizeWatermarkSize, sanitizeWatermarkUrl } from "./skin-colors.js";
 import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults } from "./skin-config.js";
 
 // Two independent axes drive the look:
@@ -236,18 +236,15 @@ function applyCustomPaletteVars(el, config, palette) {
   if (gradient) el.style.setProperty('--cl-bg', gradient);
 
   // A faint centred crest/watermark image behind the content.
-  const img = typeof mergedConfig.background_image === 'string' ? mergedConfig.background_image.trim() : '';
+  const img = sanitizeWatermarkUrl(mergedConfig.background_image);
   if (img) {
     // JSON.stringify quotes and escapes the URL, so quotes/backslashes in it
     // can't break out of the CSS value.
     el.style.setProperty('--cl-bg-image', `url(${JSON.stringify(img)})`);
-    // Opacity clamped to 0..1. Guard against '' (Number('') === 0 would hide it).
-    const rawOp = mergedConfig.watermark_opacity;
-    const op = (rawOp === '' || rawOp === null || rawOp === undefined) ? NaN : Number(rawOp);
-    if (Number.isFinite(op)) el.style.setProperty('--cl-bg-image-opacity', String(Math.max(0, Math.min(1, op))));
-    // Size limited to safe values: contain/cover, a percentage or a px length.
-    const size = typeof mergedConfig.watermark_size === 'string' ? mergedConfig.watermark_size.trim() : '';
-    if (/^(contain|cover|\d{1,3}%|\d{1,4}px)$/i.test(size)) el.style.setProperty('--cl-bg-image-size', size);
+    const op = clampOpacity(mergedConfig.watermark_opacity);
+    if (op !== null) el.style.setProperty('--cl-bg-image-opacity', String(op));
+    const size = normalizeWatermarkSize(mergedConfig.watermark_size);
+    if (size) el.style.setProperty('--cl-bg-image-size', size);
   }
 }
 

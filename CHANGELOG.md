@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.21.187 (2026-07-20)
+- Custom palette: all colour fields (including `gradient_from`/`gradient_to`) now clear their config key when emptied instead of storing an empty string, keeping the config clean
+- Custom palette: the editor clamps the gradient angle (0–360) and watermark opacity (0–1) when saving, so out-of-range values aren't left in the config (previously only the applied CSS was clamped)
+- Custom palette: watermark URLs are restricted to `/local/…`, `http(s):` and `data:image/` (defensive validation); opacity, size and URL handling moved to pure `clampOpacity` / `normalizeWatermarkSize` / `sanitizeWatermarkUrl` helpers with unit tests
+- Custom palette: a hint appears when only one gradient colour is set, since the gradient only applies when both are valid
+
 ## v3.21.186 (2026-07-20)
 - Custom background: the gradient-angle validator now uses an explicit set of valid CSS direction keywords, so invalid combinations like "to top bottom" are rejected (fall back to 135°) instead of being passed through
 - Custom background: an empty `watermark_opacity` (e.g. `""` in YAML) now keeps the default instead of becoming 0 (invisible); the watermark URL is escaped safely so quotes in it can't break the CSS
