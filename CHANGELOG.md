@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.188 (2026-07-20)
+- Prediction bars: the percentage labels now use the readable body-text colour instead of the home/away accent colours, so they stay legible on branded/custom skins where the accent is close to the background (e.g. a red accent on a red gradient made the numbers hard to read)
+- Prediction bars: the bar now sits in a neutral, faintly-outlined well with a thin separator between the home/away segments, so the split stays visible even when both accents are similar shades
+- Visual bootstrap: the `workflow_dispatch` update run now uses `--update-snapshots=all`, so a bootstrap actually rewrites every baseline (the default `changed` mode skips ones that already pass within tolerance)
+
 ## v3.21.187 (2026-07-20)
 - Custom palette: all colour fields (including `gradient_from`/`gradient_to`) now clear their config key when emptied instead of storing an empty string, keeping the config clean
 - Custom palette: the editor clamps the gradient angle (0–360) and watermark opacity (0–1) when saving, so out-of-range values aren't left in the config (previously only the applied CSS was clamped)

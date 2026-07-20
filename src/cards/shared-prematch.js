@@ -172,9 +172,15 @@ export const prematchStyles = css`
   }
   .pred-bar {
     display: flex; height: 10px; border-radius: 5px; overflow: hidden;
-    background: var(--cl-divider, rgba(255,255,255,0.08));
+    /* Neutral well + faint outline so the bar stays legible even when the accent
+       matches the card background (e.g. a red branded skin). */
+    background: var(--cl-overlay-soft, rgba(0,0,0,0.28));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
   }
   .pred-seg { height: 100%; }
+  /* A thin separator so adjacent same-colour segments (accent ≈ live on red
+     skins) still show where one ends and the next begins. */
+  .pred-seg + .pred-seg { box-shadow: inset 1px 0 0 rgba(255,255,255,0.30); }
   .pred-seg.home { background: var(--cl-accent, #6366f1); }
   .pred-seg.draw { background: #64748b; }
   .pred-seg.away { background: var(--cl-live, #ef4444); }
@@ -182,21 +188,23 @@ export const prematchStyles = css`
     display: flex; justify-content: space-between; margin-top: 5px;
     font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8);
   }
-  .pred-l.home { color: var(--cl-accent, #6366f1); }
-  .pred-l.away { color: var(--cl-live, #ef4444); }
+  /* Readable on any skin (accent/live can match a branded background); the bars
+     carry the home/away colour. */
+  .pred-l.home, .pred-l.away { color: var(--cl-text, #e2e8f0); }
   .pred-cmp { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .pred-cmp-head {
     display: flex; justify-content: space-between; align-items: baseline;
     font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8);
   }
   .pred-cmp-label { text-transform: uppercase; letter-spacing: 0.05em; font-size: 9px; }
-  .pred-cmp-v.home { color: var(--cl-accent, #6366f1); }
-  .pred-cmp-v.away { color: var(--cl-live, #ef4444); }
+  .pred-cmp-v.home, .pred-cmp-v.away { color: var(--cl-text, #e2e8f0); }
   .pred-cmp-bar {
-    display: flex; height: 5px; border-radius: 3px; overflow: hidden;
-    background: var(--cl-divider, rgba(255,255,255,0.08)); margin-top: 2px;
+    display: flex; height: 5px; border-radius: 3px; overflow: hidden; margin-top: 2px;
+    background: var(--cl-overlay-soft, rgba(0,0,0,0.28));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
   }
   .pred-cmp-seg { height: 100%; }
+  .pred-cmp-seg + .pred-cmp-seg { box-shadow: inset 1px 0 0 rgba(255,255,255,0.35); }
   .pred-cmp-seg.home { background: var(--cl-accent, #6366f1); }
   .pred-cmp-seg.away { background: var(--cl-live, #ef4444); }
   .pred-xg {

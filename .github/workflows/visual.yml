@@ -38,7 +38,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Run visual tests
-        run: npx playwright test ${{ (github.event_name == 'workflow_dispatch' && inputs.update) && '--update-snapshots' || '' }}
+        run: npx playwright test ${{ (github.event_name == 'workflow_dispatch' && inputs.update) && '--update-snapshots=all' || '' }}
       - name: Upload baselines / report
         if: always()
         uses: actions/upload-artifact@v4
