@@ -13,6 +13,19 @@
     #target.editor, #target.minimal { width: 100%; }
     * { scrollbar-width: none; }
   </style>
+  <!-- In real Home Assistant, <ha-card> is a defined element with
+       `display: block`, so `background: var(--cl-bg)` fills the whole card.
+       The harness has no HA, so without this stand-in ha-card would default to
+       `display: inline` and only paint its background behind inline text —
+       making light skins look like they had a dark/transparent body (dark team
+       names on the page background) even though the real card is opaque. -->
+  <script>
+    if (!customElements.get('ha-card')) {
+      customElements.define('ha-card', class extends HTMLElement {
+        connectedCallback() { this.style.display = 'block'; }
+      });
+    }
+  </script>
   <!-- Built bundle registers all soccer-live-* custom elements. -->
   <script src="../../dist/soccer-live-card.bundle.js"></script>
 </head>

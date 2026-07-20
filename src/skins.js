@@ -127,6 +127,8 @@ export const skinStyles = css`
     --cl-shadow: rgba(0,0,0,0.35);
     --cl-overlay-strong: rgba(0,0,0,0.55);
     --cl-overlay-soft: rgba(0,0,0,0.25);
+    --cl-bar-outline: rgba(255,255,255,0.14);
+    --cl-bar-separator: rgba(255,255,255,0.32);
     --cl-chip-bg: rgba(var(--cl-accent-rgb),0.11);
     --cl-chip-border: rgba(var(--cl-accent-rgb),0.24);
     --cl-toast-bg: #0b0f1a;
@@ -144,6 +146,10 @@ export const skinStyles = css`
     --cl-shadow: rgba(15,23,42,0.14);
     --cl-overlay-strong: rgba(0,0,0,0.45);
     --cl-overlay-soft: rgba(15,23,42,0.10);
+    /* Darker outline/separator so the bar edges stay visible on a light card
+       (a white hairline would disappear). */
+    --cl-bar-outline: rgba(15,23,42,0.18);
+    --cl-bar-separator: rgba(255,255,255,0.65);
     --cl-chip-bg: rgba(var(--cl-accent-rgb),0.10);
     --cl-chip-border: rgba(var(--cl-accent-rgb),0.22);
     --cl-toast-bg: #0f172a;
@@ -161,6 +167,9 @@ export const skinStyles = css`
     --cl-shadow: rgba(0,0,0,0.30);
     --cl-overlay-strong: rgba(0,0,0,0.55);
     --cl-overlay-soft: rgba(0,0,0,0.25);
+    /* Follows the theme divider so it adapts to light or dark HA themes. */
+    --cl-bar-outline: var(--divider-color, rgba(127,127,127,0.28));
+    --cl-bar-separator: rgba(127,127,127,0.55);
     --cl-chip-bg: rgba(var(--cl-accent-rgb),0.10);
     --cl-chip-border: var(--divider-color, rgba(127,127,127,0.22));
     --cl-toast-bg: var(--card-background-color, #1c1c1c);

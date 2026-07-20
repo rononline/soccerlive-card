@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.21.189 (2026-07-20)
+- Prediction bars: the bar outline and the home/away segment separator now use appearance-aware `--cl-bar-outline` / `--cl-bar-separator` variables (light hairlines on dark/branded skins, darker ones on light skins) instead of a fixed white, so they stay visible on light skins too
+- Prediction legend: a small home/away colour dot is shown next to the `FEY 62%` / `14% RAY` labels, restoring the team association that was lost when the labels switched to the neutral text colour — without reintroducing the low-contrast coloured text on branded backgrounds
+- Visual harness: `ha-card` is now defined as a `display: block` element in the test page, matching real Home Assistant. Previously it defaulted to `display: inline`, so its `background: var(--cl-bg)` didn't fill the card and light skins looked like they had a dark/transparent body in the snapshots (the real card is opaque). Baselines regenerated accordingly
+
 ## v3.21.188 (2026-07-20)
 - Prediction bars: the percentage labels now use the readable body-text colour instead of the home/away accent colours, so they stay legible on branded/custom skins where the accent is close to the background (e.g. a red accent on a red gradient made the numbers hard to read)
 - Prediction bars: the bar now sits in a neutral, faintly-outlined well with a thin separator between the home/away segments, so the split stays visible even when both accents are similar shades

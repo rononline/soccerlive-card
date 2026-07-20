@@ -173,14 +173,15 @@ export const prematchStyles = css`
   .pred-bar {
     display: flex; height: 10px; border-radius: 5px; overflow: hidden;
     /* Neutral well + faint outline so the bar stays legible even when the accent
-       matches the card background (e.g. a red branded skin). */
+       matches the card background (e.g. a red branded skin). The outline colour
+       is appearance-aware (light on dark skins, dark on light ones). */
     background: var(--cl-overlay-soft, rgba(0,0,0,0.28));
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    box-shadow: inset 0 0 0 1px var(--cl-bar-outline, rgba(255,255,255,0.14));
   }
   .pred-seg { height: 100%; }
   /* A thin separator so adjacent same-colour segments (accent ≈ live on red
      skins) still show where one ends and the next begins. */
-  .pred-seg + .pred-seg { box-shadow: inset 1px 0 0 rgba(255,255,255,0.30); }
+  .pred-seg + .pred-seg { box-shadow: inset 1px 0 0 var(--cl-bar-separator, rgba(255,255,255,0.32)); }
   .pred-seg.home { background: var(--cl-accent, #6366f1); }
   .pred-seg.draw { background: #64748b; }
   .pred-seg.away { background: var(--cl-live, #ef4444); }
@@ -189,8 +190,17 @@ export const prematchStyles = css`
     font-size: 10px; font-weight: 700; color: var(--cl-text-2, #94a3b8);
   }
   /* Readable on any skin (accent/live can match a branded background); the bars
-     carry the home/away colour. */
+     carry the home/away colour. A small colour dot keeps the home/away link
+     without tinting the text (which collides with a matching background). */
   .pred-l.home, .pred-l.away { color: var(--cl-text, #e2e8f0); }
+  .pred-l.home::before,
+  .pred-l.away::after {
+    content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    vertical-align: middle; position: relative; top: -1px;
+    box-shadow: inset 0 0 0 1px var(--cl-bar-outline, rgba(255,255,255,0.14));
+  }
+  .pred-l.home::before { background: var(--cl-accent, #6366f1); margin-right: 6px; }
+  .pred-l.away::after { background: var(--cl-live, #ef4444); margin-left: 6px; }
   .pred-cmp { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .pred-cmp-head {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -201,10 +211,10 @@ export const prematchStyles = css`
   .pred-cmp-bar {
     display: flex; height: 5px; border-radius: 3px; overflow: hidden; margin-top: 2px;
     background: var(--cl-overlay-soft, rgba(0,0,0,0.28));
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    box-shadow: inset 0 0 0 1px var(--cl-bar-outline, rgba(255,255,255,0.14));
   }
   .pred-cmp-seg { height: 100%; }
-  .pred-cmp-seg + .pred-cmp-seg { box-shadow: inset 1px 0 0 rgba(255,255,255,0.35); }
+  .pred-cmp-seg + .pred-cmp-seg { box-shadow: inset 1px 0 0 var(--cl-bar-separator, rgba(255,255,255,0.32)); }
   .pred-cmp-seg.home { background: var(--cl-accent, #6366f1); }
   .pred-cmp-seg.away { background: var(--cl-live, #ef4444); }
   .pred-xg {
