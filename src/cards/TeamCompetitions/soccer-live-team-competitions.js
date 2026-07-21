@@ -7,7 +7,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
-import { displayCompetitionName } from '../shared-competition.js';
+import { displayCompetitionName, isFriendlyCompetition } from '../shared-competition.js';
 
 class SoccerLiveTeamCompetitionsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedComp: { type: String } }; }
@@ -44,7 +44,9 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
         groups[key] = {
           key,
           name: displayCompetitionName(key, resolveLang(this.hass, this._config)),
-          logo: this._validText(m.league_logo) || this._validText(m.competition_logo),
+          // Friendlies come with a generic FIFA logo from the provider — drop it.
+          logo: isFriendlyCompetition(key)
+            ? null : (this._validText(m.league_logo) || this._validText(m.competition_logo)),
           all: [],
         };
       }

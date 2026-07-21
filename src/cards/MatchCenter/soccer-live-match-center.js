@@ -13,7 +13,7 @@ import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
-import { displayCompetitionName } from '../shared-competition.js';
+import { displayCompetitionName, isFriendlyCompetition } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
@@ -117,10 +117,13 @@ class SoccerLiveMatchCenterCard extends LitElement {
     }
     // Inject sensor-level logo/name as fallback (parser stores these on attrs, not per-match)
     const leagueInfo = (attrs.league_info || [])[0] || {};
+    const leagueName = rawMatch.league_name || leagueInfo.name || leagueInfo.abbreviation || attrs.league_name || '';
     const match = {
       ...rawMatch,
-      league_logo: rawMatch.league_logo || leagueInfo.logo_href || attrs.league_logo || null,
-      league_name: rawMatch.league_name || leagueInfo.name || leagueInfo.abbreviation || attrs.league_name || '',
+      // Friendlies ship a generic FIFA logo from the provider — drop it.
+      league_logo: isFriendlyCompetition(leagueName)
+        ? null : (rawMatch.league_logo || leagueInfo.logo_href || attrs.league_logo || null),
+      league_name: leagueName,
     };
     return this._renderCard(match);
   }

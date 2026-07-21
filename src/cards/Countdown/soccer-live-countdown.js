@@ -9,7 +9,7 @@ import { OfflineCache } from "../offline-cache.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
-import { displayCompetitionName } from "../shared-competition.js";
+import { displayCompetitionName, isFriendlyCompetition } from "../shared-competition.js";
 
 /**
  * Soccer Live Countdown Card
@@ -309,11 +309,13 @@ class SoccerLiveCountdownCard extends LitElement {
     const isLive     = match.state === 'in';
     const isFinished = match.state === 'post';
     const leagueInfo = attributes?.league_info?.[0];
-    const compName   = displayCompetitionName(
-      match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '',
-      resolveLang(this.hass, this._config)
-    );
-    const compLogo   = match.competition_logo || leagueInfo?.logo_href || attributes?.league_logo || '';
+    const rawComp    = match.competition_name || leagueInfo?.name || leagueInfo?.abbreviation || attributes?.league_name || '';
+    const compName   = displayCompetitionName(rawComp, resolveLang(this.hass, this._config));
+    // Friendlies come with a generic FIFA logo from the provider — suppress it
+    // (the header falls back to a neutral icon) rather than badging a friendly
+    // with the FIFA crest.
+    const compLogo   = isFriendlyCompetition(rawComp)
+      ? '' : (match.competition_logo || leagueInfo?.logo_href || attributes?.league_logo || '');
 
     // Live or finished: hide entirely or show a compact one-line strip
     if (isLive || isFinished) {

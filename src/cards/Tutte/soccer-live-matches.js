@@ -5,7 +5,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
-import { displayCompetitionName } from '../shared-competition.js';
+import { displayCompetitionName, isFriendlyCompetition } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { renderSyncStatusOrEmpty } from '../card-error.js';
 
@@ -378,7 +378,9 @@ class SoccerLiveMatchesCard extends LitElement {
       const byComp = new Map();
       limited.forEach(m => {
         const key = m.league_name && m.league_name !== 'N/A' ? this._displayCompetitionName(m.league_name) : '—';
-        if (!byComp.has(key)) byComp.set(key, { key, logo: m.league_logo || m.competition_logo || null, dayDiff: null, matches: [] });
+        // Friendlies come with a generic FIFA logo from the provider — drop it.
+        const compLogo = isFriendlyCompetition(m.league_name) ? null : (m.league_logo || m.competition_logo || null);
+        if (!byComp.has(key)) byComp.set(key, { key, logo: compLogo, dayDiff: null, matches: [] });
         byComp.get(key).matches.push(m);
       });
       // Sort competitions: those with live matches first

@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.195 (2026-07-21)
+- Friendlies no longer show the provider's generic FIFA logo. The Countdown, Match Center, Timeline, Lineup, Matches and Team Competitions cards now suppress the competition logo for friendly matches, falling back to a neutral ⚽ icon. New `isFriendlyCompetition` helper (shared with the existing friendly-name localisation) with unit tests
+
 ## v3.21.194 (2026-07-21)
 - Multi Team: each team tile now shows a compact per-tile status when it has no match — 🔑 for an invalid API key, ⏱ for a rate limit, 📡 "Data provider unavailable" for a failed sensor, ⏳ during the first fetch — while the other tiles keep showing their matches. Uses the same `syncStatusInfo` source as the full-card status
 

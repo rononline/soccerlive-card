@@ -4,7 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { classifyEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
-import { displayCompetitionName } from "../shared-competition.js";
+import { displayCompetitionName, isFriendlyCompetition } from "../shared-competition.js";
 import { renderSyncStatusOrEmpty } from "../card-error.js";
 import { scoreText } from "../shared-score.js";
 
@@ -87,7 +87,8 @@ class SoccerLiveTimelineCard extends LitElement {
         <div class="hero-bg"></div>
         ${!this.hideHeader ? html`
           ${renderSoccerHeader({
-            logo: m.competition_logo || m.league_logo || stateObj.attributes.league_logo || null,
+            logo: isFriendlyCompetition(m.competition_name || m.league_name || stateObj.attributes.league_name)
+              ? null : (m.competition_logo || m.league_logo || stateObj.attributes.league_logo || null),
             title: displayCompetitionName(
               m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.timeline'),
               resolveLang(this.hass, this._config)
