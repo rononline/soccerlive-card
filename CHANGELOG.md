@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.200 (2026-07-21)
+- Club editor: discover dedicated `soccer_live_club_*` sensors, including the separate private FotMob integration, in the entity selector
+
 ## v3.21.199 (2026-07-21)
 - Fix: the sync-status state cards (first fetch / rate limit / invalid key / provider down) threw a render error and showed a stuck spinner when actually displayed — the translate function was passed unbound, so it lost access to the card instance. All cards now pass a bound translator. This was masked until now because no test exercised the empty+status render path
 - Tests: added Playwright snapshots for the four sync-status states, the friendly-branding FIFA-logo suppression (neutral badge shown instead), and Multi Team with one working + one auth-failed sensor (per-tile 🔑 status)
