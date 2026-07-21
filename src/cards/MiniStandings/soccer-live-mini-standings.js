@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
-import { renderCardError } from "../card-error.js";
+import { renderCardError, renderSyncStatusOrEmpty } from "../card-error.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
 
@@ -113,7 +113,8 @@ class SoccerLiveMiniStandingsCard extends LitElement {
     if (!stateObj) return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));
 
     const groups = stateObj.attributes.standings_groups || [];
-    if (!groups.length) return renderCardError('⚽', this._t('ui.no_standings_data'), this._t('ui.no_standings_hint'), '');
+    if (!groups.length) return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+      () => renderCardError('⚽', this._t('ui.no_standings_data'), this._t('ui.no_standings_hint'), ''));
 
     // Find active group
     const activeGroup = groups.find(g => g.name === this._selectedGroup) || groups[0];

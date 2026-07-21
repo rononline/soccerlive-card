@@ -7,6 +7,7 @@ import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
+import { renderSyncStatusOrEmpty } from '../card-error.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -363,7 +364,8 @@ class SoccerLiveMatchesCard extends LitElement {
     const limited = matches.slice(0, this.maxEventsTotal);
 
     if (limited.length === 0) {
-      return html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`;
+      return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+        () => html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`);
     }
 
     const liveCount = limited.filter(m => m.state === 'in').length;

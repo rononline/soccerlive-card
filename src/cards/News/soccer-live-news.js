@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
+import { renderSyncStatusOrEmpty } from "../card-error.js";
 
 class SoccerLiveNewsCard extends LitElement {
   static get properties() {
@@ -63,11 +64,11 @@ class SoccerLiveNewsCard extends LitElement {
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</ha-card>`;
     const articles = (stateObj.attributes.articles || []).slice(0, this.maxArticles);
-    if (articles.length === 0) return html`
+    if (articles.length === 0) return renderSyncStatusOrEmpty(stateObj.attributes, this._t, () => html`
       <ha-card class="empty">
         <div style="font-size:38px; opacity:0.25; margin-bottom:10px;">📰</div>
         <div style="font-weight:700;">${this._t('news.empty')}</div>
-      </ha-card>`;
+      </ha-card>`);
 
     return html`
       <ha-card>

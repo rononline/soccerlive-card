@@ -4,7 +4,7 @@ import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
-import { renderCardError, renderInfoState, renderSyncStatus } from "../card-error.js";
+import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
@@ -302,9 +302,8 @@ class SoccerLiveCountdownCard extends LitElement {
     const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     const match = this._getNextMatch({ attributes: attributes });
     if (!match) {
-      const syncState = attributes && renderSyncStatus(attributes.sync_status, this._t);
-      if (syncState) return syncState;
-      return renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint'));
+      return renderSyncStatusOrEmpty(attributes, this._t,
+        () => renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint')));
     }
 
     const isLive     = match.state === 'in';

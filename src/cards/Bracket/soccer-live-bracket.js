@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
+import { renderSyncStatusOrEmpty } from '../card-error.js';
 import { scoreText } from '../shared-score.js';
 
 class SoccerLiveBracketCard extends LitElement {
@@ -756,7 +757,7 @@ class SoccerLiveBracketCard extends LitElement {
     const hasSchedule = scheduleMatches.length > 0;
 
     if (rounds.length === 0 && !hasGroups && !hasSchedule) {
-      return html`
+      return renderSyncStatusOrEmpty(stateObj.attributes, this._t, () => html`
         <ha-card class="empty">
           <div class="hero-bg"></div>
           <div class="empty-state">
@@ -765,7 +766,7 @@ class SoccerLiveBracketCard extends LitElement {
             <div class="empty-sub">${this._t('bracket.empty.sub')}</div>
           </div>
         </ha-card>
-      `;
+      `);
     }
 
     const lastRound = rounds[rounds.length - 1];

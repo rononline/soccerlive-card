@@ -5,6 +5,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { classifyEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
+import { renderSyncStatusOrEmpty } from "../card-error.js";
 import { scoreText } from "../shared-score.js";
 
 class SoccerLiveTimelineCard extends LitElement {
@@ -54,7 +55,8 @@ class SoccerLiveTimelineCard extends LitElement {
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</ha-card>`;
 
     const matches = stateObj.attributes.matches || [];
-    if (matches.length === 0) return html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`;
+    if (matches.length === 0) return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+      () => html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`);
     const m = matches[0];
     const rawEvents = m.key_events || stateObj.attributes.key_events || [];
     const events = rawEvents.map(e => ({ ev: e, info: this._getEventInfo(e) })).filter(x => x.info !== null);

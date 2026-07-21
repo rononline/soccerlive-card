@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.193 (2026-07-21)
+- Sync status: added a shared `renderSyncStatusOrEmpty(attrs, t, fallback)` helper and routed all cards through it, so every card reacts to the integration's `sync_status` identically. Extended the first-fetch / rate-limit / invalid-key / provider-down text to Matches, Mini Standings, News, Bracket, Lineup, Timeline and Ticker (in addition to the cards that already had it). Multi Team is excluded by design (it aggregates several entities, so a single full-card status doesn't apply)
+
 ## v3.21.192 (2026-07-21)
 - Sync status: the Standings, Club, Top Scorers, Team Form and Team Competitions cards now also show the integration's `sync_status` text (first fetch / rate limit / invalid key / provider down) when they have no data yet, instead of a generic empty state — matching the Team, Countdown and Match Center cards
 

@@ -24,6 +24,16 @@ export const renderSyncStatus = (syncStatus, t) => {
     : renderInfoState(info.icon, title, sub);
 };
 
+// Shared empty-state resolver: when a card has no content, show the integration's
+// sync_status text if it reports a non-ready state, otherwise the card's own
+// empty state via `fallback()`. Centralises the pattern so every card reacts to
+// the same integration status identically. `fallback` is a function returning a
+// template (called only when there is no sync-status override).
+export const renderSyncStatusOrEmpty = (attrs, t, fallback) => {
+  const state = attrs && renderSyncStatus(attrs.sync_status, t);
+  return state || fallback();
+};
+
 // For expected empty states: off-season, no live match, endpoint not supported (neutral)
 export const renderInfoState = (icon, title, message, hint = null) => html`
   <ha-card style="padding: 26px 18px; text-align: center; color: var(--cl-text-2, var(--secondary-text-color)); background: var(--cl-bg, var(--card-background-color)); border: 1px solid var(--cl-glass-border, rgba(255,255,255,0.10)); border-radius: 18px; box-shadow: 0 4px 24px var(--cl-shadow, rgba(0,0,0,0.20));">

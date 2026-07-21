@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
+import { renderSyncStatusOrEmpty } from "../card-error.js";
 import { renderPitch, pitchStyles } from "../shared-pitch.js";
 
 class SoccerLiveLineupCard extends LitElement {
@@ -144,7 +145,8 @@ class SoccerLiveLineupCard extends LitElement {
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</ha-card>`;
 
     const matches = stateObj.attributes.matches || [];
-    if (matches.length === 0) return html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`;
+    if (matches.length === 0) return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+      () => html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`);
 
     const m = matches[0];
     const lineupHome = m.lineup_home || stateObj.attributes.lineup_home || [];

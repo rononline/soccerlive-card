@@ -4,7 +4,7 @@ import { scoreText } from '../shared-score.js';
 import { standingText } from '../shared-standing.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
-import { renderCardError, renderInfoState, renderSyncStatus } from '../card-error.js';
+import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from '../card-shell.js';
@@ -89,9 +89,8 @@ class SoccerLiveTeamFormCard extends LitElement {
 
     const prev = attrs?.previous_matches || [];
     if (!prev.length) {
-      const syncState = attrs && renderSyncStatus(attrs.sync_status, this._t);
-      if (syncState) return syncState;
-      return renderInfoState('', this._t('ui.no_form_data'), this._t('ui.no_form_hint'), '');
+      return renderSyncStatusOrEmpty(attrs, this._t,
+        () => renderInfoState('', this._t('ui.no_form_data'), this._t('ui.no_form_hint'), ''));
     }
     return this._renderCard(attrs);
   }

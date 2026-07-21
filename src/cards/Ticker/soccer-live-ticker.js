@@ -3,7 +3,7 @@ import { t, resolveLang, formatMatchDate } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
-import { renderCardError } from "../card-error.js";
+import { renderCardError, renderSyncStatusOrEmpty } from "../card-error.js";
 import { displayCompetitionName } from '../shared-competition.js';
 
 class SoccerLiveTickerCard extends LitElement {
@@ -122,7 +122,8 @@ class SoccerLiveTickerCard extends LitElement {
     }
 
     const matches = attrs.matches || [];
-    if (!matches.length) return html`<ha-card><div class="empty">${this._t('ui.no_match_data')}</div></ha-card>`;
+    if (!matches.length) return renderSyncStatusOrEmpty(attrs, this._t,
+      () => html`<ha-card><div class="empty">${this._t('ui.no_match_data')}</div></ha-card>`);
 
     const sorted = [...matches].sort((a, b) => {
       const order = { in: 0, pre: 1, post: 2 };

@@ -3,7 +3,7 @@ import { t, resolveLang, formatMatchDateFull, formatDateOnly } from '../../i18n.
 import { scoreText } from '../shared-score.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
-import { renderCardError, renderInfoState, renderSyncStatus } from '../card-error.js';
+import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
@@ -112,9 +112,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
     if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
     const rawMatch = (attrs?.matches || [])[0];
     if (!rawMatch) {
-      const syncState = attrs && renderSyncStatus(attrs.sync_status, this._t);
-      if (syncState) return syncState;
-      return renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), '');
+      return renderSyncStatusOrEmpty(attrs, this._t,
+        () => renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), ''));
     }
     // Inject sensor-level logo/name as fallback (parser stores these on attrs, not per-match)
     const leagueInfo = (attrs.league_info || [])[0] || {};

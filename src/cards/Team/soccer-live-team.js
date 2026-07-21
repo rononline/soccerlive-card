@@ -6,7 +6,7 @@ import { resolveCompact } from "../../skin-config.js";
 import { normalizeCssColor } from "../../skin-colors.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
-import { renderCardError, renderInfoState, renderSyncStatus } from "../card-error.js";
+import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
@@ -556,13 +556,13 @@ class SoccerLiveTeamCard extends LitElement {
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {
       // First fetch in progress / provider or auth problem → show concrete text
       // instead of "off season", so an empty card isn't mistaken for a misconfig.
-      const syncState = attributes && renderSyncStatus(attributes.sync_status, this._t);
-      if (syncState) return syncState;
-      // Distinguish: wrong entity type vs off-season
-      const entityId = this._config.entity || '';
-      if (!entityId.includes('soccerlive_next') && !entityId.includes('soccerlive_all_mixed') && !entityId.includes('soccer_live_next') && !entityId.includes('soccer_live_all_mixed'))
-        return renderCardError('⚠️', this._t('ui.wrong_entity_type'), entityId, this._t('ui.wrong_entity_type_hint'));
-      return renderInfoState('📅', this._t('ui.off_season'), this._t('team.off_season'));
+      return renderSyncStatusOrEmpty(attributes, this._t, () => {
+        // Distinguish: wrong entity type vs off-season
+        const entityId = this._config.entity || '';
+        if (!entityId.includes('soccerlive_next') && !entityId.includes('soccerlive_all_mixed') && !entityId.includes('soccer_live_next') && !entityId.includes('soccer_live_all_mixed'))
+          return renderCardError('⚠️', this._t('ui.wrong_entity_type'), entityId, this._t('ui.wrong_entity_type_hint'));
+        return renderInfoState('📅', this._t('ui.off_season'), this._t('team.off_season'));
+      });
     }
 
     const match = attributes.matches[0];
