@@ -1,4 +1,5 @@
 import { html } from 'lit-element';
+import { syncStatusInfo } from './sync-status.js';
 
 // For real errors: wrong entity, integration down, timeout (red accent)
 export const renderCardError = (icon, title, message, hint = null) => html`
@@ -9,6 +10,19 @@ export const renderCardError = (icon, title, message, hint = null) => html`
     ${hint ? html`<div style="font-size: 11px; color: var(--cl-text-2, var(--secondary-text-color)); background: var(--cl-surface, rgba(0,0,0,0.1)); border: 1px solid var(--cl-divider, transparent); padding: 8px; border-radius: 8px; margin-top: 8px;">${hint}</div>` : ''}
   </ha-card>
 `;
+
+// Render the integration's sync_status (first fetch / rate limit / auth / provider
+// down) as a state card, or null when the status is "ready"/unknown so the card
+// falls through to its own empty handling. `t` is the card's translate function.
+export const renderSyncStatus = (syncStatus, t) => {
+  const info = syncStatusInfo(syncStatus);
+  if (!info) return null;
+  const title = t(info.title);
+  const sub = t(info.sub);
+  return info.kind === 'error'
+    ? renderCardError(info.icon, title, sub, t('ui.check_integration'))
+    : renderInfoState(info.icon, title, sub);
+};
 
 // For expected empty states: off-season, no live match, endpoint not supported (neutral)
 export const renderInfoState = (icon, title, message, hint = null) => html`

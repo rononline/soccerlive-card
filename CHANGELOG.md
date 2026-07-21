@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.190 (2026-07-21)
+- Sync status: the Team, Match Center and Countdown cards now read the integration's `sync_status` attribute and show concrete text when there are no matches yet — "Fetching matches…" during the first update, plus specific messages for a temporary rate limit, an invalid API key, or an unreachable data provider — instead of always showing "Off season" (which looked like a misconfiguration). Requires Soccer Live integration v3.6.102+; older integrations fall back to the previous behaviour
+- Added a pure `syncStatusInfo` helper (shared `renderSyncStatus`) with unit tests; English and Dutch strings (other languages fall back to English)
+
 ## v3.21.189 (2026-07-20)
 - Prediction bars: the bar outline and the home/away segment separator now use appearance-aware `--cl-bar-outline` / `--cl-bar-separator` variables (light hairlines on dark/branded skins, darker ones on light skins) instead of a fixed white, so they stay visible on light skins too
 - Prediction legend: a small home/away colour dot is shown next to the `FEY 62%` / `14% RAY` labels, restoring the team association that was lost when the labels switched to the neutral text colour — without reintroducing the low-contrast coloured text on branded backgrounds
