@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 import { t, resolveLang } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
-import { renderCardError, renderInfoState } from '../card-error.js';
+import { renderCardError, renderInfoState, renderSyncStatus } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader } from '../shared-header.js';
 import { soccerCardShellStyles } from '../card-shell.js';
@@ -78,6 +78,8 @@ class SoccerLiveClubCard extends LitElement {
     const club = attrs?.club;
     if (!hasClubContent(club)) {
       if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
+      const syncState = attrs && renderSyncStatus(attrs.sync_status, this._t);
+      if (syncState) return syncState;
       return renderInfoState('🏟️', this._t('club.empty'), this._t('club.empty_hint'), '');
     }
     return this._renderCard(club);

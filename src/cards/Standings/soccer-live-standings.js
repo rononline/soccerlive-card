@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
+import { renderSyncStatus } from "../card-error.js";
 
 // Generate an inclusive integer range
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
@@ -433,6 +434,12 @@ class SoccerLiveStandingsCard extends LitElement {
     const filteredStandings = this._sortStandings(standingsGroup ? standingsGroup.standings : [], seasonName);
 
     const total = filteredStandings.length;
+    // No table yet: show the integration's first-fetch / provider status text
+    // instead of an empty table that looks like a misconfiguration.
+    if (!total) {
+      const syncState = renderSyncStatus(stateObj.attributes.sync_status, this._t);
+      if (syncState) return syncState;
+    }
     const maxVisible = Math.min(this.maxTeamsVisible, total);
     const tableHeight = maxVisible * 48 + 50;
 

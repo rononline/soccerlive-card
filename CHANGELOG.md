@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.192 (2026-07-21)
+- Sync status: the Standings, Club, Top Scorers, Team Form and Team Competitions cards now also show the integration's `sync_status` text (first fetch / rate limit / invalid key / provider down) when they have no data yet, instead of a generic empty state — matching the Team, Countdown and Match Center cards
+
 ## v3.21.191 (2026-07-21)
 - Diagnostics editor: the recommended-card list now uses the integration's authoritative `recommended_card_types` when available (falling back to the built-in map for older integrations), and shows the `integration_version` — with a hint to update when the integration is too old to publish it. Requires Soccer Live integration v3.6.103+ for the published list
 

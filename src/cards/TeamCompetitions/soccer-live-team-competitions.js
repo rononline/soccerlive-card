@@ -4,7 +4,7 @@ import { scoreText } from "../shared-score.js";
 import { standingText } from "../shared-standing.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
-import { renderCardError, renderInfoState } from "../card-error.js";
+import { renderCardError, renderInfoState, renderSyncStatus } from "../card-error.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
@@ -146,7 +146,11 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
     }
 
     const matches = attrs.matches || [];
-    if (!matches.length) return renderInfoState('🗂️', this._t('ui.no_competition_data'), this._t('ui.no_competition_hint'), '');
+    if (!matches.length) {
+      const syncState = renderSyncStatus(attrs.sync_status, this._t);
+      if (syncState) return syncState;
+      return renderInfoState('🗂️', this._t('ui.no_competition_data'), this._t('ui.no_competition_hint'), '');
+    }
 
     const groups     = this._groupByCompetition(matches);
     const active     = groups.find(g => g.key === this._selectedComp) || groups[0];
