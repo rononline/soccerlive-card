@@ -13,7 +13,7 @@ import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
-import { displayCompetitionName } from '../shared-competition.js';
+import { displayCompetitionName, isFriendlyCompetition } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 
 /**
@@ -567,7 +567,10 @@ class SoccerLiveTeamCard extends LitElement {
 
     const match = attributes.matches[0];
     const leagueInfo = attributes.league_info ? attributes.league_info[0] : null;
-    const leagueLogo = leagueInfo && leagueInfo.logo_href && leagueInfo.logo_href !== 'N/A' ? leagueInfo.logo_href : null;
+    // Friendlies carry a generic FIFA competition logo — suppress it.
+    const _leagueName = (match.league_name && match.league_name !== 'N/A' ? match.league_name : (leagueInfo && leagueInfo.name)) || '';
+    const leagueLogo = (leagueInfo && leagueInfo.logo_href && leagueInfo.logo_href !== 'N/A' && !isFriendlyCompetition(_leagueName))
+      ? leagueInfo.logo_href : null;
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
     const showScore = isLive || isFinished;

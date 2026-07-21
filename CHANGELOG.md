@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.196 (2026-07-21)
+- Friendlies (follow-up): also suppress the generic FIFA logo in the card *headers* that preferred the competition logo. The Matches card header and the Team card competition badge now fall back to the team logo for a friendly, instead of showing the FIFA crest next to the team name (v3.21.195 covered the per-match/per-group logos but not these headers)
+
 ## v3.21.195 (2026-07-21)
 - Friendlies no longer show the provider's generic FIFA logo. The Countdown, Match Center, Timeline, Lineup, Matches and Team Competitions cards now suppress the competition logo for friendly matches, falling back to a neutral ⚽ icon. New `isFriendlyCompetition` helper (shared with the existing friendly-name localisation) with unit tests
 

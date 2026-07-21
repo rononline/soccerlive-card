@@ -436,7 +436,12 @@ class SoccerLiveMatchesCard extends LitElement {
         ` : ''}
 
         ${!this.hideHeader ? (() => {
-          const _logo  = (leagueInfo && leagueInfo.logo_href) || teamLogo || null;
+          // Friendlies carry a generic FIFA competition logo; on a team-focused
+          // card fall back to the team logo instead of badging it with FIFA.
+          const _leagueName = (leagueInfo && leagueInfo.name) || '';
+          const _leagueLogo = (leagueInfo && leagueInfo.logo_href && !isFriendlyCompetition(_leagueName))
+            ? leagueInfo.logo_href : null;
+          const _logo  = _leagueLogo || teamLogo || null;
           const leagueTitle = leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'World'
             ? leagueInfo.abbreviation
             : (leagueInfo && leagueInfo.name ? this._displayCompetitionName(leagueInfo.name) : null);
