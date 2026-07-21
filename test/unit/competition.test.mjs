@@ -9,8 +9,18 @@ test('isFriendlyCompetition: true for club/generic friendly names (any casing/se
   }
 });
 
+test('isFriendlyCompetition: true for the LOCALISED friendly names', () => {
+  // The integration localises league_name for API-Football, so cards can see a
+  // translated name (e.g. "Oefenwedstrijd") rather than the English key.
+  for (const n of ['Oefenwedstrijd', 'Oefenwedstrijden', 'Amistosos', 'Amistosos de clubes',
+                    'Freundschaftsspiele', 'Vereinsfreundschaftsspiele',
+                    'Amichevoli', 'Matchs amicaux', 'International Friendly', 'fifa.friendly']) {
+    assert.equal(isFriendlyCompetition(n), true, n);
+  }
+});
+
 test('isFriendlyCompetition: false for real competitions and empties', () => {
-  for (const n of ['Eredivisie', 'Champions League', 'FIFA World Cup', 'Friendly Cup', '', null, undefined]) {
+  for (const n of ['Eredivisie', 'Champions League', 'FIFA World Cup', '', null, undefined]) {
     assert.equal(isFriendlyCompetition(n), false, String(n));
   }
 });

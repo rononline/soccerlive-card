@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.197 (2026-07-21)
+- Friendlies (follow-up): the FIFA-logo suppression now also works on API-Football sensors. The integration localises `league_name` there (e.g. "Oefenwedstrijd"), so the English-only friendly check missed it — the Team card badge and the Countdown/Match Center/Timeline/Lineup headers still showed the FIFA crest. `isFriendlyCompetition` now recognises the localised friendly names (all 7 languages) and any name containing "friendl", so friendlies are detected regardless of provider/language
+
 ## v3.21.196 (2026-07-21)
 - Friendlies (follow-up): also suppress the generic FIFA logo in the card *headers* that preferred the competition logo. The Matches card header and the Team card competition badge now fall back to the team logo for a friendly, instead of showing the FIFA crest next to the team name (v3.21.195 covered the per-match/per-group logos but not these headers)
 
