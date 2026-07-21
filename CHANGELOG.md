@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.194 (2026-07-21)
+- Multi Team: each team tile now shows a compact per-tile status when it has no match — 🔑 for an invalid API key, ⏱ for a rate limit, 📡 "Data provider unavailable" for a failed sensor, ⏳ during the first fetch — while the other tiles keep showing their matches. Uses the same `syncStatusInfo` source as the full-card status
+
 ## v3.21.193 (2026-07-21)
 - Sync status: added a shared `renderSyncStatusOrEmpty(attrs, t, fallback)` helper and routed all cards through it, so every card reacts to the integration's `sync_status` identically. Extended the first-fetch / rate-limit / invalid-key / provider-down text to Matches, Mini Standings, News, Bracket, Lineup, Timeline and Ticker (in addition to the cards that already had it). Multi Team is excluded by design (it aggregates several entities, so a single full-card status doesn't apply)
 

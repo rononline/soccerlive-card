@@ -4,6 +4,7 @@ import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderLoading, spinnerStyles } from "../loading-spinner.js";
 import { renderCardError } from "../card-error.js";
+import { syncStatusInfo } from "../sync-status.js";
 import { OfflineCache } from "../offline-cache.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 
@@ -92,6 +93,8 @@ class SoccerLiveMultiTeamCard extends LitElement {
       .status { font-size: 10px; color: var(--cl-text-2); }
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
       .no-match { font-size: 11px; color: var(--cl-text-2); text-align: center; padding: 4px; }
+      .no-match.sync { font-weight: 600; }
+      .no-match.sync.error { color: var(--cl-live, #ef4444); }
       .empty { padding: 16px; text-align: center; color: var(--cl-text-2); }
     `];
   }
@@ -108,7 +111,14 @@ class SoccerLiveMultiTeamCard extends LitElement {
     }
 
     const match = this._getMatch(stateObj);
-    if (!match) return html`<div class="match-row"><div class="no-match">${this._t('team.no_match')} (${entityId})</div></div>`;
+    if (!match) {
+      // A full-card status doesn't fit a multi-team list, so show a compact
+      // per-tile indicator (🔑 invalid key, ⏱ rate limit, 📡 provider down,
+      // ⏳ first fetch) while the other tiles keep showing their matches.
+      const info = syncStatusInfo(stateObj.attributes?.sync_status);
+      if (info) return html`<div class="match-row"><div class="no-match sync ${info.kind}">${info.icon} ${this._t(info.title)}</div></div>`;
+      return html`<div class="match-row"><div class="no-match">${this._t('team.no_match')} (${entityId})</div></div>`;
+    }
 
     const isLive = match.state === 'in';
     const isFinished = match.state === 'post';
