@@ -44,6 +44,22 @@ export function isFriendlyCompetition(name) {
   return FRIENDLY_SET.has(key) || /friendl/.test(key);
 }
 
+// Single place that decides which logo a card should show for a competition.
+// Friendlies get a generic FIFA crest from the provider, so for a friendly we
+// return the caller's `fallbackLogo` (a team logo on team-focused cards, or
+// null to fall back to a neutral icon) instead of the competition logo.
+//
+// Prefers the integration's stable `is_friendly` flag when provided, and only
+// falls back to the name heuristic for older integrations that don't publish it.
+export function resolveCompetitionLogo({ competitionName, competitionLogo, fallbackLogo = null, isFriendly } = {}) {
+  const friendly = typeof isFriendly === 'boolean'
+    ? isFriendly
+    : isFriendlyCompetition(competitionName);
+  if (friendly) return fallbackLogo;
+  const logo = competitionLogo && competitionLogo !== 'N/A' ? competitionLogo : null;
+  return logo || fallbackLogo;
+}
+
 export function displayCompetitionName(name, lang = 'en') {
   const raw = String(name || '').trim();
   if (!raw || raw === 'N/A') return '';

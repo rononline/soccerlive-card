@@ -3,7 +3,7 @@ import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
-import { displayCompetitionName, isFriendlyCompetition } from "../shared-competition.js";
+import { displayCompetitionName, resolveCompetitionLogo } from "../shared-competition.js";
 import { renderSyncStatusOrEmpty } from "../card-error.js";
 import { renderPitch, pitchStyles } from "../shared-pitch.js";
 
@@ -171,8 +171,12 @@ class SoccerLiveLineupCard extends LitElement {
     }
 
     const header = !this.hideHeader ? renderSoccerHeader({
-      logo: isFriendlyCompetition(m.competition_name || m.league_name || stateObj.attributes.league_name)
-        ? null : (m.competition_logo || m.league_logo || stateObj.attributes.league_logo || null),
+      logo: resolveCompetitionLogo({
+        competitionName: m.competition_name || m.league_name || stateObj.attributes.league_name,
+        competitionLogo: m.competition_logo || m.league_logo || stateObj.attributes.league_logo,
+        fallbackLogo: null,
+        isFriendly: m.is_friendly,
+      }),
       title: displayCompetitionName(
         m.competition_name || m.league_name || stateObj.attributes.league_name || this._t('card.lineup'),
         resolveLang(this.hass, this._config)

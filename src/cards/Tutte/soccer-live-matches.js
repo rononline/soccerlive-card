@@ -5,7 +5,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
-import { displayCompetitionName, isFriendlyCompetition } from '../shared-competition.js';
+import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { renderSyncStatusOrEmpty } from '../card-error.js';
 
@@ -378,8 +378,12 @@ class SoccerLiveMatchesCard extends LitElement {
       const byComp = new Map();
       limited.forEach(m => {
         const key = m.league_name && m.league_name !== 'N/A' ? this._displayCompetitionName(m.league_name) : '—';
-        // Friendlies come with a generic FIFA logo from the provider — drop it.
-        const compLogo = isFriendlyCompetition(m.league_name) ? null : (m.league_logo || m.competition_logo || null);
+        const compLogo = resolveCompetitionLogo({
+          competitionName: m.league_name,
+          competitionLogo: m.league_logo || m.competition_logo,
+          fallbackLogo: null,
+          isFriendly: m.is_friendly,
+        });
         if (!byComp.has(key)) byComp.set(key, { key, logo: compLogo, dayDiff: null, matches: [] });
         byComp.get(key).matches.push(m);
       });
@@ -436,12 +440,13 @@ class SoccerLiveMatchesCard extends LitElement {
         ` : ''}
 
         ${!this.hideHeader ? (() => {
-          // Friendlies carry a generic FIFA competition logo; on a team-focused
-          // card fall back to the team logo instead of badging it with FIFA.
-          const _leagueName = (leagueInfo && leagueInfo.name) || '';
-          const _leagueLogo = (leagueInfo && leagueInfo.logo_href && !isFriendlyCompetition(_leagueName))
-            ? leagueInfo.logo_href : null;
-          const _logo  = _leagueLogo || teamLogo || null;
+          // Header is league-level; on this team-focused card fall back to the
+          // team logo for a friendly instead of badging it with FIFA.
+          const _logo  = resolveCompetitionLogo({
+            competitionName: (leagueInfo && leagueInfo.name) || '',
+            competitionLogo: leagueInfo && leagueInfo.logo_href,
+            fallbackLogo: teamLogo || null,
+          });
           const leagueTitle = leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'World'
             ? leagueInfo.abbreviation
             : (leagueInfo && leagueInfo.name ? this._displayCompetitionName(leagueInfo.name) : null);

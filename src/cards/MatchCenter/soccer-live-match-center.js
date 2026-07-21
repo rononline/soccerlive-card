@@ -13,7 +13,7 @@ import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
-import { displayCompetitionName, isFriendlyCompetition } from '../shared-competition.js';
+import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
@@ -120,9 +120,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const leagueName = rawMatch.league_name || leagueInfo.name || leagueInfo.abbreviation || attrs.league_name || '';
     const match = {
       ...rawMatch,
-      // Friendlies ship a generic FIFA logo from the provider — drop it.
-      league_logo: isFriendlyCompetition(leagueName)
-        ? null : (rawMatch.league_logo || leagueInfo.logo_href || attrs.league_logo || null),
+      league_logo: resolveCompetitionLogo({
+        competitionName: leagueName,
+        competitionLogo: rawMatch.league_logo || leagueInfo.logo_href || attrs.league_logo,
+        fallbackLogo: null,
+        isFriendly: rawMatch.is_friendly,
+      }),
       league_name: leagueName,
     };
     return this._renderCard(match);

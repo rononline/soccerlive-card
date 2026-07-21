@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.198 (2026-07-21)
+- Friendlies: centralised the competition-logo decision in one `resolveCompetitionLogo()` helper used by every card, so a future exception only needs changing in one place. It now prefers the integration's stable `is_friendly` flag (v3.6.108+) and only falls back to the name heuristic for older integrations — avoiding false positives and making the logic language-independent
+
 ## v3.21.197 (2026-07-21)
 - Friendlies (follow-up): the FIFA-logo suppression now also works on API-Football sensors. The integration localises `league_name` there (e.g. "Oefenwedstrijd"), so the English-only friendly check missed it — the Team card badge and the Countdown/Match Center/Timeline/Lineup headers still showed the FIFA crest. `isFriendlyCompetition` now recognises the localised friendly names (all 7 languages) and any name containing "friendl", so friendlies are detected regardless of provider/language
 
