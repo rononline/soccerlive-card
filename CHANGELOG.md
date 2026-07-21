@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.191 (2026-07-21)
+- Diagnostics editor: the recommended-card list now uses the integration's authoritative `recommended_card_types` when available (falling back to the built-in map for older integrations), and shows the `integration_version` — with a hint to update when the integration is too old to publish it. Requires Soccer Live integration v3.6.103+ for the published list
+
 ## v3.21.190 (2026-07-21)
 - Sync status: the Team, Match Center and Countdown cards now read the integration's `sync_status` attribute and show concrete text when there are no matches yet — "Fetching matches…" during the first update, plus specific messages for a temporary rate limit, an invalid API key, or an unreachable data provider — instead of always showing "Off season" (which looked like a misconfiguration). Requires Soccer Live integration v3.6.102+; older integrations fall back to the previous behaviour
 - Added a pure `syncStatusInfo` helper (shared `renderSyncStatus`) with unit tests; English and Dutch strings (other languages fall back to English)

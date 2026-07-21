@@ -67,7 +67,20 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
   _textChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
   _selectChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
 
-  _recommendedCards(sensorType) {
+  _recommendedCards(sensorType, fromIntegration) {
+    // Prefer the integration's authoritative list (card_type slugs) so this
+    // stays in sync as the integration evolves; fall back to the local map for
+    // older integrations that don't publish `recommended_card_types`.
+    if (Array.isArray(fromIntegration) && fromIntegration.length) {
+      const labels = {
+        team: "Team", countdown: "Countdown", "match-center": "Match Center",
+        lineup: "Lineup", timeline: "Timeline", "team-form": "Team Form",
+        matches: "Matches", ticker: "Ticker", "team-competitions": "Team Competitions",
+        standings: "Standings", "mini-standings": "Mini Standings", scorers: "Top Scorers",
+        bracket: "Bracket", news: "News",
+      };
+      return fromIntegration.map(s => labels[s] || s).join(", ");
+    }
     const map = {
       team_match: "Team, Countdown, Match Center, Lineup, Timeline, Team Form",
       team_matches: "Matches, Ticker, Live Match, Team Form",
@@ -85,8 +98,10 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
     if (!this._config || !this.hass) return html``;
     const current = this._config.entity || "";
     const inList = current && this.entities.includes(current);
-    const sensorType = this.hass.states[current]?.attributes?.sensor_type || "";
-    const recommended = this._recommendedCards(sensorType);
+    const attrs = this.hass.states[current]?.attributes || {};
+    const sensorType = attrs.sensor_type || "";
+    const recommended = this._recommendedCards(sensorType, attrs.recommended_card_types);
+    const integrationVersion = attrs.integration_version;
     return html`
       <div class="card-config">
         <h3>${this._t("editor.sensor")}</h3>
@@ -101,6 +116,9 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
           <div class="hint">
             <strong>${this._t("editor.diag_sensor_type")}:</strong> ${sensorType}
             ${recommended ? html`<br><strong>${this._t("editor.diag_recommended_cards")}:</strong> ${recommended}` : ""}
+            ${integrationVersion
+              ? html`<br><strong>${this._t("editor.diag_integration_version")}:</strong> ${integrationVersion}`
+              : html`<br><em>${this._t("editor.diag_integration_outdated")}</em>`}
           </div>
         ` : ""}
         <div>

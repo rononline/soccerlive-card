@@ -479,6 +479,8 @@ const TRANSLATIONS = {
     'editor.default_competition_hint': 'e.g. Premier League',
     'editor.diag_sensor_type': 'Sensor type',
     'editor.diag_recommended_cards': 'Recommended cards',
+    'editor.diag_integration_version': 'Integration version',
+    'editor.diag_integration_outdated': 'Integration may be outdated — update Soccer Live for full data and card recommendations',
     'editor.diag_title_placeholder': 'Soccer Live diagnostics',
   },
   nl: {
@@ -934,6 +936,8 @@ const TRANSLATIONS = {
     'editor.default_competition_hint': 'bijv. Eredivisie',
     'editor.diag_sensor_type': 'Sensortype',
     'editor.diag_recommended_cards': 'Aanbevolen kaarten',
+    'editor.diag_integration_version': 'Integratieversie',
+    'editor.diag_integration_outdated': 'Integratie is mogelijk verouderd — werk Soccer Live bij voor volledige gegevens en kaartadvies',
     'editor.diag_title_placeholder': 'Soccer Live diagnostiek',
   },
   it: {
