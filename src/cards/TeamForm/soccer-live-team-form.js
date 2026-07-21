@@ -89,7 +89,7 @@ class SoccerLiveTeamFormCard extends LitElement {
 
     const prev = attrs?.previous_matches || [];
     if (!prev.length) {
-      return renderSyncStatusOrEmpty(attrs, this._t,
+      return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('', this._t('ui.no_form_data'), this._t('ui.no_form_hint'), ''));
     }
     return this._renderCard(attrs);

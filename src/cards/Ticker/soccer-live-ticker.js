@@ -122,7 +122,7 @@ class SoccerLiveTickerCard extends LitElement {
     }
 
     const matches = attrs.matches || [];
-    if (!matches.length) return renderSyncStatusOrEmpty(attrs, this._t,
+    if (!matches.length) return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
       () => html`<ha-card><div class="empty">${this._t('ui.no_match_data')}</div></ha-card>`);
 
     const sorted = [...matches].sort((a, b) => {

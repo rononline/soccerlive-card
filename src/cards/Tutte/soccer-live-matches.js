@@ -364,7 +364,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const limited = matches.slice(0, this.maxEventsTotal);
 
     if (limited.length === 0) {
-      return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+      return renderSyncStatusOrEmpty(stateObj.attributes, (k) => this._t(k),
         () => html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`);
     }
 

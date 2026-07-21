@@ -131,3 +131,23 @@ test('editor — custom palette advanced background fields', async ({ page }) =>
   await page.waitForTimeout(80);
   await expect(target(page)).toHaveScreenshot('editor-custom-advanced.png');
 });
+
+// --- Sync-status states (shared renderer) + friendly branding ---
+
+const SYNC_STATES = ['initializing', 'rate_limited', 'authentication_failed', 'provider_unavailable'];
+for (const s of SYNC_STATES) {
+  test(`sync status — ${s}`, async ({ page }) => {
+    await open(page, { mode: 'card', sync_status: s });
+    await expect(target(page)).toHaveScreenshot(`sync-${s}.png`);
+  });
+}
+
+test('multi team — one working + one auth-failed sensor', async ({ page }) => {
+  await open(page, { mode: 'multiteam' });
+  await expect(target(page)).toHaveScreenshot('multiteam-mixed.png');
+});
+
+test('friendly — FIFA competition logo is suppressed (neutral badge)', async ({ page }) => {
+  await open(page, { mode: 'card', friendly: '1' });
+  await expect(target(page)).toHaveScreenshot('team-friendly.png');
+});

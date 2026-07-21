@@ -145,7 +145,7 @@ class SoccerLiveLineupCard extends LitElement {
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${this._config.entity}</ha-card>`;
 
     const matches = stateObj.attributes.matches || [];
-    if (matches.length === 0) return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+    if (matches.length === 0) return renderSyncStatusOrEmpty(stateObj.attributes, (k) => this._t(k),
       () => html`<ha-card class="empty">${this._t('generic.no_match')}</ha-card>`);
 
     const m = matches[0];

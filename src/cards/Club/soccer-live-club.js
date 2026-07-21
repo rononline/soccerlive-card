@@ -78,7 +78,7 @@ class SoccerLiveClubCard extends LitElement {
     const club = attrs?.club;
     if (!hasClubContent(club)) {
       if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
-      return renderSyncStatusOrEmpty(attrs, this._t,
+      return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('🏟️', this._t('club.empty'), this._t('club.empty_hint'), ''));
     }
     return this._renderCard(club);

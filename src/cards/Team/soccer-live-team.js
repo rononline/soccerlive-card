@@ -556,7 +556,7 @@ class SoccerLiveTeamCard extends LitElement {
     if (!attributes || !attributes.matches || attributes.matches.length === 0) {
       // First fetch in progress / provider or auth problem → show concrete text
       // instead of "off season", so an empty card isn't mistaken for a misconfig.
-      return renderSyncStatusOrEmpty(attributes, this._t, () => {
+      return renderSyncStatusOrEmpty(attributes, (k) => this._t(k), () => {
         // Distinguish: wrong entity type vs off-season
         const entityId = this._config.entity || '';
         if (!entityId.includes('soccerlive_next') && !entityId.includes('soccerlive_all_mixed') && !entityId.includes('soccer_live_next') && !entityId.includes('soccer_live_all_mixed'))

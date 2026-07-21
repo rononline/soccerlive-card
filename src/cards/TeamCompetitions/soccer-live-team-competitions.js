@@ -152,7 +152,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
     const matches = attrs.matches || [];
     if (!matches.length) {
-      return renderSyncStatusOrEmpty(attrs, this._t,
+      return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('🗂️', this._t('ui.no_competition_data'), this._t('ui.no_competition_hint'), ''));
     }
 

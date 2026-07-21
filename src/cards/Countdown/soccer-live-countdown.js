@@ -302,7 +302,7 @@ class SoccerLiveCountdownCard extends LitElement {
     const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     const match = this._getNextMatch({ attributes: attributes });
     if (!match) {
-      return renderSyncStatusOrEmpty(attributes, this._t,
+      return renderSyncStatusOrEmpty(attributes, (k) => this._t(k),
         () => renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint')));
     }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.199 (2026-07-21)
+- Fix: the sync-status state cards (first fetch / rate limit / invalid key / provider down) threw a render error and showed a stuck spinner when actually displayed — the translate function was passed unbound, so it lost access to the card instance. All cards now pass a bound translator. This was masked until now because no test exercised the empty+status render path
+- Tests: added Playwright snapshots for the four sync-status states, the friendly-branding FIFA-logo suppression (neutral badge shown instead), and Multi Team with one working + one auth-failed sensor (per-tile 🔑 status)
+
 ## v3.21.198 (2026-07-21)
 - Friendlies: centralised the competition-logo decision in one `resolveCompetitionLogo()` helper used by every card, so a future exception only needs changing in one place. It now prefers the integration's stable `is_friendly` flag (v3.6.108+) and only falls back to the name heuristic for older integrations — avoiding false positives and making the logic language-independent
 

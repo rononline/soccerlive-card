@@ -85,7 +85,7 @@ class SoccerLiveScorersCard extends LitElement {
     const visible = rankScorers(source, ranking).slice(0, max);
 
     if (!visible.length) {
-      return renderSyncStatusOrEmpty(attrs, this._t,
+      return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('🥇', this._t('scorers.empty'), '', ''));
     }
 

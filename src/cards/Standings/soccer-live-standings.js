@@ -437,7 +437,7 @@ class SoccerLiveStandingsCard extends LitElement {
     // No table yet: show the integration's first-fetch / provider status text
     // instead of an empty table that looks like a misconfiguration.
     if (!total) {
-      const syncState = renderSyncStatus(stateObj.attributes.sync_status, this._t);
+      const syncState = renderSyncStatus(stateObj.attributes.sync_status, (k) => this._t(k));
       if (syncState) return syncState;
     }
     const maxVisible = Math.min(this.maxTeamsVisible, total);

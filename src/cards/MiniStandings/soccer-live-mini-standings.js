@@ -113,7 +113,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
     if (!stateObj) return renderCardError('⚠️', this._t('ui.entity_not_found'), `${this._t('ui.entity_not_found')}: ${this._config.entity}`, this._t('ui.check_entity_config'));
 
     const groups = stateObj.attributes.standings_groups || [];
-    if (!groups.length) return renderSyncStatusOrEmpty(stateObj.attributes, this._t,
+    if (!groups.length) return renderSyncStatusOrEmpty(stateObj.attributes, (k) => this._t(k),
       () => renderCardError('⚽', this._t('ui.no_standings_data'), this._t('ui.no_standings_hint'), ''));
 
     // Find active group

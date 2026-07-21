@@ -757,7 +757,7 @@ class SoccerLiveBracketCard extends LitElement {
     const hasSchedule = scheduleMatches.length > 0;
 
     if (rounds.length === 0 && !hasGroups && !hasSchedule) {
-      return renderSyncStatusOrEmpty(stateObj.attributes, this._t, () => html`
+      return renderSyncStatusOrEmpty(stateObj.attributes, (k) => this._t(k), () => html`
         <ha-card class="empty">
           <div class="hero-bg"></div>
           <div class="empty-state">

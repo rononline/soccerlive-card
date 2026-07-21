@@ -112,7 +112,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
     const rawMatch = (attrs?.matches || [])[0];
     if (!rawMatch) {
-      return renderSyncStatusOrEmpty(attrs, this._t,
+      return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), ''));
     }
     // Inject sensor-level logo/name as fallback (parser stores these on attrs, not per-match)
