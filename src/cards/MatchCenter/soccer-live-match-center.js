@@ -283,6 +283,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       </div>
       ${this._renderPreview(match.preview)}
       ${this._renderReview(match.review)}
+      ${this._renderMatchStory(match.match_story)}
+      ${this._renderTeamOfMatch(match.team_of_the_match)}
       ${renderMatchMeta(match, {
         lang: resolveLang(this.hass, this._config),
         t: k => this._t(k),
@@ -318,6 +320,23 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ${standout ? html`<p>${translateStatKey(standout.key, key => this._t(key))}: <strong>${standout.home} – ${standout.away}</strong></p>` : ''}
       ${review.top_rated_players?.length ? html`<div class="brief-ratings">${review.top_rated_players.map(player => html`<span>${player.name}<b>${player.rating}</b></span>`)}</div>` : ''}
     </section>`;
+  }
+
+  _renderMatchStory(story) {
+    if (!Array.isArray(story) || !story.length) return '';
+    const labels = { opening_goal: 'story.opening_goal', equalizer: 'story.equalizer', decisive_goal: 'story.decisive_goal', red_card: 'story.red_card' };
+    return html`<section class="brief-card story"><h4>${this._t('match.story')}</h4><div class="story-line">
+      ${story.map(item => html`<div><b>${item.minute ? `${item.minute}'` : '·'}</b><i></i><span><strong>${this._t(labels[item.type] || 'match.event')}</strong><small>${item.player || ''}${item.team ? ` · ${item.team}` : ''}</small></span></div>`)}
+    </div></section>`;
+  }
+
+  _renderTeamOfMatch(players) {
+    if (!Array.isArray(players) || players.length < 5) return '';
+    const order = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
+    const sorted = [...players].sort((a, b) => (order[a.position] ?? 4) - (order[b.position] ?? 4));
+    return html`<section class="brief-card best-xi"><h4>${this._t('match.team_of_match')}</h4><div class="best-xi-grid">
+      ${sorted.map(player => html`<div class=${player.side || ''}>${player.photo ? html`<img src=${player.photo} alt="">` : ''}<span>${player.short_name || player.name}</span><b>${player.rating}</b><small>${player.position || ''}</small></div>`)}
+    </div></section>`;
   }
 
   _renderStats(match) {
@@ -529,6 +548,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .brief-form { display:flex; gap:3px; }.brief-form-row>.brief-form:last-child{justify-content:flex-end}.brief-form b{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;color:white;font-size:9px}.brief-form .w{background:#16a34a}.brief-form .d{background:#64748b}.brief-form .l{background:#dc2626}
       .brief-chips,.brief-scorers { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }.brief-chips span,.brief-scorers span{padding:4px 7px;border-radius:999px;background:rgba(148,163,184,.1);color:var(--cl-text-2);font-size:9px}
       .brief-ratings { display:grid; gap:4px; }.brief-ratings span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:10px}.brief-ratings b{color:#fbbf24}
+      .story-line{display:grid}.story-line>div{display:grid;grid-template-columns:32px 12px 1fr;align-items:stretch;min-height:42px}.story-line>div>b{color:var(--cl-accent);font-size:10px;padding-top:3px}.story-line i{position:relative;border-left:2px solid var(--cl-divider)}.story-line i::before{content:'';position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--cl-accent)}.story-line span{display:flex;flex-direction:column;padding-bottom:8px}.story-line span strong{font-size:10px}.story-line span small{color:var(--cl-text-2);font-size:9px}
+      .best-xi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.best-xi-grid>div{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:5px;padding:6px;border-radius:8px;background:rgba(255,255,255,.04);min-width:0}.best-xi-grid img{width:28px;height:28px;border-radius:50%;object-fit:cover}.best-xi-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cl-text);font-size:9px}.best-xi-grid b{color:#fbbf24;font-size:10px}.best-xi-grid small{grid-column:2/-1;color:var(--cl-text-2);font-size:8px}.best-xi-grid .away{box-shadow:inset 2px 0 var(--cl-accent-2)}.best-xi-grid .home{box-shadow:inset 2px 0 var(--cl-accent)}
       .tab-content { min-height: 80px; }
       /* Overview */
       .ov-section { padding: 4px 16px 8px; }

@@ -23,6 +23,7 @@ class SoccerLiveClubCard extends LitElement {
     return {
       hass: {}, _config: {}, _isLoading: { type: Boolean },
       _squadExpanded: { type: Boolean }, _transferFilter: { type: String },
+      _selectedPlayer: { type: Object },
     };
   }
 
@@ -33,6 +34,7 @@ class SoccerLiveClubCard extends LitElement {
     this._isLoading = true;
     if (this._squadExpanded === undefined) this._squadExpanded = false;
     if (this._transferFilter === undefined) this._transferFilter = 'all';
+    this._selectedPlayer = null;
   }
 
   connectedCallback() {
@@ -102,6 +104,7 @@ class SoccerLiveClubCard extends LitElement {
           ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
           ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
           <div class="clb-note">${this._t('club.cache_note')}</div>
+          ${this._renderPlayerDetail()}
         </div>
       </ha-card>
     `;
@@ -134,7 +137,33 @@ class SoccerLiveClubCard extends LitElement {
         ${values.average_age != null ? html`<div><span>${this._t('club.average_age')}</span><strong>${values.average_age.toFixed(1)}</strong></div>` : ''}
         <small>${this._t('club.valued_players', { n: values.valued_count })}</small>
       </div>` : ''}
+      ${values.total ? this._renderMarketDistribution(squad, values) : ''}
       ${form.length ? html`<div class="clb-form"><span>${this._t('team.form')}</span>${form.map(result => html`<b class=${result.toLowerCase()}>${result}</b>`)}</div>` : ''}
+    </div>`;
+  }
+
+  _renderMarketDistribution(squad, values) {
+    const positions = Object.entries(values.by_position || {}).sort((a, b) => b[1] - a[1]);
+    const top = [...squad].filter(player => Number(player.market_value) > 0)
+      .sort((a, b) => Number(b.market_value) - Number(a.market_value)).slice(0, 3);
+    return html`<div class="clb-market-dist">
+      ${positions.map(([position, value]) => html`<div class="clb-market-row"><span>${position}</span><i><b style="width:${Math.round(value / values.total * 100)}%"></b></i><strong>${this._formatValue(value)}</strong></div>`)}
+      ${top.length ? html`<div class="clb-top-values">${top.map((player, index) => html`<span>${index + 1}. ${player.name}<b>${this._formatValue(player.market_value)}</b></span>`)}</div>` : ''}
+    </div>`;
+  }
+
+  _renderPlayerDetail() {
+    const player = this._selectedPlayer;
+    if (!player) return '';
+    const item = (label, value) => value !== null && value !== undefined && value !== '' ? html`<div><span>${label}</span><strong>${value}</strong></div>` : '';
+    return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>
+      <section class="clb-player-modal"><button @click=${() => { this._selectedPlayer = null; }}>×</button>
+        ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${player.position || ''}</p>
+        <div class="clb-player-facts">${item(this._t('club.market_value'), player.market_value ? this._formatValue(player.market_value) : '')}
+          ${item(this._t('club.age_label'), player.age)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
+          ${item(this._t('club.appearances'), player.appearances)}${item(this._t('stat.goals'), player.goals)}${item(this._t('stat.assists'), player.assists)}${item(this._t('club.rating'), player.rating)}
+        </div>
+      </section>
     </div>`;
   }
 
@@ -178,7 +207,7 @@ class SoccerLiveClubCard extends LitElement {
             <div class="clb-pos-group">
               <div class="clb-pos">${this._t(key)}</div>
               ${players.map(p => html`
-                <div class="clb-player">
+                <div class="clb-player" role="button" tabindex="0" @click=${() => { this._selectedPlayer = p; }} @keydown=${event => { if (event.key === 'Enter') this._selectedPlayer = p; }}>
                   <span class="clb-num">${p.number ?? '·'}</span>
                   <span class="clb-pname">${p.name}</span>
                   ${p.age != null ? html`<span class="clb-age">${this._t('club.age', { n: p.age })}</span>` : ''}
@@ -251,6 +280,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-kpis div { display:flex; flex-direction:column; align-items:center; padding:7px; border-radius:8px; background:rgba(255,255,255,.035); }
       .clb-kpis strong { color:var(--cl-accent); font-size:17px; }.clb-kpis span { color:var(--cl-text-2); font-size:9px; text-transform:uppercase; }
       .clb-market-summary { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; padding-top:8px; border-top:1px solid var(--cl-divider); }.clb-market-summary div{display:flex;flex-direction:column}.clb-market-summary span,.clb-market-summary small{color:var(--cl-text-2);font-size:9px}.clb-market-summary strong{color:var(--cl-text);font-size:14px}.clb-market-summary small{grid-column:1/-1}
+      .clb-market-dist{margin-top:8px;display:grid;gap:5px}.clb-market-row{display:grid;grid-template-columns:65px 1fr auto;gap:6px;align-items:center;font-size:9px;color:var(--cl-text-2)}.clb-market-row i{height:5px;border-radius:99px;background:rgba(148,163,184,.15);overflow:hidden}.clb-market-row i b{display:block;height:100%;background:var(--cl-accent)}.clb-market-row strong{font-size:9px;color:var(--cl-text)}.clb-top-values{display:grid;gap:3px;margin-top:4px}.clb-top-values span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:9px}.clb-top-values b{color:var(--cl-accent)}
       .clb-form { display:flex; align-items:center; gap:5px; margin-top:9px; color:var(--cl-text-2); font-size:10px; }
       .clb-form b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; }.clb-form .w{background:#16a34a}.clb-form .d{background:#64748b}.clb-form .l{background:#dc2626}
       .clb-chip {
@@ -269,7 +299,8 @@ class SoccerLiveClubCard extends LitElement {
         font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
         color: var(--cl-accent, #6366f1); margin: 8px 0 3px;
       }
-      .clb-player { display: flex; align-items: baseline; gap: 8px; padding: 2px 0; font-size: 12px; }
+      .clb-player { display: flex; align-items: baseline; gap: 8px; padding: 4px 2px; font-size: 12px; border-radius:6px; cursor:pointer; }
+      .clb-player:hover,.clb-player:focus{background:rgba(255,255,255,.05);outline:none}
       .clb-num {
         min-width: 20px; text-align: center; font-weight: 800; font-variant-numeric: tabular-nums;
         color: var(--cl-text-2, #94a3b8); font-size: 11px;
@@ -277,6 +308,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-pname { font-weight: 600; color: var(--cl-text, #e2e8f0); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .clb-age { font-size: 10px; color: var(--cl-text-2, #94a3b8); }
       .clb-value { min-width:55px; text-align:right; font-size:10px; font-weight:700; color:var(--cl-accent); }
+      .clb-player-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72);backdrop-filter:blur(6px)}.clb-player-modal{position:relative;width:min(360px,100%);padding:22px;border-radius:18px;background:var(--cl-bg,#111827);border:1px solid var(--cl-divider);box-shadow:0 24px 60px rgba(0,0,0,.5);text-align:center}.clb-player-modal>button{position:absolute;right:10px;top:8px;border:0;background:transparent;color:var(--cl-text-2);font-size:24px;cursor:pointer}.clb-player-modal>img{width:84px;height:84px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.05)}.clb-player-modal h3{margin:8px 0 2px;color:var(--cl-text)}.clb-player-modal p{margin:0 0 12px;color:var(--cl-text-2)}.clb-player-facts{display:grid;grid-template-columns:1fr 1fr;gap:7px;text-align:left}.clb-player-facts div{display:flex;flex-direction:column;padding:8px;border-radius:8px;background:rgba(255,255,255,.04)}.clb-player-facts span{font-size:9px;color:var(--cl-text-2)}.clb-player-facts strong{font-size:12px;color:var(--cl-text)}
       .clb-transfer {
         display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px;
         border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04));

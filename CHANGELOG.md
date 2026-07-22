@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.24.0 (2026-07-22)
+- Club squad rows can open an optional player-detail panel with photo, position, age, nationality, contract, market value and available performance data
+- Club dashboard adds a market-value distribution by position and the three most valuable players
+- Match Center can show an optional fact-based match story and a rated team of the match
+- All four features remain hidden when their optional sensor data is absent
+
 ## v3.23.1 (2026-07-22)
 - Hide the pre-match briefing entirely when it has no substantive form or head-to-head data; capability metadata alone no longer creates an empty panel
 
