@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.24.1 (2026-07-22)
+- Render Club player details in a native top-layer dialog so other dashboard cards and stacking contexts cannot cover the popup
+- Keep backdrop click, close-button and Escape-key dismissal working outside the card shadow root
+
 ## v3.24.0 (2026-07-22)
 - Club squad rows can open an optional player-detail panel with photo, position, age, nationality, contract, market value and available performance data
 - Club dashboard adds a market-value distribution by position and the three most valuable players

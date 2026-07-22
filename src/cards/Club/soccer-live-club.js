@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, render } from 'lit-element';
 import { t, resolveLang } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
@@ -45,6 +45,7 @@ class SoccerLiveClubCard extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     clearTimeout(this._loadingTimer);
+    this._removePlayerPortal();
   }
 
   updated(changedProperties) {
@@ -54,6 +55,10 @@ class SoccerLiveClubCard extends LitElement {
         this._isLoading = false;
         OfflineCache.set(this._config.entity, stateObj.attributes);
       }
+    }
+    if (changedProperties.has('_selectedPlayer')) {
+      if (this._selectedPlayer) this._openPlayerPortal();
+      else this._removePlayerPortal();
     }
   }
 
@@ -104,7 +109,6 @@ class SoccerLiveClubCard extends LitElement {
           ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
           ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
           <div class="clb-note">${this._t('club.cache_note')}</div>
-          ${this._renderPlayerDetail()}
         </div>
       </ha-card>
     `;
@@ -165,6 +169,78 @@ class SoccerLiveClubCard extends LitElement {
         </div>
       </section>
     </div>`;
+  }
+
+  _openPlayerPortal() {
+    if (!this._selectedPlayer || !document?.body) return;
+    if (!this._playerPortal) {
+      this._playerPortal = document.createElement('dialog');
+      this._playerPortal.className = 'soccer-live-club-player-portal';
+      this._onPlayerPortalCancel = event => {
+        event.preventDefault();
+        this._selectedPlayer = null;
+      };
+      this._onPlayerPortalClick = event => {
+        if (event.target === this._playerPortal) this._selectedPlayer = null;
+      };
+      this._playerPortal.addEventListener('cancel', this._onPlayerPortalCancel);
+      this._playerPortal.addEventListener('click', this._onPlayerPortalClick);
+      document.body.appendChild(this._playerPortal);
+    }
+    this._copyPlayerPortalThemeVars();
+    render(html`${this._renderPlayerPortalStyles()}${this._renderPlayerDetail()}`, this._playerPortal);
+    if (!this._playerPortal.open) {
+      try { this._playerPortal.showModal(); }
+      catch (_error) { this._playerPortal.setAttribute('open', ''); }
+    }
+  }
+
+  _copyPlayerPortalThemeVars() {
+    if (!this._playerPortal || typeof getComputedStyle !== 'function') return;
+    const styles = getComputedStyle(this);
+    [
+      '--cl-bg', '--cl-text', '--cl-text-2', '--cl-divider', '--cl-accent',
+      '--cl-accent-soft', '--cl-card-2', '--cl-green', '--cl-live',
+    ].forEach(name => {
+      const value = styles.getPropertyValue(name);
+      if (value) this._playerPortal.style.setProperty(name, value);
+    });
+  }
+
+  _removePlayerPortal() {
+    if (!this._playerPortal) return;
+    if (this._playerPortal.open && typeof this._playerPortal.close === 'function') {
+      try { this._playerPortal.close(); } catch (_error) { /* already closed */ }
+    }
+    this._playerPortal.removeEventListener('cancel', this._onPlayerPortalCancel);
+    this._playerPortal.removeEventListener('click', this._onPlayerPortalClick);
+    render(html``, this._playerPortal);
+    this._playerPortal.remove();
+    this._playerPortal = null;
+  }
+
+  _renderPlayerPortalStyles() {
+    return html`<style>
+      .soccer-live-club-player-portal {
+        border: 0; padding: 0; margin: auto; width: 100vw; height: 100vh;
+        max-width: none; max-height: none; overflow: hidden; background: transparent;
+        color: var(--cl-text, #e2e8f0);
+      }
+      .soccer-live-club-player-portal::backdrop {
+        background: rgba(0,0,0,.72); backdrop-filter: blur(6px);
+      }
+      .clb-player-overlay { width:100%; height:100%; display:grid; place-items:center; padding:16px; box-sizing:border-box; }
+      .clb-player-modal { position:relative; width:min(360px,100%); box-sizing:border-box; padding:22px; border-radius:18px; background:var(--cl-bg,#111827); border:1px solid var(--cl-divider,rgba(255,255,255,.12)); box-shadow:0 24px 60px rgba(0,0,0,.5); text-align:center; }
+      .clb-player-modal>button { position:absolute; right:10px; top:8px; border:0; background:transparent; color:var(--cl-text-2,#94a3b8); font-size:24px; cursor:pointer; }
+      .clb-player-modal>img { width:84px; height:84px; border-radius:50%; object-fit:cover; background:rgba(255,255,255,.05); }
+      .clb-player-modal h3 { margin:8px 0 2px; color:var(--cl-text,#e2e8f0); }
+      .clb-player-modal p { margin:0 0 12px; color:var(--cl-text-2,#94a3b8); }
+      .clb-player-facts { display:grid; grid-template-columns:1fr 1fr; gap:7px; text-align:left; }
+      .clb-player-facts div { display:flex; flex-direction:column; padding:8px; border-radius:8px; background:rgba(255,255,255,.04); }
+      .clb-player-facts span { font-size:9px; color:var(--cl-text-2,#94a3b8); }
+      .clb-player-facts strong { font-size:12px; color:var(--cl-text,#e2e8f0); }
+      @media (max-width: 420px) { .clb-player-facts { grid-template-columns:1fr; } }
+    </style>`;
   }
 
   _formatValue(value) {
@@ -308,7 +384,6 @@ class SoccerLiveClubCard extends LitElement {
       .clb-pname { font-weight: 600; color: var(--cl-text, #e2e8f0); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .clb-age { font-size: 10px; color: var(--cl-text-2, #94a3b8); }
       .clb-value { min-width:55px; text-align:right; font-size:10px; font-weight:700; color:var(--cl-accent); }
-      .clb-player-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72);backdrop-filter:blur(6px)}.clb-player-modal{position:relative;width:min(360px,100%);padding:22px;border-radius:18px;background:var(--cl-bg,#111827);border:1px solid var(--cl-divider);box-shadow:0 24px 60px rgba(0,0,0,.5);text-align:center}.clb-player-modal>button{position:absolute;right:10px;top:8px;border:0;background:transparent;color:var(--cl-text-2);font-size:24px;cursor:pointer}.clb-player-modal>img{width:84px;height:84px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.05)}.clb-player-modal h3{margin:8px 0 2px;color:var(--cl-text)}.clb-player-modal p{margin:0 0 12px;color:var(--cl-text-2)}.clb-player-facts{display:grid;grid-template-columns:1fr 1fr;gap:7px;text-align:left}.clb-player-facts div{display:flex;flex-direction:column;padding:8px;border-radius:8px;background:rgba(255,255,255,.04)}.clb-player-facts span{font-size:9px;color:var(--cl-text-2)}.clb-player-facts strong{font-size:12px;color:var(--cl-text)}
       .clb-transfer {
         display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px;
         border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04));
