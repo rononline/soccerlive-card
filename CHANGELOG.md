@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.201 (2026-07-21)
+- Card editors now discover match and club sensors through their `sensor_type` attribute as well as legacy entity-name patterns. Existing FotMob entities therefore remain selectable even when Home Assistant preserves their original `soccer_live_fotmob_*` entity IDs
+
 ## v3.21.200 (2026-07-21)
 - Club editor: discover dedicated `soccer_live_club_*` sensors, including the separate private FotMob integration, in the entity selector
 

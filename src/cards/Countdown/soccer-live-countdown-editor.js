@@ -26,7 +26,10 @@ class SoccerLiveCountdownEditor extends LitElement {
 
   _fetchEntities() {
     if (!this.hass) return;
-    this.entities = Object.keys(this.hass.states).filter(id => id.includes('soccerlive_next') || id.includes('soccer_live_next')).sort();
+    this.entities = Object.keys(this.hass.states).filter(id =>
+      id.includes('soccerlive_next') || id.includes('soccer_live_next') ||
+      this.hass.states[id]?.attributes?.sensor_type === 'team_match'
+    ).sort();
   }
 
   _fire(cfg) { this._config = cfg; this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: cfg }, bubbles: true, composed: true })); this.requestUpdate(); }

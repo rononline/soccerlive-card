@@ -44,7 +44,8 @@ class SoccerLiveClubEditor extends LitElement {
         id.includes('soccerlive_next') || id.includes('soccer_live_next') ||
         id.includes('soccerlive_club') || id.includes('soccer_live_club') ||
         id.includes('soccerlive_all_manual') || id.includes('soccerlive_all_mixed') ||
-        id.includes('soccer_live_all_manual') || id.includes('soccer_live_all_mixed'))
+        id.includes('soccer_live_all_manual') || id.includes('soccer_live_all_mixed') ||
+        ['club', 'team_match', 'team_matches_mixed'].includes(this.hass.states[id]?.attributes?.sensor_type))
       .sort();
   }
 
