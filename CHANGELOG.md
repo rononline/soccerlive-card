@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.27.0 (2026-07-22)
+- Club card gains collapsible records, analysis, injury, squad and transfer sections; open/closed state is remembered per sensor in the browser
+- Add squad search plus position and availability filters without additional provider requests
+- Players can be marked as local favourites and appear in a compact quick-access strip with available status/performance data
+- Add derived club form records: unbeaten, winning and clean-sheet streaks, goals per match, biggest win and home/away points per game
+- Add editor switches for club records and collapsible sections; all derived sections stay hidden without usable input data
+- Extend Playwright coverage to verify filtering, favourite persistence, collapse persistence, player comparison and the native transfer popup together
+
 ## v3.26.0 (2026-07-22)
 - Club card adds an optional injury centre that merges explicit injury records with unavailable squad players and shows expected-return information when available
 - Transfers are clickable and open a native top-layer detail popup with available photo, clubs, date, type and fee

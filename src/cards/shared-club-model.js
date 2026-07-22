@@ -152,6 +152,55 @@ export function playerComparison(players) {
   return { players: list, fields: fields.filter(field => list.some(player => player[field] !== null && player[field] !== undefined && player[field] !== '')) };
 }
 
+export function filterSquad(squad, query = '', position = 'all', availability = 'all') {
+  const term = String(query || '').trim().toLowerCase();
+  return (Array.isArray(squad) ? squad : []).filter(player => {
+    if (!player) return false;
+    if (term && !String(player.name || '').toLowerCase().includes(term)) return false;
+    if (position !== 'all' && player.position !== position) return false;
+    if (availability === 'available' && player.injured) return false;
+    if (availability === 'unavailable' && !player.injured) return false;
+    return true;
+  });
+}
+
+export function clubRecords(matches, teamId, teamName) {
+  const id = String(teamId ?? '');
+  const name = String(teamName || '').trim().toLowerCase();
+  const parsed = (Array.isArray(matches) ? matches : []).filter(match => match?.state === 'post').map(match => {
+    const home = id ? String(match.home_id ?? '') === id : String(match.home_team || '').trim().toLowerCase() === name;
+    const away = id ? String(match.away_id ?? '') === id : String(match.away_team || '').trim().toLowerCase() === name;
+    if (!home && !away) return null;
+    const ours = Number(home ? match.home_score : match.away_score);
+    const theirs = Number(home ? match.away_score : match.home_score);
+    if (!Number.isFinite(ours) || !Number.isFinite(theirs)) return null;
+    return { match, home, ours, theirs, result: ours > theirs ? 'W' : ours < theirs ? 'L' : 'D', time: matchTime(match) };
+  }).filter(Boolean).sort((a, b) => b.time - a.time);
+  if (!parsed.length) return null;
+  const streak = predicate => {
+    let count = 0;
+    for (const item of parsed) { if (!predicate(item)) break; count += 1; }
+    return count;
+  };
+  const wins = parsed.filter(item => item.result === 'W');
+  const biggest = wins.sort((a, b) => (b.ours - b.theirs) - (a.ours - a.theirs))[0] || null;
+  const split = home => {
+    const games = parsed.filter(item => item.home === home);
+    const points = games.reduce((sum, item) => sum + (item.result === 'W' ? 3 : item.result === 'D' ? 1 : 0), 0);
+    return { games: games.length, pointsPerGame: games.length ? points / games.length : null };
+  };
+  return {
+    played: parsed.length,
+    unbeaten: streak(item => item.result !== 'L'),
+    winning: streak(item => item.result === 'W'),
+    cleanSheets: streak(item => item.theirs === 0),
+    averageGoals: parsed.reduce((sum, item) => sum + item.ours, 0) / parsed.length,
+    biggestWin: biggest ? { score: `${biggest.ours}–${biggest.theirs}`, opponent: biggest.home ? biggest.match.away_team : biggest.match.home_team } : null,
+    home: split(true),
+    away: split(false),
+  };
+}
+
 function matchTime(match) {
   const raw = match?.date_iso || match?.date;
   const time = raw ? new Date(raw).getTime() : NaN;

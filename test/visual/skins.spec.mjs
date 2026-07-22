@@ -174,6 +174,28 @@ test('club — analysis, comparison and transfer top-layer popup', async ({ page
   expect(state.injuries).toBe(true);
   expect(state.comparison).toContain('Keeper');
   expect(state.comparison).toContain('Back');
+  await page.evaluate(() => {
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    root.querySelector('.clb-favorite-toggle').click();
+    const search = root.querySelector('.clb-squad-tools input');
+    search.value = 'Back';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    root.querySelector('.clb-collapse-squad').open = true;
+  });
+  await page.waitForFunction(() => {
+    const root = document.querySelector('soccer-live-club')?.shadowRoot;
+    const stored = JSON.parse(localStorage.getItem('soccer-live-club:sensor.preview_team') || '{}');
+    return root?.querySelector('.clb-favorites') && root.querySelectorAll('.clb-player').length === 1 && stored.sections?.squad === true;
+  });
+  await expect(page.locator('soccer-live-club')).toContainText('Favoriete spelers');
+  await page.reload();
+  await page.waitForFunction(() => document.body.dataset.ready === '1');
+  const persisted = await page.evaluate(() => {
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    return { favorite: root.querySelector('.clb-favorites')?.textContent || '', squadOpen: root.querySelector('.clb-collapse-squad')?.open };
+  });
+  expect(persisted.favorite).toContain('Keeper');
+  expect(persisted.squadOpen).toBe(true);
   await page.evaluate(() => document.querySelector('soccer-live-club').shadowRoot.querySelector('.clb-transfer').click());
   const dialog = page.locator('dialog.soccer-live-club-player-portal');
   await expect(dialog).toHaveAttribute('open', '');

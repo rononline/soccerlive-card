@@ -17,7 +17,36 @@ import {
   squadAnalysis,
   normalizedInjuries,
   playerComparison,
+  filterSquad,
+  clubRecords,
 } from '../../src/cards/shared-club-model.js';
+
+test('filterSquad combines name, position and availability filters', () => {
+  const squad = [
+    { name: 'Jan Keeper', position: 'Goalkeeper' },
+    { name: 'Piet Back', position: 'Defender', injured: true },
+    { name: 'Jan Spits', position: 'Attacker' },
+  ];
+  assert.deepEqual(filterSquad(squad, 'jan').map(item => item.name), ['Jan Keeper', 'Jan Spits']);
+  assert.deepEqual(filterSquad(squad, '', 'Defender', 'unavailable').map(item => item.name), ['Piet Back']);
+  assert.equal(filterSquad(null).length, 0);
+});
+
+test('clubRecords derives current streaks, biggest win and home/away PPG', () => {
+  const matches = [
+    { state: 'post', date_iso: '2026-08-01T12:00:00Z', home_id: 10, away_id: 20, home_team: 'Us', away_team: 'A', home_score: 4, away_score: 0 },
+    { state: 'post', date_iso: '2026-08-08T12:00:00Z', home_id: 30, away_id: 10, home_team: 'B', away_team: 'Us', home_score: 1, away_score: 2 },
+    { state: 'post', date_iso: '2026-08-15T12:00:00Z', home_id: 10, away_id: 40, home_team: 'Us', away_team: 'C', home_score: 1, away_score: 1 },
+  ];
+  const records = clubRecords(matches, 10, 'Us');
+  assert.equal(records.unbeaten, 3);
+  assert.equal(records.winning, 0);
+  assert.equal(records.cleanSheets, 0);
+  assert.deepEqual(records.biggestWin, { score: '4–0', opponent: 'A' });
+  assert.equal(records.home.pointsPerGame, 2);
+  assert.equal(records.away.pointsPerGame, 3);
+  assert.equal(clubRecords([], 10, 'Us'), null);
+});
 
 test('squadAnalysis summarizes positions, ages, value and thin groups', () => {
   const result = squadAnalysis([

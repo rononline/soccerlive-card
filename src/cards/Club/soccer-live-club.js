@@ -23,6 +23,8 @@ import {
   squadAnalysis,
   normalizedInjuries,
   playerComparison,
+  filterSquad,
+  clubRecords,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -32,17 +34,25 @@ class SoccerLiveClubCard extends LitElement {
       _squadExpanded: { type: Boolean }, _transferFilter: { type: String },
       _selectedPlayer: { type: Object }, _selectedTransfer: { type: Object },
       _comparisonPlayers: { type: Array },
+      _squadQuery: { type: String }, _positionFilter: { type: String },
+      _availabilityFilter: { type: String }, _favoriteIds: { type: Array },
+      _sectionState: { type: Object },
     };
   }
 
   setConfig(config) {
     if (!config.entity) throw new Error('Entity required');
+    const entityChanged = this._config?.entity !== config.entity;
     this._config = config;
     applySkin(this, config);
     this._isLoading = true;
     if (this._squadExpanded === undefined) this._squadExpanded = false;
     if (this._transferFilter === undefined) this._transferFilter = 'all';
     if (!Array.isArray(this._comparisonPlayers)) this._comparisonPlayers = [];
+    if (this._squadQuery === undefined) this._squadQuery = '';
+    if (this._positionFilter === undefined) this._positionFilter = 'all';
+    if (this._availabilityFilter === undefined) this._availabilityFilter = 'all';
+    if (entityChanged || !Array.isArray(this._favoriteIds)) this._loadClubPreferences();
     this._selectedPlayer = null;
     this._selectedTransfer = null;
   }
@@ -118,15 +128,70 @@ class SoccerLiveClubCard extends LitElement {
           ${this._config.show_matchday !== false ? this._renderMatchday(attrs) : ''}
           ${this._renderDashboard(club, attrs)}
           ${this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : ''}
-          ${this._config.show_squad_analysis !== false ? this._renderSquadAnalysis(club.squad || []) : ''}
-          ${this._config.show_injuries !== false ? this._renderInjuryCenter(club) : ''}
+          ${this._renderFavorites(club.squad || [])}
+          ${this._renderClubRecords(attrs)}
+          ${this._config.show_squad_analysis !== false ? this._renderCollapsible('analysis', this._t('club.squad_analysis'), this._renderSquadAnalysis(club.squad || []), true) : ''}
+          ${this._config.show_injuries !== false ? this._renderCollapsible('injuries', this._t('club.injury_center'), this._renderInjuryCenter(club), true) : ''}
           ${this._renderPlayerComparison()}
-          ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
-          ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
+          ${this._config.show_squad !== false ? this._renderCollapsible('squad', this._t('club.squad'), this._renderSquad(club.squad || []), false) : ''}
+          ${this._config.show_transfers !== false ? this._renderCollapsible('transfers', this._t('club.transfers'), this._renderTransfers(club.transfers || []), false) : ''}
           <div class="clb-note">${this._t('club.cache_note')}</div>
         </div>
       </ha-card>
     `;
+  }
+
+  _preferenceKey() { return `soccer-live-club:${this._config?.entity || 'default'}`; }
+
+  _loadClubPreferences() {
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem(this._preferenceKey()) || '{}'); } catch (_error) { /* storage unavailable */ }
+    this._favoriteIds = Array.isArray(stored.favorites) ? stored.favorites : [];
+    this._sectionState = stored.sections && typeof stored.sections === 'object' ? stored.sections : {};
+  }
+
+  _saveClubPreferences() {
+    try { localStorage.setItem(this._preferenceKey(), JSON.stringify({ favorites: this._favoriteIds || [], sections: this._sectionState || {} })); } catch (_error) { /* storage unavailable */ }
+  }
+
+  _renderCollapsible(key, label, content, defaultOpen) {
+    if (!content) return '';
+    if (this._config.collapse_sections === false) return content;
+    const open = this._sectionState?.[key] ?? defaultOpen;
+    return html`<details class="clb-collapse clb-collapse-${key}" ?open=${open} @toggle=${event => {
+      this._sectionState = { ...(this._sectionState || {}), [key]: event.currentTarget.open };
+      this._saveClubPreferences();
+    }}><summary>${label}<span>${open ? '−' : '+'}</span></summary>${content}</details>`;
+  }
+
+  _playerKey(player) { return String(player?.id ?? player?.name ?? ''); }
+
+  _toggleFavorite(player) {
+    const key = this._playerKey(player);
+    if (!key) return;
+    const favorites = this._favoriteIds || [];
+    this._favoriteIds = favorites.includes(key) ? favorites.filter(id => id !== key) : [...favorites, key];
+    this._saveClubPreferences();
+  }
+
+  _renderFavorites(squad) {
+    const favorites = (squad || []).filter(player => this._favoriteIds?.includes(this._playerKey(player)));
+    if (!favorites.length) return '';
+    return html`<section class="clb-favorites"><div class="clb-title">★ ${this._t('club.favorites')}</div><div class="clb-favorite-grid">${favorites.map(player => html`<button @click=${() => { this._selectedPlayer = player; }}>${player.photo ? html`<img src=${player.photo} alt="">` : html`<span>${player.number ?? '★'}</span>`}<strong>${player.name}</strong><small>${player.injured ? this._t('club.unavailable') : [player.goals != null ? `${player.goals} G` : '', player.assists != null ? `${player.assists} A` : '', player.rating || ''].filter(Boolean).join(' · ') || player.position || ''}</small></button>`)}</div></section>`;
+  }
+
+  _renderClubRecords(attrs) {
+    if (this._config.show_club_records === false) return '';
+    const records = clubRecords(attrs.previous_matches, attrs.team_id, attrs.team_name);
+    if (!records) return '';
+    const content = html`<section class="clb-records"><div class="clb-record-grid">
+      <div><strong>${records.unbeaten}</strong><span>${this._t('club.unbeaten')}</span></div>
+      <div><strong>${records.winning}</strong><span>${this._t('club.winning_streak')}</span></div>
+      <div><strong>${records.cleanSheets}</strong><span>${this._t('club.clean_sheet_streak')}</span></div>
+      <div><strong>${records.averageGoals.toFixed(1)}</strong><span>${this._t('club.average_goals')}</span></div>
+    </div>${records.biggestWin ? html`<div class="clb-biggest"><span>${this._t('club.biggest_win')}</span><b>${records.biggestWin.score} · ${records.biggestWin.opponent}</b></div>` : ''}
+    ${(records.home.pointsPerGame != null || records.away.pointsPerGame != null) ? html`<div class="clb-split"><span>${this._t('club.home_ppg')} <b>${records.home.pointsPerGame?.toFixed(2) ?? '–'}</b></span><span>${this._t('club.away_ppg')} <b>${records.away.pointsPerGame?.toFixed(2) ?? '–'}</b></span></div>` : ''}</section>`;
+    return this._renderCollapsible('records', this._t('club.records'), content, true);
   }
 
   _renderMatchday(attrs) {
@@ -390,8 +455,10 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _renderSquad(squad) {
-    const allGroups = groupSquad(squad);
-    if (!allGroups.length) return '';
+    const sourceGroups = groupSquad(squad);
+    if (!sourceGroups.length) return '';
+    const filteredSquad = filterSquad(squad, this._squadQuery, this._positionFilter, this._availabilityFilter);
+    const allGroups = groupSquad(filteredSquad);
     // Collapsed by default to keep the card short: first N players per position,
     // with an expand toggle. `squad_collapsed: false` shows everyone up front.
     const perPos = this._config.squad_collapsed === false ? 0 : (this._config.squad_preview ?? 3);
@@ -402,6 +469,12 @@ class SoccerLiveClubCard extends LitElement {
     return html`
       <div class="clb-section">
         <div class="clb-title">${this._t('club.squad')}</div>
+        <div class="clb-squad-tools">
+          <input type="search" placeholder=${this._t('club.search_players')} .value=${this._squadQuery} @input=${event => { this._squadQuery = event.target.value; }}>
+          <select .value=${this._positionFilter} @change=${event => { this._positionFilter = event.target.value; }}><option value="all">${this._t('club.all_positions')}</option>${sourceGroups.map(group => html`<option value=${group.pos}>${this._t(group.key)}</option>`)}</select>
+          <select .value=${this._availabilityFilter} @change=${event => { this._availabilityFilter = event.target.value; }}><option value="all">${this._t('club.all_availability')}</option><option value="available">${this._t('club.available')}</option><option value="unavailable">${this._t('club.unavailable')}</option></select>
+        </div>
+        ${!allGroups.length ? html`<div class="clb-no-results">${this._t('club.no_players_found')}</div>` : ''}
         ${groups.map(({ key, players }) => {
           return html`
             <div class="clb-pos-group">
@@ -412,6 +485,7 @@ class SoccerLiveClubCard extends LitElement {
                   <span class="clb-pname">${p.name}</span>
                   ${p.age != null ? html`<span class="clb-age">${this._t('club.age', { n: p.age })}</span>` : ''}
                   ${p.market_value ? html`<span class="clb-value">${this._formatValue(p.market_value)}</span>` : ''}
+                  <button class="clb-favorite-toggle ${this._favoriteIds.includes(this._playerKey(p)) ? 'sel' : ''}" title=${this._t('club.favorite')} aria-label=${this._t('club.favorite')} @click=${event => { event.stopPropagation(); this._toggleFavorite(p); }}>★</button>
                   <button class="clb-compare-toggle ${this._comparisonPlayers.some(item => String(item?.id ?? item?.name) === String(p?.id ?? p?.name)) ? 'sel' : ''}" title=${this._t('club.compare')} aria-label=${this._t('club.compare')} @click=${event => { event.stopPropagation(); this._toggleComparison(p); }}>⇄</button>
                 </div>
               `)}
@@ -482,6 +556,7 @@ class SoccerLiveClubCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, css`
       .clb-profile { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 14px 10px; }
+      .clb-collapse{margin:8px 14px;border:1px solid var(--cl-divider);border-radius:12px;overflow:hidden}.clb-collapse>summary{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;list-style:none;color:var(--cl-text-2);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.clb-collapse>summary::-webkit-details-marker{display:none}.clb-collapse>summary span{font-size:16px;color:var(--cl-accent)}.clb-collapse[open]>summary{border-bottom:1px solid var(--cl-divider)}.clb-collapse>.clb-section,.clb-collapse>.clb-analysis,.clb-collapse>.clb-records{margin:0;padding:8px 12px 10px;background:transparent}.clb-collapse .clb-title{display:none}
       .clb-matchday{margin:2px 14px 10px;padding:11px;border:1px solid var(--cl-divider);border-radius:13px;background:linear-gradient(135deg,var(--cl-accent-soft,rgba(99,102,241,.12)),var(--cl-card-2,rgba(255,255,255,.03)))}
       .clb-matchday.live{border-color:var(--cl-live,#ef4444)}.clb-matchday-head{display:flex;justify-content:space-between;align-items:center;color:var(--cl-text-2);font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.clb-matchday-head b{padding:3px 7px;border-radius:99px;color:var(--cl-accent);background:var(--cl-accent-soft,rgba(99,102,241,.12))}.clb-matchday.live .clb-matchday-head b{color:var(--cl-live,#ef4444)}
       .clb-matchday-fixture{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:9px;margin-top:10px;color:var(--cl-text);font-size:12px;font-weight:700}.clb-matchday-fixture span:last-child{text-align:right}.clb-matchday-fixture strong{font-size:17px;white-space:nowrap;color:var(--cl-accent)}.clb-matchday-meta{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:8px;color:var(--cl-text-2);font-size:9px}
@@ -499,6 +574,8 @@ class SoccerLiveClubCard extends LitElement {
       .clb-form b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; }.clb-form .w{background:#16a34a}.clb-form .d{background:#64748b}.clb-form .l{background:#dc2626}
       .clb-season{margin:8px 14px;padding:11px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-section-head{display:flex;align-items:end;justify-content:space-between}.clb-section-head div{display:flex;flex-direction:column}.clb-section-head span,.clb-section-head small{font-size:9px;color:var(--cl-text-2);text-transform:uppercase;letter-spacing:.06em}.clb-section-head strong{font-size:15px;color:var(--cl-text)}.clb-season svg{display:block;width:100%;height:58px;margin:5px 0;overflow:visible}.clb-season polyline{fill:none;stroke:var(--cl-accent);stroke-width:2;vector-effect:non-scaling-stroke}.clb-season circle{vector-effect:non-scaling-stroke;stroke:var(--cl-bg);stroke-width:1}.clb-season circle.w{fill:#16a34a}.clb-season circle.d{fill:#64748b}.clb-season circle.l{fill:#dc2626}.clb-season-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.clb-season-stats span{display:flex;flex-direction:column;color:var(--cl-text-2);font-size:9px}.clb-season-stats b{font-size:12px;color:var(--cl-text)}
       .clb-analysis,.clb-comparison{margin:8px 14px;padding:10px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.clb-analysis-grid div{display:flex;flex-direction:column;padding:7px;border-radius:8px;background:rgba(255,255,255,.035)}.clb-analysis-grid strong{font-size:16px;color:var(--cl-accent)}.clb-analysis-grid span,.clb-analysis-grid small{font-size:8px;color:var(--cl-text-2);overflow:hidden;text-overflow:ellipsis}.clb-age-extremes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.clb-age-extremes span{display:flex;flex-direction:column;font-size:8px;color:var(--cl-text-2)}.clb-age-extremes b{font-size:10px;color:var(--cl-text)}.clb-thin{display:block;margin-top:7px;color:var(--cl-text-2);font-size:8px}
+      .clb-record-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.clb-record-grid div{display:flex;flex-direction:column;padding:7px;border-radius:8px;background:rgba(255,255,255,.035)}.clb-record-grid strong{font-size:16px;color:var(--cl-accent)}.clb-record-grid span{font-size:8px;color:var(--cl-text-2)}.clb-biggest,.clb-split{display:flex;justify-content:space-between;gap:8px;margin-top:7px;color:var(--cl-text-2);font-size:9px}.clb-biggest b,.clb-split b{color:var(--cl-text)}
+      .clb-favorites{margin:8px 14px;padding:10px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-favorite-grid{display:flex;gap:6px;overflow-x:auto}.clb-favorite-grid button{display:grid;grid-template-columns:30px minmax(70px,1fr);grid-template-rows:auto auto;gap:0 6px;align-items:center;min-width:145px;padding:7px;border:1px solid var(--cl-divider);border-radius:9px;background:rgba(255,255,255,.025);color:var(--cl-text);text-align:left;cursor:pointer}.clb-favorite-grid img,.clb-favorite-grid button>span{grid-row:1/3;width:30px;height:30px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:var(--cl-accent-soft);color:var(--cl-accent)}.clb-favorite-grid strong{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.clb-favorite-grid small{font-size:8px;color:var(--cl-text-2)}
       .clb-injuries .clb-title b{display:inline-grid;place-items:center;min-width:17px;height:17px;margin-left:4px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--cl-live,#ef4444)}.clb-injury{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--cl-divider)}.clb-injury-icon{color:var(--cl-live,#ef4444)}.clb-injury>div{display:flex;flex:1;min-width:0;flex-direction:column}.clb-injury strong{font-size:11px;color:var(--cl-text)}.clb-injury small{font-size:9px;color:var(--cl-text-2)}.clb-return{display:flex;flex-direction:column;text-align:right;color:var(--cl-text);font-size:9px}
       .clb-comparison-head{display:flex;align-items:center;justify-content:space-between}.clb-comparison-head button{border:0;background:transparent;color:var(--cl-text-2);font-size:9px;cursor:pointer}.clb-compare-pick{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,.035);color:var(--cl-text);font-size:10px}.clb-compare-pick small{color:var(--cl-text-2)}.clb-compare-names,.clb-compare-row{display:grid;grid-template-columns:1fr 60px 1fr;gap:5px;align-items:center;text-align:center}.clb-compare-names{margin-bottom:6px;color:var(--cl-text);font-size:11px}.clb-compare-names span{color:var(--cl-text-2);font-size:8px}.clb-compare-row{padding:4px;border-top:1px solid var(--cl-divider)}.clb-compare-row b{color:var(--cl-text);font-size:10px}.clb-compare-row span{color:var(--cl-text-2);font-size:8px}
       .clb-chip {
@@ -526,6 +603,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-pname { font-weight: 600; color: var(--cl-text, #e2e8f0); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .clb-age { font-size: 10px; color: var(--cl-text-2, #94a3b8); }
       .clb-value { min-width:55px; text-align:right; font-size:10px; font-weight:700; color:var(--cl-accent); }
+      .clb-squad-tools{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:5px;margin-bottom:7px}.clb-squad-tools input,.clb-squad-tools select{min-width:0;padding:6px;border:1px solid var(--cl-divider);border-radius:7px;background:var(--cl-card-2,rgba(255,255,255,.03));color:var(--cl-text);font-size:9px}.clb-no-results{padding:14px;text-align:center;color:var(--cl-text-2);font-size:10px}.clb-favorite-toggle{display:grid;place-items:center;width:22px;height:22px;padding:0;border:1px solid var(--cl-divider);border-radius:50%;background:transparent;color:var(--cl-text-2);cursor:pointer}.clb-favorite-toggle.sel{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.12)}
       .clb-compare-toggle{display:grid;place-items:center;width:22px;height:22px;padding:0;border:1px solid var(--cl-divider);border-radius:50%;background:transparent;color:var(--cl-text-2);cursor:pointer}.clb-compare-toggle.sel{border-color:var(--cl-accent);background:var(--cl-accent-soft);color:var(--cl-accent)}
       .clb-transfer {
         display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px;
@@ -556,7 +634,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-note {
         padding: 8px 14px 12px; font-size: 10px; color: var(--cl-text-2, #94a3b8); opacity: 0.8; text-align: center;
       }
-      @media(max-width:420px){.clb-analysis-grid{grid-template-columns:repeat(2,1fr)}.clb-age-extremes{grid-template-columns:1fr}.clb-ttype{display:none}}
+      @media(max-width:420px){.clb-analysis-grid,.clb-record-grid{grid-template-columns:repeat(2,1fr)}.clb-age-extremes{grid-template-columns:1fr}.clb-ttype{display:none}.clb-squad-tools{grid-template-columns:1fr 1fr}.clb-squad-tools input{grid-column:1/-1}}
     `];
   }
 }
