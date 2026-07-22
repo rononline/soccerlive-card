@@ -15,6 +15,7 @@ import {
   countTransfers,
   transferCounterparty,
   formatTransferDate,
+  squadValueSummary,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -119,6 +120,7 @@ class SoccerLiveClubCard extends LitElement {
       return Number.isFinite(ours) && Number.isFinite(theirs) ? (ours > theirs ? 'W' : ours < theirs ? 'L' : 'D') : null;
     }).filter(Boolean);
     const next = attrs.next_match;
+    const values = squadValueSummary(squad);
     if (!next && !squad.length && !injuries.length && !transfers.length && !form.length) return '';
     return html`<div class="clb-dashboard">
       ${next ? html`<div class="clb-next"><span>${this._t('club.next_match')}</span><strong>${next.home_team} – ${next.away_team}</strong><small>${next.date || ''}</small></div>` : ''}
@@ -127,8 +129,20 @@ class SoccerLiveClubCard extends LitElement {
         <div><strong>${injuries.length}</strong><span>${this._t('club.injuries')}</span></div>
         <div><strong>${transfers.length}</strong><span>${this._t('club.transfers')}</span></div>
       </div>
+      ${values.total ? html`<div class="clb-market-summary">
+        <div><span>${this._t('club.squad_value')}</span><strong>${this._formatValue(values.total)}</strong></div>
+        ${values.average_age != null ? html`<div><span>${this._t('club.average_age')}</span><strong>${values.average_age.toFixed(1)}</strong></div>` : ''}
+        <small>${this._t('club.valued_players', { n: values.valued_count })}</small>
+      </div>` : ''}
       ${form.length ? html`<div class="clb-form"><span>${this._t('team.form')}</span>${form.map(result => html`<b class=${result.toLowerCase()}>${result}</b>`)}</div>` : ''}
     </div>`;
+  }
+
+  _formatValue(value) {
+    if (!Number.isFinite(Number(value))) return '';
+    return new Intl.NumberFormat(resolveLang(this.hass, this._config), {
+      style: 'currency', currency: 'EUR', notation: 'compact', maximumFractionDigits: 1,
+    }).format(Number(value));
   }
 
   _renderProfile(profile, coach) {
@@ -168,6 +182,7 @@ class SoccerLiveClubCard extends LitElement {
                   <span class="clb-num">${p.number ?? '·'}</span>
                   <span class="clb-pname">${p.name}</span>
                   ${p.age != null ? html`<span class="clb-age">${this._t('club.age', { n: p.age })}</span>` : ''}
+                  ${p.market_value ? html`<span class="clb-value">${this._formatValue(p.market_value)}</span>` : ''}
                 </div>
               `)}
             </div>
@@ -235,6 +250,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
       .clb-kpis div { display:flex; flex-direction:column; align-items:center; padding:7px; border-radius:8px; background:rgba(255,255,255,.035); }
       .clb-kpis strong { color:var(--cl-accent); font-size:17px; }.clb-kpis span { color:var(--cl-text-2); font-size:9px; text-transform:uppercase; }
+      .clb-market-summary { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; padding-top:8px; border-top:1px solid var(--cl-divider); }.clb-market-summary div{display:flex;flex-direction:column}.clb-market-summary span,.clb-market-summary small{color:var(--cl-text-2);font-size:9px}.clb-market-summary strong{color:var(--cl-text);font-size:14px}.clb-market-summary small{grid-column:1/-1}
       .clb-form { display:flex; align-items:center; gap:5px; margin-top:9px; color:var(--cl-text-2); font-size:10px; }
       .clb-form b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; }.clb-form .w{background:#16a34a}.clb-form .d{background:#64748b}.clb-form .l{background:#dc2626}
       .clb-chip {
@@ -260,6 +276,7 @@ class SoccerLiveClubCard extends LitElement {
       }
       .clb-pname { font-weight: 600; color: var(--cl-text, #e2e8f0); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .clb-age { font-size: 10px; color: var(--cl-text-2, #94a3b8); }
+      .clb-value { min-width:55px; text-align:right; font-size:10px; font-weight:700; color:var(--cl-accent); }
       .clb-transfer {
         display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px;
         border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04));

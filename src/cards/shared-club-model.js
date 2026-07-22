@@ -86,3 +86,20 @@ export function formatTransferDate(date) {
   if (!date) return '';
   return String(date).split('-').reverse().join('-');
 }
+
+export function squadValueSummary(squad) {
+  const players = Array.isArray(squad) ? squad : [];
+  const valued = players.filter(player => Number.isFinite(Number(player?.market_value)) && Number(player.market_value) > 0);
+  const ages = players.map(player => Number(player?.age)).filter(Number.isFinite);
+  const byPosition = {};
+  for (const player of valued) {
+    const position = player.position || 'Other';
+    byPosition[position] = (byPosition[position] || 0) + Number(player.market_value);
+  }
+  return {
+    total: valued.reduce((sum, player) => sum + Number(player.market_value), 0),
+    valued_count: valued.length,
+    average_age: ages.length ? ages.reduce((sum, age) => sum + age, 0) / ages.length : null,
+    by_position: byPosition,
+  };
+}

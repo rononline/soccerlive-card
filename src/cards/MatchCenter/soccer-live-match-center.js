@@ -281,6 +281,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ` : ''}
         ${match.week_label ? html`<div class="ov-meta"><span class="ov-cal">◈</span> ${match.week_label}</div>` : ''}
       </div>
+      ${this._renderPreview(match.preview)}
+      ${this._renderReview(match.review)}
       ${renderMatchMeta(match, {
         lang: resolveLang(this.hass, this._config),
         t: k => this._t(k),
@@ -291,6 +293,31 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ${this._config.show_odds !== false ? renderOdds(match, { t: (k, v) => this._t(k, v) }) : ''}
       ${this._config.show_injuries !== false ? renderInjuries(match, { t: (k, v) => this._t(k, v) }) : ''}
     `;
+  }
+
+  _renderPreview(preview) {
+    if (!preview) return '';
+    const form = value => value ? html`<div class="brief-form">${String(value).split('').map(result => html`<b class=${result.toLowerCase()}>${result}</b>`)}</div>` : html`<span>—</span>`;
+    return html`<section class="brief-card preview">
+      <h4>${this._t('match.preview')}</h4>
+      <div class="brief-form-row">${form(preview.home_form)}<span>${this._t('team.form')}</span>${form(preview.away_form)}</div>
+      ${preview.h2h_count ? html`<p>${this._t('match.h2h_available', { n: preview.h2h_count })}</p>` : ''}
+      ${preview.coverage?.length ? html`<div class="brief-chips">${preview.coverage.map(item => html`<span>${item}</span>`)}</div>` : ''}
+    </section>`;
+  }
+
+  _renderReview(review) {
+    if (!review) return '';
+    const xg = review.expected_goals || {};
+    const standout = review.standout_stat;
+    return html`<section class="brief-card review">
+      <h4>${this._t('match.review')}</h4>
+      ${review.scorers?.length ? html`<div class="brief-scorers">${review.scorers.map(item => html`<span>⚽ ${item.player || '?'} ${item.minute ? `${item.minute}'` : ''}</span>`)}</div>` : ''}
+      ${review.player_of_the_match?.name ? html`<p>⭐ <strong>${review.player_of_the_match.name}</strong>${review.player_of_the_match.rating ? ` · ${review.player_of_the_match.rating}` : ''}</p>` : ''}
+      ${(xg.home != null || xg.away != null) ? html`<p>xG <strong>${xg.home ?? '—'} – ${xg.away ?? '—'}</strong></p>` : ''}
+      ${standout ? html`<p>${translateStatKey(standout.key, key => this._t(key))}: <strong>${standout.home} – ${standout.away}</strong></p>` : ''}
+      ${review.top_rated_players?.length ? html`<div class="brief-ratings">${review.top_rated_players.map(player => html`<span>${player.name}<b>${player.rating}</b></span>`)}</div>` : ''}
+    </section>`;
   }
 
   _renderStats(match) {
@@ -495,6 +522,13 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .mc-picker { position:relative; z-index:3; display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--cl-bg); border-bottom:1px solid var(--cl-divider); }
       .mc-picker select { min-width:0; flex:1; padding:7px 9px; border-radius:8px; border:1px solid var(--cl-divider); background:rgba(255,255,255,.06); color:var(--cl-text); }
       .mc-picker span { color:var(--cl-accent); font-size:11px; }
+      .brief-card { margin:8px 12px; padding:11px; border-radius:12px; border:1px solid var(--cl-divider); background:rgba(255,255,255,.025); }
+      .brief-card h4 { margin:0 0 9px; color:var(--cl-accent); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+      .brief-card p { margin:7px 0; color:var(--cl-text-2); font-size:11px; }.brief-card strong{color:var(--cl-text)}
+      .brief-form-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; color:var(--cl-text-2); font-size:10px; }
+      .brief-form { display:flex; gap:3px; }.brief-form-row>.brief-form:last-child{justify-content:flex-end}.brief-form b{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;color:white;font-size:9px}.brief-form .w{background:#16a34a}.brief-form .d{background:#64748b}.brief-form .l{background:#dc2626}
+      .brief-chips,.brief-scorers { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }.brief-chips span,.brief-scorers span{padding:4px 7px;border-radius:999px;background:rgba(148,163,184,.1);color:var(--cl-text-2);font-size:9px}
+      .brief-ratings { display:grid; gap:4px; }.brief-ratings span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:10px}.brief-ratings b{color:#fbbf24}
       .tab-content { min-height: 80px; }
       /* Overview */
       .ov-section { padding: 4px 16px 8px; }

@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.23.0 (2026-07-22)
+- Match Center Overview can render optional structured pre-match and post-match summaries, including form, scorers, player of the match, xG, standout statistics and top ratings
+- Club card adds optional player market values, total squad value, valued-player coverage and average age
+- All additions remain provider-neutral and disappear cleanly when the selected sensor does not publish the optional fields
+
 ## v3.22.0 (2026-07-22)
 - Add an optional, provider-neutral on-demand match-details contract; existing sensors without a detail service retain their previous standalone behaviour
 - Match Center gains a smart match selector for mixed fixture feeds

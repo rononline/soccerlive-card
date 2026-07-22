@@ -9,7 +9,20 @@ import {
   countTransfers,
   transferCounterparty,
   formatTransferDate,
+  squadValueSummary,
 } from '../../src/cards/shared-club-model.js';
+
+test('squadValueSummary totals known values and ages by position', () => {
+  const summary = squadValueSummary([
+    { position: 'Defender', market_value: 10_000_000, age: 24 },
+    { position: 'Defender', market_value: 5_000_000, age: 26 },
+    { position: 'Attacker', age: 20 },
+  ]);
+  assert.equal(summary.total, 15_000_000);
+  assert.equal(summary.valued_count, 2);
+  assert.equal(summary.by_position.Defender, 15_000_000);
+  assert.equal(summary.average_age, 70 / 3);
+});
 
 test('collapseGroups: caps players per position and counts hidden', () => {
   const groups = [
