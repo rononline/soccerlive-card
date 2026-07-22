@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.203 (2026-07-22)
+- Matches card: add smart ordering (live first, upcoming chronologically, finished newest-first), enabled by default for FotMob sensors
+- FotMob season labels can now introduce a visual divider when smart ordering crosses into the previous season
+
 ## v3.21.202 (2026-07-22)
 - Lineup renderer: tolerate numeric or otherwise non-text provider position values instead of crashing the match-details popup
 

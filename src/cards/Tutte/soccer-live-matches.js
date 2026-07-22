@@ -345,11 +345,19 @@ class SoccerLiveMatchesCard extends LitElement {
     if (!this.showFinishedMatches) {
       matches = matches.filter((m) => m.status !== "Full Time");
     }
-    // Dates are in "dd/mm/yyyy hh:mm" format: new Date() cannot parse them,
-    // so _parseMatchDate is used. reverse_order sorts newest first.
+    const smartOrder = this._config.smart_order === true ||
+      (this._config.smart_order === undefined && stateObj.attributes.provider === 'fotmob_private');
+    // Smart order keeps the actionable part of a mixed-season team feed at
+    // the top: live, upcoming ascending, then results newest-first.
     matches = matches.slice().sort((a, b) => {
       const da = this._parseMatchDate(a.date) || new Date(0);
       const db = this._parseMatchDate(b.date) || new Date(0);
+      if (smartOrder) {
+        const rank = state => state === 'in' ? 0 : state === 'pre' ? 1 : state === 'post' ? 2 : 3;
+        const stateDiff = rank(a.state) - rank(b.state);
+        if (stateDiff) return stateDiff;
+        return a.state === 'post' ? db - da : da - db;
+      }
       return this.reverseOrder ? db - da : da - db;
     });
 
@@ -395,6 +403,7 @@ class SoccerLiveMatchesCard extends LitElement {
       });
     } else {
       let currentKey = null;
+      let currentSeason = null;
       limited.forEach(m => {
         const key = this._dayKey(m);
         if (key !== currentKey) {
@@ -406,7 +415,10 @@ class SoccerLiveMatchesCard extends LitElement {
             const md = new Date(d); md.setHours(0, 0, 0, 0);
             dayDiff = Math.round((md - today) / 86400000);
           }
-          grouped.push({ key, dayDiff, matches: [m] });
+          const season = m.season_label || null;
+          const seasonBreak = Boolean(smartOrder && currentSeason && season && season !== currentSeason);
+          if (season) currentSeason = season;
+          grouped.push({ key, dayDiff, matches: [m], season, seasonBreak });
         } else {
           grouped[grouped.length - 1].matches.push(m);
         }
@@ -466,6 +478,7 @@ class SoccerLiveMatchesCard extends LitElement {
 
         <div class="scroll-content" style="max-height: ${scrollHeight}px;">
           ${grouped.map(group => html`
+            ${group.seasonBreak ? html`<div class="season-divider">${group.season}</div>` : ''}
             <div class="day-divider ${groupBy === 'competition' ? 'comp' : (group.dayDiff === 0 ? 'today' : group.dayDiff === -1 ? 'yesterday' : group.dayDiff === 1 ? 'tomorrow' : '')}">
               ${groupBy === 'competition' && group.logo ? html`<img class="comp-divider-logo" src="${group.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
               ${group.key}
@@ -929,6 +942,17 @@ class SoccerLiveMatchesCard extends LitElement {
         color: var(--cl-text-2);
         font-weight: 800;
         display: flex; align-items: center; gap: 8px;
+      }
+      .season-divider {
+        margin: 14px 12px 2px;
+        padding: 7px 10px;
+        border: 1px solid var(--cl-divider);
+        border-radius: 999px;
+        color: var(--cl-text-2);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-align: center;
       }
       .day-divider::after {
         content: '';
