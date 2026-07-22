@@ -12,7 +12,7 @@ export function parseFormation(str) {
 }
 
 function _isGk(p) {
-  const pos = (p.position || '').toUpperCase();
+  const pos = String(p?.position ?? '').toUpperCase();
   return pos === 'GK' || pos === 'G';
 }
 

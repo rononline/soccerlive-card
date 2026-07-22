@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.21.202 (2026-07-22)
+- Lineup renderer: tolerate numeric or otherwise non-text provider position values instead of crashing the match-details popup
+
 ## v3.21.201 (2026-07-21)
 - Card editors now discover match and club sensors through their `sensor_type` attribute as well as legacy entity-name patterns. Existing FotMob entities therefore remain selectable even when Home Assistant preserves their original `soccer_live_fotmob_*` entity IDs
 
