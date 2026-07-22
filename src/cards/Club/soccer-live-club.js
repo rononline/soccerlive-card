@@ -16,6 +16,9 @@ import {
   transferCounterparty,
   formatTransferDate,
   squadValueSummary,
+  matchdaySummary,
+  seasonProgress,
+  transferSummary,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -105,13 +108,55 @@ class SoccerLiveClubCard extends LitElement {
             fallbackIcon: '🏟️',
           }) : ''}
           ${this._renderProfile(profile, club.coach)}
+          ${this._config.show_matchday !== false ? this._renderMatchday(attrs) : ''}
           ${this._renderDashboard(club, attrs)}
+          ${this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : ''}
           ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
           ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
           <div class="clb-note">${this._t('club.cache_note')}</div>
         </div>
       </ha-card>
     `;
+  }
+
+  _renderMatchday(attrs) {
+    const summary = matchdaySummary(attrs);
+    if (!summary) return '';
+    const { match, phase } = summary;
+    const phaseLabel = this._t(`club.matchday_${phase}`);
+    const score = phase === 'pre' ? (match.clock || match.date || '') : `${match.home_score ?? '–'} – ${match.away_score ?? '–'}`;
+    const hasLineup = (match.lineup_home?.length || match.lineup_away?.length || match.formation_home || match.formation_away);
+    const hasStats = match.has_stats || Object.keys(match.home_statistics || {}).length || Object.keys(match.away_statistics || {}).length;
+    return html`<section class="clb-matchday ${phase}">
+      <div class="clb-matchday-head"><span>${this._t('club.matchday')}</span><b>${phaseLabel}</b></div>
+      <div class="clb-matchday-fixture">
+        <span>${match.home_team || ''}</span><strong>${score}</strong><span>${match.away_team || ''}</span>
+      </div>
+      ${(match.venue || match.status || hasLineup || hasStats) ? html`<div class="clb-matchday-meta">
+        ${match.status ? html`<span>${match.status}</span>` : ''}${match.venue ? html`<span>⌖ ${match.venue}</span>` : ''}
+        ${hasLineup ? html`<span>✓ ${this._t('tab.lineup')}</span>` : ''}${hasStats ? html`<span>✓ ${this._t('tab.stats')}</span>` : ''}
+      </div>` : ''}
+    </section>`;
+  }
+
+  _renderSeasonProgress(attrs) {
+    const progress = seasonProgress(attrs.previous_matches, attrs.team_id, attrs.team_name, this._config.season_progress_matches ?? 12);
+    if (!progress.played) return '';
+    const maxPoints = Math.max(3, ...progress.rounds.map(round => round.points));
+    const points = progress.rounds.map((round, index) => {
+      const x = progress.rounds.length === 1 ? 50 : index / (progress.rounds.length - 1) * 100;
+      const y = 36 - (round.points / maxPoints * 32);
+      return `${x},${y}`;
+    }).join(' ');
+    return html`<section class="clb-season">
+      <div class="clb-section-head"><div><span>${this._t('club.season_progress')}</span><strong>${progress.points} ${this._t('col.points')}</strong></div><small>${progress.played} ${this._t('club.matches_played')}</small></div>
+      <svg viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="${this._t('club.season_progress')}"><polyline points=${points}></polyline>${progress.rounds.map((round, index) => {
+        const x = progress.rounds.length === 1 ? 50 : index / (progress.rounds.length - 1) * 100;
+        const y = 36 - (round.points / maxPoints * 32);
+        return html`<circle class=${round.result.toLowerCase()} cx=${x} cy=${y} r="1.8"><title>${round.opponent}: ${round.result}, ${round.points}</title></circle>`;
+      })}</svg>
+      <div class="clb-season-stats"><span>${this._t('club.goals_for')} <b>${progress.goalsFor}</b></span><span>${this._t('club.goals_against')} <b>${progress.goalsAgainst}</b></span><span>${this._t('club.goal_difference')} <b>${progress.goalsFor - progress.goalsAgainst > 0 ? '+' : ''}${progress.goalsFor - progress.goalsAgainst}</b></span></div>
+    </section>`;
   }
 
   _renderDashboard(club, attrs) {
@@ -308,6 +353,7 @@ class SoccerLiveClubCard extends LitElement {
     const filter = ['in', 'out'].includes(this._transferFilter) ? this._transferFilter : 'all';
     const filtered = filterTransfers(transfers, filter);
     const visible = visibleTransfers(filtered, this._config.max_transfers ?? 8);
+    const summary = transferSummary(transfers);
     const tab = (val, labelKey, count) => html`
       <button class="clb-filter ${filter === val ? 'sel' : ''}" @click=${() => { this._transferFilter = val; }}>
         ${this._t(labelKey)} ${count}
@@ -324,6 +370,14 @@ class SoccerLiveClubCard extends LitElement {
             </div>
           ` : ''}
         </div>
+        ${(summary.feeCoverage || summary.loans || summary.free) ? html`<div class="clb-transfer-summary">
+          ${summary.feeCoverage ? html`<div><span>${this._t('club.spent')}</span><b>${this._formatValue(summary.spent)}</b></div><div><span>${this._t('club.income')}</span><b>${this._formatValue(summary.income)}</b></div><div><span>${this._t('club.balance')}</span><b class=${summary.balance >= 0 ? 'positive' : 'negative'}>${summary.balance > 0 ? '+' : ''}${this._formatValue(summary.balance)}</b></div>` : ''}
+          ${summary.loans ? html`<small>${this._t('club.loans')}: ${summary.loans}</small>` : ''}${summary.free ? html`<small>${this._t('club.free_transfers')}: ${summary.free}</small>` : ''}
+        </div>` : ''}
+        ${Object.keys(summary.windows).length > 1 ? html`<div class="clb-windows">${Object.entries(summary.windows).sort().reverse().map(([window, count]) => {
+          const [year, period] = window.split('-');
+          return html`<span>${this._t(`club.${period}_window`)} ${year}<b>${count}</b></span>`;
+        })}</div>` : ''}
         ${visible.map(tr => html`
           <div class="clb-transfer">
             <span class="clb-dir ${tr.direction}" title="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}"
@@ -347,6 +401,9 @@ class SoccerLiveClubCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, css`
       .clb-profile { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 14px 10px; }
+      .clb-matchday{margin:2px 14px 10px;padding:11px;border:1px solid var(--cl-divider);border-radius:13px;background:linear-gradient(135deg,var(--cl-accent-soft,rgba(99,102,241,.12)),var(--cl-card-2,rgba(255,255,255,.03)))}
+      .clb-matchday.live{border-color:var(--cl-live,#ef4444)}.clb-matchday-head{display:flex;justify-content:space-between;align-items:center;color:var(--cl-text-2);font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.clb-matchday-head b{padding:3px 7px;border-radius:99px;color:var(--cl-accent);background:var(--cl-accent-soft,rgba(99,102,241,.12))}.clb-matchday.live .clb-matchday-head b{color:var(--cl-live,#ef4444)}
+      .clb-matchday-fixture{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:9px;margin-top:10px;color:var(--cl-text);font-size:12px;font-weight:700}.clb-matchday-fixture span:last-child{text-align:right}.clb-matchday-fixture strong{font-size:17px;white-space:nowrap;color:var(--cl-accent)}.clb-matchday-meta{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:8px;color:var(--cl-text-2);font-size:9px}
       .clb-dashboard { margin:0 14px 8px; padding:10px; border-radius:12px; background:var(--cl-card-2,rgba(255,255,255,.03)); }
       .clb-next { display:grid; grid-template-columns:1fr auto; gap:2px 8px; margin-bottom:9px; font-size:11px; }
       .clb-next span,.clb-next small { color:var(--cl-text-2); }
@@ -359,6 +416,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-market-dist{margin-top:8px;display:grid;gap:5px}.clb-market-row{display:grid;grid-template-columns:65px 1fr auto;gap:6px;align-items:center;font-size:9px;color:var(--cl-text-2)}.clb-market-row i{height:5px;border-radius:99px;background:rgba(148,163,184,.15);overflow:hidden}.clb-market-row i b{display:block;height:100%;background:var(--cl-accent)}.clb-market-row strong{font-size:9px;color:var(--cl-text)}.clb-top-values{display:grid;gap:3px;margin-top:4px}.clb-top-values span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:9px}.clb-top-values b{color:var(--cl-accent)}
       .clb-form { display:flex; align-items:center; gap:5px; margin-top:9px; color:var(--cl-text-2); font-size:10px; }
       .clb-form b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; }.clb-form .w{background:#16a34a}.clb-form .d{background:#64748b}.clb-form .l{background:#dc2626}
+      .clb-season{margin:8px 14px;padding:11px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-section-head{display:flex;align-items:end;justify-content:space-between}.clb-section-head div{display:flex;flex-direction:column}.clb-section-head span,.clb-section-head small{font-size:9px;color:var(--cl-text-2);text-transform:uppercase;letter-spacing:.06em}.clb-section-head strong{font-size:15px;color:var(--cl-text)}.clb-season svg{display:block;width:100%;height:58px;margin:5px 0;overflow:visible}.clb-season polyline{fill:none;stroke:var(--cl-accent);stroke-width:2;vector-effect:non-scaling-stroke}.clb-season circle{vector-effect:non-scaling-stroke;stroke:var(--cl-bg);stroke-width:1}.clb-season circle.w{fill:#16a34a}.clb-season circle.d{fill:#64748b}.clb-season circle.l{fill:#dc2626}.clb-season-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.clb-season-stats span{display:flex;flex-direction:column;color:var(--cl-text-2);font-size:9px}.clb-season-stats b{font-size:12px;color:var(--cl-text)}
       .clb-chip {
         display: inline-flex; align-items: center; gap: 5px;
         font-size: 12px; font-weight: 600; color: var(--cl-text, #e2e8f0);
@@ -402,6 +460,7 @@ class SoccerLiveClubCard extends LitElement {
         color: var(--cl-accent, #6366f1); font-size: 11px; font-weight: 700;
       }
       .clb-transfers-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+      .clb-transfer-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:4px 0 9px}.clb-transfer-summary div{display:flex;flex-direction:column;padding:7px;border-radius:8px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-transfer-summary span,.clb-transfer-summary small{font-size:9px;color:var(--cl-text-2)}.clb-transfer-summary b{font-size:12px;color:var(--cl-text)}.clb-transfer-summary b.positive{color:var(--cl-green,#22c55e)}.clb-transfer-summary b.negative{color:var(--cl-live,#ef4444)}.clb-windows{display:flex;gap:5px;overflow-x:auto;margin-bottom:7px}.clb-windows span{display:inline-flex;gap:6px;white-space:nowrap;padding:4px 7px;border:1px solid var(--cl-divider);border-radius:99px;color:var(--cl-text-2);font-size:9px}.clb-windows b{color:var(--cl-accent)}
       .clb-filters { display: inline-flex; gap: 4px; }
       .clb-filter {
         padding: 3px 8px; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700;

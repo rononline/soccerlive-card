@@ -99,6 +99,14 @@ class SoccerLiveClubEditor extends LitElement {
         </div>
 
         <div class="option">
+          <label>${this._t('editor.show_matchday')}</label>
+          <ha-switch .checked=${this._config.show_matchday !== false} data-config-value="show_matchday" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_season_progress')}</label>
+          <ha-switch .checked=${this._config.show_season_progress !== false} data-config-value="show_season_progress" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
           <label>${this._t('editor.show_squad')}</label>
           <ha-switch .checked=${this._config.show_squad !== false} data-config-value="show_squad" @change=${this._switchChanged}></ha-switch>
         </div>

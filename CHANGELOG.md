@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.25.0 (2026-07-22)
+- Club card adds a phase-aware matchday dashboard that switches between preview, live and review and reports available lineup/stat capabilities
+- Add a current-season progression chart with cumulative points, results and goals for/against; friendlies are excluded and the section stays hidden without finished competition matches
+- Expand the transfer centre with spending, income, balance, loan/free-transfer counts and summer/winter windows when the sensor provides enough data
+- Add editor switches for matchday and season-progress sections; all additions remain provider-neutral, optional and hidden when their data is absent
+- Render generic Club descriptions and empty states without naming a specific data provider
+
 ## v3.24.1 (2026-07-22)
 - Render Club player details in a native top-layer dialog so other dashboard cards and stacking contexts cannot cover the popup
 - Keep backdrop click, close-button and Escape-key dismissal working outside the card shadow root

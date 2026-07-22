@@ -10,7 +10,45 @@ import {
   transferCounterparty,
   formatTransferDate,
   squadValueSummary,
+  matchdaySummary,
+  seasonProgress,
+  transferSummary,
 } from '../../src/cards/shared-club-model.js';
+
+test('matchdaySummary prefers live, then upcoming, then latest finished', () => {
+  const post = { event_id: 1, state: 'post', date_iso: '2026-07-20T12:00:00Z' };
+  const pre = { event_id: 2, state: 'pre', date_iso: '2026-07-26T12:00:00Z' };
+  const live = { event_id: 3, state: 'in', date_iso: '2026-07-22T12:00:00Z' };
+  assert.equal(matchdaySummary({ previous_matches: [post], upcoming_matches: [pre], matches: [live] }).phase, 'live');
+  assert.equal(matchdaySummary({ previous_matches: [post], upcoming_matches: [pre] }).match, pre);
+  assert.equal(matchdaySummary({ previous_matches: [post] }).phase, 'post');
+  assert.equal(matchdaySummary({}), null);
+});
+
+test('seasonProgress calculates cumulative points and excludes friendlies', () => {
+  const progress = seasonProgress([
+    { state: 'post', date_iso: '2026-08-01T12:00:00Z', home_id: 10, away_id: 20, home_team: 'Us', away_team: 'A', home_score: 2, away_score: 0 },
+    { state: 'post', date_iso: '2026-08-08T12:00:00Z', home_id: 30, away_id: 10, home_team: 'B', away_team: 'Us', home_score: 1, away_score: 1 },
+    { state: 'post', is_friendly: true, date_iso: '2026-08-10T12:00:00Z', home_id: 10, away_id: 40, home_score: 0, away_score: 4 },
+  ], 10, 'Us');
+  assert.deepEqual(progress.rounds.map(round => [round.result, round.points]), [['W', 3], ['D', 4]]);
+  assert.deepEqual({ played: progress.played, points: progress.points, goalsFor: progress.goalsFor, goalsAgainst: progress.goalsAgainst }, { played: 2, points: 4, goalsFor: 3, goalsAgainst: 1 });
+});
+
+test('transferSummary reports finances, types and windows without inventing fees', () => {
+  const summary = transferSummary([
+    { direction: 'in', fee: 10_000_000, date: '2026-07-01', type: 'Permanent' },
+    { direction: 'out', fee: 15_000_000, date: '2026-01-10', type: 'Permanent' },
+    { direction: 'in', fee: null, date: '2026-07-03', type: 'Loan' },
+    { direction: 'out', date: '2026-07-04', fee_text: 'Free transfer' },
+    { direction: 'in', date: '2026-07-05', type: '€ 2.5M' },
+  ]);
+  assert.deepEqual({ incoming: summary.incoming, outgoing: summary.outgoing, spent: summary.spent, income: summary.income, balance: summary.balance }, { incoming: 3, outgoing: 2, spent: 12_500_000, income: 15_000_000, balance: 2_500_000 });
+  assert.equal(summary.feeCoverage, 3);
+  assert.equal(summary.loans, 1);
+  assert.equal(summary.free, 1);
+  assert.deepEqual(summary.windows, { '2026-summer': 4, '2026-winter': 1 });
+});
 
 test('squadValueSummary totals known values and ages by position', () => {
   const summary = squadValueSummary([
