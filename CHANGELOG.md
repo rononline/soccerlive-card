@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.23.1 (2026-07-22)
+- Hide the pre-match briefing entirely when it has no substantive form or head-to-head data; capability metadata alone no longer creates an empty panel
+
 ## v3.23.0 (2026-07-22)
 - Match Center Overview can render optional structured pre-match and post-match summaries, including form, scorers, player of the match, xG, standout statistics and top ratings
 - Club card adds optional player market values, total squad value, valued-player coverage and average age

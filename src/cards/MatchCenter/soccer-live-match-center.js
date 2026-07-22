@@ -296,7 +296,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderPreview(preview) {
-    if (!preview) return '';
+    if (!preview || (!preview.home_form && !preview.away_form && !Number(preview.h2h_count))) return '';
     const form = value => value ? html`<div class="brief-form">${String(value).split('').map(result => html`<b class=${result.toLowerCase()}>${result}</b>`)}</div>` : html`<span>—</span>`;
     return html`<section class="brief-card preview">
       <h4>${this._t('match.preview')}</h4>
