@@ -19,7 +19,15 @@ import {
   playerComparison,
   filterSquad,
   clubRecords,
+  normalizeClubSectionOrder,
 } from '../../src/cards/shared-club-model.js';
+
+test('normalizeClubSectionOrder keeps valid unique choices and appends missing sections', () => {
+  const order = normalizeClubSectionOrder('favorites,matchday,favorites,unknown');
+  assert.deepEqual(order.slice(0, 2), ['favorites', 'matchday']);
+  assert.equal(new Set(order).size, order.length);
+  assert.ok(order.includes('transfers'));
+});
 
 test('filterSquad combines name, position and availability filters', () => {
   const squad = [

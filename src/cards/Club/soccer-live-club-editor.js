@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
+import { normalizeClubSectionOrder } from '../shared-club-model.js';
 
 class SoccerLiveClubEditor extends LitElement {
   static get properties() {
@@ -22,6 +23,7 @@ class SoccerLiveClubEditor extends LitElement {
         width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px;
         border: 1px solid var(--divider-color); background: var(--secondary-background-color); color: var(--primary-text-color);
       }
+      .section-order{display:grid;gap:4px}.section-order div{display:flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--divider-color);border-radius:7px}.section-order span{flex:1;font-size:12px}.section-order button{width:28px;height:26px;border:1px solid var(--divider-color);border-radius:5px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer}
       h3 { margin: 0; font-size: 15px; }
     `;
   }
@@ -83,6 +85,15 @@ class SoccerLiveClubEditor extends LitElement {
     this._fire({ ...this._config, [configValue]: ev.target.checked });
   }
 
+  _moveSection(key, delta) {
+    const order = normalizeClubSectionOrder(this._config.section_order);
+    const index = order.indexOf(key);
+    const next = index + delta;
+    if (index < 0 || next < 0 || next >= order.length) return;
+    [order[index], order[next]] = [order[next], order[index]];
+    this._fire({ ...this._config, section_order: order });
+  }
+
   render() {
     if (!this._config || !this.hass) return html``;
     const current = this._config.entity || '';
@@ -125,6 +136,14 @@ class SoccerLiveClubEditor extends LitElement {
         <div class="option">
           <label>${this._t('editor.collapse_club_sections')}</label>
           <ha-switch .checked=${this._config.collapse_sections !== false} data-config-value="collapse_sections" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.club_dashboard_mode')}</label>
+          <ha-switch .checked=${this._config.dashboard_mode === true} data-config-value="dashboard_mode" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.club_section_order')}</label>
+          <div class="section-order">${normalizeClubSectionOrder(this._config.section_order).map((key, index, order) => html`<div><span>${this._t(`club.section_${key}`)}</span><button ?disabled=${index === 0} @click=${() => this._moveSection(key, -1)}>↑</button><button ?disabled=${index === order.length - 1} @click=${() => this._moveSection(key, 1)}>↓</button></div>`)}</div>
         </div>
         <div class="option">
           <label>${this._t('editor.show_transfers')}</label>

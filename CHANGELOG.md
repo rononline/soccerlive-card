@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.28.0 (2026-07-22)
+- Club editor adds move-up/down controls for a fully configurable section order
+- Add compact dashboard mode focused on profile, matchday, changes, favourites, injuries and the latest transfer
+- Render transient provider-neutral club-change badges for transfers, injuries, recoveries, coach/squad changes and market-value deltas
+- Keep all new UI standalone: sensors without `club_changes` retain the existing Club card without an empty placeholder
+- Extend browser regression coverage for configured ordering, dashboard mode and change badges
+
 ## v3.27.0 (2026-07-22)
 - Club card gains collapsible records, analysis, injury, squad and transfer sections; open/closed state is remembered per sensor in the browser
 - Add squad search plus position and availability filters without additional provider requests

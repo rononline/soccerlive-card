@@ -25,6 +25,7 @@ import {
   playerComparison,
   filterSquad,
   clubRecords,
+  normalizeClubSectionOrder,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -115,6 +116,22 @@ class SoccerLiveClubCard extends LitElement {
   _renderCard(club, attrs) {
     const profile = club.profile || {};
     const hideHeader = this._config.hide_header === true;
+    const dashboardMode = this._config.dashboard_mode === true;
+    const sections = {
+      profile: () => this._renderProfile(profile, club.coach),
+      matchday: () => this._config.show_matchday !== false ? this._renderMatchday(attrs) : '',
+      dashboard: () => dashboardMode ? '' : this._renderDashboard(club, attrs),
+      season: () => !dashboardMode && this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : '',
+      changes: () => this._renderClubChanges(attrs.club_changes || club.changes),
+      favorites: () => this._renderFavorites(club.squad || []),
+      records: () => dashboardMode ? '' : this._renderClubRecords(attrs),
+      analysis: () => !dashboardMode && this._config.show_squad_analysis !== false ? this._renderCollapsible('analysis', this._t('club.squad_analysis'), this._renderSquadAnalysis(club.squad || []), true) : '',
+      injuries: () => this._config.show_injuries !== false ? this._renderCollapsible('injuries', this._t('club.injury_center'), this._renderInjuryCenter(club), true) : '',
+      comparison: () => dashboardMode ? '' : this._renderPlayerComparison(),
+      squad: () => !dashboardMode && this._config.show_squad !== false ? this._renderCollapsible('squad', this._t('club.squad'), this._renderSquad(club.squad || []), false) : '',
+      transfers: () => this._config.show_transfers !== false ? (dashboardMode ? this._renderTransfers(club.transfers || [], 1) : this._renderCollapsible('transfers', this._t('club.transfers'), this._renderTransfers(club.transfers || []), false)) : '',
+    };
+    const order = normalizeClubSectionOrder(this._config.section_order);
     return html`
       <ha-card>
         <div class="hero-bg"></div>
@@ -124,21 +141,18 @@ class SoccerLiveClubCard extends LitElement {
             title: profile.name || this._t('card.club'),
             fallbackIcon: '🏟️',
           }) : ''}
-          ${this._renderProfile(profile, club.coach)}
-          ${this._config.show_matchday !== false ? this._renderMatchday(attrs) : ''}
-          ${this._renderDashboard(club, attrs)}
-          ${this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : ''}
-          ${this._renderFavorites(club.squad || [])}
-          ${this._renderClubRecords(attrs)}
-          ${this._config.show_squad_analysis !== false ? this._renderCollapsible('analysis', this._t('club.squad_analysis'), this._renderSquadAnalysis(club.squad || []), true) : ''}
-          ${this._config.show_injuries !== false ? this._renderCollapsible('injuries', this._t('club.injury_center'), this._renderInjuryCenter(club), true) : ''}
-          ${this._renderPlayerComparison()}
-          ${this._config.show_squad !== false ? this._renderCollapsible('squad', this._t('club.squad'), this._renderSquad(club.squad || []), false) : ''}
-          ${this._config.show_transfers !== false ? this._renderCollapsible('transfers', this._t('club.transfers'), this._renderTransfers(club.transfers || []), false) : ''}
+          ${order.map(key => sections[key]())}
           <div class="clb-note">${this._t('club.cache_note')}</div>
         </div>
       </ha-card>
     `;
+  }
+
+  _renderClubChanges(changes) {
+    const items = Array.isArray(changes) ? changes : [];
+    if (!items.length) return '';
+    const icon = type => ({ transfer_added: '↔', injury_added: '✚', player_available: '✓', coach_changed: '👤', squad_added: '+', squad_removed: '−', market_value_changed: '€' }[type] || '•');
+    return html`<section class="clb-changes"><div class="clb-title">${this._t('club.since_update')}</div><div>${items.slice(0, 6).map(item => html`<span class=${item.type || ''}><b>${icon(item.type)}</b>${item.player || item.name || this._t(`club.change_${item.type}`)}${item.delta != null ? html`<small>${Number(item.delta) > 0 ? '+' : ''}${item.type === 'market_value_changed' ? this._formatValue(item.delta) : item.delta}</small>` : ''}</span>`)}</div></section>`;
   }
 
   _preferenceKey() { return `soccer-live-club:${this._config?.entity || 'default'}`; }
@@ -501,12 +515,12 @@ class SoccerLiveClubCard extends LitElement {
     `;
   }
 
-  _renderTransfers(transfers) {
+  _renderTransfers(transfers, maxOverride = null) {
     const counts = countTransfers(transfers);
     if (!counts.all) return '';
     const filter = ['in', 'out'].includes(this._transferFilter) ? this._transferFilter : 'all';
     const filtered = filterTransfers(transfers, filter);
-    const visible = visibleTransfers(filtered, this._config.max_transfers ?? 8);
+    const visible = visibleTransfers(filtered, maxOverride ?? this._config.max_transfers ?? 8);
     const summary = transferSummary(transfers);
     const tab = (val, labelKey, count) => html`
       <button class="clb-filter ${filter === val ? 'sel' : ''}" @click=${() => { this._transferFilter = val; }}>
@@ -576,6 +590,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-analysis,.clb-comparison{margin:8px 14px;padding:10px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.clb-analysis-grid div{display:flex;flex-direction:column;padding:7px;border-radius:8px;background:rgba(255,255,255,.035)}.clb-analysis-grid strong{font-size:16px;color:var(--cl-accent)}.clb-analysis-grid span,.clb-analysis-grid small{font-size:8px;color:var(--cl-text-2);overflow:hidden;text-overflow:ellipsis}.clb-age-extremes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.clb-age-extremes span{display:flex;flex-direction:column;font-size:8px;color:var(--cl-text-2)}.clb-age-extremes b{font-size:10px;color:var(--cl-text)}.clb-thin{display:block;margin-top:7px;color:var(--cl-text-2);font-size:8px}
       .clb-record-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.clb-record-grid div{display:flex;flex-direction:column;padding:7px;border-radius:8px;background:rgba(255,255,255,.035)}.clb-record-grid strong{font-size:16px;color:var(--cl-accent)}.clb-record-grid span{font-size:8px;color:var(--cl-text-2)}.clb-biggest,.clb-split{display:flex;justify-content:space-between;gap:8px;margin-top:7px;color:var(--cl-text-2);font-size:9px}.clb-biggest b,.clb-split b{color:var(--cl-text)}
       .clb-favorites{margin:8px 14px;padding:10px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-favorite-grid{display:flex;gap:6px;overflow-x:auto}.clb-favorite-grid button{display:grid;grid-template-columns:30px minmax(70px,1fr);grid-template-rows:auto auto;gap:0 6px;align-items:center;min-width:145px;padding:7px;border:1px solid var(--cl-divider);border-radius:9px;background:rgba(255,255,255,.025);color:var(--cl-text);text-align:left;cursor:pointer}.clb-favorite-grid img,.clb-favorite-grid button>span{grid-row:1/3;width:30px;height:30px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:var(--cl-accent-soft);color:var(--cl-accent)}.clb-favorite-grid strong{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.clb-favorite-grid small{font-size:8px;color:var(--cl-text-2)}
+      .clb-changes{margin:8px 14px;padding:10px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-changes>div:last-child{display:flex;flex-wrap:wrap;gap:5px}.clb-changes span{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--cl-divider);border-radius:99px;color:var(--cl-text);font-size:9px}.clb-changes span b{color:var(--cl-accent);font-size:12px}.clb-changes span.injury_added b{color:var(--cl-live,#ef4444)}.clb-changes span.player_available b{color:var(--cl-green,#22c55e)}.clb-changes small{color:var(--cl-text-2)}
       .clb-injuries .clb-title b{display:inline-grid;place-items:center;min-width:17px;height:17px;margin-left:4px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--cl-live,#ef4444)}.clb-injury{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--cl-divider)}.clb-injury-icon{color:var(--cl-live,#ef4444)}.clb-injury>div{display:flex;flex:1;min-width:0;flex-direction:column}.clb-injury strong{font-size:11px;color:var(--cl-text)}.clb-injury small{font-size:9px;color:var(--cl-text-2)}.clb-return{display:flex;flex-direction:column;text-align:right;color:var(--cl-text);font-size:9px}
       .clb-comparison-head{display:flex;align-items:center;justify-content:space-between}.clb-comparison-head button{border:0;background:transparent;color:var(--cl-text-2);font-size:9px;cursor:pointer}.clb-compare-pick{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,.035);color:var(--cl-text);font-size:10px}.clb-compare-pick small{color:var(--cl-text-2)}.clb-compare-names,.clb-compare-row{display:grid;grid-template-columns:1fr 60px 1fr;gap:5px;align-items:center;text-align:center}.clb-compare-names{margin-bottom:6px;color:var(--cl-text);font-size:11px}.clb-compare-names span{color:var(--cl-text-2);font-size:8px}.clb-compare-row{padding:4px;border-top:1px solid var(--cl-divider)}.clb-compare-row b{color:var(--cl-text);font-size:10px}.clb-compare-row span{color:var(--cl-text-2);font-size:8px}
       .clb-chip {

@@ -80,6 +80,7 @@
         injuries: [{ player: "Spits", type: "Knee", expected_return: "August" }],
         transfers: [{ player: "Nieuwe speler", player_id: 5, direction: "in", from: "Andere club", to: "Feyenoord", date: "2026-07-16", type: "Permanent", fee: 5000000 }],
       },
+      club_changes: [{ type: "transfer_added", player: "Nieuwe speler", direction: "in" }],
     };
 
     const params = new URLSearchParams(location.search);
@@ -150,9 +151,10 @@
     // Build the config from URL params (only set the axes that are provided).
     const config = { show_previous_matches: true, show_form_trend: true };
     if (entities) config.entities = entities; else config.entity = "sensor.preview_team";
-    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language", "variant", "text_size", "gradient_from", "gradient_to", "watermark_opacity"]) {
+    for (const key of ["appearance", "palette", "skin", "my_team", "background_color", "text_color", "language", "variant", "text_size", "gradient_from", "gradient_to", "watermark_opacity", "section_order"]) {
       if (params.has(key)) config[key] = params.get(key);
     }
+    if (params.has("dashboard_mode")) config.dashboard_mode = params.get("dashboard_mode") === "1";
 
     // A club-branded custom palette: red gradient + a faint crest watermark.
     if (params.has("branded")) {

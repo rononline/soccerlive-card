@@ -202,3 +202,24 @@ test('club — analysis, comparison and transfer top-layer popup', async ({ page
   await expect(dialog).toContainText('Nieuwe speler');
   await expect(dialog).toContainText('Andere club');
 });
+
+test('club — dashboard mode and configured section order', async ({ page }) => {
+  await open(page, { mode: 'club', lang: 'nl', dashboard_mode: '1', section_order: 'changes,matchday,favorites,injuries,transfers,profile' });
+  const state = await page.evaluate(() => {
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    const content = root.querySelector('.card-content');
+    const meaningful = [...content.children].filter(item => !item.classList.contains('hero-bg'));
+    return {
+      firstSection: meaningful.find(item => item.matches?.('.clb-changes,.clb-matchday,.clb-profile'))?.className || '',
+      changes: root.querySelector('.clb-changes')?.textContent || '',
+      analysis: Boolean(root.querySelector('.clb-analysis')),
+      squad: Boolean(root.querySelector('.clb-squad-tools')),
+      transfers: root.querySelectorAll('.clb-transfer').length,
+    };
+  });
+  expect(state.firstSection).toContain('clb-changes');
+  expect(state.changes).toContain('Nieuwe speler');
+  expect(state.analysis).toBe(false);
+  expect(state.squad).toBe(false);
+  expect(state.transfers).toBe(1);
+});

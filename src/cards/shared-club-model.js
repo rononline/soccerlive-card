@@ -201,6 +201,14 @@ export function clubRecords(matches, teamId, teamName) {
   };
 }
 
+export const CLUB_SECTION_ORDER = ['profile', 'matchday', 'dashboard', 'season', 'changes', 'favorites', 'records', 'analysis', 'injuries', 'comparison', 'squad', 'transfers'];
+
+export function normalizeClubSectionOrder(value) {
+  const requested = (Array.isArray(value) ? value : String(value || '').split(','))
+    .map(item => String(item).trim().toLowerCase()).filter(item => CLUB_SECTION_ORDER.includes(item));
+  return [...new Set([...requested, ...CLUB_SECTION_ORDER])];
+}
+
 function matchTime(match) {
   const raw = match?.date_iso || match?.date;
   const time = raw ? new Date(raw).getTime() : NaN;
