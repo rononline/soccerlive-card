@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.21.204 (2026-07-22)
+- Match Center now prefers the sensor's `next_match` and otherwise selects live, upcoming or latest-finished intelligently, instead of blindly rendering `matches[0]` from a mixed-season feed
+- Add human-readable English and Dutch labels for the additional FotMob match statistics
+
 ## v3.21.203 (2026-07-22)
 - Matches card: add smart ordering (live first, upcoming chronologically, finished newest-first), enabled by default for FotMob sensors
 - FotMob season labels can now introduce a visual divider when smart ordering crosses into the previous season

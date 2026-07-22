@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { t, resolveLang, formatMatchDateFull, formatDateOnly } from '../../i18n.js';
+import { t, resolveLang, formatMatchDateFull, formatDateOnly, parseMatchDate } from '../../i18n.js';
 import { scoreText } from '../shared-score.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
@@ -61,13 +61,26 @@ class SoccerLiveMatchCenterCard extends LitElement {
     clearTimeout(this._loadingTimer);
   }
 
+  _selectMatch(attrs) {
+    if (attrs?.next_match) return attrs.next_match;
+    const matches = [...(attrs?.matches || [])];
+    const dateValue = match => {
+      const parsed = parseMatchDate(match.date) || new Date(match.date_iso || 0);
+      return Number.isNaN(parsed?.getTime?.()) ? 0 : parsed.getTime();
+    };
+    const live = matches.filter(match => match.state === 'in').sort((a, b) => dateValue(a) - dateValue(b));
+    const upcoming = matches.filter(match => match.state === 'pre').sort((a, b) => dateValue(a) - dateValue(b));
+    const finished = matches.filter(match => match.state === 'post').sort((a, b) => dateValue(b) - dateValue(a));
+    return live[0] || upcoming[0] || finished[0] || matches[0];
+  }
+
   updated(changedProperties) {
     if (changedProperties.has('hass') && this.hass && this._config) {
       const s = this.hass.states[this._config.entity];
       if (s && s.state !== 'unavailable') {
         this._isLoading = false;
         OfflineCache.set(this._config.entity, s.attributes);
-        const match = (s.attributes.matches || [])[0];
+        const match = this._selectMatch(s.attributes);
         if (match?.venue && match.venue !== this._lastWeatherVenue) {
           this._loadWeather(match.venue, match.venue_lat, match.venue_lon, match.date_iso);
         }
@@ -110,7 +123,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     }
 
     if (this._isLoading && !attrs) return renderLoading(this._t('ui.loading'));
-    const rawMatch = (attrs?.matches || [])[0];
+    const rawMatch = this._selectMatch(attrs);
     if (!rawMatch) {
       return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('', this._t('ui.no_match_data'), this._t('ui.no_match_hint'), ''));
