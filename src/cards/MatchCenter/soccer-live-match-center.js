@@ -15,6 +15,7 @@ import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
+import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
@@ -27,6 +28,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       _tlFilter:     { type: String },
       _isLoading:    { type: Boolean },
       _weatherBadge: { type: Object },
+      _selectedEventId: { type: String },
+      _detailsLoading: { type: Boolean },
     };
   }
 
@@ -38,6 +41,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._weatherBadge = null;
     this._lastWeatherVenue = null;
     this._lastMatchState = null;
+    this._selectedEventId = null;
+    this._detailsLoading = false;
   }
 
   setConfig(config) {
@@ -62,6 +67,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _selectMatch(attrs) {
+    const selected = (attrs?.matches || []).find(match => String(match.event_id) === String(this._selectedEventId));
+    if (selected) return selected;
     if (attrs?.next_match) return attrs.next_match;
     const matches = [...(attrs?.matches || [])];
     const dateValue = match => {
@@ -72,6 +79,22 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const upcoming = matches.filter(match => match.state === 'pre').sort((a, b) => dateValue(a) - dateValue(b));
     const finished = matches.filter(match => match.state === 'post').sort((a, b) => dateValue(b) - dateValue(a));
     return live[0] || upcoming[0] || finished[0] || matches[0];
+  }
+
+  _orderedMatches(attrs) {
+    const matches = [...(attrs?.matches || [])];
+    const value = match => parseMatchDate(match.date)?.getTime() || new Date(match.date_iso || 0).getTime() || 0;
+    const rank = state => state === 'in' ? 0 : state === 'pre' ? 1 : state === 'post' ? 2 : 3;
+    return matches.sort((a, b) => rank(a.state) - rank(b.state) || (a.state === 'post' ? value(b) - value(a) : value(a) - value(b)));
+  }
+
+  async _chooseMatch(eventId, attrs) {
+    this._selectedEventId = String(eventId);
+    const match = (attrs?.matches || []).find(item => String(item.event_id) === String(eventId));
+    if (!match || !attrs?.detail_service || matchHasDetails(match)) return;
+    this._detailsLoading = true;
+    try { await requestMatchDetails(this.hass, attrs, match); } catch (_) { /* optional enhancement */ }
+    this._detailsLoading = false;
   }
 
   updated(changedProperties) {
@@ -141,14 +164,21 @@ class SoccerLiveMatchCenterCard extends LitElement {
       }),
       league_name: leagueName,
     };
-    return this._renderCard(match);
+    return this._renderCard(match, attrs);
   }
 
-  _renderCard(match) {
+  _renderCard(match, attrs) {
     const tabs = TAB_IDS.map(id => ({ id, label: this._t('tab.' + id) }));
+    const ordered = this._orderedMatches(attrs);
 
     return html`
       <ha-card>
+        ${ordered.length > 1 ? html`<div class="mc-picker">
+          <select @change=${event => this._chooseMatch(event.target.value, attrs)}>
+            ${ordered.map(item => html`<option value=${item.event_id} ?selected=${String(item.event_id) === String(match.event_id)}>${formatDateOnly(item.date, resolveLang(this.hass, this._config)) || item.date} · ${item.home_team} – ${item.away_team}</option>`) }
+          </select>
+          ${this._detailsLoading ? html`<span>${this._t('ui.loading')}</span>` : ''}
+        </div>` : ''}
         <div class="mc-hero-section">
           ${renderCardHero(match.home_logo, match.away_logo)}
           <div class="card-content">
@@ -462,6 +492,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .tab-bar::-webkit-scrollbar { display: none; }
       .tab { flex: 1; min-width: 56px; padding: 9px 4px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--cl-text-2, #94a3b8); font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em; transition: color 0.15s; }
       .tab.active { color: var(--cl-accent, #6366f1); border-bottom-color: var(--cl-accent, #6366f1); }
+      .mc-picker { position:relative; z-index:3; display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--cl-bg); border-bottom:1px solid var(--cl-divider); }
+      .mc-picker select { min-width:0; flex:1; padding:7px 9px; border-radius:8px; border:1px solid var(--cl-divider); background:rgba(255,255,255,.06); color:var(--cl-text); }
+      .mc-picker span { color:var(--cl-accent); font-size:11px; }
       .tab-content { min-height: 80px; }
       /* Overview */
       .ov-section { padding: 4px 16px 8px; }

@@ -143,6 +143,9 @@ class SoccerLiveMatchesEditor extends LitElement {
     if (!this._config || !this.hass) return html``;
     const currentEntity = this._config.entity || '';
     const entityInList = currentEntity && this.entities.includes(currentEntity);
+    const matches = this.hass?.states?.[currentEntity]?.attributes?.matches || [];
+    const competitions = [...new Set(matches.map(match => match.league_name).filter(Boolean))].sort();
+    const seasons = [...new Set(matches.map(match => match.season_label).filter(Boolean))].sort().reverse();
 
     return html`
       <div class="card-config">
@@ -158,6 +161,38 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <h3>${this._t("editor.settings")}</h3>
+
+        <div>
+          <label class="field-label">${this._t('editor.competition_filter')}</label>
+          <select data-config-value="filter_competition" @change=${this._selectChanged}>
+            <option value="">${this._t('filter.all')}</option>
+            ${competitions.map(value => html`<option value=${value} ?selected=${this._config.filter_competition === value}>${value}</option>`)}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.season_filter')}</label>
+          <select data-config-value="filter_season" @change=${this._selectChanged}>
+            <option value="">${this._t('filter.all')}</option>
+            ${seasons.map(value => html`<option value=${value} ?selected=${this._config.filter_season === value}>${value}</option>`)}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.match_filter')}</label>
+          <select data-config-value="filter_state" @change=${this._selectChanged}>
+            <option value="">${this._t('filter.all')}</option>
+            <option value="in" ?selected=${this._config.filter_state === 'in'}>${this._t('status.live')}</option>
+            <option value="pre" ?selected=${this._config.filter_state === 'pre'}>${this._t('filter.upcoming')}</option>
+            <option value="post" ?selected=${this._config.filter_state === 'post'}>${this._t('filter.finished')}</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.venue_filter')}</label>
+          <select data-config-value="filter_venue" @change=${this._selectChanged}>
+            <option value="">${this._t('filter.all')}</option>
+            <option value="home" ?selected=${this._config.filter_venue === 'home'}>${this._t('generic.home')}</option>
+            <option value="away" ?selected=${this._config.filter_venue === 'away'}>${this._t('generic.away')}</option>
+          </select>
+        </div>
 
         <div>
           <label class="field-label">${this._t('editor.my_team')}</label>

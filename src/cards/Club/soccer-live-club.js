@@ -81,10 +81,10 @@ class SoccerLiveClubCard extends LitElement {
       return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
         () => renderInfoState('🏟️', this._t('club.empty'), this._t('club.empty_hint'), ''));
     }
-    return this._renderCard(club);
+    return this._renderCard(club, attrs);
   }
 
-  _renderCard(club) {
+  _renderCard(club, attrs) {
     const profile = club.profile || {};
     const hideHeader = this._config.hide_header === true;
     return html`
@@ -97,12 +97,38 @@ class SoccerLiveClubCard extends LitElement {
             fallbackIcon: '🏟️',
           }) : ''}
           ${this._renderProfile(profile, club.coach)}
+          ${this._renderDashboard(club, attrs)}
           ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
           ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
           <div class="clb-note">${this._t('club.cache_note')}</div>
         </div>
       </ha-card>
     `;
+  }
+
+  _renderDashboard(club, attrs) {
+    const squad = club.squad || [];
+    const injuries = club.injuries || squad.filter(player => player.injured);
+    const transfers = club.transfers || [];
+    const previous = (attrs.previous_matches || []).slice(-5).reverse();
+    const teamId = String(attrs.team_id ?? '');
+    const form = previous.map(match => {
+      const home = String(match.home_id ?? '') === teamId;
+      const ours = Number(home ? match.home_score : match.away_score);
+      const theirs = Number(home ? match.away_score : match.home_score);
+      return Number.isFinite(ours) && Number.isFinite(theirs) ? (ours > theirs ? 'W' : ours < theirs ? 'L' : 'D') : null;
+    }).filter(Boolean);
+    const next = attrs.next_match;
+    if (!next && !squad.length && !injuries.length && !transfers.length && !form.length) return '';
+    return html`<div class="clb-dashboard">
+      ${next ? html`<div class="clb-next"><span>${this._t('club.next_match')}</span><strong>${next.home_team} – ${next.away_team}</strong><small>${next.date || ''}</small></div>` : ''}
+      <div class="clb-kpis">
+        <div><strong>${squad.length}</strong><span>${this._t('club.squad')}</span></div>
+        <div><strong>${injuries.length}</strong><span>${this._t('club.injuries')}</span></div>
+        <div><strong>${transfers.length}</strong><span>${this._t('club.transfers')}</span></div>
+      </div>
+      ${form.length ? html`<div class="clb-form"><span>${this._t('team.form')}</span>${form.map(result => html`<b class=${result.toLowerCase()}>${result}</b>`)}</div>` : ''}
+    </div>`;
   }
 
   _renderProfile(profile, coach) {
@@ -201,6 +227,16 @@ class SoccerLiveClubCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, css`
       .clb-profile { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 14px 10px; }
+      .clb-dashboard { margin:0 14px 8px; padding:10px; border-radius:12px; background:var(--cl-card-2,rgba(255,255,255,.03)); }
+      .clb-next { display:grid; grid-template-columns:1fr auto; gap:2px 8px; margin-bottom:9px; font-size:11px; }
+      .clb-next span,.clb-next small { color:var(--cl-text-2); }
+      .clb-next strong { color:var(--cl-text); }
+      .clb-next small { grid-column:1/-1; }
+      .clb-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+      .clb-kpis div { display:flex; flex-direction:column; align-items:center; padding:7px; border-radius:8px; background:rgba(255,255,255,.035); }
+      .clb-kpis strong { color:var(--cl-accent); font-size:17px; }.clb-kpis span { color:var(--cl-text-2); font-size:9px; text-transform:uppercase; }
+      .clb-form { display:flex; align-items:center; gap:5px; margin-top:9px; color:var(--cl-text-2); font-size:10px; }
+      .clb-form b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; }.clb-form .w{background:#16a34a}.clb-form .d{background:#64748b}.clb-form .l{background:#dc2626}
       .clb-chip {
         display: inline-flex; align-items: center; gap: 5px;
         font-size: 12px; font-weight: 600; color: var(--cl-text, #e2e8f0);

@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.22.0 (2026-07-22)
+- Add an optional, provider-neutral on-demand match-details contract; existing sensors without a detail service retain their previous standalone behaviour
+- Match Center gains a smart match selector for mixed fixture feeds
+- Matches card gains competition, season, status and home/away filters plus detail-availability indicators
+- Match popups can render optional momentum, shot-map and player-rating data
+- Club card gains a compact dashboard for next match, form, squad, injuries and transfers
+
 ## v3.21.205 (2026-07-22)
 - Keep smart match ordering provider-neutral: sensors can opt in with `recommended_match_order: smart`; the card no longer contains provider-specific detection
 - Generalise earlier changelog wording so private/custom providers are not presented as public card dependencies

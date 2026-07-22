@@ -15,6 +15,7 @@ import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
+import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 
 /**
  * Soccer Live Team Card
@@ -329,9 +330,13 @@ class SoccerLiveTeamCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-team-editor"); }
   static getStubConfig() { return { entity: "sensor.soccer_live_next_", show_event_toasts: false }; }
 
-  showDetails(match) {
+  async showDetails(match) {
     this.activeMatch = match;
     this.showPopup = true;
+    const attrs = this.hass?.states?.[this._config.entity]?.attributes;
+    if (attrs?.detail_service && !matchHasDetails(match)) {
+      try { await requestMatchDetails(this.hass, attrs, match); } catch (_) { /* optional enhancement */ }
+    }
   }
   closePopup() { this.showPopup = false; }
 
@@ -917,6 +922,10 @@ class SoccerLiveTeamCard extends LitElement {
     // Load weather for main match when hass updates + handle loading state
     if (changedProperties.has('hass') && this.hass && this._config) {
       const stateObj = this.hass.states[this._config.entity];
+      if (this.activeMatch && stateObj?.attributes) {
+        const fresh = updatedMatch(stateObj.attributes, this.activeMatch.event_id);
+        if (fresh && fresh !== this.activeMatch) this.activeMatch = fresh;
+      }
       if (stateObj && stateObj.state !== 'unavailable') {
         this._isLoading = false;
         OfflineCache.set(this._config.entity, stateObj.attributes);

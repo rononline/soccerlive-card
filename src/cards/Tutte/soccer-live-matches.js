@@ -7,6 +7,7 @@ import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
+import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 import { renderSyncStatusOrEmpty } from '../card-error.js';
 
 class SoccerLiveMatchesCard extends LitElement {
@@ -21,6 +22,8 @@ class SoccerLiveMatchesCard extends LitElement {
       _toastMessage: { type: String },
       _toastVisible: { type: Boolean },
       _toastVariant: { type: String },
+      _detailsLoading: { type: Boolean },
+      _detailsError: { type: Boolean },
     };
   }
 
@@ -33,6 +36,8 @@ class SoccerLiveMatchesCard extends LitElement {
     this._toastVisible = false;
     this._toastVariant = 'goal';
     this._toastTimer = null;
+    this._detailsLoading = false;
+    this._detailsError = false;
   }
 
   setConfig(config) {
@@ -271,9 +276,21 @@ class SoccerLiveMatchesCard extends LitElement {
     return `${matchDay.getDate()} ${month}`;
   }
 
-  showDetails(match) {
+  async showDetails(match) {
     this.activeMatch = match;
     this.showPopup = true;
+    const attrs = this.hass?.states?.[this._config.entity]?.attributes;
+    if (!attrs?.detail_service || matchHasDetails(match)) return;
+    this._detailsLoading = true;
+    this._detailsError = false;
+    try {
+      await requestMatchDetails(this.hass, attrs, match);
+    } catch (_) {
+      this._detailsError = true;
+    } finally {
+      this._detailsLoading = false;
+      this.requestUpdate();
+    }
   }
   closePopup() { this.showPopup = false; }
 
@@ -341,6 +358,12 @@ class SoccerLiveMatchesCard extends LitElement {
       ? stateObj.attributes.team_name
       : null;
     const teamLogo = stateObj.attributes.team_logo || null;
+
+    if (this._config.filter_competition) matches = matches.filter(match => match.league_name === this._config.filter_competition);
+    if (this._config.filter_season) matches = matches.filter(match => match.season_label === this._config.filter_season);
+    if (this._config.filter_state) matches = matches.filter(match => match.state === this._config.filter_state);
+    if (this._config.filter_venue === 'home' && stateObj.attributes.team_id) matches = matches.filter(match => String(match.home_id) === String(stateObj.attributes.team_id));
+    if (this._config.filter_venue === 'away' && stateObj.attributes.team_id) matches = matches.filter(match => String(match.away_id) === String(stateObj.attributes.team_id));
 
     if (!this.showFinishedMatches) {
       matches = matches.filter((m) => m.status !== "Full Time");
@@ -494,6 +517,7 @@ class SoccerLiveMatchesCard extends LitElement {
               const isUpcoming = match.state === 'pre';
               const homeMyTeam = this.myTeam && match.home_team && match.home_team.toLowerCase().includes(this.myTeam);
               const awayMyTeam = this.myTeam && match.away_team && match.away_team.toLowerCase().includes(this.myTeam);
+              const detailCaps = match.detail_capabilities || [];
               return html`
                 <div class="match-row ${isLive ? 'live' : ''} ${recent === 'goal' ? 'goal-pulse' : ''} ${recent === 'card' ? 'card-pulse' : ''}"
                      @click="${() => this.showDetails(match)}">
@@ -511,7 +535,7 @@ class SoccerLiveMatchesCard extends LitElement {
                       <span class="name ${awayWinner === true ? 'winner' : (awayWinner === false ? 'loser' : '')} ${awayMyTeam ? 'my-team-name' : ''}">${match.away_team}</span>
                       <span class="score ${awayWinner === true ? 'winner' : (awayWinner === false ? 'loser' : '')}">${this._matchScore(match, 'away')}</span>
                     </div>
-                    ${(broadcast && isUpcoming) || (isMultiLeague && match.league_name && match.league_name !== 'N/A') ? html`
+                    ${(broadcast && isUpcoming) || detailCaps.length || (isMultiLeague && match.league_name && match.league_name !== 'N/A') ? html`
                       <div class="row-extras">
                         ${isMultiLeague && match.league_name && match.league_name !== 'N/A' ? html`
                           <span class="league-chip">${this._displayCompetitionName(match.league_name)}</span>
@@ -522,6 +546,9 @@ class SoccerLiveMatchesCard extends LitElement {
                             ${broadcast}
                           </span>
                         ` : ''}
+                        ${detailCaps.includes('statistics') ? html`<span class="detail-cap" title="Stats">▥</span>` : ''}
+                        ${detailCaps.includes('lineups') ? html`<span class="detail-cap" title="${this._t('popup.lineups')}">♟</span>` : ''}
+                        ${detailCaps.includes('shotmap') ? html`<span class="detail-cap" title="${this._t('popup.shotmap')}">◉</span>` : ''}
                       </div>
                     ` : ''}
                   </div>
@@ -538,6 +565,11 @@ class SoccerLiveMatchesCard extends LitElement {
   updated(changedProperties) {
     if (changedProperties.has('hass') && this.hass && !this._eventSubscriptions?.length) {
       this._subscribeToEvents();
+    }
+    if (changedProperties.has('hass') && this.activeMatch) {
+      const attrs = this.hass?.states?.[this._config.entity]?.attributes;
+      const fresh = updatedMatch(attrs, this.activeMatch.event_id);
+      if (fresh && fresh !== this.activeMatch) this.activeMatch = fresh;
     }
 
     if (changedProperties.has('showPopup') || changedProperties.has('activeMatch')) {
@@ -687,6 +719,10 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
         .mp-event-list li { margin: 4px 0; }
         .mp-no-events { text-align: center; color: #94a3b8; font-size: 13px; }
+        .mp-detail-state { text-align:center; color:var(--cl-accent,#6366f1); font-size:12px; font-weight:700; }
+        .mp-detail-state.error { color:#ef4444; }
+        .mp-capabilities { display:flex; flex-wrap:wrap; justify-content:center; gap:5px; margin:-10px 0 16px; }
+        .mp-capabilities span { padding:3px 7px; border-radius:999px; background:rgba(148,163,184,.12); color:#94a3b8; font-size:9px; text-transform:uppercase; letter-spacing:.06em; }
         /* Lineup & Timeline sections */
         .mp-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
         .mp-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
@@ -706,6 +742,16 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-timeline-item { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
         .mp-timeline-item:last-child { border-bottom: none; }
         .mp-tl-clock { min-width: 32px; text-align: right; font-size: 11px; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; padding-top: 2px; flex-shrink: 0; }
+        .mp-momentum { width:100%; height:90px; overflow:visible; }
+        .mp-momentum line { stroke:rgba(148,163,184,.3); stroke-width:1; }
+        .mp-momentum path { fill:none; stroke:var(--cl-accent,#6366f1); stroke-width:3; vector-effect:non-scaling-stroke; }
+        .mp-shotmap { position:relative; height:190px; border:1px solid rgba(255,255,255,.3); border-radius:8px; background:linear-gradient(90deg,rgba(16,185,129,.12),rgba(16,185,129,.05)); }
+        .mp-shotmap::after { content:''; position:absolute; left:50%; top:0; bottom:0; border-left:1px solid rgba(255,255,255,.25); }
+        .mp-shot { position:absolute; width:9px; height:9px; border-radius:50%; background:#f8fafc; border:2px solid #64748b; transform:translate(-50%,-50%); z-index:1; }
+        .mp-shot.goal { background:#10b981; border-color:#d1fae5; width:12px; height:12px; }
+        .mp-ratings { display:grid; gap:6px; }
+        .mp-ratings div { display:flex; justify-content:space-between; padding:7px 9px; border-radius:7px; background:rgba(255,255,255,.05); font-size:12px; }
+        .mp-ratings strong { color:#fbbf24; }
         .mp-tl-badge { display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; line-height: 15px; white-space: nowrap; margin-top: 1px; }
         .mp-tl-badge.goal   { background: rgba(99,102,241,0.18); color: #6366f1; }
         .mp-tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
@@ -759,6 +805,9 @@ class SoccerLiveMatchesCard extends LitElement {
             <img class="mp-logo" src="${m.away_logo}" alt="" @error="${e => e.target.style.display='none'}">
           </div>
           <p class="mp-teams"><strong>${m.home_team}</strong> – <strong>${m.away_team}</strong></p>
+          ${this._detailsLoading ? html`<p class="mp-detail-state">${this._t('ui.loading')}</p>` : ''}
+          ${this._detailsError ? html`<p class="mp-detail-state error">${this._t('ui.provider_unavailable')}</p>` : ''}
+          ${this._renderDetailCapabilities(m)}
           ${!isPre ? html`
             ${group(this._t('event.goal'), goals, 'goal')}
             ${group(this._t('event.yellow_card'), yellowCards, 'yellow')}
@@ -767,10 +816,55 @@ class SoccerLiveMatchesCard extends LitElement {
           ` : ''}
           ${this._renderPopupLineup(m)}
           ${this._renderPopupTimeline(m)}
+          ${this._renderMomentum(m)}
+          ${this._renderShotmap(m)}
+          ${this._renderRatings(m)}
           <button class="mp-close" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
       </div>
     `;
+  }
+
+  _renderDetailCapabilities(m) {
+    const caps = m.detail_capabilities || [];
+    if (!caps.length) return '';
+    return html`<div class="mp-capabilities">${caps.map(cap => html`<span>${cap}</span>`)}</div>`;
+  }
+
+  _renderMomentum(m) {
+    const points = m.momentum || [];
+    if (!points.length) return '';
+    const width = 300, height = 90, mid = height / 2;
+    const max = Math.max(1, ...points.map(point => Math.abs(Number(point.value) || 0)));
+    const path = points.map((point, index) => {
+      const x = points.length === 1 ? 0 : index * width / (points.length - 1);
+      const y = mid - ((Number(point.value) || 0) / max) * (mid - 8);
+      return `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.momentum')}</h5>
+      <svg class="mp-momentum" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+        <line x1="0" y1="${mid}" x2="${width}" y2="${mid}"></line><path d="${path}"></path>
+      </svg></div>`;
+  }
+
+  _renderShotmap(m) {
+    const shots = m.shotmap || [];
+    if (!shots.length) return '';
+    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.shotmap')}</h5>
+      <div class="mp-shotmap">${shots.map(shot => {
+        const x = Math.max(2, Math.min(98, Number(shot.x) || 50));
+        const y = Math.max(2, Math.min(98, Number(shot.y) || 50));
+        const goal = String(shot.outcome || '').toLowerCase().includes('goal');
+        return html`<span class="mp-shot ${goal ? 'goal' : ''}" style="left:${x}%;top:${100-y}%" title="${shot.player || ''} · ${shot.minute || ''}' · xG ${shot.xg ?? '—'}"></span>`;
+      })}</div></div>`;
+  }
+
+  _renderRatings(m) {
+    const players = m.top_rated_players || [];
+    if (!players.length && !m.player_of_the_match) return '';
+    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.ratings')}</h5>
+      <div class="mp-ratings">${players.map(player => html`<div><span>${player.name}</span><strong>${player.rating}</strong></div>`)}</div>
+    </div>`;
   }
 
   _renderPopupLineup(m) {
@@ -1131,6 +1225,7 @@ class SoccerLiveMatchesCard extends LitElement {
         text-overflow: ellipsis;
         max-width: 140px;
       }
+      .detail-cap { color:var(--cl-text-2); opacity:.7; font-size:10px; }
       .match-status-icon {
         color: var(--cl-text-2);
         font-size: 18px;
