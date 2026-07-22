@@ -346,7 +346,7 @@ class SoccerLiveMatchesCard extends LitElement {
       matches = matches.filter((m) => m.status !== "Full Time");
     }
     const smartOrder = this._config.smart_order === true ||
-      (this._config.smart_order === undefined && stateObj.attributes.provider === 'fotmob_private');
+      (this._config.smart_order === undefined && stateObj.attributes.recommended_match_order === 'smart');
     // Smart order keeps the actionable part of a mixed-season team feed at
     // the top: live, upcoming ascending, then results newest-first.
     matches = matches.slice().sort((a, b) => {

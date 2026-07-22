@@ -203,7 +203,7 @@ class SoccerLiveMatchesEditor extends LitElement {
           <label>${this._t('editor.smart_order')}</label>
           <ha-switch
             .checked=${this._config.smart_order === true ||
-              (this._config.smart_order === undefined && this.hass?.states?.[this._config.entity]?.attributes?.provider === 'fotmob_private')}
+              (this._config.smart_order === undefined && this.hass?.states?.[this._config.entity]?.attributes?.recommended_match_order === 'smart')}
             data-config-value="smart_order"
             @change=${this._switchChanged}
           ></ha-switch>

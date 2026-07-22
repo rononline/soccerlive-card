@@ -1,21 +1,25 @@
 # Changelog
 
+## v3.21.205 (2026-07-22)
+- Keep smart match ordering provider-neutral: sensors can opt in with `recommended_match_order: smart`; the card no longer contains provider-specific detection
+- Generalise earlier changelog wording so private/custom providers are not presented as public card dependencies
+
 ## v3.21.204 (2026-07-22)
 - Match Center now prefers the sensor's `next_match` and otherwise selects live, upcoming or latest-finished intelligently, instead of blindly rendering `matches[0]` from a mixed-season feed
-- Add human-readable English and Dutch labels for the additional FotMob match statistics
+- Add human-readable English and Dutch labels for additional provider statistic keys
 
 ## v3.21.203 (2026-07-22)
-- Matches card: add smart ordering (live first, upcoming chronologically, finished newest-first), enabled by default for FotMob sensors
-- FotMob season labels can now introduce a visual divider when smart ordering crosses into the previous season
+- Matches card: add smart ordering (live first, upcoming chronologically, finished newest-first), which sensors can recommend through a provider-neutral capability hint
+- Season labels can now introduce a visual divider when smart ordering crosses into the previous season
 
 ## v3.21.202 (2026-07-22)
 - Lineup renderer: tolerate numeric or otherwise non-text provider position values instead of crashing the match-details popup
 
 ## v3.21.201 (2026-07-21)
-- Card editors now discover match and club sensors through their `sensor_type` attribute as well as legacy entity-name patterns. Existing FotMob entities therefore remain selectable even when Home Assistant preserves their original `soccer_live_fotmob_*` entity IDs
+- Card editors now discover match and club sensors through their `sensor_type` attribute as well as legacy entity-name patterns, so custom providers do not have to follow a specific entity-ID naming convention
 
 ## v3.21.200 (2026-07-21)
-- Club editor: discover dedicated `soccer_live_club_*` sensors, including the separate private FotMob integration, in the entity selector
+- Club editor: discover dedicated `soccer_live_club_*` sensors in the entity selector
 
 ## v3.21.199 (2026-07-21)
 - Fix: the sync-status state cards (first fetch / rate limit / invalid key / provider down) threw a render error and showed a stuck spinner when actually displayed — the translate function was passed unbound, so it lost access to the card instance. All cards now pass a bound translator. This was masked until now because no test exercised the empty+status render path
