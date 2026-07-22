@@ -19,6 +19,7 @@ import {
   matchdaySummary,
   seasonProgress,
   transferSummary,
+  usableMatchText,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -124,7 +125,13 @@ class SoccerLiveClubCard extends LitElement {
     if (!summary) return '';
     const { match, phase } = summary;
     const phaseLabel = this._t(`club.matchday_${phase}`);
-    const score = phase === 'pre' ? (match.clock || match.date || '') : `${match.home_score ?? '–'} – ${match.away_score ?? '–'}`;
+    const score = phase === 'pre'
+      ? (usableMatchText(match.clock) || usableMatchText(match.date) || this._t('status.scheduled'))
+      : `${usableMatchText(match.home_score) || '–'} – ${usableMatchText(match.away_score) || '–'}`;
+    const status = phase === 'pre'
+      ? this._t('status.scheduled')
+      : phase === 'post' ? this._t('status.full_time') : usableMatchText(match.status);
+    const venue = usableMatchText(match.venue);
     const hasLineup = (match.lineup_home?.length || match.lineup_away?.length || match.formation_home || match.formation_away);
     const hasStats = match.has_stats || Object.keys(match.home_statistics || {}).length || Object.keys(match.away_statistics || {}).length;
     return html`<section class="clb-matchday ${phase}">
@@ -132,8 +139,8 @@ class SoccerLiveClubCard extends LitElement {
       <div class="clb-matchday-fixture">
         <span>${match.home_team || ''}</span><strong>${score}</strong><span>${match.away_team || ''}</span>
       </div>
-      ${(match.venue || match.status || hasLineup || hasStats) ? html`<div class="clb-matchday-meta">
-        ${match.status ? html`<span>${match.status}</span>` : ''}${match.venue ? html`<span>⌖ ${match.venue}</span>` : ''}
+      ${(venue || status || hasLineup || hasStats) ? html`<div class="clb-matchday-meta">
+        ${status ? html`<span>${status}</span>` : ''}${venue ? html`<span>⌖ ${venue}</span>` : ''}
         ${hasLineup ? html`<span>✓ ${this._t('tab.lineup')}</span>` : ''}${hasStats ? html`<span>✓ ${this._t('tab.stats')}</span>` : ''}
       </div>` : ''}
     </section>`;
@@ -171,7 +178,8 @@ class SoccerLiveClubCard extends LitElement {
       const theirs = Number(home ? match.away_score : match.home_score);
       return Number.isFinite(ours) && Number.isFinite(theirs) ? (ours > theirs ? 'W' : ours < theirs ? 'L' : 'D') : null;
     }).filter(Boolean);
-    const next = attrs.next_match;
+    // The matchday panel already presents the featured upcoming fixture.
+    const next = this._config.show_matchday === false ? attrs.next_match : null;
     const values = squadValueSummary(squad);
     if (!next && !squad.length && !injuries.length && !transfers.length && !form.length) return '';
     return html`<div class="clb-dashboard">

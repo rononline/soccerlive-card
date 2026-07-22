@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.25.1 (2026-07-22)
+- Ignore provider placeholders such as `N/A` when choosing the matchday kickoff, score, venue and status
+- Use localized scheduled/full-time labels so equivalent sensors present the same match state
+- Remove the duplicated next-match row from the Club dashboard while the matchday section already shows that fixture
+
 ## v3.25.0 (2026-07-22)
 - Club card adds a phase-aware matchday dashboard that switches between preview, live and review and reports available lineup/stat capabilities
 - Add a current-season progression chart with cumulative points, results and goals for/against; friendlies are excluded and the section stays hidden without finished competition matches

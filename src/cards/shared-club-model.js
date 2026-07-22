@@ -110,6 +110,13 @@ function matchTime(match) {
   return Number.isFinite(time) ? time : 0;
 }
 
+/** Provider placeholders are not display values. */
+export function usableMatchText(value) {
+  if (value === null || value === undefined) return '';
+  const text = String(value).trim();
+  return /^(?:n\/?a|none|null|undefined|-)$/i.test(text) ? '' : text;
+}
+
 /** Pick the most useful match for a phase-aware club dashboard. */
 export function matchdaySummary(attrs) {
   const data = attrs || {};

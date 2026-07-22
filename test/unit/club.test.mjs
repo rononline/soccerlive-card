@@ -13,7 +13,14 @@ import {
   matchdaySummary,
   seasonProgress,
   transferSummary,
+  usableMatchText,
 } from '../../src/cards/shared-club-model.js';
+
+test('usableMatchText removes provider placeholders but keeps real values', () => {
+  for (const value of [null, undefined, '', 'N/A', 'n/a', 'NA', '-', 'None']) assert.equal(usableMatchText(value), '');
+  assert.equal(usableMatchText('26-07-2026 14:00'), '26-07-2026 14:00');
+  assert.equal(usableMatchText(0), '0');
+});
 
 test('matchdaySummary prefers live, then upcoming, then latest finished', () => {
   const post = { event_id: 1, state: 'post', date_iso: '2026-07-20T12:00:00Z' };
