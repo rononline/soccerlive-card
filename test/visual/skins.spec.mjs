@@ -151,3 +151,32 @@ test('friendly — FIFA competition logo is suppressed (neutral badge)', async (
   await open(page, { mode: 'card', friendly: '1' });
   await expect(target(page)).toHaveScreenshot('team-friendly.png');
 });
+
+test('club — analysis, comparison and transfer top-layer popup', async ({ page }) => {
+  await open(page, { mode: 'club', lang: 'nl' });
+  await page.evaluate(() => {
+    const card = document.querySelector('soccer-live-club');
+    const root = card.shadowRoot;
+    const compare = [...root.querySelectorAll('.clb-compare-toggle')];
+    compare[0].click();
+    compare[1].click();
+  });
+  await page.waitForFunction(() => document.querySelector('soccer-live-club')?.shadowRoot?.querySelector('.clb-comparison')?.textContent?.includes('Back'));
+  const state = await page.evaluate(() => {
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    return {
+      analysis: Boolean(root.querySelector('.clb-analysis')),
+      injuries: Boolean(root.querySelector('.clb-injuries')),
+      comparison: root.querySelector('.clb-comparison')?.textContent || '',
+    };
+  });
+  expect(state.analysis).toBe(true);
+  expect(state.injuries).toBe(true);
+  expect(state.comparison).toContain('Keeper');
+  expect(state.comparison).toContain('Back');
+  await page.evaluate(() => document.querySelector('soccer-live-club').shadowRoot.querySelector('.clb-transfer').click());
+  const dialog = page.locator('dialog.soccer-live-club-player-portal');
+  await expect(dialog).toHaveAttribute('open', '');
+  await expect(dialog).toContainText('Nieuwe speler');
+  await expect(dialog).toContainText('Andere club');
+});

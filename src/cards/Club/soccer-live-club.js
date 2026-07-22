@@ -20,6 +20,9 @@ import {
   seasonProgress,
   transferSummary,
   usableMatchText,
+  squadAnalysis,
+  normalizedInjuries,
+  playerComparison,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -27,7 +30,8 @@ class SoccerLiveClubCard extends LitElement {
     return {
       hass: {}, _config: {}, _isLoading: { type: Boolean },
       _squadExpanded: { type: Boolean }, _transferFilter: { type: String },
-      _selectedPlayer: { type: Object },
+      _selectedPlayer: { type: Object }, _selectedTransfer: { type: Object },
+      _comparisonPlayers: { type: Array },
     };
   }
 
@@ -38,7 +42,9 @@ class SoccerLiveClubCard extends LitElement {
     this._isLoading = true;
     if (this._squadExpanded === undefined) this._squadExpanded = false;
     if (this._transferFilter === undefined) this._transferFilter = 'all';
+    if (!Array.isArray(this._comparisonPlayers)) this._comparisonPlayers = [];
     this._selectedPlayer = null;
+    this._selectedTransfer = null;
   }
 
   connectedCallback() {
@@ -60,8 +66,8 @@ class SoccerLiveClubCard extends LitElement {
         OfflineCache.set(this._config.entity, stateObj.attributes);
       }
     }
-    if (changedProperties.has('_selectedPlayer')) {
-      if (this._selectedPlayer) this._openPlayerPortal();
+    if (changedProperties.has('_selectedPlayer') || changedProperties.has('_selectedTransfer')) {
+      if (this._selectedPlayer || this._selectedTransfer) this._openPlayerPortal();
       else this._removePlayerPortal();
     }
   }
@@ -112,6 +118,9 @@ class SoccerLiveClubCard extends LitElement {
           ${this._config.show_matchday !== false ? this._renderMatchday(attrs) : ''}
           ${this._renderDashboard(club, attrs)}
           ${this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : ''}
+          ${this._config.show_squad_analysis !== false ? this._renderSquadAnalysis(club.squad || []) : ''}
+          ${this._config.show_injuries !== false ? this._renderInjuryCenter(club) : ''}
+          ${this._renderPlayerComparison()}
           ${this._config.show_squad !== false ? this._renderSquad(club.squad || []) : ''}
           ${this._config.show_transfers !== false ? this._renderTransfers(club.transfers || []) : ''}
           <div class="clb-note">${this._t('club.cache_note')}</div>
@@ -168,7 +177,7 @@ class SoccerLiveClubCard extends LitElement {
 
   _renderDashboard(club, attrs) {
     const squad = club.squad || [];
-    const injuries = club.injuries || squad.filter(player => player.injured);
+    const injuries = normalizedInjuries(club);
     const transfers = club.transfers || [];
     const previous = (attrs.previous_matches || []).slice(-5).reverse();
     const teamId = String(attrs.team_id ?? '');
@@ -209,10 +218,67 @@ class SoccerLiveClubCard extends LitElement {
     </div>`;
   }
 
+  _renderSquadAnalysis(squad) {
+    const analysis = squadAnalysis(squad);
+    if (!analysis.lines.length) return '';
+    return html`<section class="clb-analysis">
+      <div class="clb-title">${this._t('club.squad_analysis')}</div>
+      <div class="clb-analysis-grid">${analysis.lines.map(line => html`<div><strong>${line.count}</strong><span>${this._t(`club.${String(line.position).toLowerCase()}s`)}</span>${line.averageAge != null ? html`<small>Ø ${line.averageAge.toFixed(1)} ${this._t('club.years_short')}</small>` : ''}${line.value ? html`<small>${this._formatValue(line.value)}</small>` : ''}</div>`)}</div>
+      ${(analysis.youngest || analysis.oldest) ? html`<div class="clb-age-extremes">
+        ${analysis.youngest ? html`<span>${this._t('club.youngest')}<b>${analysis.youngest.name} · ${analysis.youngest.age}</b></span>` : ''}
+        ${analysis.oldest ? html`<span>${this._t('club.oldest')}<b>${analysis.oldest.name} · ${analysis.oldest.age}</b></span>` : ''}
+      </div>` : ''}
+      ${analysis.thin.length ? html`<small class="clb-thin">⚠ ${this._t('club.thin_positions')}: ${analysis.thin.map(line => this._t(`club.${String(line.position).toLowerCase()}s`)).join(', ')}</small>` : ''}
+    </section>`;
+  }
+
+  _renderInjuryCenter(club) {
+    const injuries = normalizedInjuries(club);
+    if (!injuries.length) return '';
+    return html`<section class="clb-section clb-injuries">
+      <div class="clb-title">${this._t('club.injury_center')} <b>${injuries.length}</b></div>
+      ${injuries.map(injury => html`<div class="clb-injury">
+        <span class="clb-injury-icon">✚</span><div><strong>${injury.player}</strong><small>${injury.position || injury.type || this._t('club.unavailable')}</small></div>
+        ${injury.expected_return ? html`<span class="clb-return"><small>${this._t('club.expected_return')}</small>${injury.expected_return}</span>` : ''}
+      </div>`)}
+    </section>`;
+  }
+
+  _toggleComparison(player) {
+    const key = String(player?.id ?? player?.name ?? '');
+    const selected = this._comparisonPlayers || [];
+    const exists = selected.some(item => String(item?.id ?? item?.name ?? '') === key);
+    this._comparisonPlayers = exists ? selected.filter(item => String(item?.id ?? item?.name ?? '') !== key) : [...selected.slice(-1), player];
+  }
+
+  _renderPlayerComparison() {
+    const selected = this._comparisonPlayers || [];
+    if (!selected.length) return '';
+    const comparison = playerComparison(selected);
+    return html`<section class="clb-comparison">
+      <div class="clb-comparison-head"><div class="clb-title">${this._t('club.player_comparison')}</div><button @click=${() => { this._comparisonPlayers = []; }}>${this._t('club.clear')}</button></div>
+      ${!comparison ? html`<div class="clb-compare-pick"><span>${selected[0].name}</span><small>${this._t('club.select_second_player')}</small></div>` : html`
+        <div class="clb-compare-names"><strong>${comparison.players[0].name}</strong><span>vs</span><strong>${comparison.players[1].name}</strong></div>
+        ${comparison.fields.map(field => html`<div class="clb-compare-row"><b>${this._comparisonValue(field, comparison.players[0][field])}</b><span>${this._t(field === 'age' ? 'club.age_label' : field === 'market_value' ? 'club.market_value' : field === 'appearances' ? 'club.appearances' : field === 'rating' ? 'club.rating' : `stat.${field}`)}</span><b>${this._comparisonValue(field, comparison.players[1][field])}</b></div>`)}
+      `}
+    </section>`;
+  }
+
+  _comparisonValue(field, value) {
+    if (value === null || value === undefined || value === '') return '–';
+    return field === 'market_value' ? this._formatValue(value) : value;
+  }
+
   _renderPlayerDetail() {
     const player = this._selectedPlayer;
-    if (!player) return '';
+    const transfer = this._selectedTransfer;
     const item = (label, value) => value !== null && value !== undefined && value !== '' ? html`<div><span>${label}</span><strong>${value}</strong></div>` : '';
+    if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedTransfer = null; }}>
+      <section class="clb-player-modal"><button @click=${() => { this._selectedTransfer = null; }}>×</button>
+        ${transfer.photo ? html`<img src=${transfer.photo} alt="">` : html`<div class="clb-transfer-avatar">${transfer.direction === 'in' ? '↓' : '↑'}</div>`}<h3>${transfer.player}</h3><p>${transfer.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}</p>
+        <div class="clb-player-facts">${item(this._t('club.from'), transfer.from)}${item(this._t('club.to'), transfer.to)}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), transfer.type)}${item(this._t('club.transfer_fee'), transfer.fee_text || (transfer.fee != null ? this._formatValue(transfer.fee) : ''))}</div>
+      </section></div>`;
+    if (!player) return '';
     return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>
       <section class="clb-player-modal"><button @click=${() => { this._selectedPlayer = null; }}>×</button>
         ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${player.position || ''}</p>
@@ -225,16 +291,20 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _openPlayerPortal() {
-    if (!this._selectedPlayer || !document?.body) return;
+    if ((!this._selectedPlayer && !this._selectedTransfer) || !document?.body) return;
     if (!this._playerPortal) {
       this._playerPortal = document.createElement('dialog');
       this._playerPortal.className = 'soccer-live-club-player-portal';
       this._onPlayerPortalCancel = event => {
         event.preventDefault();
         this._selectedPlayer = null;
+        this._selectedTransfer = null;
       };
       this._onPlayerPortalClick = event => {
-        if (event.target === this._playerPortal) this._selectedPlayer = null;
+        if (event.target === this._playerPortal) {
+          this._selectedPlayer = null;
+          this._selectedTransfer = null;
+        }
       };
       this._playerPortal.addEventListener('cancel', this._onPlayerPortalCancel);
       this._playerPortal.addEventListener('click', this._onPlayerPortalClick);
@@ -286,6 +356,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-player-modal { position:relative; width:min(360px,100%); box-sizing:border-box; padding:22px; border-radius:18px; background:var(--cl-bg,#111827); border:1px solid var(--cl-divider,rgba(255,255,255,.12)); box-shadow:0 24px 60px rgba(0,0,0,.5); text-align:center; }
       .clb-player-modal>button { position:absolute; right:10px; top:8px; border:0; background:transparent; color:var(--cl-text-2,#94a3b8); font-size:24px; cursor:pointer; }
       .clb-player-modal>img { width:84px; height:84px; border-radius:50%; object-fit:cover; background:rgba(255,255,255,.05); }
+      .clb-transfer-avatar { display:grid; place-items:center; width:84px; height:84px; margin:auto; border-radius:50%; background:var(--cl-accent-soft,rgba(99,102,241,.12)); color:var(--cl-accent,#6366f1); font-size:38px; font-weight:900; }
       .clb-player-modal h3 { margin:8px 0 2px; color:var(--cl-text,#e2e8f0); }
       .clb-player-modal p { margin:0 0 12px; color:var(--cl-text-2,#94a3b8); }
       .clb-player-facts { display:grid; grid-template-columns:1fr 1fr; gap:7px; text-align:left; }
@@ -341,6 +412,7 @@ class SoccerLiveClubCard extends LitElement {
                   <span class="clb-pname">${p.name}</span>
                   ${p.age != null ? html`<span class="clb-age">${this._t('club.age', { n: p.age })}</span>` : ''}
                   ${p.market_value ? html`<span class="clb-value">${this._formatValue(p.market_value)}</span>` : ''}
+                  <button class="clb-compare-toggle ${this._comparisonPlayers.some(item => String(item?.id ?? item?.name) === String(p?.id ?? p?.name)) ? 'sel' : ''}" title=${this._t('club.compare')} aria-label=${this._t('club.compare')} @click=${event => { event.stopPropagation(); this._toggleComparison(p); }}>⇄</button>
                 </div>
               `)}
             </div>
@@ -387,7 +459,7 @@ class SoccerLiveClubCard extends LitElement {
           return html`<span>${this._t(`club.${period}_window`)} ${year}<b>${count}</b></span>`;
         })}</div>` : ''}
         ${visible.map(tr => html`
-          <div class="clb-transfer">
+          <div class="clb-transfer" role="button" tabindex="0" @click=${() => { this._selectedTransfer = tr; }} @keydown=${event => { if (event.key === 'Enter') this._selectedTransfer = tr; }}>
             <span class="clb-dir ${tr.direction}" title="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}"
                   aria-label="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}">${tr.direction === 'in' ? '↓' : '↑'}</span>
             <div class="clb-tinfo">
@@ -396,6 +468,7 @@ class SoccerLiveClubCard extends LitElement {
             </div>
             <span class="clb-ttype">${tr.type && tr.type !== 'N/A' ? tr.type : ''}</span>
             <span class="clb-tdate">${formatTransferDate(tr.date)}</span>
+            <span class="clb-open">›</span>
           </div>
         `)}
       </div>
@@ -425,6 +498,9 @@ class SoccerLiveClubCard extends LitElement {
       .clb-form { display:flex; align-items:center; gap:5px; margin-top:9px; color:var(--cl-text-2); font-size:10px; }
       .clb-form b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; }.clb-form .w{background:#16a34a}.clb-form .d{background:#64748b}.clb-form .l{background:#dc2626}
       .clb-season{margin:8px 14px;padding:11px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-section-head{display:flex;align-items:end;justify-content:space-between}.clb-section-head div{display:flex;flex-direction:column}.clb-section-head span,.clb-section-head small{font-size:9px;color:var(--cl-text-2);text-transform:uppercase;letter-spacing:.06em}.clb-section-head strong{font-size:15px;color:var(--cl-text)}.clb-season svg{display:block;width:100%;height:58px;margin:5px 0;overflow:visible}.clb-season polyline{fill:none;stroke:var(--cl-accent);stroke-width:2;vector-effect:non-scaling-stroke}.clb-season circle{vector-effect:non-scaling-stroke;stroke:var(--cl-bg);stroke-width:1}.clb-season circle.w{fill:#16a34a}.clb-season circle.d{fill:#64748b}.clb-season circle.l{fill:#dc2626}.clb-season-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.clb-season-stats span{display:flex;flex-direction:column;color:var(--cl-text-2);font-size:9px}.clb-season-stats b{font-size:12px;color:var(--cl-text)}
+      .clb-analysis,.clb-comparison{margin:8px 14px;padding:10px;border-radius:12px;background:var(--cl-card-2,rgba(255,255,255,.03))}.clb-analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.clb-analysis-grid div{display:flex;flex-direction:column;padding:7px;border-radius:8px;background:rgba(255,255,255,.035)}.clb-analysis-grid strong{font-size:16px;color:var(--cl-accent)}.clb-analysis-grid span,.clb-analysis-grid small{font-size:8px;color:var(--cl-text-2);overflow:hidden;text-overflow:ellipsis}.clb-age-extremes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.clb-age-extremes span{display:flex;flex-direction:column;font-size:8px;color:var(--cl-text-2)}.clb-age-extremes b{font-size:10px;color:var(--cl-text)}.clb-thin{display:block;margin-top:7px;color:var(--cl-text-2);font-size:8px}
+      .clb-injuries .clb-title b{display:inline-grid;place-items:center;min-width:17px;height:17px;margin-left:4px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--cl-live,#ef4444)}.clb-injury{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--cl-divider)}.clb-injury-icon{color:var(--cl-live,#ef4444)}.clb-injury>div{display:flex;flex:1;min-width:0;flex-direction:column}.clb-injury strong{font-size:11px;color:var(--cl-text)}.clb-injury small{font-size:9px;color:var(--cl-text-2)}.clb-return{display:flex;flex-direction:column;text-align:right;color:var(--cl-text);font-size:9px}
+      .clb-comparison-head{display:flex;align-items:center;justify-content:space-between}.clb-comparison-head button{border:0;background:transparent;color:var(--cl-text-2);font-size:9px;cursor:pointer}.clb-compare-pick{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,.035);color:var(--cl-text);font-size:10px}.clb-compare-pick small{color:var(--cl-text-2)}.clb-compare-names,.clb-compare-row{display:grid;grid-template-columns:1fr 60px 1fr;gap:5px;align-items:center;text-align:center}.clb-compare-names{margin-bottom:6px;color:var(--cl-text);font-size:11px}.clb-compare-names span{color:var(--cl-text-2);font-size:8px}.clb-compare-row{padding:4px;border-top:1px solid var(--cl-divider)}.clb-compare-row b{color:var(--cl-text);font-size:10px}.clb-compare-row span{color:var(--cl-text-2);font-size:8px}
       .clb-chip {
         display: inline-flex; align-items: center; gap: 5px;
         font-size: 12px; font-weight: 600; color: var(--cl-text, #e2e8f0);
@@ -450,10 +526,12 @@ class SoccerLiveClubCard extends LitElement {
       .clb-pname { font-weight: 600; color: var(--cl-text, #e2e8f0); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .clb-age { font-size: 10px; color: var(--cl-text-2, #94a3b8); }
       .clb-value { min-width:55px; text-align:right; font-size:10px; font-weight:700; color:var(--cl-accent); }
+      .clb-compare-toggle{display:grid;place-items:center;width:22px;height:22px;padding:0;border:1px solid var(--cl-divider);border-radius:50%;background:transparent;color:var(--cl-text-2);cursor:pointer}.clb-compare-toggle.sel{border-color:var(--cl-accent);background:var(--cl-accent-soft);color:var(--cl-accent)}
       .clb-transfer {
         display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px;
-        border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04));
+        border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.04)); cursor:pointer;
       }
+      .clb-transfer:hover,.clb-transfer:focus{background:rgba(255,255,255,.035);outline:none}.clb-open{color:var(--cl-text-2);font-size:17px}
       .clb-dir { font-size: 14px; font-weight: 900; flex-shrink: 0; width: 14px; text-align: center; }
       .clb-dir.in { color: var(--cl-green, #22c55e); }
       .clb-dir.out { color: var(--cl-live, #ef4444); }
@@ -478,6 +556,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-note {
         padding: 8px 14px 12px; font-size: 10px; color: var(--cl-text-2, #94a3b8); opacity: 0.8; text-align: center;
       }
+      @media(max-width:420px){.clb-analysis-grid{grid-template-columns:repeat(2,1fr)}.clb-age-extremes{grid-template-columns:1fr}.clb-ttype{display:none}}
     `];
   }
 }

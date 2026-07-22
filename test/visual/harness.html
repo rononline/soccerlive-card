@@ -67,6 +67,19 @@
         { rank: 3, team_name: "Ajax", wins: 2, draws: 0, losses: 1, points: "6", goal_difference: 2 },
         { rank: 4, team_name: "AZ Alkmaar", wins: 1, draws: 1, losses: 1, points: "4", goal_difference: -1 },
       ],
+      team_id: 209,
+      club: {
+        profile: { name: "Feyenoord", logo: "https://media.api-sports.io/football/teams/209.png", venue: "Stadion Feijenoord", venue_city: "Rotterdam", founded: 1908 },
+        coach: "Giovanni van Bronckhorst",
+        squad: [
+          { id: 1, name: "Keeper", number: 1, position: "Goalkeeper", age: 30, market_value: 5000000, appearances: 20, rating: 7.1 },
+          { id: 2, name: "Back", number: 4, position: "Defender", age: 22, market_value: 8000000, appearances: 18, goals: 1 },
+          { id: 3, name: "Middenvelder", number: 8, position: "Midfielder", age: 25, market_value: 12000000, appearances: 21, goals: 4, assists: 6 },
+          { id: 4, name: "Spits", number: 9, position: "Attacker", age: 27, market_value: 15000000, injured: true, goals: 12 },
+        ],
+        injuries: [{ player: "Spits", type: "Knee", expected_return: "August" }],
+        transfers: [{ player: "Nieuwe speler", player_id: 5, direction: "in", from: "Andere club", to: "Feyenoord", date: "2026-07-16", type: "Permanent", fee: 5000000 }],
+      },
     };
 
     const params = new URLSearchParams(location.search);
@@ -152,7 +165,7 @@
       config.watermark_opacity = 0.12;
     }
 
-    const mode = params.get("mode") || "card";       // card | editor | minimal | multiteam
+    const mode = params.get("mode") || "card";       // card | editor | minimal | multiteam | club
     document.getElementById("target").className = mode === "multiteam" ? "card" : mode;
 
     let tag, cfg;
@@ -171,6 +184,9 @@
         attributes: { team_name: "Ajax", matches: [], sync_status: "authentication_failed" },
       };
       cfg = { ...config, entities: [primaryEntity, "sensor.broken_team"] };
+    } else if (mode === "club") {
+      tag = "soccer-live-club";
+      cfg = { ...config, squad_collapsed: false };
     } else {
       tag = "soccer-live-team";
       cfg = config;

@@ -111,6 +111,14 @@ class SoccerLiveClubEditor extends LitElement {
           <ha-switch .checked=${this._config.show_squad !== false} data-config-value="show_squad" @change=${this._switchChanged}></ha-switch>
         </div>
         <div class="option">
+          <label>${this._t('editor.show_squad_analysis')}</label>
+          <ha-switch .checked=${this._config.show_squad_analysis !== false} data-config-value="show_squad_analysis" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.show_injury_center')}</label>
+          <ha-switch .checked=${this._config.show_injuries !== false} data-config-value="show_injuries" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
           <label>${this._t('editor.show_transfers')}</label>
           <ha-switch .checked=${this._config.show_transfers !== false} data-config-value="show_transfers" @change=${this._switchChanged}></ha-switch>
         </div>

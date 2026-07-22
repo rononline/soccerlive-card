@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.26.0 (2026-07-22)
+- Club card adds an optional injury centre that merges explicit injury records with unavailable squad players and shows expected-return information when available
+- Transfers are clickable and open a native top-layer detail popup with available photo, clubs, date, type and fee
+- Add a responsive squad analysis by position with counts, average ages, market values, age extremes and limited-depth indicators
+- Add manual two-player comparison for age, market value, appearances, goals, assists and rating; unavailable comparison fields remain hidden
+- Add editor switches for injury-centre and squad-analysis sections; every addition remains capability-based and provider-neutral
+
 ## v3.25.1 (2026-07-22)
 - Ignore provider placeholders such as `N/A` when choosing the matchday kickoff, score, venue and status
 - Use localized scheduled/full-time labels so equivalent sensors present the same match state

@@ -14,7 +14,37 @@ import {
   seasonProgress,
   transferSummary,
   usableMatchText,
+  squadAnalysis,
+  normalizedInjuries,
+  playerComparison,
 } from '../../src/cards/shared-club-model.js';
+
+test('squadAnalysis summarizes positions, ages, value and thin groups', () => {
+  const result = squadAnalysis([
+    { name: 'Young', position: 'Defender', age: 18, market_value: 5 },
+    { name: 'Old', position: 'Defender', age: 34, market_value: 10 },
+    { name: 'Mid', position: 'Midfielder', age: 25 },
+  ]);
+  assert.deepEqual(result.lines[0], { position: 'Defender', count: 2, averageAge: 26, value: 15 });
+  assert.equal(result.youngest.name, 'Young');
+  assert.equal(result.oldest.name, 'Old');
+  assert.deepEqual(result.thin.map(line => line.position), ['Defender', 'Midfielder']);
+});
+
+test('normalizedInjuries merges explicit injuries with injured squad players', () => {
+  const injuries = normalizedInjuries({
+    squad: [{ name: 'A', injured: true, position: 'Defender' }, { name: 'B', injured: true }],
+    injuries: [{ player: 'A', type: 'Knee', expected_return: 'August' }],
+  });
+  assert.equal(injuries.length, 2);
+  assert.deepEqual(injuries.find(item => item.player === 'A'), { name: 'A', injured: true, position: 'Defender', player: 'A', type: 'Knee', expected_return: 'August' });
+});
+
+test('playerComparison requires two players and keeps only available fields', () => {
+  assert.equal(playerComparison([{ name: 'A' }]), null);
+  const result = playerComparison([{ name: 'A', age: 20, goals: 2 }, { name: 'B', age: 22 }]);
+  assert.deepEqual(result.fields, ['age', 'goals']);
+});
 
 test('usableMatchText removes provider placeholders but keeps real values', () => {
   for (const value of [null, undefined, '', 'N/A', 'n/a', 'NA', '-', 'None']) assert.equal(usableMatchText(value), '');

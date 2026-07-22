@@ -104,6 +104,54 @@ export function squadValueSummary(squad) {
   };
 }
 
+export function squadAnalysis(squad) {
+  const players = (Array.isArray(squad) ? squad : []).filter(player => player?.name);
+  const positions = {};
+  for (const player of players) {
+    const position = player.position || 'Other';
+    const group = positions[position] ||= { count: 0, ages: [], value: 0 };
+    group.count += 1;
+    const age = Number(player.age);
+    if (Number.isFinite(age) && age > 0) group.ages.push(age);
+    const value = Number(player.market_value);
+    if (Number.isFinite(value) && value > 0) group.value += value;
+  }
+  const lines = Object.entries(positions).map(([position, group]) => ({
+    position,
+    count: group.count,
+    averageAge: group.ages.length ? group.ages.reduce((sum, age) => sum + age, 0) / group.ages.length : null,
+    value: group.value,
+  }));
+  const aged = players.filter(player => Number.isFinite(Number(player.age)) && Number(player.age) > 0);
+  const youngest = aged.length ? aged.reduce((best, player) => Number(player.age) < Number(best.age) ? player : best) : null;
+  const oldest = aged.length ? aged.reduce((best, player) => Number(player.age) > Number(best.age) ? player : best) : null;
+  return { lines, youngest, oldest, thin: lines.filter(line => line.count <= 2) };
+}
+
+export function normalizedInjuries(club) {
+  const data = club || {};
+  const squad = Array.isArray(data.squad) ? data.squad : [];
+  const explicit = Array.isArray(data.injuries) ? data.injuries : [];
+  const byName = new Map();
+  for (const injury of explicit) {
+    const name = injury?.player || injury?.name;
+    if (name) byName.set(String(name).toLowerCase(), { ...injury, player: name });
+  }
+  for (const player of squad.filter(item => item?.injured)) {
+    const key = String(player.name || '').toLowerCase();
+    if (!key) continue;
+    byName.set(key, { ...player, ...(byName.get(key) || {}), player: player.name });
+  }
+  return [...byName.values()];
+}
+
+export function playerComparison(players) {
+  const list = (Array.isArray(players) ? players : []).filter(Boolean).slice(0, 2);
+  if (list.length !== 2) return null;
+  const fields = ['age', 'market_value', 'appearances', 'goals', 'assists', 'rating'];
+  return { players: list, fields: fields.filter(field => list.some(player => player[field] !== null && player[field] !== undefined && player[field] !== '')) };
+}
+
 function matchTime(match) {
   const raw = match?.date_iso || match?.date;
   const time = raw ? new Date(raw).getTime() : NaN;
