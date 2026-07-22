@@ -317,8 +317,8 @@ class SoccerLiveClubCard extends LitElement {
     return html`<section class="clb-section clb-injuries">
       <div class="clb-title">${this._t('club.injury_center')} <b>${injuries.length}</b></div>
       ${injuries.map(injury => html`<div class="clb-injury">
-        <span class="clb-injury-icon">✚</span><div><strong>${injury.player}</strong><small>${injury.position || injury.type || this._t('club.unavailable')}</small></div>
-        ${injury.expected_return ? html`<span class="clb-return"><small>${this._t('club.expected_return')}</small>${injury.expected_return}</span>` : ''}
+        <span class="clb-injury-icon">✚</span><div><strong>${injury.player}</strong><small>${this._positionLabel(injury.position) || injury.type || this._t('club.unavailable')}</small></div>
+        ${injury.expected_return ? html`<span class="clb-return"><small>${this._t('club.expected_return')}</small>${this._returnLabel(injury.expected_return)}</span>` : ''}
       </div>`)}
     </section>`;
   }
@@ -348,6 +348,39 @@ class SoccerLiveClubCard extends LitElement {
     return field === 'market_value' ? this._formatValue(value) : value;
   }
 
+  _positionLabel(value) {
+    const key = String(value || '').trim().toLowerCase();
+    const positions = { goalkeeper: 'goalkeeper', defender: 'defender', midfielder: 'midfielder', attacker: 'attacker', forward: 'attacker' };
+    return positions[key] ? this._t(`club.position_${positions[key]}`) : (value || '');
+  }
+
+  _returnLabel(value) {
+    const text = String(value || '').trim();
+    const simple = { 'day to day': 'day_to_day', 'about a week': 'about_week', 'a few days': 'few_days' };
+    if (simple[text.toLowerCase()]) return this._t(`club.return_${simple[text.toLowerCase()]}`);
+    const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+    const match = text.match(/^(early|mid|late)\s+([a-z]+)(?:\s+(\d{4}))?$/i);
+    if (!match) return text;
+    const month = months.indexOf(match[2].toLowerCase()) + 1;
+    if (!month) return text;
+    const date = `${this._t(`month.${month}`)}${match[3] ? ` ${match[3]}` : ''}`;
+    return this._t(`club.return_${match[1].toLowerCase()}`).replace('{date}', date);
+  }
+
+  _transferTypeLabel(value) {
+    const key = String(value || '').trim().toLowerCase();
+    if (['loan', 'on loan', 'loan transfer'].includes(key)) return this._t('club.transfer_loan');
+    if (['free', 'free transfer'].includes(key)) return this._t('club.transfer_free');
+    if (key === 'permanent') return this._t('club.transfer_permanent');
+    return value || '';
+  }
+
+  _transferFee(transfer) {
+    if (transfer.fee != null && transfer.fee !== '') return this._formatValue(transfer.fee);
+    const text = String(transfer.fee_text || '').trim();
+    return /[€£$]|\d/.test(text) ? text : '';
+  }
+
   _renderPlayerDetail() {
     const player = this._selectedPlayer;
     const transfer = this._selectedTransfer;
@@ -355,12 +388,12 @@ class SoccerLiveClubCard extends LitElement {
     if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedTransfer = null; }}>
       <section class="clb-player-modal"><button @click=${() => { this._selectedTransfer = null; }}>×</button>
         ${transfer.photo ? html`<img src=${transfer.photo} alt="">` : html`<div class="clb-transfer-avatar">${transfer.direction === 'in' ? '↓' : '↑'}</div>`}<h3>${transfer.player}</h3><p>${transfer.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}</p>
-        <div class="clb-player-facts">${item(this._t('club.from'), transfer.from)}${item(this._t('club.to'), transfer.to)}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), transfer.type)}${item(this._t('club.transfer_fee'), transfer.fee_text || (transfer.fee != null ? this._formatValue(transfer.fee) : ''))}</div>
+        <div class="clb-player-facts">${item(this._t('club.from'), transfer.from)}${item(this._t('club.to'), transfer.to)}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), this._transferTypeLabel(transfer.type))}${item(this._t('club.transfer_fee'), this._transferFee(transfer))}</div>
       </section></div>`;
     if (!player) return '';
     return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>
       <section class="clb-player-modal"><button @click=${() => { this._selectedPlayer = null; }}>×</button>
-        ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${player.position || ''}</p>
+        ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${this._positionLabel(player.position)}</p>
         <div class="clb-player-facts">${item(this._t('club.market_value'), player.market_value ? this._formatValue(player.market_value) : '')}
           ${item(this._t('club.age_label'), player.age)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
           ${item(this._t('club.appearances'), player.appearances)}${item(this._t('stat.goals'), player.goals)}${item(this._t('stat.assists'), player.assists)}${item(this._t('club.rating'), player.rating)}

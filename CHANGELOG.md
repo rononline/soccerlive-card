@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.28.1 (2026-07-22)
+- Localize player and injury positions, common expected-return phrases and loan/free/permanent transfer types in the Club card
+- Parse provider phrases such as `Early November 2026` into a localized month label
+- Do not present non-financial transfer descriptions such as `on loan` as a transfer fee
+
 ## v3.28.0 (2026-07-22)
 - Club editor adds move-up/down controls for a fully configurable section order
 - Add compact dashboard mode focused on profile, matchday, changes, favourites, injuries and the latest transfer
