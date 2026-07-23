@@ -452,7 +452,14 @@ class SoccerLiveClubCard extends LitElement {
           ${item(this._t('club.age_label'), player.age)}${item(this._t('club.shirt_number'), player.number)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
           ${item(this._t('club.appearances'), player.appearances)}${item(this._t('club.starts'), player.starts)}${item(this._t('stat.goals'), player.goals)}${item(this._t('stat.assists'), player.assists)}${item(this._t('club.rating'), player.rating)}${item(this._t('club.availability'), player.injured ? this._t('club.unavailable') : this._t('club.available'))}
         </div>
-        ${Array.isArray(player.recent_matches) && player.recent_matches.length ? html`<div class="clb-player-recent"><strong>${this._t('club.recent_matches')}</strong>${player.recent_matches.slice(0, 5).map(match => html`<span>${match.opponent || match.name}<b>${match.rating || match.minutes || '–'}</b></span>`)}</div>` : ''}
+        ${Array.isArray(player.recent_matches) && player.recent_matches.length ? html`<div class="clb-player-recent">
+          <h4>${this._t('club.recent_matches')}</h4>
+          ${player.recent_matches.slice(0, 5).map(match => html`<div class="clb-recent-row">
+            <i class=${match.starter ? 'starter' : 'substitute'}>${match.starter ? 'B' : 'W'}</i>
+            <span><strong>${match.opponent || match.name}</strong><small>${match.starter ? this._t('club.starting_player') : this._t('club.substitute')}</small></span>
+            <b class=${Number(match.rating) >= 7 ? 'good' : ''}>${match.rating || match.minutes || '–'}</b>
+          </div>`)}
+        </div>` : ''}
       </section>
     </div>`;
   }
@@ -530,6 +537,16 @@ class SoccerLiveClubCard extends LitElement {
       .clb-player-facts div { display:flex; flex-direction:column; padding:8px; border-radius:8px; background:rgba(255,255,255,.04); }
       .clb-player-facts span { font-size:9px; color:var(--cl-text-2,#94a3b8); }
       .clb-player-facts strong { font-size:12px; color:var(--cl-text,#e2e8f0); }
+      .clb-player-recent { margin-top:14px; text-align:left; }
+      .clb-player-recent h4 { margin:0 0 6px; color:var(--cl-text-2,#94a3b8); font-size:10px; line-height:1.2; text-transform:uppercase; letter-spacing:.08em; }
+      .clb-recent-row { display:grid; grid-template-columns:24px minmax(0,1fr) 34px; gap:8px; align-items:center; padding:7px 8px; border-top:1px solid var(--cl-divider,rgba(255,255,255,.1)); }
+      .clb-recent-row>i { display:grid; place-items:center; width:22px; height:22px; border-radius:7px; background:rgba(148,163,184,.12); color:var(--cl-text-2,#94a3b8); font-size:9px; font-style:normal; font-weight:800; }
+      .clb-recent-row>i.starter { background:rgba(16,185,129,.14); color:#34d399; }
+      .clb-recent-row>span { min-width:0; display:flex; flex-direction:column; }
+      .clb-recent-row>span strong { overflow:hidden; color:var(--cl-text,#e2e8f0); font-size:11px; line-height:1.25; text-overflow:ellipsis; white-space:nowrap; }
+      .clb-recent-row>span small { color:var(--cl-text-2,#94a3b8); font-size:8px; }
+      .clb-recent-row>b { justify-self:end; min-width:28px; padding:4px 3px; border-radius:7px; background:rgba(148,163,184,.12); color:var(--cl-text,#e2e8f0); font-size:11px; text-align:center; }
+      .clb-recent-row>b.good { background:rgba(16,185,129,.14); color:#34d399; }
       @media (max-width: 420px) { .clb-player-facts { grid-template-columns:1fr; } }
     </style>`;
   }

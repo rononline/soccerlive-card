@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.29.1 (2026-07-23)
+- Fix the recent-match section inside the top-layer player popup
+- Present each match as a responsive row with opponent, starter/substitute status and a distinct rating badge
+
 ## v3.29.0 (2026-07-23)
 - Add a capability-based availability radar with thin-position warnings
 - Add an explicitly labelled expected 4-3-3 lineup derived from availability and recent usage
