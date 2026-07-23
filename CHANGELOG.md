@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.29.2 (2026-07-23)
+- Exclude players from the expected lineup when their most recent known transfer is outgoing
+- Match transfers by player ID with a normalized-name fallback, while allowing a newer incoming transfer to supersede older history
+
 ## v3.29.1 (2026-07-23)
 - Fix the recent-match section inside the top-layer player popup
 - Present each match as a responsive row with opponent, starter/substitute status and a distinct rating badge

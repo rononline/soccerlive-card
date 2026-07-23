@@ -62,6 +62,22 @@ test('availability radar and predicted lineup remain derived and capability base
   assert.equal(predictedLineup([]), null);
 });
 
+test('predicted lineup excludes players whose latest transfer is outgoing', () => {
+  const squad = [
+    { id: 1, name: 'Keeper', position: 'Goalkeeper' },
+    ...Array.from({ length: 4 }, (_, i) => ({ id: 10 + i, name: `D${i}`, position: 'Defender' })),
+    ...Array.from({ length: 4 }, (_, i) => ({ id: 20 + i, name: `M${i}`, position: 'Midfielder', appearances: i })),
+    ...Array.from({ length: 3 }, (_, i) => ({ id: 30 + i, name: `A${i}`, position: 'Attacker' })),
+  ];
+  const transfers = [
+    { player_id: 23, player: 'M3', direction: 'out', date: '2026-07-22' },
+    { player_id: 23, player: 'M3', direction: 'in', date: '2025-07-01' },
+  ];
+  const prediction = predictedLineup(squad, transfers);
+  assert.ok(!prediction.players.some(player => player.name === 'M3'));
+  assert.ok(prediction.players.some(player => player.name === 'M2'));
+});
+
 test('official selection only appears with actual lineup data', () => {
   const attrs = { team_id: 10, matches: [{ event_id: 1, state: 'pre', home_id: 10, away_id: 20, lineup_home: [{ name: 'A', starter: true }, { name: 'B', starter: false }] }] };
   const selection = officialSelection(attrs);

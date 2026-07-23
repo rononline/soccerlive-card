@@ -129,7 +129,7 @@ class SoccerLiveClubCard extends LitElement {
       quality: () => this._config.show_data_quality !== false ? this._renderDataQuality(attrs) : '',
       availability: () => this._config.show_availability !== false ? this._renderAvailability(club.squad || []) : '',
       selection: () => this._config.show_selection !== false ? this._renderSelection(attrs) : '',
-      prediction: () => this._config.show_prediction !== false ? this._renderPrediction(club.squad || []) : '',
+      prediction: () => this._config.show_prediction !== false ? this._renderPrediction(club.squad || [], club.transfers || []) : '',
       news: () => this._config.show_team_news !== false ? this._renderTeamNews(club, attrs.club_changes || club.changes) : '',
       season: () => !dashboardMode && this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : '',
       changes: () => this._renderClubChanges(attrs.club_changes || club.changes),
@@ -174,8 +174,8 @@ class SoccerLiveClubCard extends LitElement {
     return html`<section class="clb-section clb-availability"><div class="clb-title">${this._t('club.availability_radar')}</div><div class="clb-radar">${lines.map(line => html`<div class=${line.thin ? 'thin' : ''}><span>${this._t(line.key)}</span><i><b style="width:${line.total ? line.available / line.total * 100 : 0}%"></b></i><strong>${line.available}/${line.total}</strong>${line.thin ? html`<em>⚠</em>` : ''}</div>`)}</div></section>`;
   }
 
-  _renderPrediction(squad) {
-    const prediction = predictedLineup(squad);
+  _renderPrediction(squad, transfers) {
+    const prediction = predictedLineup(squad, transfers);
     if (!prediction) return '';
     return this._renderCollapsible('prediction', this._t('club.predicted_lineup'), html`<section class="clb-section clb-lineup"><small>${this._t('club.prediction_disclaimer')} · ${prediction.formation}</small>${prediction.lines.map(line => html`<div>${line.map(player => html`<button @click=${() => { this._selectedPlayer = player; }}>${player.name}</button>`)}</div>`)}</section>`, false);
   }

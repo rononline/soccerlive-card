@@ -153,8 +153,22 @@ export function availabilityRadar(squad) {
   }).filter(line => line.total > 0);
 }
 
-export function predictedLineup(squad) {
-  const available = (Array.isArray(squad) ? squad : []).filter(player => player?.name && !player.injured);
+export function predictedLineup(squad, transfers = []) {
+  const transferStatus = new Map();
+  const sortedTransfers = [...(Array.isArray(transfers) ? transfers : [])].sort((a, b) =>
+    String(b?.date || '').localeCompare(String(a?.date || '')));
+  for (const transfer of sortedTransfers) {
+    const idKey = transfer?.player_id != null ? `id:${transfer.player_id}` : '';
+    const nameKey = transfer?.player ? `name:${String(transfer.player).trim().toLowerCase()}` : '';
+    if (idKey && !transferStatus.has(idKey)) transferStatus.set(idKey, transfer.direction);
+    if (nameKey && !transferStatus.has(nameKey)) transferStatus.set(nameKey, transfer.direction);
+  }
+  const hasLeft = player => {
+    const idStatus = player?.id != null ? transferStatus.get(`id:${player.id}`) : null;
+    const nameStatus = transferStatus.get(`name:${String(player?.name || '').trim().toLowerCase()}`);
+    return (idStatus || nameStatus) === 'out';
+  };
+  const available = (Array.isArray(squad) ? squad : []).filter(player => player?.name && !player.injured && !hasLeft(player));
   const score = player => Number(player.starts || player.appearances || 0) * 10 + Number(player.rating || 0);
   const pick = (position, count) => available.filter(player => player.position === position).sort((a, b) => score(b) - score(a)).slice(0, count);
   const lines = [pick('Goalkeeper', 1), pick('Defender', 4), pick('Midfielder', 3), pick('Attacker', 3)];
