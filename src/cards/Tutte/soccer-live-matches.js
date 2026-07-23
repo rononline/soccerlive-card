@@ -12,7 +12,7 @@ import { renderSyncStatusOrEmpty } from '../card-error.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { standingText } from '../shared-standing.js';
-import { kickoffMinutes, kickoffDurationParts, prematchContext, reviewContext } from '../shared-match-popup-model.js';
+import { kickoffMinutes, kickoffDurationParts, prematchContext, reviewContext, predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -771,6 +771,7 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-ratings { display:grid; gap:6px; }
         .mp-ratings div { display:flex; justify-content:space-between; padding:7px 9px; border-radius:7px; background:rgba(255,255,255,.05); font-size:12px; }
         .mp-ratings strong { color:#fbbf24; }
+        .mp-insight{border-left-color:var(--cl-accent,#6366f1);background:rgba(99,102,241,.07)}.mp-story{display:grid;gap:7px}.mp-story>div{display:grid;grid-template-columns:30px 1fr;gap:8px}.mp-story>div>b{color:var(--cl-accent,#6366f1)}.mp-story span{display:flex;flex-direction:column}.mp-story strong{color:var(--cl-text,#f8fafc);font-size:11px}.mp-story small{color:var(--cl-text-2,#94a3b8);font-size:9px}.mp-outcome{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;color:var(--cl-text-2,#94a3b8);font-size:9px}.mp-outcome span{display:flex;flex-direction:column}.mp-outcome span:last-child{text-align:right}.mp-outcome span b{color:var(--cl-text,#f8fafc);font-size:11px}.mp-outcome>strong{color:var(--cl-accent,#6366f1);font-size:18px}.mp-outcome-xg{text-align:center;margin-top:7px;color:var(--cl-text-2,#94a3b8);font-size:10px}.mp-outcome-xg b{color:var(--cl-text,#f8fafc)}
         .mp-tl-badge { display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; line-height: 15px; white-space: nowrap; margin-top: 1px; }
         .mp-tl-badge.goal   { background: rgba(99,102,241,0.18); color: #6366f1; }
         .mp-tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
@@ -839,6 +840,8 @@ class SoccerLiveMatchesCard extends LitElement {
           ${this._renderMomentum(m)}
           ${this._renderShotmap(m)}
           ${this._renderRatings(m)}
+          ${isLive || isFt ? this._renderPopupStory(m) : ''}
+          ${isFt ? this._renderPopupOutcome(m) : ''}
           ${isFt ? this._renderPopupReview(m) : ''}
           <button class="mp-close" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
@@ -930,6 +933,25 @@ class SoccerLiveMatchesCard extends LitElement {
       ${review.standout ? html`<div><small>${review.standout.key}</small><strong>${review.standout.home} – ${review.standout.away}</strong></div>` : ''}
       ${review.scorers.length ? html`<div><small>${this._t('event.goal')}</small><strong>${review.scorers.map(item => `${item.player} ${item.minute}'`).join(' · ')}</strong></div>` : ''}
     </div></div>`;
+  }
+
+  _renderPopupStory(m) {
+    const story = derivedMatchStory(m);
+    if (!story.length) return '';
+    const labels = { opening_goal: 'story.opening_goal', equalizer: 'story.equalizer', decisive_goal: 'story.decisive_goal', red_card: 'story.red_card' };
+    return html`<div class="mp-section mp-insight"><h5 class="mp-section-title">${this._t('match.story')}</h5>
+      <div class="mp-story">${story.map(item => html`<div><b>${item.minute ? `${item.minute}'` : '·'}</b><span><strong>${this._t(labels[item.type] || 'match.event')}</strong><small>${item.player || item.athletes?.[0] || ''}${item.team ? ` · ${item.team}` : ''}</small></span></div>`)}</div>
+    </div>`;
+  }
+
+  _renderPopupOutcome(m) {
+    const outcome = predictionOutcome(m);
+    if (!outcome) return '';
+    const side = value => this._t(`match.outcome_${value}`);
+    return html`<div class="mp-section mp-insight"><h5 class="mp-section-title">${this._t('match.expectation_reality')}</h5>
+      <div class="mp-outcome"><span>${this._t('match.expected')}<b>${side(outcome.predicted)}${outcome.predictedPercent != null ? ` · ${outcome.predictedPercent}%` : ''}</b></span><strong>${outcome.correct ? '✓' : '↯'}</strong><span>${this._t('match.actual')}<b>${side(outcome.actual)}</b></span></div>
+      ${outcome.xg ? html`<div class="mp-outcome-xg">xG <b>${outcome.xg.home ?? '—'} – ${outcome.xg.away ?? '—'}</b></div>` : ''}
+    </div>`;
   }
 
   _renderDetailCapabilities(m) {

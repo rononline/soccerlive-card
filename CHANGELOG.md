@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.31.0 (2026-07-23)
+- Compare pre-match expectations with the final result and optional xG in Match Center and the Matches detail popup
+- Derive a compact live/post-match story from provider-neutral goal and red-card events when no provider story exists
+- Add selection-impact metrics to the Club matchday panel: unavailable players, normal starting load and missing goal contributions
+- Enrich the existing phase-aware matchday flow while keeping every insight hidden without sufficient source data
+- Add pure model tests and Playwright coverage for enriched, partial and standalone provider scenarios
+
 ## v3.30.2 (2026-07-23)
 - Add browser regression coverage for all 18 card types with rich desktop, partial mobile and empty standalone data
 - Verify page-level overflow, meaningful empty states and browser-exception safety for every card

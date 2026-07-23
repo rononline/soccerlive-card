@@ -313,3 +313,23 @@ for (const type of ['team', 'matches', 'countdown', 'match-center', 'lineup', 't
     expect(errors).toEqual([]);
   });
 }
+
+test('enriched post-match insights and selection impact stay capability based', async ({ page }) => {
+  await page.setViewportSize({ width: 420, height: 1200 });
+
+  await open(page, { mode: 'matrix', type: 'match-center', phase: 'post', lang: 'nl' });
+  await expect(target(page)).toContainText('Verwachting versus werkelijkheid');
+  await expect(target(page)).toContainText('Thuiswinst');
+
+  await open(page, { mode: 'matrix', type: 'matches', phase: 'post', lang: 'nl' });
+  await page.evaluate(() => document.querySelector('soccer-live-matches').shadowRoot.querySelector('.match-row').click());
+  const dialog = page.locator('dialog.soccer-live-matches-popup-portal');
+  await expect(dialog).toContainText('Wedstrijdverhaal');
+  await expect(dialog).toContainText('Verwachting versus werkelijkheid');
+
+  await open(page, { mode: 'matrix', type: 'club', phase: 'pre', lang: 'nl' });
+  await expect(target(page)).toContainText('spelers afwezig');
+
+  await open(page, { mode: 'matrix', type: 'match-center', phase: 'post', data: 'partial', lang: 'nl' });
+  await expect(target(page)).not.toContainText('Verwachting versus werkelijkheid');
+});

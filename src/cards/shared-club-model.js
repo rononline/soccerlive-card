@@ -294,6 +294,31 @@ export function matchdaySummary(attrs) {
   return match ? { match, phase: live ? 'live' : upcoming ? 'pre' : 'post' } : null;
 }
 
+/** Quantify how much normal first-team production is unavailable. */
+export function selectionImpact(club) {
+  const squad = Array.isArray(club?.squad) ? club.squad : [];
+  const injuries = normalizedInjuries(club);
+  const unavailableNames = new Set(injuries.map(item => String(item.player || '').trim().toLowerCase()));
+  const unavailable = squad.filter(player => player?.injured || unavailableNames.has(String(player?.name || '').trim().toLowerCase()));
+  if (!unavailable.length) return null;
+  const load = player => {
+    for (const value of [player.starts, player.appearances, Number(player.minutes) / 90]) {
+      const number = Number(value);
+      if (Number.isFinite(number) && number >= 0) return number;
+    }
+    return 0;
+  };
+  const totalLoad = squad.reduce((sum, player) => sum + load(player), 0);
+  const missingLoad = unavailable.reduce((sum, player) => sum + load(player), 0);
+  return {
+    players: unavailable,
+    count: unavailable.length,
+    loadPercent: totalLoad > 0 ? Math.round(missingLoad / totalLoad * 100) : null,
+    goals: unavailable.reduce((sum, player) => sum + (Number(player.goals) || 0), 0),
+    assists: unavailable.reduce((sum, player) => sum + (Number(player.assists) || 0), 0),
+  };
+}
+
 /** Current-season W/D/L and cumulative points, oldest match first. */
 export function seasonProgress(matches, teamId, teamName, max = 12) {
   const id = String(teamId ?? '');

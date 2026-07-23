@@ -30,6 +30,7 @@ import {
   predictedLineup,
   officialSelection,
   teamNews,
+  selectionImpact,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -286,6 +287,7 @@ class SoccerLiveClubCard extends LitElement {
     const venue = usableMatchText(match.venue);
     const hasLineup = (match.lineup_home?.length || match.lineup_away?.length || match.formation_home || match.formation_away);
     const hasStats = match.has_stats || Object.keys(match.home_statistics || {}).length || Object.keys(match.away_statistics || {}).length;
+    const impact = selectionImpact(attrs.club);
     return html`<section class="clb-matchday ${phase}">
       <div class="clb-matchday-head"><span>${this._t('club.matchday')}</span><b>${phaseLabel}</b></div>
       <div class="clb-matchday-fixture">
@@ -294,6 +296,11 @@ class SoccerLiveClubCard extends LitElement {
       ${(venue || status || hasLineup || hasStats) ? html`<div class="clb-matchday-meta">
         ${status ? html`<span>${status}</span>` : ''}${venue ? html`<span>⌖ ${venue}</span>` : ''}
         ${hasLineup ? html`<span>✓ ${this._t('tab.lineup')}</span>` : ''}${hasStats ? html`<span>✓ ${this._t('tab.stats')}</span>` : ''}
+      </div>` : ''}
+      ${impact ? html`<div class="clb-impact">
+        <span><b>${impact.count}</b>${this._t('club.unavailable_players')}</span>
+        ${impact.loadPercent != null ? html`<span><b>${impact.loadPercent}%</b>${this._t('club.missing_load')}</span>` : ''}
+        ${(impact.goals || impact.assists) ? html`<span><b>${impact.goals}G · ${impact.assists}A</b>${this._t('club.missing_output')}</span>` : ''}
       </div>` : ''}
     </section>`;
   }
@@ -701,6 +708,7 @@ class SoccerLiveClubCard extends LitElement {
       .clb-matchday{margin:2px 14px 10px;padding:11px;border:1px solid var(--cl-divider);border-radius:13px;background:linear-gradient(135deg,var(--cl-accent-soft,rgba(99,102,241,.12)),var(--cl-card-2,rgba(255,255,255,.03)))}
       .clb-matchday.live{border-color:var(--cl-live,#ef4444)}.clb-matchday-head{display:flex;justify-content:space-between;align-items:center;color:var(--cl-text-2);font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.clb-matchday-head b{padding:3px 7px;border-radius:99px;color:var(--cl-accent);background:var(--cl-accent-soft,rgba(99,102,241,.12))}.clb-matchday.live .clb-matchday-head b{color:var(--cl-live,#ef4444)}
       .clb-matchday-fixture{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:9px;margin-top:10px;color:var(--cl-text);font-size:12px;font-weight:700}.clb-matchday-fixture span:last-child{text-align:right}.clb-matchday-fixture strong{font-size:17px;white-space:nowrap;color:var(--cl-accent)}.clb-matchday-meta{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:8px;color:var(--cl-text-2);font-size:9px}
+      .clb-impact{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:5px;margin-top:9px;padding-top:8px;border-top:1px solid var(--cl-divider)}.clb-impact span{display:flex;flex-direction:column;color:var(--cl-text-2);font-size:8px}.clb-impact b{color:var(--cl-text);font-size:11px}
       .clb-dashboard { margin:0 14px 8px; padding:10px; border-radius:12px; background:var(--cl-card-2,rgba(255,255,255,.03)); }
       .clb-next { display:grid; grid-template-columns:1fr auto; gap:2px 8px; margin-bottom:9px; font-size:11px; }
       .clb-next span,.clb-next small { color:var(--cl-text-2); }

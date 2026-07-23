@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext } from '../../src/cards/shared-match-popup-model.js';
+import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext, predictionOutcome, derivedMatchStory } from '../../src/cards/shared-match-popup-model.js';
 
 test('kickoffMinutes uses ISO time and remains null without a valid date', () => {
   const now = new Date('2026-07-23T12:00:00Z').getTime();
@@ -43,4 +43,29 @@ test('reviewContext stays hidden without content and maps provider review', () =
   assert.equal(review.present, true);
   assert.equal(review.playerOfMatch.name, 'A');
   assert.equal(review.scorers.length, 1);
+});
+
+test('predictionOutcome compares the forecast with the final result', () => {
+  const result = predictionOutcome({
+    state: 'post', home_team: 'Feyenoord', away_team: 'Rayo', home_score: 3, away_score: 1,
+    prediction: { percent_home: 62, percent_draw: 24, percent_away: 14 },
+    review: { expected_goals: { home: 1.8, away: 0.7 } },
+  });
+  assert.equal(result.correct, true);
+  assert.equal(result.predicted, 'home');
+  assert.equal(result.predictedPercent, 62);
+  assert.deepEqual(result.xg, { home: 1.8, away: 0.7 });
+  assert.equal(predictionOutcome({ state: 'pre' }), null);
+});
+
+test('derivedMatchStory creates milestones from provider-neutral events', () => {
+  const story = derivedMatchStory({
+    home_team: 'Feyenoord', away_team: 'Rayo', home_score: 2, away_score: 1,
+    key_events: [
+      { minute: 12, scoring_play: true, team: 'Feyenoord', player: 'A', home_score: 1, away_score: 0 },
+      { minute: 40, scoring_play: true, team: 'Rayo', player: 'B', home_score: 1, away_score: 1 },
+      { minute: 78, scoring_play: true, team: 'Feyenoord', player: 'C', home_score: 2, away_score: 1 },
+    ],
+  });
+  assert.deepEqual(story.map(item => item.type), ['opening_goal', 'equalizer', 'decisive_goal']);
 });

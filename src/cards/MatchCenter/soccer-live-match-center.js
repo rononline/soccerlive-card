@@ -16,6 +16,7 @@ import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js';
+import { predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
@@ -283,7 +284,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
       </div>
       ${this._renderPreview(match.preview)}
       ${this._renderReview(match.review)}
-      ${this._renderMatchStory(match.match_story)}
+      ${this._renderPredictionOutcome(match)}
+      ${this._renderMatchStory(derivedMatchStory(match))}
       ${this._renderTeamOfMatch(match.team_of_the_match)}
       ${renderMatchMeta(match, {
         lang: resolveLang(this.hass, this._config),
@@ -319,6 +321,21 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ${(xg.home != null || xg.away != null) ? html`<p>xG <strong>${xg.home ?? '—'} – ${xg.away ?? '—'}</strong></p>` : ''}
       ${standout ? html`<p>${translateStatKey(standout.key, key => this._t(key))}: <strong>${standout.home} – ${standout.away}</strong></p>` : ''}
       ${review.top_rated_players?.length ? html`<div class="brief-ratings">${review.top_rated_players.map(player => html`<span>${player.name}<b>${player.rating}</b></span>`)}</div>` : ''}
+    </section>`;
+  }
+
+  _renderPredictionOutcome(match) {
+    const outcome = predictionOutcome(match);
+    if (!outcome) return '';
+    const side = value => this._t(`match.outcome_${value}`);
+    return html`<section class="brief-card outcome ${outcome.correct ? 'correct' : 'surprise'}">
+      <h4>${this._t('match.expectation_reality')}</h4>
+      <div class="outcome-grid">
+        <span><small>${this._t('match.expected')}</small><strong>${side(outcome.predicted)}${outcome.predictedPercent != null ? ` · ${outcome.predictedPercent}%` : ''}</strong></span>
+        <b>${outcome.correct ? '✓' : '↯'}</b>
+        <span><small>${this._t('match.actual')}</small><strong>${side(outcome.actual)}</strong></span>
+      </div>
+      ${outcome.xg ? html`<p>xG <strong>${outcome.xg.home ?? '—'} – ${outcome.xg.away ?? '—'}</strong></p>` : ''}
     </section>`;
   }
 
@@ -548,6 +565,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .brief-form { display:flex; gap:3px; }.brief-form-row>.brief-form:last-child{justify-content:flex-end}.brief-form b{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;color:white;font-size:9px}.brief-form .w{background:#16a34a}.brief-form .d{background:#64748b}.brief-form .l{background:#dc2626}
       .brief-chips,.brief-scorers { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }.brief-chips span,.brief-scorers span{padding:4px 7px;border-radius:999px;background:rgba(148,163,184,.1);color:var(--cl-text-2);font-size:9px}
       .brief-ratings { display:grid; gap:4px; }.brief-ratings span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:10px}.brief-ratings b{color:#fbbf24}
+      .outcome-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}.outcome-grid span{display:flex;flex-direction:column}.outcome-grid span:last-child{text-align:right}.outcome-grid small{color:var(--cl-text-2);font-size:9px}.outcome-grid strong{color:var(--cl-text);font-size:11px}.outcome-grid>b{color:var(--cl-success,#10b981);font-size:18px}.outcome.surprise .outcome-grid>b{color:var(--cl-warning,#f59e0b)}.outcome>p{margin:8px 0 0;text-align:center;color:var(--cl-text-2);font-size:10px}
       .story-line{display:grid}.story-line>div{display:grid;grid-template-columns:32px 12px 1fr;align-items:stretch;min-height:42px}.story-line>div>b{color:var(--cl-accent);font-size:10px;padding-top:3px}.story-line i{position:relative;border-left:2px solid var(--cl-divider)}.story-line i::before{content:'';position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--cl-accent)}.story-line span{display:flex;flex-direction:column;padding-bottom:8px}.story-line span strong{font-size:10px}.story-line span small{color:var(--cl-text-2);font-size:9px}
       .best-xi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.best-xi-grid>div{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:5px;padding:6px;border-radius:8px;background:rgba(255,255,255,.04);min-width:0}.best-xi-grid img{width:28px;height:28px;border-radius:50%;object-fit:cover}.best-xi-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cl-text);font-size:9px}.best-xi-grid b{color:#fbbf24;font-size:10px}.best-xi-grid small{grid-column:2/-1;color:var(--cl-text-2);font-size:8px}.best-xi-grid .away{box-shadow:inset 2px 0 var(--cl-accent-2)}.best-xi-grid .home{box-shadow:inset 2px 0 var(--cl-accent)}
       .tab-content { min-height: 80px; }

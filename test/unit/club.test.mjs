@@ -11,6 +11,7 @@ import {
   formatTransferDate,
   squadValueSummary,
   matchdaySummary,
+  selectionImpact,
   seasonProgress,
   transferSummary,
   usableMatchText,
@@ -148,6 +149,20 @@ test('matchdaySummary prefers live, then upcoming, then latest finished', () => 
   assert.equal(matchdaySummary({ previous_matches: [post], upcoming_matches: [pre] }).match, pre);
   assert.equal(matchdaySummary({ previous_matches: [post] }).phase, 'post');
   assert.equal(matchdaySummary({}), null);
+});
+
+test('selectionImpact measures unavailable first-team production', () => {
+  const impact = selectionImpact({
+    squad: [
+      { name: 'A', starts: 20, goals: 8, assists: 2, injured: true },
+      { name: 'B', starts: 20, goals: 2, assists: 5 },
+    ],
+    injuries: [{ player: 'A', reason: 'Knee' }],
+  });
+  assert.equal(impact.count, 1);
+  assert.equal(impact.loadPercent, 50);
+  assert.equal(impact.goals, 8);
+  assert.equal(impact.assists, 2);
 });
 
 test('seasonProgress calculates cumulative points and excludes friendlies', () => {
