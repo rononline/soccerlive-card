@@ -20,6 +20,10 @@ import {
   filterSquad,
   clubRecords,
   normalizeClubSectionOrder,
+  availabilityRadar,
+  predictedLineup,
+  officialSelection,
+  teamNews,
 } from '../../src/cards/shared-club-model.js';
 
 test('normalizeClubSectionOrder keeps valid unique choices and appends missing sections', () => {
@@ -38,6 +42,37 @@ test('filterSquad combines name, position and availability filters', () => {
   assert.deepEqual(filterSquad(squad, 'jan').map(item => item.name), ['Jan Keeper', 'Jan Spits']);
   assert.deepEqual(filterSquad(squad, '', 'Defender', 'unavailable').map(item => item.name), ['Piet Back']);
   assert.equal(filterSquad(null).length, 0);
+});
+
+test('availability radar and predicted lineup remain derived and capability based', () => {
+  const squad = [
+    { name: 'K', position: 'Goalkeeper', appearances: 4 },
+    ...Array.from({ length: 4 }, (_, i) => ({ name: `D${i}`, position: 'Defender', appearances: i })),
+    ...Array.from({ length: 3 }, (_, i) => ({ name: `M${i}`, position: 'Midfielder', appearances: i })),
+    ...Array.from({ length: 3 }, (_, i) => ({ name: `A${i}`, position: 'Attacker', appearances: i })),
+    { name: 'Injured', position: 'Attacker', injured: true, appearances: 99 },
+  ];
+  assert.deepEqual(availabilityRadar(squad).find(line => line.position === 'Attacker'), {
+    position: 'Attacker', key: 'club.attackers', available: 3, total: 4, thin: false,
+  });
+  const prediction = predictedLineup(squad);
+  assert.equal(prediction.formation, '4-3-3');
+  assert.equal(prediction.players.length, 11);
+  assert.ok(!prediction.players.some(player => player.name === 'Injured'));
+  assert.equal(predictedLineup([]), null);
+});
+
+test('official selection only appears with actual lineup data', () => {
+  const attrs = { team_id: 10, matches: [{ event_id: 1, state: 'pre', home_id: 10, away_id: 20, lineup_home: [{ name: 'A', starter: true }, { name: 'B', starter: false }] }] };
+  const selection = officialSelection(attrs);
+  assert.deepEqual(selection.starters.map(player => player.name), ['A']);
+  assert.deepEqual(selection.substitutes.map(player => player.name), ['B']);
+  assert.equal(officialSelection({ ...attrs, matches: [{ ...attrs.matches[0], lineup_home: [] }] }), null);
+});
+
+test('teamNews combines optional changes, injuries and transfers', () => {
+  const result = teamNews({ injuries: [{ player: 'A' }], transfers: [{ player: 'B', direction: 'in', date: '2026-07-01' }] }, [{ type: 'player_available', player: 'C' }]);
+  assert.deepEqual(result.map(item => item.player), ['C', 'A', 'B']);
 });
 
 test('clubRecords derives current streaks, biggest win and home/away PPG', () => {

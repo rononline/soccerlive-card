@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.29.0 (2026-07-23)
+- Add a capability-based availability radar with thin-position warnings
+- Add an explicitly labelled expected 4-3-3 lineup derived from availability and recent usage
+- Show the official match squad only when actual lineup data is available
+- Add a combined team-news timeline for transfers, injuries, recoveries and club changes
+- Expand player profiles with shirt number, starts, availability and optional recent-match ratings
+- Add provider freshness/status information and opt-in copyable Home Assistant automation examples
+- Keep every section optional and hidden without usable data, preserving standalone Soccer Live support
+
 ## v3.28.1 (2026-07-22)
 - Localize player and injury positions, common expected-return phrases and loan/free/permanent transfer types in the Club card
 - Parse provider phrases such as `Early November 2026` into a localized month label

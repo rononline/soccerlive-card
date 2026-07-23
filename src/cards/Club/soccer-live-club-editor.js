@@ -129,6 +129,17 @@ class SoccerLiveClubEditor extends LitElement {
           <label>${this._t('editor.show_injury_center')}</label>
           <ha-switch .checked=${this._config.show_injuries !== false} data-config-value="show_injuries" @change=${this._switchChanged}></ha-switch>
         </div>
+        ${[
+          ['show_availability', 'editor.show_availability', true],
+          ['show_prediction', 'editor.show_prediction', true],
+          ['show_selection', 'editor.show_selection', true],
+          ['show_team_news', 'editor.show_team_news', true],
+          ['show_data_quality', 'editor.show_data_quality', true],
+          ['show_automations', 'editor.show_automations', false],
+        ].map(([field, key, defaultOn]) => html`<div class="option">
+          <label>${this._t(key)}</label>
+          <ha-switch .checked=${defaultOn ? this._config[field] !== false : this._config[field] === true} data-config-value=${field} @change=${this._switchChanged}></ha-switch>
+        </div>`)}
         <div class="option">
           <label>${this._t('editor.show_club_records')}</label>
           <ha-switch .checked=${this._config.show_club_records !== false} data-config-value="show_club_records" @change=${this._switchChanged}></ha-switch>

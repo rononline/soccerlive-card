@@ -145,6 +145,47 @@ export function normalizedInjuries(club) {
   return [...byName.values()];
 }
 
+export function availabilityRadar(squad) {
+  return POSITION_GROUPS.map(([position, key]) => {
+    const players = (Array.isArray(squad) ? squad : []).filter(player => player?.position === position);
+    const available = players.filter(player => !player.injured).length;
+    return { position, key, available, total: players.length, thin: players.length > 0 && available <= (position === 'Goalkeeper' ? 1 : 2) };
+  }).filter(line => line.total > 0);
+}
+
+export function predictedLineup(squad) {
+  const available = (Array.isArray(squad) ? squad : []).filter(player => player?.name && !player.injured);
+  const score = player => Number(player.starts || player.appearances || 0) * 10 + Number(player.rating || 0);
+  const pick = (position, count) => available.filter(player => player.position === position).sort((a, b) => score(b) - score(a)).slice(0, count);
+  const lines = [pick('Goalkeeper', 1), pick('Defender', 4), pick('Midfielder', 3), pick('Attacker', 3)];
+  const players = lines.flat();
+  return players.length >= 7 ? { formation: '4-3-3', lines, players } : null;
+}
+
+export function officialSelection(attrs) {
+  const summary = matchdaySummary(attrs);
+  const match = summary?.match;
+  if (!match) return null;
+  const teamId = String(attrs?.team_id ?? '');
+  const teamName = String(attrs?.team_name || '').toLowerCase();
+  const home = teamId ? String(match.home_id ?? '') === teamId : String(match.home_team || '').toLowerCase() === teamName;
+  const players = home ? match.lineup_home : match.lineup_away;
+  if (!Array.isArray(players) || !players.length) return null;
+  return {
+    match,
+    starters: players.filter(player => player?.starter !== false),
+    substitutes: players.filter(player => player?.starter === false),
+  };
+}
+
+export function teamNews(club, changes) {
+  const news = [];
+  for (const item of (Array.isArray(changes) ? changes : [])) news.push({ ...item, source: 'change' });
+  for (const item of (Array.isArray(club?.injuries) ? club.injuries : [])) news.push({ type: 'injury_added', player: item.player || item.name, detail: item.expected_return, source: 'injury' });
+  for (const item of (Array.isArray(club?.transfers) ? club.transfers : []).slice(0, 5)) news.push({ type: 'transfer_added', player: item.player, detail: item.direction, date: item.date, source: 'transfer' });
+  return [...new Map(news.map((item, index) => [`${item.type}|${item.player || item.name}|${item.date || index}`, item])).values()].slice(0, 10);
+}
+
 export function playerComparison(players) {
   const list = (Array.isArray(players) ? players : []).filter(Boolean).slice(0, 2);
   if (list.length !== 2) return null;
@@ -201,7 +242,7 @@ export function clubRecords(matches, teamId, teamName) {
   };
 }
 
-export const CLUB_SECTION_ORDER = ['profile', 'matchday', 'dashboard', 'season', 'changes', 'favorites', 'records', 'analysis', 'injuries', 'comparison', 'squad', 'transfers'];
+export const CLUB_SECTION_ORDER = ['profile', 'matchday', 'dashboard', 'quality', 'availability', 'selection', 'prediction', 'news', 'season', 'changes', 'favorites', 'records', 'analysis', 'injuries', 'comparison', 'squad', 'transfers', 'automations'];
 
 export function normalizeClubSectionOrder(value) {
   const requested = (Array.isArray(value) ? value : String(value || '').split(','))

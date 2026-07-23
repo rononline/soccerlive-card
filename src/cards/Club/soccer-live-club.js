@@ -26,6 +26,10 @@ import {
   filterSquad,
   clubRecords,
   normalizeClubSectionOrder,
+  availabilityRadar,
+  predictedLineup,
+  officialSelection,
+  teamNews,
 } from '../shared-club-model.js';
 
 class SoccerLiveClubCard extends LitElement {
@@ -114,6 +118,7 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _renderCard(club, attrs) {
+    this._clubAttrs = attrs;
     const profile = club.profile || {};
     const hideHeader = this._config.hide_header === true;
     const dashboardMode = this._config.dashboard_mode === true;
@@ -121,6 +126,11 @@ class SoccerLiveClubCard extends LitElement {
       profile: () => this._renderProfile(profile, club.coach),
       matchday: () => this._config.show_matchday !== false ? this._renderMatchday(attrs) : '',
       dashboard: () => dashboardMode ? '' : this._renderDashboard(club, attrs),
+      quality: () => this._config.show_data_quality !== false ? this._renderDataQuality(attrs) : '',
+      availability: () => this._config.show_availability !== false ? this._renderAvailability(club.squad || []) : '',
+      selection: () => this._config.show_selection !== false ? this._renderSelection(attrs) : '',
+      prediction: () => this._config.show_prediction !== false ? this._renderPrediction(club.squad || []) : '',
+      news: () => this._config.show_team_news !== false ? this._renderTeamNews(club, attrs.club_changes || club.changes) : '',
       season: () => !dashboardMode && this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : '',
       changes: () => this._renderClubChanges(attrs.club_changes || club.changes),
       favorites: () => this._renderFavorites(club.squad || []),
@@ -130,6 +140,7 @@ class SoccerLiveClubCard extends LitElement {
       comparison: () => dashboardMode ? '' : this._renderPlayerComparison(),
       squad: () => !dashboardMode && this._config.show_squad !== false ? this._renderCollapsible('squad', this._t('club.squad'), this._renderSquad(club.squad || []), false) : '',
       transfers: () => this._config.show_transfers !== false ? (dashboardMode ? this._renderTransfers(club.transfers || [], 1) : this._renderCollapsible('transfers', this._t('club.transfers'), this._renderTransfers(club.transfers || []), false)) : '',
+      automations: () => this._config.show_automations === true ? this._renderAutomations() : '',
     };
     const order = normalizeClubSectionOrder(this._config.section_order);
     return html`
@@ -146,6 +157,49 @@ class SoccerLiveClubCard extends LitElement {
         </div>
       </ha-card>
     `;
+  }
+
+  _renderDataQuality(attrs) {
+    const provider = attrs.provider === 'fotmob_private' ? 'FotMob' : (attrs.provider || 'Soccer Live');
+    const status = attrs.sync_status || 'ready';
+    const state = this.hass?.states?.[this._config.entity];
+    const updated = state?.last_updated ? new Date(state.last_updated) : null;
+    const age = updated ? Math.max(0, Math.round((Date.now() - updated.getTime()) / 60000)) : null;
+    return html`<section class="clb-quality ${status}"><span>${status === 'ready' ? '●' : '▲'} ${provider}</span><small>${age == null ? this._t('club.freshness_unknown') : age < 1 ? this._t('club.just_updated') : this._t('club.updated_minutes', { n: age })}</small></section>`;
+  }
+
+  _renderAvailability(squad) {
+    const lines = availabilityRadar(squad);
+    if (!lines.length) return '';
+    return html`<section class="clb-section clb-availability"><div class="clb-title">${this._t('club.availability_radar')}</div><div class="clb-radar">${lines.map(line => html`<div class=${line.thin ? 'thin' : ''}><span>${this._t(line.key)}</span><i><b style="width:${line.total ? line.available / line.total * 100 : 0}%"></b></i><strong>${line.available}/${line.total}</strong>${line.thin ? html`<em>⚠</em>` : ''}</div>`)}</div></section>`;
+  }
+
+  _renderPrediction(squad) {
+    const prediction = predictedLineup(squad);
+    if (!prediction) return '';
+    return this._renderCollapsible('prediction', this._t('club.predicted_lineup'), html`<section class="clb-section clb-lineup"><small>${this._t('club.prediction_disclaimer')} · ${prediction.formation}</small>${prediction.lines.map(line => html`<div>${line.map(player => html`<button @click=${() => { this._selectedPlayer = player; }}>${player.name}</button>`)}</div>`)}</section>`, false);
+  }
+
+  _renderSelection(attrs) {
+    const selection = officialSelection(attrs);
+    if (!selection) return '';
+    return this._renderCollapsible('selection', this._t('club.official_selection'), html`<section class="clb-section clb-selection"><div><strong>${this._t('club.starting_players')}</strong>${selection.starters.map(player => html`<span>${player.name || player.player}</span>`)}</div>${selection.substitutes.length ? html`<div><strong>${this._t('club.substitutes')}</strong>${selection.substitutes.map(player => html`<span>${player.name || player.player}</span>`)}</div>` : ''}</section>`, true);
+  }
+
+  _renderTeamNews(club, changes) {
+    const items = teamNews(club, changes);
+    if (!items.length) return '';
+    const icon = type => ({ transfer_added: '↔', injury_added: '✚', player_available: '✓', coach_changed: '👤', squad_added: '+', squad_removed: '−', market_value_changed: '€' }[type] || '•');
+    return this._renderCollapsible('news', this._t('club.team_news'), html`<section class="clb-section clb-news">${items.map(item => html`<div><b>${icon(item.type)}</b><span><strong>${item.player || item.name || this._t(`club.change_${item.type}`)}</strong><small>${item.detail || (item.type ? this._t(`club.change_${item.type}`) : '')}</small></span><time>${formatTransferDate(item.date)}</time></div>`)}</section>`, true);
+  }
+
+  _automationYaml(event, label) {
+    return `alias: ${label}\ntrigger:\n  - platform: event\n    event_type: ${event}\naction:\n  - service: notify.notify\n    data:\n      message: "${label}"`;
+  }
+
+  _renderAutomations() {
+    const examples = [['soccer_live_lineup_available', 'club.automation_lineup'], ['soccer_live_injury_added', 'club.automation_injury'], ['soccer_live_player_available', 'club.automation_available'], ['soccer_live_transfer_added', 'club.automation_transfer'], ['soccer_live_match_started', 'club.automation_started'], ['soccer_live_goal', 'club.automation_goal']];
+    return this._renderCollapsible('automations', this._t('club.automation_examples'), html`<section class="clb-section clb-automations">${examples.map(([event, key]) => { const label = this._t(key); return html`<div><span><strong>${label}</strong><small>${event}</small></span><button @click=${() => navigator.clipboard?.writeText(this._automationYaml(event, label))}>${this._t('club.copy_yaml')}</button></div>`; })}</section>`, false);
   }
 
   _renderClubChanges(changes) {
@@ -395,9 +449,10 @@ class SoccerLiveClubCard extends LitElement {
       <section class="clb-player-modal"><button @click=${() => { this._selectedPlayer = null; }}>×</button>
         ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${this._positionLabel(player.position)}</p>
         <div class="clb-player-facts">${item(this._t('club.market_value'), player.market_value ? this._formatValue(player.market_value) : '')}
-          ${item(this._t('club.age_label'), player.age)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
-          ${item(this._t('club.appearances'), player.appearances)}${item(this._t('stat.goals'), player.goals)}${item(this._t('stat.assists'), player.assists)}${item(this._t('club.rating'), player.rating)}
+          ${item(this._t('club.age_label'), player.age)}${item(this._t('club.shirt_number'), player.number)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
+          ${item(this._t('club.appearances'), player.appearances)}${item(this._t('club.starts'), player.starts)}${item(this._t('stat.goals'), player.goals)}${item(this._t('stat.assists'), player.assists)}${item(this._t('club.rating'), player.rating)}${item(this._t('club.availability'), player.injured ? this._t('club.unavailable') : this._t('club.available'))}
         </div>
+        ${Array.isArray(player.recent_matches) && player.recent_matches.length ? html`<div class="clb-player-recent"><strong>${this._t('club.recent_matches')}</strong>${player.recent_matches.slice(0, 5).map(match => html`<span>${match.opponent || match.name}<b>${match.rating || match.minutes || '–'}</b></span>`)}</div>` : ''}
       </section>
     </div>`;
   }
@@ -603,6 +658,12 @@ class SoccerLiveClubCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, css`
       .clb-profile { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 14px 10px; }
+      .clb-quality{display:flex;justify-content:space-between;margin:0 14px 8px;padding:5px 9px;border-radius:8px;background:var(--cl-card-2,rgba(255,255,255,.03));font-size:9px;color:var(--cl-text-2)}.clb-quality span{color:var(--cl-success,#10b981)}.clb-quality:not(.ready) span{color:var(--cl-warning,#f59e0b)}
+      .clb-radar{display:grid;gap:7px}.clb-radar>div{display:grid;grid-template-columns:78px 1fr 32px 15px;align-items:center;gap:7px;font-size:10px;color:var(--cl-text-2)}.clb-radar i{height:7px;border-radius:9px;background:rgba(148,163,184,.18);overflow:hidden}.clb-radar i b{display:block;height:100%;background:var(--cl-success,#10b981)}.clb-radar .thin i b{background:var(--cl-warning,#f59e0b)}.clb-radar strong{color:var(--cl-text);text-align:right}.clb-radar em{font-style:normal}
+      .clb-lineup>small{display:block;text-align:center;color:var(--cl-text-2);margin-bottom:8px}.clb-lineup>div{display:flex;justify-content:center;gap:5px;margin:6px 0}.clb-lineup button{border:1px solid var(--cl-divider);border-radius:10px;padding:5px 7px;background:var(--cl-card-2);color:var(--cl-text);font-size:9px;cursor:pointer}
+      .clb-selection{display:grid;grid-template-columns:1fr 1fr;gap:12px}.clb-selection>div{display:flex;flex-direction:column;gap:4px}.clb-selection strong{color:var(--cl-accent);font-size:10px}.clb-selection span{font-size:10px;color:var(--cl-text)}
+      .clb-news{display:grid;gap:0}.clb-news>div{display:grid;grid-template-columns:24px 1fr auto;align-items:center;padding:7px 0;border-bottom:1px solid var(--cl-divider)}.clb-news>div:last-child{border:0}.clb-news b{color:var(--cl-accent)}.clb-news span{display:flex;flex-direction:column}.clb-news strong{font-size:10px;color:var(--cl-text)}.clb-news small,.clb-news time{font-size:8px;color:var(--cl-text-2)}
+      .clb-automations{display:grid;gap:5px}.clb-automations>div{display:flex;justify-content:space-between;align-items:center;padding:6px;border-radius:8px;background:var(--cl-card-2)}.clb-automations span{display:flex;flex-direction:column}.clb-automations strong{font-size:10px;color:var(--cl-text)}.clb-automations small{font-size:8px;color:var(--cl-text-2)}.clb-automations button{border:1px solid var(--cl-accent);border-radius:7px;background:transparent;color:var(--cl-accent);font-size:9px;padding:4px 7px;cursor:pointer}.clb-player-recent{display:grid;gap:4px;margin-top:10px}.clb-player-recent>strong{color:var(--cl-text-2);font-size:10px;text-transform:uppercase}.clb-player-recent span{display:flex;justify-content:space-between;color:var(--cl-text);font-size:10px}
       .clb-collapse{margin:8px 14px;border:1px solid var(--cl-divider);border-radius:12px;overflow:hidden}.clb-collapse>summary{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;list-style:none;color:var(--cl-text-2);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.clb-collapse>summary::-webkit-details-marker{display:none}.clb-collapse>summary span{font-size:16px;color:var(--cl-accent)}.clb-collapse[open]>summary{border-bottom:1px solid var(--cl-divider)}.clb-collapse>.clb-section,.clb-collapse>.clb-analysis,.clb-collapse>.clb-records{margin:0;padding:8px 12px 10px;background:transparent}.clb-collapse .clb-title{display:none}
       .clb-matchday{margin:2px 14px 10px;padding:11px;border:1px solid var(--cl-divider);border-radius:13px;background:linear-gradient(135deg,var(--cl-accent-soft,rgba(99,102,241,.12)),var(--cl-card-2,rgba(255,255,255,.03)))}
       .clb-matchday.live{border-color:var(--cl-live,#ef4444)}.clb-matchday-head{display:flex;justify-content:space-between;align-items:center;color:var(--cl-text-2);font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.clb-matchday-head b{padding:3px 7px;border-radius:99px;color:var(--cl-accent);background:var(--cl-accent-soft,rgba(99,102,241,.12))}.clb-matchday.live .clb-matchday-head b{color:var(--cl-live,#ef4444)}
