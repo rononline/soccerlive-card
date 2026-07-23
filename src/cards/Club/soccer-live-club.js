@@ -190,7 +190,17 @@ class SoccerLiveClubCard extends LitElement {
     const items = teamNews(club, changes);
     if (!items.length) return '';
     const icon = type => ({ transfer_added: '↔', injury_added: '✚', player_available: '✓', coach_changed: '👤', squad_added: '+', squad_removed: '−', market_value_changed: '€' }[type] || '•');
-    return this._renderCollapsible('news', this._t('club.team_news'), html`<section class="clb-section clb-news">${items.map(item => html`<div><b>${icon(item.type)}</b><span><strong>${item.player || item.name || this._t(`club.change_${item.type}`)}</strong><small>${item.detail || (item.type ? this._t(`club.change_${item.type}`) : '')}</small></span><time>${formatTransferDate(item.date)}</time></div>`)}</section>`, true);
+    return this._renderCollapsible('news', this._t('club.team_news'), html`<section class="clb-section clb-news">${items.map(item => html`<div><b>${icon(item.type)}</b><span><strong>${item.player || item.name || this._t(`club.change_${item.type}`)}</strong><small>${this._teamNewsDetail(item)}</small></span><time>${formatTransferDate(item.date)}</time></div>`)}</section>`, true);
+  }
+
+  _teamNewsDetail(item) {
+    if (item.source === 'injury') return this._returnLabel(item.detail);
+    if (item.source === 'transfer' || item.type === 'transfer_added') {
+      if (item.detail === 'in') return this._t('club.transfer_in');
+      if (item.detail === 'out') return this._t('club.transfer_out');
+      return this._transferTypeLabel(item.detail);
+    }
+    return item.detail || (item.type ? this._t(`club.change_${item.type}`) : '');
   }
 
   _automationYaml(event, label) {
@@ -426,7 +436,13 @@ class SoccerLiveClubCard extends LitElement {
     if (['loan', 'on loan', 'loan transfer'].includes(key)) return this._t('club.transfer_loan');
     if (['free', 'free transfer'].includes(key)) return this._t('club.transfer_free');
     if (key === 'permanent') return this._t('club.transfer_permanent');
+    if (key === 'contract') return this._t('club.transfer_contract');
     return value || '';
+  }
+
+  _clubNameLabel(value) {
+    const key = String(value || '').trim().toLowerCase();
+    return ['free agent', 'without club', 'no club'].includes(key) ? this._t('club.free_agent') : (value || '');
   }
 
   _transferFee(transfer) {
@@ -657,9 +673,9 @@ class SoccerLiveClubCard extends LitElement {
                   aria-label="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}">${tr.direction === 'in' ? '↓' : '↑'}</span>
             <div class="clb-tinfo">
               <span class="clb-tplayer">${tr.player}</span>
-              <span class="clb-tclubs">${transferCounterparty(tr)}</span>
+              <span class="clb-tclubs">${this._clubNameLabel(transferCounterparty(tr))}</span>
             </div>
-            <span class="clb-ttype">${tr.type && tr.type !== 'N/A' ? tr.type : ''}</span>
+            <span class="clb-ttype">${tr.type && tr.type !== 'N/A' ? this._transferTypeLabel(tr.type) : ''}</span>
             <span class="clb-tdate">${formatTransferDate(tr.date)}</span>
             <span class="clb-open">›</span>
           </div>

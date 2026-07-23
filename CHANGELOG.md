@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.29.3 (2026-07-23)
+- Route team-news injury recovery text and transfer directions through the card translations
+- Localize transfer-list types such as `on loan` and `contract`
+- Localize provider counterparty placeholders such as `Free agent`
+
 ## v3.29.2 (2026-07-23)
 - Exclude players from the expected lineup when their most recent known transfer is outgoing
 - Match transfers by player ID with a normalized-name fallback, while allowing a newer incoming transfer to supersede older history
