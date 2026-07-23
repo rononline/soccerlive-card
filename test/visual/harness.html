@@ -168,6 +168,16 @@
     }
 
     const mode = params.get("mode") || "card";       // card | editor | minimal | multiteam | club
+    if (mode === "matches") {
+      Object.assign(attrs.matches[0], {
+        league_name: "Eredivisie", week_number: 1, venue: "Stadion Feijenoord",
+        preview: { home_form: "WWDWW", away_form: "LDWLL", h2h_count: 5 },
+        home_rank: 2, home_points: 7, away_rank: 11, away_points: 3,
+        injuries_home: [{ player: "Spits", reason: "Knee" }],
+        broadcasts: ["ESPN"],
+        detail_capabilities: ["form", "h2h", "lineups"],
+      });
+    }
     document.getElementById("target").className = mode === "multiteam" ? "card" : mode;
 
     let tag, cfg;
@@ -189,6 +199,9 @@
     } else if (mode === "club") {
       tag = "soccer-live-club";
       cfg = { ...config, squad_collapsed: false };
+    } else if (mode === "matches") {
+      tag = "soccer-live-matches";
+      cfg = config;
     } else {
       tag = "soccer-live-team";
       cfg = config;

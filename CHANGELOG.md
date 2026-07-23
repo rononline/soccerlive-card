@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.30.0 (2026-07-23)
+- Turn the Matches detail popup into a phase-aware pre-match/live/post-match dossier
+- Add optional kickoff countdown, competition/round, venue, broadcasts, weather, form, standings, team averages, H2H, prediction, odds and absentees
+- Show expected lineups when supplied and expand official lineups with formations and substitutes
+- Add capability/provider freshness information and a post-match review with scorers, xG, standout statistic and player of the match
+- Keep every block provider-neutral and hidden without usable data; on-demand detail loading and standalone sensors continue to work
+- Extend pure model and Playwright coverage for the enriched pre-match popup
+
 ## v3.29.3 (2026-07-23)
 - Route team-news injury recovery text and transfer directions through the card translations
 - Localize transfer-list types such as `on loan` and `contract`

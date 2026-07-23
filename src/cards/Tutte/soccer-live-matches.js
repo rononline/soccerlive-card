@@ -9,6 +9,10 @@ import { displayCompetitionName, resolveCompetitionLogo } from '../shared-compet
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 import { renderSyncStatusOrEmpty } from '../card-error.js';
+import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
+import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
+import { standingText } from '../shared-standing.js';
+import { kickoffMinutes, prematchContext, reviewContext } from '../shared-match-popup-model.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -662,6 +666,8 @@ class SoccerLiveMatchesCard extends LitElement {
     return html`
       <style>
         ${pitchStyles.cssText}
+        ${prematchStyles.cssText}
+        ${matchMetaStyles.cssText}
         .soccer-live-matches-popup-portal {
           border: 0;
           padding: 0;
@@ -723,6 +729,19 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-detail-state.error { color:#ef4444; }
         .mp-capabilities { display:flex; flex-wrap:wrap; justify-content:center; gap:5px; margin:-10px 0 16px; }
         .mp-capabilities span { padding:3px 7px; border-radius:999px; background:rgba(148,163,184,.12); color:#94a3b8; font-size:9px; text-transform:uppercase; letter-spacing:.06em; }
+        .mp-prematch { display:grid; gap:10px; margin-bottom:14px; }
+        .mp-context { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
+        .mp-context span { padding:5px 8px; border-radius:8px; background:rgba(148,163,184,.10); color:var(--cl-text-2,#94a3b8); font-size:10px; }
+        .mp-countdown { text-align:center; color:var(--cl-accent,#6366f1); font-size:12px; font-weight:800; }
+        .mp-form-grid,.mp-standing-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .mp-form-team,.mp-standing-grid>div { padding:9px; border-radius:9px; background:rgba(255,255,255,.04); }
+        .mp-form-team>strong,.mp-standing-grid strong { display:block; margin-bottom:6px; color:var(--cl-text,#f8fafc); font-size:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .mp-form-dots { display:flex; gap:4px; }.mp-form-dots b { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; color:white; font-size:9px; background:#64748b; }.mp-form-dots b.W{background:#10b981}.mp-form-dots b.L{background:#ef4444}
+        .mp-standing-grid span { color:var(--cl-accent,#6366f1); font-size:12px; font-weight:800; }
+        .mp-h2h-list { display:grid; gap:5px; }.mp-h2h-list>div { display:grid; grid-template-columns:1fr auto 1fr; gap:7px; padding:6px 8px; border-radius:7px; background:rgba(255,255,255,.035); color:var(--cl-text-2,#94a3b8); font-size:10px; }.mp-h2h-list span:last-child{text-align:right}.mp-h2h-list b{color:var(--cl-text,#f8fafc)}
+        .mp-coverage { display:flex; justify-content:space-between; align-items:center; padding:7px 9px; border-radius:8px; background:rgba(148,163,184,.08); color:var(--cl-text-2,#94a3b8); font-size:9px; }.mp-coverage b{color:var(--cl-text,#f8fafc)}
+        .mp-review-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }.mp-review-grid>div { padding:9px; border-radius:8px; background:rgba(255,255,255,.04); }.mp-review-grid small{display:block;color:var(--cl-text-2,#94a3b8);font-size:9px}.mp-review-grid strong{color:var(--cl-text,#f8fafc);font-size:12px}
+        .mp-box .pred,.mp-box .odds,.mp-box .inj { margin:0; }
         /* Lineup & Timeline sections */
         .mp-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
         .mp-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
@@ -808,6 +827,7 @@ class SoccerLiveMatchesCard extends LitElement {
           ${this._detailsLoading ? html`<p class="mp-detail-state">${this._t('ui.loading')}</p>` : ''}
           ${this._detailsError ? html`<p class="mp-detail-state error">${this._t('ui.provider_unavailable')}</p>` : ''}
           ${this._renderDetailCapabilities(m)}
+          ${isPre || isLive ? this._renderPopupPrematch(m) : ''}
           ${!isPre ? html`
             ${group(this._t('event.goal'), goals, 'goal')}
             ${group(this._t('event.yellow_card'), yellowCards, 'yellow')}
@@ -819,10 +839,89 @@ class SoccerLiveMatchesCard extends LitElement {
           ${this._renderMomentum(m)}
           ${this._renderShotmap(m)}
           ${this._renderRatings(m)}
+          ${isFt ? this._renderPopupReview(m) : ''}
           <button class="mp-close" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
       </div>
     `;
+  }
+
+  _renderPopupPrematch(m) {
+    const context = prematchContext(m);
+    const lang = resolveLang(this.hass, this._config);
+    const minutes = kickoffMinutes(m);
+    const standing = side => standingText(m, side, (key, vars) => this._t(key, vars));
+    const form = (team, results) => results.length ? html`<div class="mp-form-team"><strong>${team}</strong><div class="mp-form-dots">${results.map(result => html`<b class=${result}>${result}</b>`)}</div></div>` : '';
+    const weather = m.weather && typeof m.weather === 'object'
+      ? [m.weather.icon, m.weather.temperature != null ? `${m.weather.temperature}°` : '', m.weather.wind].filter(Boolean).join(' ')
+      : '';
+    const hasContext = context.competition || context.round !== '' || minutes != null || m.venue || weather || (m.broadcasts || []).length;
+    return html`<div class="mp-prematch">
+      ${minutes != null && minutes > 0 ? html`<div class="mp-countdown">${this._t('popup.kickoff_in', { n: minutes })}</div>` : ''}
+      ${hasContext ? html`<div class="mp-context">
+        ${context.competition ? html`<span>🏆 ${context.competition}</span>` : ''}
+        ${context.round !== '' ? html`<span>№ ${this._t('popup.round')} ${context.round}</span>` : ''}
+        ${weather ? html`<span>${weather}</span>` : ''}
+      </div>${renderMatchMeta(m, { lang, t: (key, vars) => this._t(key, vars), showDate: true })}` : ''}
+      ${context.homeForm.length || context.awayForm.length ? html`<div class="mp-section"><h5 class="mp-section-title">${this._t('team.form')}</h5><div class="mp-form-grid">${form(m.home_team, context.homeForm)}${form(m.away_team, context.awayForm)}</div></div>` : ''}
+      ${context.hasStandings ? html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.standings')}</h5><div class="mp-standing-grid"><div><strong>${m.home_team}</strong><span>${standing('home')}</span></div><div><strong>${m.away_team}</strong><span>${standing('away')}</span></div></div></div>` : ''}
+      ${this._renderTeamMetrics(m)}
+      ${renderPrediction(m, { t: (key, vars) => this._t(key, vars), lang, showDetails: true })}
+      ${renderOdds(m, { t: (key, vars) => this._t(key, vars) })}
+      ${renderInjuries(m, { t: (key, vars) => this._t(key, vars) })}
+      ${this._renderPopupH2H(m, context)}
+      ${this._renderExpectedLineup(m)}
+      ${this._renderCoverage(m)}
+    </div>`;
+  }
+
+  _renderTeamMetrics(m) {
+    const value = (side, kind) => [
+      m[`${side}_average_goals_${kind}`], m[`${side}_goals_${kind}_avg`],
+      m[`${side}_avg_goals_${kind}`],
+    ].find(item => item !== null && item !== undefined && item !== '' && item !== 'N/A');
+    const hf = value('home', 'for'), ha = value('home', 'against');
+    const af = value('away', 'for'), aa = value('away', 'against');
+    if ([hf, ha, af, aa].every(item => item === undefined)) return '';
+    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.team_averages')}</h5><div class="mp-standing-grid">
+      <div><strong>${m.home_team}</strong><span>${this._t('popup.goals_for')} ${hf ?? '–'} · ${this._t('popup.goals_against')} ${ha ?? '–'}</span></div>
+      <div><strong>${m.away_team}</strong><span>${this._t('popup.goals_for')} ${af ?? '–'} · ${this._t('popup.goals_against')} ${aa ?? '–'}</span></div>
+    </div></div>`;
+  }
+
+  _renderPopupH2H(m, context = prematchContext(m)) {
+    if (!context.h2h.length && !context.h2hCount) return '';
+    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.h2h')}</h5>
+      ${context.h2h.length ? html`<div class="mp-h2h-list">${context.h2h.map(match => html`<div><span>${match.home_team || match.home}</span><b>${scoreText(match.home_score, '–')} – ${scoreText(match.away_score, '–')}</b><span>${match.away_team || match.away}</span></div>`)}</div>` : html`<p class="mp-no-events">${this._t('popup.h2h_available', { n: context.h2hCount })}</p>`}
+    </div>`;
+  }
+
+  _renderExpectedLineup(m) {
+    const home = m.predicted_lineup_home || m.expected_lineup_home || [];
+    const away = m.predicted_lineup_away || m.expected_lineup_away || [];
+    if (!home.length && !away.length) return '';
+    const team = (name, players) => players.length ? html`<div class="mp-lineup-team"><div class="mp-lineup-header"><span>${name}</span></div><div class="mp-lineup-players">${players.map(player => html`<span class="mp-player">${player.name || player}</span>`)}</div></div>` : '';
+    return html`<div class="mp-section mp-section-lineup"><h5 class="mp-section-title lineup">${this._t('popup.expected_lineup')}</h5><p class="mp-no-events">${this._t('popup.expected_lineup_note')}</p>${team(m.home_team, home)}${team(m.away_team, away)}</div>`;
+  }
+
+  _renderCoverage(m) {
+    const attrs = this.hass?.states?.[this._config.entity]?.attributes || {};
+    const provider = attrs.provider === 'fotmob_private' ? 'FotMob' : (attrs.provider || 'Soccer Live');
+    const capabilities = m.detail_capabilities || [];
+    const state = this.hass?.states?.[this._config.entity];
+    const age = state?.last_updated ? Math.max(0, Math.round((Date.now() - new Date(state.last_updated).getTime()) / 60000)) : null;
+    return html`<div class="mp-coverage"><span>${this._t('popup.data_source')}${age != null ? ` · ${this._t('popup.updated_minutes', { n: age })}` : ''}</span><b>${provider}${capabilities.length ? ` · ${capabilities.length} ${this._t('popup.parts')}` : ''}</b></div>`;
+  }
+
+  _renderPopupReview(m) {
+    const review = reviewContext(m);
+    if (!review.present) return '';
+    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.review')}</h5><div class="mp-review-grid">
+      ${review.playerOfMatch ? html`<div><small>${this._t('popup.player_of_match')}</small><strong>${review.playerOfMatch.name || review.playerOfMatch.player}</strong></div>` : ''}
+      ${review.expectedGoals ? html`<div><small>xG</small><strong>${review.expectedGoals.home ?? '–'} – ${review.expectedGoals.away ?? '–'}</strong></div>` : ''}
+      ${review.standout ? html`<div><small>${review.standout.key}</small><strong>${review.standout.home} – ${review.standout.away}</strong></div>` : ''}
+      ${review.scorers.length ? html`<div><small>${this._t('event.goal')}</small><strong>${review.scorers.map(item => `${item.player} ${item.minute}'`).join(' · ')}</strong></div>` : ''}
+    </div></div>`;
   }
 
   _renderDetailCapabilities(m) {
@@ -882,6 +981,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const teamBlock = (players, formation, label) => {
       const hasFlags = players.some(p => p.starter === true || p.starter === false);
       const starters = hasFlags ? players.filter(p => p.starter === true) : players;
+      const substitutes = hasFlags ? players.filter(p => p.starter === false) : [];
       if (!starters.length) return '';
       return html`
         <div class="mp-lineup-team">
@@ -892,6 +992,7 @@ class SoccerLiveMatchesCard extends LitElement {
           <div class="mp-lineup-players">
             ${starters.map(p => html`<span class="mp-player">${p.jersey ? html`<strong class="mp-jersey">${p.jersey}</strong> ` : ''}${p.short_name || p.name || ''}</span>`)}
           </div>
+          ${substitutes.length ? html`<div class="mp-lineup-header"><span>${this._t('popup.substitutes')}</span></div><div class="mp-lineup-players">${substitutes.map(p => html`<span class="mp-player">${p.jersey ? html`<strong class="mp-jersey">${p.jersey}</strong> ` : ''}${p.short_name || p.name || ''}</span>`)}</div>` : ''}
         </div>`;
     };
     return html`

@@ -223,3 +223,17 @@ test('club — dashboard mode and configured section order', async ({ page }) =>
   expect(state.squad).toBe(false);
   expect(state.transfers).toBe(1);
 });
+
+test('matches — prematch detail popup is capability based', async ({ page }) => {
+  await open(page, { mode: 'matches', lang: 'nl' });
+  await page.evaluate(() => {
+    const rows = [...document.querySelector('soccer-live-matches').shadowRoot.querySelectorAll('.match-row')];
+    rows.find(row => row.textContent.includes('Rayo Vallecano')).click();
+  });
+  const dialog = page.locator('dialog.soccer-live-matches-popup-portal');
+  await expect(dialog).toHaveAttribute('open', '');
+  await expect(dialog).toContainText('Vorm');
+  await expect(dialog).toContainText('Positie op de ranglijst');
+  await expect(dialog).toContainText('Voorspelling');
+  await expect(dialog).toContainText('Databron');
+});
