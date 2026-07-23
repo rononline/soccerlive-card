@@ -240,3 +240,76 @@ test('matches — prematch detail popup is capability based', async ({ page }) =
   await expect(dialog.locator('.mp-countdown')).toContainText(/Aftrap over \d+ dagen?( en \d+ uur)?/);
   await expect(dialog.locator('.mp-countdown')).not.toContainText(/^\s*Aftrap over \d+ min\s*$/);
 });
+
+// --- Complete card matrix: every registered type must survive rich, partial
+// and empty standalone data without a render exception or page-level overflow.
+
+const CARD_MATRIX = [
+  'team', 'standings', 'matches', 'countdown', 'news', 'bracket',
+  'mini-standings', 'scorers', 'multi-team', 'team-competitions',
+  'match-center', 'team-form', 'club', 'diagnostics', 'ticker',
+  'lineup', 'timeline', 'minimal',
+];
+
+async function expectHealthyCard(page, type) {
+  await expect(target(page).locator(':scope > *')).toHaveCount(1);
+  const health = await page.evaluate(() => {
+    const el = document.querySelector('#target > *');
+    const card = el?.shadowRoot?.querySelector('ha-card') || el;
+    return {
+      text: (el?.shadowRoot?.textContent || el?.textContent || '').replace(/\s+/g, ' ').trim(),
+      documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      cardWidth: card?.getBoundingClientRect().width || 0,
+    };
+  });
+  expect(health.text, `${type} should render a meaningful state`).not.toBe('');
+  expect(health.documentOverflow, `${type} should not overflow the viewport`).toBeLessThanOrEqual(2);
+  expect(health.cardWidth, `${type} should have a visible card`).toBeGreaterThan(0);
+}
+
+for (const type of CARD_MATRIX) {
+  test(`${type} — rich desktop, partial mobile and empty standalone`, async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+
+    await page.setViewportSize({ width: 1000, height: 1200 });
+    await open(page, { mode: 'matrix', type, data: 'rich', lang: 'nl' });
+    await expectHealthyCard(page, type);
+
+    await page.setViewportSize({ width: 320, height: 1000 });
+    await open(page, { mode: 'matrix', type, data: 'partial', lang: 'nl' });
+    await expectHealthyCard(page, type);
+
+    await open(page, { mode: 'matrix', type, data: 'empty', provider: 'api_football', lang: 'nl' });
+    await expectHealthyCard(page, type);
+    expect(errors, `${type} emitted browser exceptions`).toEqual([]);
+  });
+}
+
+for (const type of ['team', 'matches', 'countdown', 'match-center', 'team-form', 'club']) {
+  test(`${type} — optional FotMob enrichment remains provider-neutral`, async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.setViewportSize({ width: 360, height: 1100 });
+    await open(page, { mode: 'matrix', type, provider: 'fotmob', lang: 'nl' });
+    await expectHealthyCard(page, type);
+    expect(errors).toEqual([]);
+  });
+}
+
+for (const type of ['team', 'matches', 'countdown', 'match-center', 'lineup', 'timeline']) {
+  test(`${type} — synthetic live and full-time phases`, async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.setViewportSize({ width: 360, height: 1100 });
+
+    await open(page, { mode: 'matrix', type, phase: 'live', lang: 'nl' });
+    await expectHealthyCard(page, type);
+    await expect(target(page)).toContainText(/2\s*[-–]\s*1|67/);
+
+    await open(page, { mode: 'matrix', type, phase: 'post', lang: 'nl' });
+    await expectHealthyCard(page, type);
+    await expect(target(page)).toContainText(/3\s*[-–]\s*1|Einde wedstrijd|Afgelopen/);
+    expect(errors).toEqual([]);
+  });
+}

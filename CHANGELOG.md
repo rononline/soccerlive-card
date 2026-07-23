@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.30.2 (2026-07-23)
+- Add browser regression coverage for all 18 card types with rich desktop, partial mobile and empty standalone data
+- Verify page-level overflow, meaningful empty states and browser-exception safety for every card
+- Add provider-neutral FotMob enrichment scenarios for the six applicable team and match cards
+- Add synthetic live and full-time scenarios for Team, Matches, Countdown, Match Center, Lineup and Timeline
+- Expand the shared visual fixture with standings, scorers, news, bracket, lineup, statistics, events and diagnostics data
+
 ## v3.30.1 (2026-07-23)
 - Localize provider competition names such as `Club Friendlies` in the Matches detail popup
 - Replace the minute-only kickoff countdown with a compact, localized days/hours/minutes duration

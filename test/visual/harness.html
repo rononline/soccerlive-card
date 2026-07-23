@@ -67,6 +67,43 @@
         { rank: 3, team_name: "Ajax", wins: 2, draws: 0, losses: 1, points: "6", goal_difference: 2 },
         { rank: 4, team_name: "AZ Alkmaar", wins: 1, draws: 1, losses: 1, points: "4", goal_difference: -1 },
       ],
+      standings_groups: [{
+        name: "Eredivisie",
+        standings: [
+          { rank: 1, team_name: "PSV", wins: 3, draws: 0, losses: 0, points: "9", goal_difference: 7 },
+          { rank: 2, team_name: "Feyenoord", wins: 2, draws: 1, losses: 0, points: "7", goal_difference: 5 },
+          { rank: 3, team_name: "Ajax", wins: 2, draws: 0, losses: 1, points: "6", goal_difference: 2 },
+          { rank: 4, team_name: "AZ Alkmaar", wins: 1, draws: 1, losses: 1, points: "4", goal_difference: -1 },
+        ],
+      }],
+      scorers: [
+        { rank: 1, player: "Santiago Gimenez", short_name: "S. Gimenez", team_name: "Feyenoord", goals: 18 },
+        { rank: 2, player: "Luuk de Jong", short_name: "L. de Jong", team_name: "PSV", goals: 16 },
+      ],
+      articles: [
+        { headline: "Feyenoord bereidt zich voor", description: "Voorbeschouwing op de volgende wedstrijd.", published: "2026-07-23T10:00:00Z", link: "#" },
+        { headline: "Nieuwe trainingsweek begonnen", description: "Het laatste teamnieuws.", published: "2026-07-22T18:30:00Z", link: "#" },
+      ],
+      commentary: [
+        { clock: "61", type: "goal", text: "Doelpunt voor Feyenoord", home_score: 2, away_score: 1 },
+        { clock: "31", type: "yellow-card", text: "Gele kaart" },
+      ],
+      rounds: [{
+        name: "Finale", size: 1, ties: [{
+          team_a: { name: "Feyenoord", abbrev: "FEY" },
+          team_b: { name: "Rayo Vallecano", abbrev: "RAY" },
+          single: { state: "pre", home_team: "Feyenoord", away_team: "Rayo Vallecano", date: "02-08-2026 15:00" },
+          completed: false,
+        }],
+      }],
+      total_matches: 5,
+      live_matches_count: 0,
+      upcoming_matches_count: 3,
+      finished_matches_count: 2,
+      request_count: 4,
+      last_successful_update: "23-07-2026 15:00",
+      api_status: "ok",
+      provider: "api_football",
       team_id: 209,
       club: {
         profile: { name: "Feyenoord", logo: "https://media.api-sports.io/football/teams/209.png", venue: "Stadion Feijenoord", venue_city: "Rotterdam", founded: 1908 },
@@ -84,6 +121,31 @@
     };
 
     const params = new URLSearchParams(location.search);
+
+    if (params.get("mode") === "matrix") {
+      Object.assign(attrs.matches[0], {
+        status: "Scheduled",
+        league_name: "Eredivisie",
+        venue: "Stadion Feijenoord",
+        key_events: [
+          { clock: "61", type: "goal", type_text: "Goal", team: "Feyenoord", athletes: ["Calvin Stengs"], scoring_play: true },
+          { clock: "31", type: "yellow-card", type_text: "Yellow Card", team: "Rayo Vallecano", athletes: ["Florian Lejeune"] },
+        ],
+        lineup_home: [
+          { name: "Justin Bijlow", short_name: "J. Bijlow", jersey: "1", position: "GK", starter: true },
+          { name: "Givairo Read", short_name: "G. Read", jersey: "2", position: "RB", starter: true },
+        ],
+        lineup_away: [
+          { name: "Augusto Batalla", short_name: "A. Batalla", jersey: "1", position: "GK", starter: true },
+          { name: "Florian Lejeune", short_name: "F. Lejeune", jersey: "24", position: "CB", starter: true },
+        ],
+        formation_home: "4-3-3",
+        formation_away: "4-2-3-1",
+        home_statistics: { possessionPct: "58%", shotsTotal: "13", shotsOnTarget: "6" },
+        away_statistics: { possessionPct: "42%", shotsTotal: "8", shotsOnTarget: "3" },
+        head_to_head: [{ home_team: "Feyenoord", away_team: "Rayo Vallecano", home_score: "2", away_score: "1", date: "01-08-2025 15:00" }],
+      });
+    }
 
     // Variant tweaks to the mock for targeted cases.
     const variant = params.get("variant") || "";
@@ -109,6 +171,33 @@
       attrs.previous_matches = [];
       attrs.upcoming_matches = [];
       attrs.sync_status = params.get("sync_status");
+    }
+    if (params.get("data") === "empty") {
+      for (const key of ["matches", "previous_matches", "upcoming_matches", "standings", "standings_groups", "scorers", "articles", "commentary", "rounds"]) attrs[key] = [];
+      attrs.club = {};
+      attrs.total_matches = 0;
+      attrs.live_matches_count = 0;
+      attrs.upcoming_matches_count = 0;
+      attrs.finished_matches_count = 0;
+    } else if (params.get("data") === "partial") {
+      attrs.matches = attrs.matches.map(({ prediction, odds, lineup_home, lineup_away, home_statistics, away_statistics, ...match }) => match);
+      attrs.club = { profile: attrs.club.profile };
+      attrs.commentary = [];
+    }
+    if (params.get("provider") === "fotmob") {
+      attrs.provider = "fotmob";
+      attrs.detail_capabilities = ["stats", "lineup", "h2h", "ratings"];
+    }
+    if (params.get("phase") === "live" && attrs.matches[0]) {
+      Object.assign(attrs.matches[0], {
+        state: "in", status: "In Progress", period: "2H", clock: "67",
+        home_score: "2", away_score: "1",
+      });
+    } else if (params.get("phase") === "post" && attrs.matches[0]) {
+      Object.assign(attrs.matches[0], {
+        state: "post", status: "Full Time", period: "FT", clock: "",
+        home_score: "3", away_score: "1",
+      });
     }
 
     // Friendly branding: the provider hands out a generic FIFA competition logo;
@@ -167,7 +256,7 @@
       config.watermark_opacity = 0.12;
     }
 
-    const mode = params.get("mode") || "card";       // card | editor | minimal | multiteam | club
+    const mode = params.get("mode") || "card";       // card | editor | minimal | multiteam | club | matrix
     if (mode === "matches") {
       Object.assign(attrs.matches[0], {
         league_name: "Club Friendlies", week_number: 1, venue: "Stadion Feijenoord",
@@ -203,6 +292,22 @@
     } else if (mode === "matches") {
       tag = "soccer-live-matches";
       cfg = config;
+    } else if (mode === "matrix") {
+      const type = params.get("type") || "team";
+      const tags = {
+        team: "soccer-live-team", standings: "soccer-live-standings", matches: "soccer-live-matches",
+        countdown: "soccer-live-countdown", news: "soccer-live-news", bracket: "soccer-live-bracket",
+        "mini-standings": "soccer-live-mini-standings", scorers: "soccer-live-scorers",
+        "multi-team": "soccer-live-multi-team", "team-competitions": "soccer-live-team-competitions",
+        "match-center": "soccer-live-match-center", "team-form": "soccer-live-team-form",
+        club: "soccer-live-club", diagnostics: "soccer-live-diagnostics", ticker: "soccer-live-ticker",
+        lineup: "soccer-live-lineup", timeline: "soccer-live-timeline", minimal: "soccer-live-schedule",
+      };
+      tag = tags[type];
+      cfg = { ...config, language: params.get("lang") || "nl", my_team: "Feyenoord" };
+      if (type === "minimal") cfg.variant = "fixtures";
+      if (type === "bracket") cfg.style = "list";
+      if (type === "multi-team") cfg.entities = [primaryEntity];
     } else {
       tag = "soccer-live-team";
       cfg = config;
