@@ -39,7 +39,7 @@ class SoccerLiveMiniStandingsEditor extends LitElement {
         <div>
           <label class="field-label">${this._t("editor.entity")}</label>
           <select @change=${this._entityChanged}>
-            ${!inList ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
+            ${!inList ? html`<option value="${current}" selected>${current || this._t('editor.select')}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
           </select>
         </div>

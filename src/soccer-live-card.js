@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { t } from './i18n.js';
+import { t, resolveLang } from './i18n.js';
 
 import "./cards/Standings/soccer-live-standings.js";
 import "./cards/Standings/soccer-live-standings-editor.js";
@@ -108,7 +108,7 @@ class SoccerLiveCard extends HTMLElement {
     if (!element) {
       this._destroyChild();
       this.innerHTML = '';
-      this.appendChild(type ? this._errorCard(`Unknown card_type: "${type}"`) : this._placeholder());
+      this.appendChild(type ? this._errorCard(this._t('ui.unknown_card_type', { type })) : this._placeholder());
       return;
     }
 
@@ -142,6 +142,10 @@ class SoccerLiveCard extends HTMLElement {
     const lang = this._hass ? (this._hass.language || 'en').split('-')[0] : 'en';
     el.textContent = t('ui.open_editor_to_configure', lang);
     return el;
+  }
+
+  _t(key, vars) {
+    return t(key, resolveLang(this._hass, this._config), vars);
   }
 
   _errorCard(message) {

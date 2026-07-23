@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.31.6 (2026-07-23)
+- Localize entity-selection placeholders, team hints and unknown card-type errors in all supported languages
+- Translate provider live statuses consistently inside Team and Matches detail popups
+- Parse Team H2H and Club transfer dates robustly across ISO and localized formats
+- Complete Club dialog keyboard behavior with Escape handling, initial focus and focus restoration
+- Remove the brittle translation-key count from the README and correct a Portuguese editor message
+- Add regressions for status translation, localized transfer ordering and dialog focus behavior
+
 ## v3.31.5 (2026-07-23)
 - Document all 18 card types, including the Minimal card and legacy Schedule alias
 - Expand the Matches and Club references with smart ordering, phase-aware details, squad analysis, injuries, lineups, team news and transfers

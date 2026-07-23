@@ -56,7 +56,7 @@ class SoccerLiveScheduleEditor extends LitElement {
         <div>
           <label class="field-label">${this._t("editor.entity")}</label>
           <select data-config-value="entity" @change=${this._selectChanged}>
-            ${!entities.includes(current) ? html`<option value="${current}" selected>${current || "— select —"}</option>` : ""}
+            ${!entities.includes(current) ? html`<option value="${current}" selected>${current || this._t('editor.select')}</option>` : ""}
             ${entities.map((e) => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
           </select>
         </div>

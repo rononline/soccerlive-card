@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyEvent, isGoalEvent } from '../../src/cards/shared-event-i18n.js';
+import { classifyEvent, isGoalEvent, translateMatchStatus } from '../../src/cards/shared-event-i18n.js';
 
 test('classifyEvent: known types get their badge', () => {
   assert.equal(classifyEvent({ type: 'Goal', athletes: ['A'] }).btype, 'goal');
@@ -39,4 +39,11 @@ test('isGoalEvent: excludes missed, disallowed and cancelled goals', () => {
   assert.equal(isGoalEvent({ type: 'Goal', type_text: 'Goal Disallowed' }), false);
   assert.equal(isGoalEvent({ type: 'Goal', type_text: 'Goal Cancelled' }), false);
   assert.equal(isGoalEvent({ type_text: 'Penalty - Missed' }), false);
+});
+
+test('translateMatchStatus localizes known provider statuses and preserves unknown ones', () => {
+  const translate = key => ({ 'status.halftime': 'Rust', 'status.live': 'Live' })[key] || key;
+  assert.equal(translateMatchStatus('Halftime', translate), 'Rust');
+  assert.equal(translateMatchStatus('In Progress', translate), 'Live');
+  assert.equal(translateMatchStatus('Weather delay', translate), 'Weather delay');
 });

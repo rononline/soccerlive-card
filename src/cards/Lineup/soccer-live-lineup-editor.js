@@ -99,7 +99,7 @@ class SoccerLiveLineupEditor extends LitElement {
         <div>
           <label class="field-label">Entity (team_match sensor — soccer_live_next_*)</label>
           <select @change=${this._entityChanged}>
-            ${!inList ? html`<option value="${cur}" selected>${cur || '— select —'}</option>` : ''}
+            ${!inList ? html`<option value="${cur}" selected>${cur || this._t('editor.select')}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === cur}>${e}</option>`)}
           </select>
           <div class="hint" style="margin-top: 4px;">Lineups are published shortly before kick-off.</div>

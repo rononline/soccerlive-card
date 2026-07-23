@@ -111,7 +111,7 @@ class SoccerLiveNewsEditor extends LitElement {
         <div>
           <label class="field-label">Entity (news sensor)</label>
           <select @change=${this._entityChanged}>
-            ${!inList ? html`<option value="${cur}" selected>${cur || '— select —'}</option>` : ''}
+            ${!inList ? html`<option value="${cur}" selected>${cur || this._t('editor.select')}</option>` : ''}
             ${this.entities.map(e => html`<option value="${e}" ?selected=${e === cur}>${e}</option>`)}
           </select>
         </div>

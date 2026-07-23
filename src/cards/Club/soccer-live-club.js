@@ -91,6 +91,27 @@ class SoccerLiveClubCard extends LitElement {
 
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
 
+  _selectPlayer(player, trigger = null) {
+    this._portalReturnFocus = trigger || document?.activeElement || null;
+    this._portalReturnFocusKey = trigger?.dataset?.focusKey || '';
+    this._selectedPlayer = player;
+  }
+
+  _selectTransfer(transfer, trigger = null) {
+    this._portalReturnFocus = trigger || document?.activeElement || null;
+    this._portalReturnFocusKey = trigger?.dataset?.focusKey || '';
+    this._selectedTransfer = transfer;
+  }
+
+  _detailFocusKey(kind, item) {
+    return `${kind}:${item?.id ?? item?.player_id ?? item?.name ?? item?.player ?? ''}:${item?.date ?? ''}:${item?.direction ?? ''}`;
+  }
+
+  _closePlayerDetail() {
+    this._selectedPlayer = null;
+    this._selectedTransfer = null;
+  }
+
   render() {
     applySkin(this, this._config);
     if (!this.hass || !this._config) return renderLoading(this._t('ui.loading'));
@@ -179,7 +200,7 @@ class SoccerLiveClubCard extends LitElement {
   _renderPrediction(squad, transfers) {
     const prediction = predictedLineup(squad, transfers);
     if (!prediction) return '';
-    return this._renderCollapsible('prediction', this._t('club.predicted_lineup'), html`<section class="clb-section clb-lineup"><small>${this._t('club.prediction_disclaimer')} · ${prediction.formation}</small>${prediction.lines.map(line => html`<div>${line.map(player => html`<button @click=${() => { this._selectedPlayer = player; }}>${player.name}</button>`)}</div>`)}</section>`, false);
+    return this._renderCollapsible('prediction', this._t('club.predicted_lineup'), html`<section class="clb-section clb-lineup"><small>${this._t('club.prediction_disclaimer')} · ${prediction.formation}</small>${prediction.lines.map(line => html`<div>${line.map(player => html`<button data-focus-key=${this._detailFocusKey('player', player)} @click=${event => this._selectPlayer(player, event.currentTarget)}>${player.name}</button>`)}</div>`)}</section>`, false);
   }
 
   _renderSelection(attrs) {
@@ -257,7 +278,7 @@ class SoccerLiveClubCard extends LitElement {
   _renderFavorites(squad) {
     const favorites = (squad || []).filter(player => this._favoriteIds?.includes(this._playerKey(player)));
     if (!favorites.length) return '';
-    return html`<section class="clb-favorites"><div class="clb-title">★ ${this._t('club.favorites')}</div><div class="clb-favorite-grid">${favorites.map(player => html`<button @click=${() => { this._selectedPlayer = player; }}>${player.photo ? html`<img src=${player.photo} alt="">` : html`<span>${player.number ?? '★'}</span>`}<strong>${player.name}</strong><small>${player.injured ? this._t('club.unavailable') : [player.goals != null ? `${player.goals} G` : '', player.assists != null ? `${player.assists} A` : '', player.rating || ''].filter(Boolean).join(' · ') || player.position || ''}</small></button>`)}</div></section>`;
+    return html`<section class="clb-favorites"><div class="clb-title">★ ${this._t('club.favorites')}</div><div class="clb-favorite-grid">${favorites.map(player => html`<button data-focus-key=${this._detailFocusKey('player', player)} @click=${event => this._selectPlayer(player, event.currentTarget)}>${player.photo ? html`<img src=${player.photo} alt="">` : html`<span>${player.number ?? '★'}</span>`}<strong>${player.name}</strong><small>${player.injured ? this._t('club.unavailable') : [player.goals != null ? `${player.goals} G` : '', player.assists != null ? `${player.assists} A` : '', player.rating || ''].filter(Boolean).join(' · ') || player.position || ''}</small></button>`)}</div></section>`;
   }
 
   _renderClubRecords(attrs) {
@@ -465,14 +486,14 @@ class SoccerLiveClubCard extends LitElement {
     const player = this._selectedPlayer;
     const transfer = this._selectedTransfer;
     const item = (label, value) => value !== null && value !== undefined && value !== '' ? html`<div><span>${label}</span><strong>${value}</strong></div>` : '';
-    if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedTransfer = null; }}>
-      <section class="clb-player-modal" role="dialog" aria-modal="true" aria-label=${transfer.player || this._t('club.transfers')}><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedTransfer = null; }}>×</button>
+    if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._closePlayerDetail(); }}>
+      <section class="clb-player-modal" role="dialog" aria-modal="true" aria-label=${transfer.player || this._t('club.transfers')}><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => this._closePlayerDetail()}>×</button>
         ${transfer.photo ? html`<img src=${transfer.photo} alt="">` : html`<div class="clb-transfer-avatar">${transfer.direction === 'in' ? '↓' : '↑'}</div>`}<h3>${transfer.player}</h3><p>${transfer.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}</p>
         <div class="clb-player-facts">${item(this._t('club.from'), this._clubNameLabel(transfer.from))}${item(this._t('club.to'), this._clubNameLabel(transfer.to))}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), this._transferTypeLabel(transfer.type))}${item(this._t('club.transfer_fee'), this._transferFee(transfer))}</div>
       </section></div>`;
     if (!player) return '';
-    return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>
-      <section class="clb-player-modal" role="dialog" aria-modal="true" aria-label=${player.name}><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedPlayer = null; }}>×</button>
+    return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._closePlayerDetail(); }}>
+      <section class="clb-player-modal" role="dialog" aria-modal="true" aria-label=${player.name}><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => this._closePlayerDetail()}>×</button>
         ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${this._positionLabel(player.position)}</p>
         <div class="clb-player-facts">${item(this._t('club.market_value'), player.market_value ? this._formatValue(player.market_value) : '')}
           ${item(this._t('club.age_label'), player.age)}${item(this._t('club.shirt_number'), player.number)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
@@ -497,16 +518,21 @@ class SoccerLiveClubCard extends LitElement {
       this._playerPortal.className = 'soccer-live-club-player-portal';
       this._onPlayerPortalCancel = event => {
         event.preventDefault();
-        this._selectedPlayer = null;
-        this._selectedTransfer = null;
+        this._closePlayerDetail();
+      };
+      this._onPlayerPortalKeydown = event => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          this._closePlayerDetail();
+        }
       };
       this._onPlayerPortalClick = event => {
         if (event.target === this._playerPortal) {
-          this._selectedPlayer = null;
-          this._selectedTransfer = null;
+          this._closePlayerDetail();
         }
       };
       this._playerPortal.addEventListener('cancel', this._onPlayerPortalCancel);
+      this._playerPortal.addEventListener('keydown', this._onPlayerPortalKeydown);
       this._playerPortal.addEventListener('click', this._onPlayerPortalClick);
       document.body.appendChild(this._playerPortal);
     }
@@ -516,6 +542,7 @@ class SoccerLiveClubCard extends LitElement {
       try { this._playerPortal.showModal(); }
       catch (_error) { this._playerPortal.setAttribute('open', ''); }
     }
+    requestAnimationFrame(() => this._playerPortal?.querySelector('.clb-player-modal > button')?.focus());
   }
 
   _copyPlayerPortalThemeVars() {
@@ -536,10 +563,22 @@ class SoccerLiveClubCard extends LitElement {
       try { this._playerPortal.close(); } catch (_error) { /* already closed */ }
     }
     this._playerPortal.removeEventListener('cancel', this._onPlayerPortalCancel);
+    this._playerPortal.removeEventListener('keydown', this._onPlayerPortalKeydown);
     this._playerPortal.removeEventListener('click', this._onPlayerPortalClick);
     render(html``, this._playerPortal);
+    const returnFocus = this._portalReturnFocus;
+    const returnFocusKey = this._portalReturnFocusKey;
+    this._portalReturnFocus = null;
+    this._portalReturnFocusKey = '';
     this._playerPortal.remove();
     this._playerPortal = null;
+    setTimeout(() => {
+      const currentTrigger = returnFocus?.isConnected
+        ? returnFocus
+        : [...(this.shadowRoot?.querySelectorAll('[data-focus-key]') || [])]
+          .find(element => element.dataset.focusKey === returnFocusKey);
+      if (typeof currentTrigger?.focus === 'function') currentTrigger.focus();
+    }, 0);
   }
 
   _renderPlayerPortalStyles() {
@@ -625,7 +664,7 @@ class SoccerLiveClubCard extends LitElement {
             <div class="clb-pos-group">
               <div class="clb-pos">${this._t(key)}</div>
               ${players.map(p => html`
-                <div class="clb-player" role="button" tabindex="0" @click=${() => { this._selectedPlayer = p; }} @keydown=${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this._selectedPlayer = p; } }}>
+                <div class="clb-player" role="button" tabindex="0" data-focus-key=${this._detailFocusKey('player', p)} @click=${event => this._selectPlayer(p, event.currentTarget)} @keydown=${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this._selectPlayer(p, event.currentTarget); } }}>
                   <span class="clb-num">${p.number ?? '·'}</span>
                   <span class="clb-pname">${p.name}</span>
                   ${p.age != null ? html`<span class="clb-age">${this._t('club.age', { n: p.age })}</span>` : ''}
@@ -678,7 +717,7 @@ class SoccerLiveClubCard extends LitElement {
           return html`<span>${this._t(`club.${period}_window`)} ${year}<b>${count}</b></span>`;
         })}</div>` : ''}
         ${visible.map(tr => html`
-          <div class="clb-transfer" role="button" tabindex="0" @click=${() => { this._selectedTransfer = tr; }} @keydown=${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this._selectedTransfer = tr; } }}>
+          <div class="clb-transfer" role="button" tabindex="0" data-focus-key=${this._detailFocusKey('transfer', tr)} @click=${event => this._selectTransfer(tr, event.currentTarget)} @keydown=${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this._selectTransfer(tr, event.currentTarget); } }}>
             <span class="clb-dir ${tr.direction}" title="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}"
                   aria-label="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}">${tr.direction === 'in' ? '↓' : '↑'}</span>
             <div class="clb-tinfo">

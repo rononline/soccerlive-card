@@ -85,8 +85,8 @@ export const renderEntitySelector = (label, hint, currentValue, callback, filter
   <div class="editor-field">
     <label class="field-label">${label}</label>
     <select @change=${(e) => callback(e.target.value)}>
-      ${!currentValue ? html`<option value="">— select —</option>` : ''}
-      <option value="${currentValue}" selected>${currentValue || 'Select entity'}</option>
+      ${!currentValue ? html`<option value="">— ${label} —</option>` : ''}
+      <option value="${currentValue}" selected>${currentValue || label}</option>
     </select>
     ${hint ? html`<span class="field-hint">${hint}</span>` : ''}
   </div>

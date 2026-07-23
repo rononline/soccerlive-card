@@ -39,7 +39,7 @@ class SoccerLiveTeamFormEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
-            ${!entities.includes(current) ? html`<option value="${current}" selected>${current || '— select —'}</option>` : ''}
+            ${!entities.includes(current) ? html`<option value="${current}" selected>${current || this._t('editor.select')}</option>` : ''}
             ${entities.map(e => html`<option value="${e}" ?selected=${e === current}>${e}</option>`)}
           </select>
         </div>
@@ -48,7 +48,7 @@ class SoccerLiveTeamFormEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.team_name')}</label>
           <label class="field-hint">${this._t('editor.my_team_hint')}</label>
-          <input type="text" data-config-value="team_name" .value=${this._config.team_name || ''} @input=${this._inputChanged} placeholder="e.g. Ajax">
+          <input type="text" data-config-value="team_name" .value=${this._config.team_name || ''} @input=${this._inputChanged} placeholder=${this._t('editor.my_team_hint')}>
         </div>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>

@@ -153,7 +153,7 @@ class SoccerLiveMatchesEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.entity')}</label>
           <select @change=${this._entityChanged}>
-            ${!entityInList ? html`<option value="${currentEntity}" selected>${currentEntity || '— select —'}</option>` : ''}
+            ${!entityInList ? html`<option value="${currentEntity}" selected>${currentEntity || this._t('editor.select')}</option>` : ''}
             ${this.entities.map(e => html`
               <option value="${e}" ?selected=${e === currentEntity}>${e}</option>
             `)}
@@ -196,7 +196,7 @@ class SoccerLiveMatchesEditor extends LitElement {
 
         <div>
           <label class="field-label">${this._t('editor.my_team')}</label>
-          <input type="text" placeholder="bijv. Feyenoord Rotterdam"
+          <input type="text" placeholder=${this._t('editor.my_team_hint')}
             .value=${this._config.my_team || ''}
             @change=${(e) => this._fireConfigChanged({...this._config, my_team: e.target.value})} />
         </div>

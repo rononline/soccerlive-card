@@ -12,7 +12,7 @@ import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
-import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP, isGoalEvent, translateMatchStatus } from '../shared-event-i18n.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
@@ -1017,7 +1017,7 @@ class SoccerLiveTeamCard extends LitElement {
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
     const clock = isLive
-      ? ((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : this._t('status.live')))
+      ? ((m.clock && m.clock !== 'N/A') ? m.clock : translateMatchStatus(m.status, key => this._t(key)) || this._t('status.live'))
       : isFt
         ? this._t('status.full_time')
         : isPre
@@ -1343,7 +1343,8 @@ class SoccerLiveTeamCard extends LitElement {
         <ul class="popup-h2h-list">
           ${h2h.slice(0, 8).map(g => {
             const hs = parseInt(g.home_score) || 0, as = parseInt(g.away_score) || 0;
-            const dt = g.date ? new Date(g.date).toLocaleDateString(lang) : '';
+            const parsedDate = parseMatchDate(g.date);
+            const dt = parsedDate ? parsedDate.toLocaleDateString(lang) : '';
             return html`
               <li class="popup-h2h-row">
                 <span class="popup-h2h-team ${hs > as ? 'winner' : ''}">${g.home_team}</span>

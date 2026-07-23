@@ -3,7 +3,7 @@ import { t, resolveLang, formatMatchDate, parseMatchDate } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
-import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
+import { EVENT_I18N, SKIP, isGoalEvent, translateMatchStatus } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
@@ -796,7 +796,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const isLive = m.state === 'in';
     const isFt   = m.state === 'post';
     const score = s => (s === '' || s === 'N/A') ? '-' : scoreText(s, '-');
-    const clock = !isPre && ((m.clock && m.clock !== 'N/A') ? m.clock : ((m.status && m.status !== 'N/A') ? m.status : ''));
+    const clock = !isPre && ((m.clock && m.clock !== 'N/A') ? m.clock : translateMatchStatus(m.status, key => this._t(key)));
 
     const kickoffLabel = formatMatchDate(m.date, resolveLang(this.hass, this._config)) || '—';
 

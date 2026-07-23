@@ -1,5 +1,6 @@
 // Pure, lit-free computation for the Club card, so the grouping and transfer
 // display logic can be unit-tested without rendering.
+import { parseMatchTimestamp } from '../i18n.js';
 
 // Squad position groups, in the order the sensor already sorts them.
 export const POSITION_GROUPS = [
@@ -156,7 +157,7 @@ export function availabilityRadar(squad) {
 export function predictedLineup(squad, transfers = []) {
   const transferStatus = new Map();
   const sortedTransfers = [...(Array.isArray(transfers) ? transfers : [])].sort((a, b) =>
-    String(b?.date || '').localeCompare(String(a?.date || '')));
+    parseMatchTimestamp(b?.date) - parseMatchTimestamp(a?.date));
   for (const transfer of sortedTransfers) {
     const idKey = transfer?.player_id != null ? `id:${transfer.player_id}` : '';
     const nameKey = transfer?.player ? `name:${String(transfer.player).trim().toLowerCase()}` : '';

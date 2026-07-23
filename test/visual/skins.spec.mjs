@@ -196,13 +196,25 @@ test('club — analysis, comparison and transfer top-layer popup', async ({ page
   });
   expect(persisted.favorite).toContain('Keeper');
   expect(persisted.squadOpen).toBe(true);
-  await page.evaluate(() => document.querySelector('soccer-live-club').shadowRoot.querySelector('.clb-transfer').click());
+  const transferFocusKey = await page.evaluate(() => {
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    root.querySelector('.clb-collapse-transfers').open = true;
+    const row = root.querySelector('.clb-transfer');
+    row.click();
+    return row.dataset.focusKey;
+  });
   const dialog = page.locator('dialog.soccer-live-club-player-portal');
   await expect(dialog).toHaveAttribute('open', '');
   await expect(dialog).toContainText('Nieuwe speler');
   await expect(dialog).toContainText('Andere club');
+  await expect(dialog.locator('.clb-player-modal > button')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => {
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    return root.activeElement?.dataset?.focusKey || '';
+  })).toBe(transferFocusKey);
   await page.evaluate(() => {
-    document.querySelector('soccer-live-club')._selectedTransfer = null;
     const root = document.querySelector('soccer-live-club').shadowRoot;
     [...root.querySelectorAll('.clb-transfer')].find(row => row.textContent.includes('Calvin Stengs')).click();
   });

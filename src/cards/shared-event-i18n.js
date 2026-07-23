@@ -69,3 +69,9 @@ export const EVENT_I18N = {
   'start shootout': 'status.shootout_start',
   'end match': 'status.end_match',
 };
+
+export function translateMatchStatus(value, translate) {
+  const raw = String(value || '').trim();
+  const key = EVENT_I18N[raw.toLowerCase()];
+  return key ? translate(key) : raw;
+}

@@ -552,8 +552,8 @@ not required by the Soccer Live integration or this card.
 
 ## 🌍 Multi-language
 
-All UI text is translated via `src/i18n.js` with **680 keys** in seven languages.
-The i18n smoke test checks key parity so one language cannot silently lag behind.
+All UI text is translated via `src/i18n.js` in seven languages. The i18n smoke
+test checks key parity so one language cannot silently lag behind.
 
 | Key | EN | NL | DE | PT | FR | ES | IT |
 |---|---|---|---|---|---|---|---|

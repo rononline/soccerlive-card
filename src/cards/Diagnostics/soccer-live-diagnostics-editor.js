@@ -108,7 +108,7 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
         <div>
           <label class="field-label">${this._t("editor.entity")}</label>
           <select @change=${this._entityChanged}>
-            ${!inList ? html`<option value="${current}" selected>${current || "— select —"}</option>` : ""}
+            ${!inList ? html`<option value="${current}" selected>${current || this._t('editor.select')}</option>` : ""}
             ${this.entities.map(entity => html`<option value="${entity}" ?selected=${entity === current}>${entity}</option>`)}
           </select>
         </div>

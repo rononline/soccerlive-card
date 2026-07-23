@@ -79,6 +79,20 @@ test('predicted lineup excludes players whose latest transfer is outgoing', () =
   assert.ok(prediction.players.some(player => player.name === 'M2'));
 });
 
+test('predicted lineup sorts localized transfer dates chronologically', () => {
+  const squad = [
+    { id: 1, name: 'Keeper', position: 'Goalkeeper' },
+    ...Array.from({ length: 4 }, (_, i) => ({ id: 10 + i, name: `D${i}`, position: 'Defender' })),
+    ...Array.from({ length: 4 }, (_, i) => ({ id: 20 + i, name: `M${i}`, position: 'Midfielder', appearances: i })),
+    ...Array.from({ length: 3 }, (_, i) => ({ id: 30 + i, name: `A${i}`, position: 'Attacker' })),
+  ];
+  const transfers = [
+    { player_id: 23, player: 'M3', direction: 'in', date: '30-01-2026' },
+    { player_id: 23, player: 'M3', direction: 'out', date: '02-07-2026' },
+  ];
+  assert.ok(!predictedLineup(squad, transfers).players.some(player => player.name === 'M3'));
+});
+
 test('official selection only appears with actual lineup data', () => {
   const attrs = { team_id: 10, matches: [{ event_id: 1, state: 'pre', home_id: 10, away_id: 20, lineup_home: [{ name: 'A', starter: true }, { name: 'B', starter: false }] }] };
   const selection = officialSelection(attrs);
