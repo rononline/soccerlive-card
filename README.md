@@ -1,6 +1,6 @@
 # ⚽ Soccer Live Card
 
-Beautiful, animated football cards for Home Assistant with multi-language support, extensive customization, offline caching, mobile responsiveness, and ESPN/API-Football sensor support.
+Beautiful, animated football cards for Home Assistant with multi-language support, extensive customization, offline caching, mobile responsiveness, and provider-neutral Soccer Live sensor support.
 
 Companion for the [Soccer Live integration](https://github.com/rononline/soccerlive).
 
@@ -30,7 +30,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 |---|---|---|
 | Standings | `standings` | League table with coloured zones (CL / EL / relegation), gold for #1 |
 | Team | `team` | Live score, form pills, season record, top scorer, TV channel, attendance, weather, upcoming + previous matches |
-| Matches | `matches` | Day-grouped matches with live highlighting and FT badge |
+| Matches | `matches` | Filterable, day-grouped matches with smart ordering and a phase-aware detail popup |
 | News | `news` | Article feed with images and relative timestamps |
 | Bracket | `bracket` | Knockout bracket: collapsible list view or tournament tree with trophy and champion banner |
 | Top Scorers | `scorers` | Top scorers list with photo, team logo and goal tally |
@@ -40,11 +40,12 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
 | Match Center | `match-center` | Tabbed match view: Overview (with form strips), Stats, Timeline (filterable), Lineup (pitch view), H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
-| Club | `club` | Club profile (venue, founded, coach), squad by position and recent transfers (API-Football) |
+| Club | `club` | Matchday dashboard, club profile, squad analysis, injuries, market values, team news and transfers |
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
 | Timeline | `timeline` | Minute-by-minute match events |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
+| Minimal | `minimal` | Minimal text views for fixtures, next match, standings or form (`schedule` remains an alias) |
 
 > **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
 
@@ -57,9 +58,13 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
 - 📡 **Offline caching** — last-known data shown when integration is unavailable
-- 🌦️ **Weather** — venue conditions on the Team, Countdown and Match Center cards; for an upcoming match it shows the forecast for kickoff time (⏱ in the tooltip), otherwise current conditions
+- 🌦️ **Weather** — venue conditions on Team, Countdown, Match Center and enriched Matches details; upcoming matches use the kickoff forecast when available
 - 🔮 **Match preview** (API-Football, Team card) — for upcoming matches: win-probability prediction + advice, averaged 1X2 odds, and injured/suspended players — each shown only when data exists
 - 📊 **xG** — expected goals in the live stats row when the provider supplies it
+- 🧩 **Capability-based enrichment** — richer blocks appear when a sensor supplies the required attributes; cards remain usable with standard Soccer Live data
+- 🏟️ **Phase-aware match details** — preview, live and review content can include form, standings, H2H, lineups, statistics, predictions, absentees and a derived match story
+- 👥 **Club dashboard** — optional records, selection analysis, availability, expected/official lineup, team news, player profiles, injuries, market values and transfer windows
+- ♿ **Accessible interaction** — translated controls, keyboard-operable rows and modal semantics for interactive Club details
 
 ---
 
@@ -106,12 +111,16 @@ All cards share these common options:
 |---|---|---|
 | `entity` | required | The Soccer Live sensor entity ID |
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
-| `skin` | `dark` | `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white` |
+| `appearance` | `dark` | Structural appearance: `dark`, `light` or Home Assistant theme (`ha`) |
+| `palette` | appearance-dependent | `purple`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `team` or `custom` |
 | `hide_header` | `false` | Hide the top bar with competition logo and name |
 | `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, MatchCenter, Matches |
 | `compact` | `false` | Dense layout: smaller scoreboard, hides form strips and H2H — applies to Team and Countdown |
 
-Legacy skin names still work: `feyenoord` maps to `red-white`, `arsenal` to `red-gold`, `barcelona` to `blue-red`, and `real-madrid` to `white-gold`.
+The old single `skin` field remains supported. For example, `skin: auto` maps
+to dark appearance + team palette and `skin: light` maps to light + blue.
+Legacy club names also work: `feyenoord` maps to `red-white`, `arsenal` to
+`red-gold`, `barcelona` to `blue-red`, and `real-madrid` to `white-gold`.
 
 Custom skins support these optional color keys: `accent_color`, `accent_2_color`, `background_color`, `surface_color`, `card_color`, `text_color`, `secondary_text_color`, `divider_color`, `chip_color`, `chip_border_color`, `live_color`, `gold_color`.
 
@@ -119,13 +128,28 @@ Custom skins support these optional color keys: `accent_color`, `accent_2_color`
 type: custom:soccer-live-card
 card_type: team
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
-skin: custom
+appearance: dark
+palette: custom
 accent_color: "#ff6b00"
 accent_2_color: "#2563eb"
 background_color: "#090909"
+gradient_from: "#111827"
+gradient_to: "#25113d"
+gradient_angle: 135
+background_image: /local/feyenoord.png
+watermark_opacity: 0.07
+watermark_size: 60%
 ```
 
-`skin: auto` uses team colors from the selected Soccer Live sensor when available (`team_colors`, `home_color`, `away_color`, `next_match`, or the first match in `matches`). You can still provide `team_colors`, `team_color`, `home_color` or `away_color` in YAML as fallback inputs.
+`palette: team` uses team colors from the selected Soccer Live sensor when
+available (`team_colors`, `home_color`, `away_color`, `next_match`, or the
+first match in `matches`). You can still provide `team_colors`, `team_color`,
+`home_color` or `away_color` in YAML as fallback inputs.
+
+The custom palette supports a validated gradient and optional watermark.
+`background_image` accepts an HTTP(S) URL, image data URL or Home Assistant
+`/local/…` path; opacity is clamped to `0–1`, angle to a valid CSS angle and
+watermark size to safe percentage/pixel/contain/cover values.
 
 The visual editor shows sensor-type hints and warnings for the selected card type, and card-specific settings are grouped in a collapsible section.
 
@@ -177,8 +201,26 @@ max_events_visible: 6
 max_events_total: 50
 show_finished_matches: true
 hide_past_days: 0
+smart_order: true
+filter_competition: ""
+filter_season: ""
+filter_state: ""       # in / pre / post
+filter_venue: ""       # home / away
 show_event_toasts: false
 ```
+
+`smart_order: true` puts live matches first, upcoming matches oldest-first and
+finished matches newest-first. It is especially useful with mixed competitions
+or multiple seasons. The visual editor can also filter by competition, season,
+phase and home/away venue.
+
+Clicking a match opens a capability-based detail popup. Before kick-off it can
+show kickoff countdown, competition and round, venue, broadcasts, weather,
+recent form, standings, team averages, H2H, prediction, odds, absentees and an
+expected lineup. During and after the match it can add official lineups,
+statistics, timeline events, scorers, xG, standout statistics, player of the
+match and a compact match story. Missing blocks are omitted instead of rendered
+as empty placeholders.
 
 ### 📰 News
 
@@ -332,6 +374,11 @@ Tabbed view of a single match with five tabs:
 
 The active tab is remembered across page refreshes (per entity, via sessionStorage).
 
+The Overview tab is phase-aware: before kick-off it can show preview context;
+after full time it can compare the prediction with the result and show optional
+xG and match-story highlights. These blocks appear only when the sensor
+provides sufficient data.
+
 > Works best with a `next_*` or `all_mixed_*` sensor. ESPN sensors enrich the match through the ESPN summary endpoint; API-Football sensors expose fixture events, statistics and lineups when summary enrichment is enabled in the integration. Also shows a **weather badge** for the match venue.
 
 ### 👥 Team Form
@@ -344,6 +391,60 @@ team_name: Ajax
 ```
 
 > `team_name` is recommended. Without it the card tries to auto-detect the tracked team from `previous_matches`, but detection may be ambiguous with only one previous match or when the same opponent appears multiple times.
+
+### 🏟️ Club
+
+```yaml
+type: custom:soccer-live-card
+card_type: club
+entity: sensor.soccer_live_club_feyenoord
+skin: auto
+show_matchday: true
+show_season_progress: true
+show_squad: true
+show_squad_analysis: true
+show_injuries: true
+show_availability: true
+show_prediction: true
+show_selection: true
+show_team_news: true
+show_club_records: true
+show_transfers: true
+show_data_quality: true
+show_automations: false
+collapse_sections: true
+dashboard_mode: false
+max_transfers: 12
+```
+
+The Club card is capability-based. With only basic club data it shows the
+profile, coach, squad and transfers. Additional attributes can enable:
+
+- a phase-aware matchday panel with preview/live/review status;
+- season progress, streaks, home/away points and biggest win;
+- squad search, position/availability filters and market-value analysis;
+- an injury centre, availability radar and unavailable-selection impact;
+- expected and official lineups, with outgoing players excluded from predictions;
+- team news built from injuries, recoveries, transfers and club-change events;
+- player profiles with recent ratings and accessible transfer/player dialogs;
+- transfer totals, windows, loan/free-transfer counts and detail popups;
+- optional Home Assistant automation examples.
+
+Every section can be disabled in the editor. Empty or unsupported sections are
+hidden automatically, so a regular Soccer Live sensor still renders cleanly.
+`dashboard_mode: true` selects a shorter overview. The editor also lets you
+reorder sections; the resulting `section_order` array can be reused in YAML.
+
+Example:
+
+```yaml
+section_order:
+  - matchday
+  - changes
+  - injuries
+  - squad
+  - transfers
+```
 
 ### 📋 Lineup
 
@@ -364,6 +465,21 @@ entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
 Minute-by-minute match events (goals, cards, substitutions, half-time, full-time) in chronological order.
+
+### ✨ Minimal
+
+```yaml
+type: custom:soccer-live-card
+card_type: minimal
+entity: sensor.soccer_live_all_mixed_feyenoord
+variant: fixtures       # fixtures / next / standings / form
+show: upcoming          # upcoming / previous / all (fixtures only)
+max_matches: 8
+```
+
+Minimal provides compact text-first views for dashboards where the full visual
+cards are too large. The legacy `card_type: schedule` alias still resolves to
+this card.
 
 ### 🧪 Diagnostics
 
@@ -388,7 +504,10 @@ scroll_speed: normal          # slow / normal / fast
 hide_when_empty: true         # hides the card when the filter has no matches
 ```
 
-Horizontal match strip for dense dashboards. Scrolling pauses automatically when you hover over the strip. With `hide_when_empty: true`, a live-only ticker disappears when there are no live matches.
+Horizontal match strip for dense dashboards. Matches are ordered live first,
+then upcoming chronologically and finished newest-first. Scrolling pauses
+automatically when you hover over the strip. With `hide_when_empty: true`, a
+live-only ticker disappears when there are no live matches.
 
 **`competition_filter`** — show only matches whose `competition_name` or `league_name` contains the filter string. Useful when the sensor covers multiple competitions (e.g. `all_mixed_*`). If no matches match the filter, the full unfiltered list is shown as fallback.
 
@@ -415,14 +534,26 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Opponent form dots in Team card upcoming matches (`home_form`/`away_form` in compact objects) | v3.6.47 |
 | Live clock in schedule summary (`clock` in compact schedule objects) | v3.6.48 |
 | API-Football team/mixed match details, event timeline and club-friendly labels | v3.6.58 |
+| Provider-neutral card contract (`integration_version`, schema and recommended cards) | v3.6.103 |
+| Stable friendly-match flag (`is_friendly`) | v3.6.108 |
+| Club-change attributes and transfer/injury/coach automation events | v3.7.0 |
+| Recorder-safe club changes and market-value noise threshold | v3.7.1 |
+| Provider-neutral `match_phase`, `current_match` and half-time event | v3.8.0 |
+| Valid sanitized entity IDs for competitions and clubs | v3.9.1 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
+
+The card reads capabilities rather than checking for one specific provider.
+Third-party or personal sensors can therefore enable the same optional blocks
+by exposing compatible attributes. Such sensors remain separate from and are
+not required by the Soccer Live integration or this card.
 
 ---
 
 ## 🌍 Multi-language
 
-All UI text is translated via `src/i18n.js` with **290 keys** in seven languages.
+All UI text is translated via `src/i18n.js` with **680 keys** in seven languages.
+The i18n smoke test checks key parity so one language cannot silently lag behind.
 
 | Key | EN | NL | DE | PT | FR | ES | IT |
 |---|---|---|---|---|---|---|---|
@@ -445,12 +576,15 @@ All UI text is translated via `src/i18n.js` with **290 keys** in seven languages
 For maintainers:
 
 1. Update `package.json` version.
-2. Run `npm run build`.
-3. Run `npm run smoke:preview`.
-4. Commit `src/`, `docs/`, `README.md`, `package*.json` and `dist/soccer-live-card.bundle.js`.
-5. Push to `main`.
-6. Check the GitHub Auto Release workflow and confirm the new release appears as latest.
-7. In Home Assistant/HACS, refresh the browser cache after updating the frontend resource.
+2. Add a matching section to `CHANGELOG.md`.
+3. Run `npm test` (unit tests, i18n parity and preview smoke test).
+4. Run `npm run test:visual` for the 18-card browser regression layer.
+5. Run `npm run build` and `git diff --check`.
+6. Commit source, documentation, tests, version and `dist/soccer-live-card.bundle.js`.
+7. Push `main`.
+8. Create a normal GitHub release for the version tag and upload `dist/soccer-live-card.bundle.js`.
+9. Verify that the release is public, not a prerelease, and that the bundle asset is present.
+10. In Home Assistant/HACS, refresh the frontend resource and browser cache after updating.
 
 > Tip: batch related changes into one version bump per session rather than bumping for every small fix.
 

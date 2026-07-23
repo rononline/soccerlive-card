@@ -30,10 +30,35 @@ views:
         card_type: matches
         entity: sensor.soccer_live_ned_1_soccerlive_all_mixed_feyenoord_rotterdam
         skin: auto
-        group_by_day: true
+        smart_order: true
+        show_finished_matches: true
+        max_events_visible: 6
+        max_events_total: 50
 
       - type: custom:soccer-live-card
         card_type: countdown
         entity: sensor.soccer_live_ned_1_soccerlive_next_ned_1_feyenoord_rotterdam
         skin: auto
 
+      # The Club card remains useful with basic Soccer Live club data. Rich
+      # sections appear only when the selected sensor exposes their attributes.
+      - type: custom:soccer-live-card
+        card_type: club
+        entity: sensor.soccer_live_ned_1_soccerlive_next_ned_1_feyenoord_rotterdam
+        skin: auto
+        show_matchday: true
+        show_season_progress: true
+        show_squad: true
+        show_squad_analysis: true
+        show_injuries: true
+        show_availability: true
+        show_prediction: true
+        show_selection: true
+        show_team_news: true
+        show_club_records: true
+        show_transfers: true
+        show_data_quality: true
+        show_automations: false
+        collapse_sections: true
+        dashboard_mode: false
+        max_transfers: 12

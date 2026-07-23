@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.31.5 (2026-07-23)
+- Document all 18 card types, including the Minimal card and legacy Schedule alias
+- Expand the Matches and Club references with smart ordering, phase-aware details, squad analysis, injuries, lineups, team news and transfers
+- Document the appearance/palette system, custom gradients, watermarks and capability-based enrichment
+- Update integration requirements, translation-key count and the verified manual release checklist
+- Extend the Feyenoord example with current Matches and Club configurations
+
 ## v3.31.4 (2026-07-23)
 - Make hidden-finished filtering and Ticker ordering provider-neutral and date-aware
 - Parse Bracket schedule dates consistently across ISO and localized sensor formats
