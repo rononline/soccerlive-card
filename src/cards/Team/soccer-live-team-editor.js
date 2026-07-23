@@ -246,9 +246,9 @@ class SoccerLiveTeamCardEditor extends LitElement {
         <div>
           <label class="field-label">${this._t('editor.score_size')}</label>
           <select data-config-value="score_size" @change=${this._selectChanged}>
-            <option value="normal" ?selected=${(this._config.score_size || 'normal') === 'normal'}>Normal</option>
-            <option value="big" ?selected=${this._config.score_size === 'big'}>Big</option>
-            <option value="huge" ?selected=${this._config.score_size === 'huge'}>Huge</option>
+            <option value="normal" ?selected=${(this._config.score_size || 'normal') === 'normal'}>${this._t('editor.size_normal')}</option>
+            <option value="big" ?selected=${this._config.score_size === 'big'}>${this._t('editor.size_big')}</option>
+            <option value="huge" ?selected=${this._config.score_size === 'huge'}>${this._t('editor.size_huge')}</option>
           </select>
         </div>
         <div>

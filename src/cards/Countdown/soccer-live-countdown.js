@@ -275,7 +275,7 @@ class SoccerLiveCountdownCard extends LitElement {
   render() {
     this.style.display = '';
     applySkin(this, this._config);
-    if (!this.hass || !this._config) return renderLoading('Loading...');
+    if (!this.hass || !this._config) return renderLoading(this._t('ui.loading'));
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) {
       const cached = OfflineCache.get(this._config.entity);

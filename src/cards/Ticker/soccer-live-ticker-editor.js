@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { renderSkinControls } from '../skin-editor.js';
 import { editorStyles } from '../editor-helper.js';
+import { t, resolveLang } from '../../i18n.js';
 
 class SoccerLiveTickerEditor extends LitElement {
   static get properties() {
@@ -64,29 +65,30 @@ class SoccerLiveTickerEditor extends LitElement {
 
   _entityChanged(ev) { this._fire({ ...this._config, entity: ev.target.value }); }
   _selectChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
+  _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
 
   render() {
     if (!this._config) return html``;
     return html`
       <div class="card-config">
-        <label>Entity (all_matches_today or team sensor)</label>
+        <label>${this._t('editor.entity')}</label>
         <select @change=${this._entityChanged}>
-          <option value="">— Select entity —</option>
+          <option value="">— ${this._t('editor.select_entity')} —</option>
           ${this.entities.map(e => html`
             <option value="${e}" ?selected=${this._config.entity === e}>${e}</option>
           `)}
         </select>
 
-        <label>Show</label>
+        <label>${this._t('editor.show')}</label>
         <select data-config-value="filter" @change=${this._selectChanged}>
-          <option value="" ?selected=${!this._config.filter}>All matches</option>
-          <option value="live" ?selected=${this._config.filter === 'live'}>Live only</option>
+          <option value="" ?selected=${!this._config.filter}>${this._t('editor.all_matches')}</option>
+          <option value="live" ?selected=${this._config.filter === 'live'}>${this._t('editor.live_only')}</option>
         </select>
 
-        <label>Competition filter (optional)</label>
+        <label>${this._t('editor.competition_filter_optional')}</label>
         <input type="text"
           .value=${this._config.competition_filter || ''}
-          placeholder="e.g. World Cup"
+          placeholder=${this._t('editor.competition_filter_example')}
           @change=${e => {
             const v = e.target.value.trim();
             const cfg = { ...this._config };
@@ -97,21 +99,21 @@ class SoccerLiveTickerEditor extends LitElement {
         <label class="toggle-row">
           <input type="checkbox" ?checked=${!!this._config.hide_when_empty}
             @change=${e => this._fire({ ...this._config, hide_when_empty: e.target.checked })}>
-          Hide card when empty
+          ${this._t('editor.hide_when_empty')}
         </label>
 
         <label class="toggle-row">
           <input type="checkbox" ?checked=${!!this._config.auto_scroll}
             @change=${e => this._fire({ ...this._config, auto_scroll: e.target.checked })}>
-          Auto-scroll
+          ${this._t('editor.auto_scroll')}
         </label>
 
         ${this._config.auto_scroll ? html`
-          <label>Scroll speed</label>
+          <label>${this._t('editor.scroll_speed')}</label>
           <select data-config-value="scroll_speed" @change=${this._selectChanged}>
-            <option value="slow"   ?selected=${this._config.scroll_speed === 'slow'}>Slow</option>
-            <option value="normal" ?selected=${!this._config.scroll_speed || this._config.scroll_speed === 'normal'}>Normal</option>
-            <option value="fast"   ?selected=${this._config.scroll_speed === 'fast'}>Fast</option>
+            <option value="slow"   ?selected=${this._config.scroll_speed === 'slow'}>${this._t('editor.speed_slow')}</option>
+            <option value="normal" ?selected=${!this._config.scroll_speed || this._config.scroll_speed === 'normal'}>${this._t('editor.speed_normal')}</option>
+            <option value="fast"   ?selected=${this._config.scroll_speed === 'fast'}>${this._t('editor.speed_fast')}</option>
           </select>
         ` : ''}
 

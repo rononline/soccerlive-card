@@ -129,7 +129,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   render() {
     applySkin(this, this._config);
-    if (!this.hass || !this._config) return renderLoading('Loading...');
+    if (!this.hass || !this._config) return renderLoading(this._t('ui.loading'));
     const entityId = this._config.entity;
     const s = this.hass.states[entityId];
     let attrs = null;

@@ -151,7 +151,7 @@ class SoccerLiveMultiTeamCard extends LitElement {
 
   render() {
     applySkin(this, this._config);
-    if (!this.hass || !this._config) return renderLoading('Loading...');
+    if (!this.hass || !this._config) return renderLoading(this._t('ui.loading'));
     const entities = this._config.entities || [];
     if (!entities.length) return renderCardError('⚽', this._t('ui.no_entities_configured'), '', this._t('ui.add_team_entity'));
     if (this._isLoading) {

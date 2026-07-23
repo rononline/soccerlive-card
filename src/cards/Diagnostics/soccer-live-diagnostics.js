@@ -102,7 +102,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const date = parseMatchDate(value);
     if (!date) return "-";
     const minutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
-    if (minutes < 1) return "now";
+    if (minutes < 1) return this._t("time.now");
     if (minutes < 60) return `${minutes}m`;
     const hours = Math.round(minutes / 60);
     if (hours < 48) return `${hours}h`;
@@ -111,17 +111,17 @@ class SoccerLiveDiagnosticsCard extends LitElement {
 
   _recommendedCards(sensorType) {
     const map = {
-      team_match: ["Team", "Countdown", "Match Center", "Lineup", "Timeline", "Team Form"],
-      team_matches: ["Matches", "Ticker", "Live Match", "Team Form"],
-      team_matches_mixed: ["Team Competitions", "Season Overview", "Matches", "Ticker", "Team Form"],
-      all_matches_today: ["Matches", "Ticker", "Live Match"],
-      standings: ["Standings", "Mini Standings"],
-      top_scorers: ["Top Scorers"],
-      bracket: ["Bracket"],
-      news: ["News"],
-      commentary: ["Live Commentary", "Timeline"],
+      team_match: ["team", "countdown", "match_center", "lineup", "timeline", "team_form"],
+      team_matches: ["matches", "ticker", "live_match", "team_form"],
+      team_matches_mixed: ["team_competitions", "season_overview", "matches", "ticker", "team_form"],
+      all_matches_today: ["matches", "ticker", "live_match"],
+      standings: ["standings", "mini_standings"],
+      top_scorers: ["scorers"],
+      bracket: ["bracket"],
+      news: ["news"],
+      commentary: ["commentary", "timeline"],
     };
-    return map[sensorType] || [];
+    return (map[sensorType] || []).map(key => this._t(`diag.card_${key}`));
   }
 
   render() {
@@ -129,25 +129,26 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     if (!this.hass || !this._config) return html``;
     const stateObj = this.hass.states[this._config.entity];
     if (!stateObj) {
-      return renderCardError("!", "Entity not found", this._config.entity, "Select a Soccer Live sensor");
+      return renderCardError("!", this._t("ui.entity_not_found"), this._config.entity, this._t("ui.check_entity_config"));
     }
 
     const attrs = stateObj.attributes || {};
     const apiStatus = attrs.api_status || "unknown";
     const statusClass = apiStatus === "ok" ? "ok" : "error";
+    const statusLabel = this._t(`diag.status_${["ok", "error"].includes(apiStatus) ? apiStatus : "unknown"}`);
     const lastUpdate = attrs.last_successful_update || attrs.last_request_time;
     const sensorType = attrs.sensor_type || "unknown";
     const recommended = this._recommendedCards(sensorType);
     const metrics = [
-      ["Sensor", sensorType],
-      ["State", stateObj.state],
-      ["Matches", attrs.schedule_match_count ?? attrs.total_matches],
-      ["Live", attrs.schedule_live_count ?? attrs.live_matches_count],
-      ["Upcoming", attrs.schedule_upcoming_count ?? attrs.upcoming_matches_count],
-      ["Recent", attrs.schedule_recent_count ?? attrs.finished_matches_count],
-      ["Requests", attrs.request_count],
-      ["Last update", lastUpdate],
-      ["Sensor age", this._age(lastUpdate)],
+      [this._t("diag.sensor"), sensorType],
+      [this._t("diag.state"), stateObj.state],
+      [this._t("diag.matches"), attrs.schedule_match_count ?? attrs.total_matches],
+      [this._t("diag.live"), attrs.schedule_live_count ?? attrs.live_matches_count],
+      [this._t("diag.upcoming"), attrs.schedule_upcoming_count ?? attrs.upcoming_matches_count],
+      [this._t("diag.recent"), attrs.schedule_recent_count ?? attrs.finished_matches_count],
+      [this._t("diag.requests"), attrs.request_count],
+      [this._t("diag.last_update"), lastUpdate],
+      [this._t("diag.sensor_age"), this._age(lastUpdate)],
     ];
 
     return html`
@@ -156,7 +157,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
         <div class="content">
           <div class="header">
             <div class="title">${this._config.title || this._t('card.diagnostics')}</div>
-            <div class="status ${statusClass}">${apiStatus}</div>
+            <div class="status ${statusClass}" title=${apiStatus}>${statusLabel}</div>
           </div>
           <div class="grid">
             ${metrics.map(([label, value]) => html`
@@ -168,7 +169,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
           </div>
           ${recommended.length ? html`
             <div class="recommendations">
-              <div class="label">Recommended cards</div>
+              <div class="label">${this._t("editor.diag_recommended_cards")}</div>
               <div class="chips">
                 ${recommended.map(card => html`<span class="chip">${card}</span>`)}
               </div>

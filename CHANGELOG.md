@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.31.2 (2026-07-23)
+- Localize all Diagnostics metrics, visible provider statuses and recommended card names
+- Localize Mini Standings and Bracket group-table column headers
+- Translate every Ticker editor control and Team score-size option
+- Route initial loading states through the selected card language across eight card types
+- Add Dutch Playwright coverage for cards and editors and remove the remaining audited English literals
+
 ## v3.31.1 (2026-07-23)
 - Localize provider club placeholders such as `Free agent` inside the Club transfer popup
 - Reuse the same club-name and transfer-type translation helpers in transfer lists and popup details

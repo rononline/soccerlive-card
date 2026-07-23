@@ -710,12 +710,12 @@ class SoccerLiveBracketCard extends LitElement {
             <div class="group-title">${g.name}</div>
             <div class="group-header-row">
               <span class="gh-name"></span>
-              <span class="gh-stat">P</span>
-              <span class="gh-stat">W</span>
-              <span class="gh-stat">D</span>
-              <span class="gh-stat">L</span>
-              <span class="gh-stat">GD</span>
-              <span class="gh-pts">Pts</span>
+              <span class="gh-stat">${this._t('mini.p')}</span>
+              <span class="gh-stat">${this._t('col.wins')}</span>
+              <span class="gh-stat">${this._t('col.draws')}</span>
+              <span class="gh-stat">${this._t('col.losses')}</span>
+              <span class="gh-stat">${this._t('mini.gd')}</span>
+              <span class="gh-pts">${this._t('mini.pts')}</span>
             </div>
             ${g.standings.map((row, i) => html`
               <div class="group-row ${this._matchesMyTeam(row.team_name) ? 'my-team' : ''} ${i < 2 ? 'qualify' : ''}">

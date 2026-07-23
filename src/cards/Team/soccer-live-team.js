@@ -530,7 +530,7 @@ class SoccerLiveTeamCard extends LitElement {
 
   render() {
     applySkin(this, this._config);
-    if (!this.hass || !this._config) return renderLoading('Loading...');
+    if (!this.hass || !this._config) return renderLoading(this._t('ui.loading'));
     const entityId = this._config.entity;
     const stateObj = this.hass.states[entityId];
     // Resolve compact here (needs hass): the card's own setting wins; otherwise

@@ -178,10 +178,10 @@ class SoccerLiveMiniStandingsCard extends LitElement {
         <table>
           <tr>
             <th class="left" style="width:22px">#</th>
-            <th class="left">Team</th>
-            <th>P</th>
-            ${!this._config.hide_stats ? html`<th>W</th><th>D</th><th>L</th><th>GD</th>` : ''}
-            <th>Pts</th>
+            <th class="left">${this._t('mini.team')}</th>
+            <th>${this._t('mini.p')}</th>
+            ${!this._config.hide_stats ? html`<th>${this._t('col.wins')}</th><th>${this._t('col.draws')}</th><th>${this._t('col.losses')}</th><th>${this._t('mini.gd')}</th>` : ''}
+            <th>${this._t('mini.pts')}</th>
           </tr>
           ${rows.map(row => {
             const isHl = myTeam && row.team_name && row.team_name.toLowerCase().includes(myTeam);

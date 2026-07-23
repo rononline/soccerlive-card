@@ -341,3 +341,48 @@ test('enriched post-match insights and selection impact stay capability based', 
   await open(page, { mode: 'matrix', type: 'match-center', phase: 'post', data: 'partial', lang: 'nl' });
   await expect(target(page)).not.toContainText('Verwachting versus werkelijkheid');
 });
+
+test('Dutch labels cover diagnostics, tables, bracket and editors', async ({ page }) => {
+  await open(page, { mode: 'matrix', type: 'diagnostics', lang: 'nl' });
+  await expect(target(page)).toContainText('Wedstrijden');
+  await expect(target(page)).toContainText('Aanbevolen kaarten');
+  await expect(target(page)).toContainText('In orde');
+  await expect(target(page)).not.toContainText('Recommended cards');
+
+  await open(page, { mode: 'matrix', type: 'mini-standings', lang: 'nl' });
+  await expect(target(page)).toContainText('Club');
+  await expect(target(page)).toContainText('GL');
+  await expect(target(page)).toContainText('DS');
+  await expect(target(page)).toContainText('Ptn');
+
+  await open(page, { mode: 'matrix', type: 'bracket', lang: 'nl' });
+  await page.evaluate(() => {
+    const card = document.querySelector('soccer-live-bracket');
+    card.setConfig({ ...card._config, style: 'tree', groups_entity: 'sensor.preview_team' });
+    card._activeTab = 'groups';
+    card.requestUpdate();
+  });
+  await expect(target(page)).toContainText('GL');
+  await expect(target(page)).toContainText('DS');
+  await expect(target(page)).toContainText('Ptn');
+
+  await open(page, { mode: 'editor', lang: 'nl' });
+  await expect(target(page).locator('soccer-live-team-editor')).toContainText('Normaal');
+  await expect(target(page).locator('soccer-live-team-editor')).toContainText('Zeer groot');
+
+  await page.evaluate(() => {
+    const current = document.querySelector('#target > *');
+    current.remove();
+    const editor = document.createElement('soccer-live-ticker-editor');
+    editor.setConfig({ entity: 'sensor.preview_team', auto_scroll: true, language: 'nl' });
+    editor.hass = window.__previewHass || {
+      states: { 'sensor.preview_team': { state: 'ok', attributes: {} } },
+      language: 'nl', locale: { language: 'nl' },
+    };
+    document.getElementById('target').appendChild(editor);
+  });
+  await expect(target(page)).toContainText('Alle wedstrijden');
+  await expect(target(page)).toContainText('Alleen live');
+  await expect(target(page)).toContainText('Scrollsnelheid');
+  await expect(target(page)).toContainText('Langzaam');
+});
