@@ -7,7 +7,7 @@ export const SKIP = ['delay', 'drink break', 'cooling break', 'video review'];
 export function isGoalEvent(ev) {
   const ty = (ev.type || '').toLowerCase();
   const txt = (ev.type_text || '').toLowerCase();
-  if (txt.includes('missed') || txt.includes('disallow')) return false;
+  if (txt.includes('missed') || txt.includes('disallow') || txt.includes('cancel')) return false;
   return !!ev.scoring_play || ty === 'goal' || txt.includes('penalty - scored');
 }
 
@@ -50,6 +50,9 @@ export const EVENT_I18N = {
   'second half': 'status.second_half',
   '2nd half': 'status.second_half',
   'first half': 'status.first_half',
+  '1st half': 'status.first_half',
+  'in progress': 'status.live',
+  'live': 'status.live',
   'full time': 'status.full_time',
   'final': 'status.full_time',
   'end regular time': 'status.full_time',

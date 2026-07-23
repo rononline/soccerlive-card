@@ -67,12 +67,16 @@ export function predictionOutcome(match) {
     draw: Number(prediction.percent_draw),
     away: Number(prediction.percent_away),
   };
-  let predicted = Object.entries(percentages)
-    .filter(([, value]) => Number.isFinite(value))
-    .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+  let predicted = null;
   const winner = String(prediction.winner_name || '').trim().toLowerCase();
   if (winner && match.home_team && winner === String(match.home_team).trim().toLowerCase()) predicted = 'home';
   if (winner && match.away_team && winner === String(match.away_team).trim().toLowerCase()) predicted = 'away';
+  if (!predicted) {
+    const ranked = Object.entries(percentages)
+      .filter(([, value]) => Number.isFinite(value))
+      .sort((a, b) => b[1] - a[1]);
+    if (ranked.length && (ranked.length === 1 || ranked[0][1] > ranked[1][1])) predicted = ranked[0][0];
+  }
   if (!predicted) return null;
   const xg = match.review?.expected_goals || match.expected_goals || null;
   return {
@@ -87,10 +91,10 @@ export function predictionOutcome(match) {
 export function derivedMatchStory(match) {
   if (Array.isArray(match?.match_story) && match.match_story.length) return match.match_story;
   const events = (Array.isArray(match?.key_events) ? match.key_events : [])
-    .filter(event => event && (event.scoring_play || /goal/i.test(`${event.type || ''} ${event.type_text || ''}`) || /red/i.test(`${event.type || ''} ${event.type_text || ''}`)))
+    .filter(event => event && (isGoalEvent(event) || /red/i.test(`${event.type || ''} ${event.type_text || ''}`)))
     .sort((a, b) => Number(a.minute ?? a.clock ?? 0) - Number(b.minute ?? b.clock ?? 0));
   if (!events.length) return [];
-  const goals = events.filter(event => event.scoring_play || /goal/i.test(`${event.type || ''} ${event.type_text || ''}`));
+  const goals = events.filter(isGoalEvent);
   const story = [];
   if (goals[0]) story.push({ ...goals[0], type: 'opening_goal', minute: goals[0].minute ?? goals[0].clock });
   for (const event of goals.slice(1)) {
@@ -109,3 +113,4 @@ export function derivedMatchStory(match) {
   return [...new Map(story.map(item => [`${item.type}:${item.minute}:${item.player || item.athletes?.[0] || ''}`, item])).values()]
     .sort((a, b) => Number(a.minute || 0) - Number(b.minute || 0));
 }
+import { isGoalEvent } from './shared-event-i18n.js';

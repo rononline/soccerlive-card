@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.31.3 (2026-07-23)
+- Exclude cancelled, disallowed and missed goals from derived match stories
+- Avoid declaring a prediction winner when the highest percentages are tied
+- Translate live Club matchday statuses and normalize common FotMob statistic keys
+- Use one consistent squad workload metric for selection-impact calculations
+- Improve Club player-popup and section-order accessibility and replace Dutch-only starter abbreviations
+- Add regressions for prediction ties, invalid goals, mixed workload data and FotMob stat aliases
+
 ## v3.31.2 (2026-07-23)
 - Localize all Diagnostics metrics, visible provider statuses and recommended card names
 - Localize Mini Standings and Bracket group-table column headers

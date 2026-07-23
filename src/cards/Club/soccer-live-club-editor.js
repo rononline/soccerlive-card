@@ -154,7 +154,10 @@ class SoccerLiveClubEditor extends LitElement {
         </div>
         <div>
           <label class="field-label">${this._t('editor.club_section_order')}</label>
-          <div class="section-order">${normalizeClubSectionOrder(this._config.section_order).map((key, index, order) => html`<div><span>${this._t(`club.section_${key}`)}</span><button ?disabled=${index === 0} @click=${() => this._moveSection(key, -1)}>↑</button><button ?disabled=${index === order.length - 1} @click=${() => this._moveSection(key, 1)}>↓</button></div>`)}</div>
+          <div class="section-order">${normalizeClubSectionOrder(this._config.section_order).map((key, index, order) => {
+            const label = this._t(`club.section_${key}`);
+            return html`<div><span>${label}</span><button aria-label="${label}: ↑" title="${label}: ↑" ?disabled=${index === 0} @click=${() => this._moveSection(key, -1)}>↑</button><button aria-label="${label}: ↓" title="${label}: ↓" ?disabled=${index === order.length - 1} @click=${() => this._moveSection(key, 1)}>↓</button></div>`;
+          })}</div>
         </div>
         <div class="option">
           <label>${this._t('editor.show_transfers')}</label>

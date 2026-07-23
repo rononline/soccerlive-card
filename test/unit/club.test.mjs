@@ -165,6 +165,16 @@ test('selectionImpact measures unavailable first-team production', () => {
   assert.equal(impact.assists, 2);
 });
 
+test('selectionImpact uses one common workload metric for the whole squad', () => {
+  const impact = selectionImpact({
+    squad: [
+      { name: 'A', starts: 10, appearances: 20, injured: true },
+      { name: 'B', appearances: 20 },
+    ],
+  });
+  assert.equal(impact.loadPercent, 50);
+});
+
 test('seasonProgress calculates cumulative points and excludes friendlies', () => {
   const progress = seasonProgress([
     { state: 'post', date_iso: '2026-08-01T12:00:00Z', home_id: 10, away_id: 20, home_team: 'Us', away_team: 'A', home_score: 2, away_score: 0 },

@@ -58,6 +58,13 @@ test('predictionOutcome compares the forecast with the final result', () => {
   assert.equal(predictionOutcome({ state: 'pre' }), null);
 });
 
+test('predictionOutcome does not invent a favourite when the top percentages are tied', () => {
+  assert.equal(predictionOutcome({
+    state: 'post', home_team: 'A', away_team: 'B', home_score: 1, away_score: 1,
+    prediction: { percent_home: 40, percent_draw: 20, percent_away: 40 },
+  }), null);
+});
+
 test('derivedMatchStory creates milestones from provider-neutral events', () => {
   const story = derivedMatchStory({
     home_team: 'Feyenoord', away_team: 'Rayo', home_score: 2, away_score: 1,
@@ -68,4 +75,16 @@ test('derivedMatchStory creates milestones from provider-neutral events', () => 
     ],
   });
   assert.deepEqual(story.map(item => item.type), ['opening_goal', 'equalizer', 'decisive_goal']);
+});
+
+test('derivedMatchStory excludes cancelled and missed goals', () => {
+  const story = derivedMatchStory({
+    home_team: 'A', away_team: 'B', home_score: 1, away_score: 0,
+    key_events: [
+      { minute: 10, type: 'Goal', type_text: 'Goal cancelled', team: 'A', player: 'No goal' },
+      { minute: 20, type: 'Goal', type_text: 'Penalty - Missed', team: 'B', player: 'Missed' },
+      { minute: 30, scoring_play: true, type: 'Goal', team: 'A', player: 'Winner' },
+    ],
+  });
+  assert.deepEqual(story.map(item => item.player), ['Winner']);
 });

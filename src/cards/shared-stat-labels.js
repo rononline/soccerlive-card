@@ -33,15 +33,39 @@ const STAT_KEY_MAP = {
   penaltyGoals:     'stat.penalty_goals',
 };
 
+const NORMALIZED_STAT_KEYS = Object.fromEntries(
+  Object.keys(STAT_KEY_MAP).map(key => [key.replace(/[^a-z0-9]/gi, '').toLowerCase(), key]),
+);
+
+Object.assign(NORMALIZED_STAT_KEYS, {
+  touchesoppbox: 'touchesInOppositionBox',
+  touchesoppositionbox: 'touchesInOppositionBox',
+  bigchance: 'bigChances',
+  bigchancemissed: 'bigChancesMissed',
+  bigchancemissedtitle: 'bigChancesMissed',
+  accuratepass: 'accuratePasses',
+  accuratepasses: 'accuratePasses',
+  yellowcard: 'yellowCards',
+  shotsontarget: 'shotsOnTarget',
+  shotsofftarget: 'shotsOffTarget',
+  corners: 'wonCorners',
+});
+
 /**
  * Returns a human-readable label for an ESPN stat key.
  * Falls back to camelCase → Title Case conversion when no translation exists.
  */
 export const translateStatKey = (key, t) => {
-  const i18nKey = STAT_KEY_MAP[key];
+  const rawKey = String(key || '');
+  const canonicalKey = NORMALIZED_STAT_KEYS[rawKey.replace(/[^a-z0-9]/gi, '').toLowerCase()] || rawKey;
+  const i18nKey = STAT_KEY_MAP[canonicalKey];
   if (i18nKey) {
     const translated = t(i18nKey);
     if (translated && translated !== i18nKey) return translated;
   }
-  return key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()).trim();
+  return rawKey
+    .replace(/[_-]+/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/^./, s => s.toUpperCase())
+    .trim();
 };

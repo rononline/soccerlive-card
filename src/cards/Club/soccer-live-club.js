@@ -5,6 +5,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from '../card-error.js';
 import { renderLoading } from '../loading-spinner.js';
 import { renderSoccerHeader } from '../shared-header.js';
+import { EVENT_I18N } from '../shared-event-i18n.js';
 import { soccerCardShellStyles } from '../card-shell.js';
 import {
   hasClubContent,
@@ -281,9 +282,11 @@ class SoccerLiveClubCard extends LitElement {
     const score = phase === 'pre'
       ? (usableMatchText(match.clock) || usableMatchText(match.date) || this._t('status.scheduled'))
       : `${usableMatchText(match.home_score) || '–'} – ${usableMatchText(match.away_score) || '–'}`;
+    const rawStatus = usableMatchText(match.status);
+    const statusKey = EVENT_I18N[String(rawStatus || '').trim().toLowerCase()];
     const status = phase === 'pre'
       ? this._t('status.scheduled')
-      : phase === 'post' ? this._t('status.full_time') : usableMatchText(match.status);
+      : phase === 'post' ? this._t('status.full_time') : (statusKey ? this._t(statusKey) : rawStatus);
     const venue = usableMatchText(match.venue);
     const hasLineup = (match.lineup_home?.length || match.lineup_away?.length || match.formation_home || match.formation_away);
     const hasStats = match.has_stats || Object.keys(match.home_statistics || {}).length || Object.keys(match.away_statistics || {}).length;
@@ -463,13 +466,13 @@ class SoccerLiveClubCard extends LitElement {
     const transfer = this._selectedTransfer;
     const item = (label, value) => value !== null && value !== undefined && value !== '' ? html`<div><span>${label}</span><strong>${value}</strong></div>` : '';
     if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedTransfer = null; }}>
-      <section class="clb-player-modal"><button @click=${() => { this._selectedTransfer = null; }}>×</button>
+      <section class="clb-player-modal"><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedTransfer = null; }}>×</button>
         ${transfer.photo ? html`<img src=${transfer.photo} alt="">` : html`<div class="clb-transfer-avatar">${transfer.direction === 'in' ? '↓' : '↑'}</div>`}<h3>${transfer.player}</h3><p>${transfer.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}</p>
         <div class="clb-player-facts">${item(this._t('club.from'), this._clubNameLabel(transfer.from))}${item(this._t('club.to'), this._clubNameLabel(transfer.to))}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), this._transferTypeLabel(transfer.type))}${item(this._t('club.transfer_fee'), this._transferFee(transfer))}</div>
       </section></div>`;
     if (!player) return '';
     return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>
-      <section class="clb-player-modal"><button @click=${() => { this._selectedPlayer = null; }}>×</button>
+      <section class="clb-player-modal"><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedPlayer = null; }}>×</button>
         ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${this._positionLabel(player.position)}</p>
         <div class="clb-player-facts">${item(this._t('club.market_value'), player.market_value ? this._formatValue(player.market_value) : '')}
           ${item(this._t('club.age_label'), player.age)}${item(this._t('club.shirt_number'), player.number)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
@@ -478,7 +481,7 @@ class SoccerLiveClubCard extends LitElement {
         ${Array.isArray(player.recent_matches) && player.recent_matches.length ? html`<div class="clb-player-recent">
           <h4>${this._t('club.recent_matches')}</h4>
           ${player.recent_matches.slice(0, 5).map(match => html`<div class="clb-recent-row">
-            <i class=${match.starter ? 'starter' : 'substitute'}>${match.starter ? 'B' : 'W'}</i>
+            <i class=${match.starter ? 'starter' : 'substitute'} aria-hidden="true">${match.starter ? 'XI' : '↥'}</i>
             <span><strong>${match.opponent || match.name}</strong><small>${match.starter ? this._t('club.starting_player') : this._t('club.substitute')}</small></span>
             <b class=${Number(match.rating) >= 7 ? 'good' : ''}>${match.rating || match.minutes || '–'}</b>
           </div>`)}

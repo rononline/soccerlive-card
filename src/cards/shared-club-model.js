@@ -301,12 +301,21 @@ export function selectionImpact(club) {
   const unavailableNames = new Set(injuries.map(item => String(item.player || '').trim().toLowerCase()));
   const unavailable = squad.filter(player => player?.injured || unavailableNames.has(String(player?.name || '').trim().toLowerCase()));
   if (!unavailable.length) return null;
+  const metrics = [
+    player => player.starts,
+    player => player.appearances,
+    player => player.minutes == null ? NaN : Number(player.minutes) / 90,
+  ];
+  const metric = metrics
+    .map((read, priority) => ({
+      read,
+      priority,
+      coverage: squad.filter(player => Number.isFinite(Number(read(player))) && Number(read(player)) >= 0).length,
+    }))
+    .sort((a, b) => b.coverage - a.coverage || a.priority - b.priority)[0]?.read;
   const load = player => {
-    for (const value of [player.starts, player.appearances, Number(player.minutes) / 90]) {
-      const number = Number(value);
-      if (Number.isFinite(number) && number >= 0) return number;
-    }
-    return 0;
+    const number = Number(metric?.(player));
+    return Number.isFinite(number) && number >= 0 ? number : 0;
   };
   const totalLoad = squad.reduce((sum, player) => sum + load(player), 0);
   const missingLoad = unavailable.reduce((sum, player) => sum + load(player), 0);
