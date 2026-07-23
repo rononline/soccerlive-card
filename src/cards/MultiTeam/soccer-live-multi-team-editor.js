@@ -65,10 +65,10 @@ class SoccerLiveMultiTeamEditor extends LitElement {
           ${entities.map((e, i) => html`
             <div class="entity-row">
               <select @change=${ev => this._entityChanged(ev, i)}>
-                ${!e || !this._allEntities.includes(e) ? html`<option value="${e}" selected>${e || '— select —'}</option>` : ''}
+                ${!e || !this._allEntities.includes(e) ? html`<option value="${e}" selected>${e || this._t('editor.sensor')}</option>` : ''}
                 ${this._allEntities.map(opt => html`<option value="${opt}" ?selected=${opt === e}>${opt}</option>`)}
               </select>
-              <button class="remove-btn" @click=${() => this._removeEntity(i)}>✕</button>
+              <button class="remove-btn" aria-label=${this._t('generic.remove')} title=${this._t('generic.remove')} @click=${() => this._removeEntity(i)}>✕</button>
             </div>
           `)}
         </div>

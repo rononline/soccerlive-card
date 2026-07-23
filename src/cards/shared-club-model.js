@@ -311,8 +311,13 @@ export function selectionImpact(club) {
       read,
       priority,
       coverage: squad.filter(player => Number.isFinite(Number(read(player))) && Number(read(player)) >= 0).length,
+      total: squad.reduce((sum, player) => {
+        const value = Number(read(player));
+        return sum + (Number.isFinite(value) && value >= 0 ? value : 0);
+      }, 0),
     }))
-    .sort((a, b) => b.coverage - a.coverage || a.priority - b.priority)[0]?.read;
+    .filter(item => item.coverage > 0 && item.total > 0)
+    .sort((a, b) => b.coverage - a.coverage || b.total - a.total || a.priority - b.priority)[0]?.read;
   const load = player => {
     const number = Number(metric?.(player));
     return Number.isFinite(number) && number >= 0 ? number : 0;

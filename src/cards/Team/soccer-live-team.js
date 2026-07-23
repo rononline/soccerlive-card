@@ -407,7 +407,9 @@ class SoccerLiveTeamCard extends LitElement {
     if (state === 'in') {
       const detail = match.status_detail && match.status_detail !== 'N/A' ? match.status_detail : '';
       const clk = match.clock && match.clock !== 'N/A' ? match.clock : '';
-      const txt = clk || detail || match.status || '';
+      const raw = detail || match.status || '';
+      const statusKey = EVENT_I18N[String(raw).trim().toLowerCase()];
+      const txt = clk || (statusKey ? this._t(statusKey) : raw);
       return html`<div class="clock"><span class="dot"></span>${txt}</div>`;
     }
     if (state === 'post') {

@@ -1,5 +1,5 @@
 import { LitElement, html, svg, css } from "lit-element";
-import { t, resolveLang } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles } from "../card-shell.js";
@@ -70,11 +70,17 @@ class SoccerLiveBracketCard extends LitElement {
 
   _formatDate(iso) {
     if (!iso) return '';
-    try {
-      const d = new Date(iso);
-      const month = this._t('month.' + (d.getMonth() + 1));
-      return `${d.getDate()} ${month}`;
-    } catch (e) { return ''; }
+    const d = parseMatchDate(iso);
+    if (!d) return '';
+    const month = this._t('month.' + (d.getMonth() + 1));
+    return `${d.getDate()} ${month}`;
+  }
+
+  _dateKey(value) {
+    const date = parseMatchDate(value);
+    if (!date) return '';
+    const tz = this.hass?.config?.time_zone;
+    return date.toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
   }
 
   _localizeRoundName(round) {
@@ -174,13 +180,13 @@ class SoccerLiveBracketCard extends LitElement {
 
   _formatTime(iso) {
     if (!iso) return '';
-    try {
-      const tz = this.hass?.config?.time_zone;
-      return new Date(iso).toLocaleTimeString([], {
-        hour: '2-digit', minute: '2-digit',
-        ...(tz ? { timeZone: tz } : {}),
-      });
-    } catch (e) { return ''; }
+    const date = parseMatchDate(iso);
+    if (!date) return '';
+    const tz = this.hass?.config?.time_zone;
+    return date.toLocaleTimeString([], {
+      hour: '2-digit', minute: '2-digit',
+      ...(tz ? { timeZone: tz } : {}),
+    });
   }
 
   _renderMyNextMatch(scheduleMatches) {
@@ -189,7 +195,7 @@ class SoccerLiveBracketCard extends LitElement {
     const next = scheduleMatches.find(m => {
       if (!(this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team))) return false;
       if (m.state === 'in') return true;
-      if (m.state === 'pre' && m.date) return new Date(m.date).getTime() > now;
+      if (m.state === 'pre' && m.date) return (parseMatchDate(m.date)?.getTime() || 0) > now;
       return false;
     });
     if (!next) return '';
@@ -209,7 +215,7 @@ class SoccerLiveBracketCard extends LitElement {
         <div class="mnb-meta">
           ${round ? html`<span class="mnb-round-tag">${round}</span>` : ''}
           ${!isLive && next.date ? (() => {
-            const diff = new Date(next.date).getTime() - now;
+            const diff = (parseMatchDate(next.date)?.getTime() || 0) - now;
             if (diff > 0 && diff < 24 * 3600 * 1000) {
               const h = Math.floor(diff / 3600000);
               const m = Math.floor((diff % 3600000) / 60000);
@@ -234,20 +240,19 @@ class SoccerLiveBracketCard extends LitElement {
     // Base filter: hide ESPN placeholder dates (post=must be past, pre=within 45 days)
     const relevant = matches.filter(m => {
       if (!m.date) return false;
-      const d = new Date(m.date).getTime();
+      const d = parseMatchDate(m.date)?.getTime();
+      if (!Number.isFinite(d)) return false;
       if (m.state === 'in') return true;
       if (m.state === 'post') return d <= now;
       return d >= now && d <= maxFuture;
     });
     const base = [...(relevant.length ? relevant : matches)]
-      .sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+      .sort((a, b) => (parseMatchDate(a.date)?.getTime() || 0) - (parseMatchDate(b.date)?.getTime() || 0));
 
     // Precompute chip counts
     const todayKey = new Date().toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
     const liveCount = base.filter(m => m.state === 'in').length;
-    const todayCount = base.filter(m => m.date
-      ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
-      : false).length;
+    const todayCount = base.filter(m => this._dateKey(m.date) === todayKey).length;
     const myTeamCount = this._myTeam
       ? base.filter(m => this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team)).length
       : 0;
@@ -264,14 +269,12 @@ class SoccerLiveBracketCard extends LitElement {
       : effectiveFilter === 'my-team'
         ? base.filter(m => this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team))
         : effectiveFilter === 'today'
-          ? base.filter(m => m.date
-              ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) === todayKey
-              : false)
+          ? base.filter(m => this._dateKey(m.date) === todayKey)
           : base;
 
     const byDate = {};
     for (const m of displayed) {
-      const key = m.date ? new Date(m.date).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {}) : '';
+      const key = this._dateKey(m.date);
       if (!byDate[key]) byDate[key] = [];
       byDate[key].push(m);
     }
@@ -455,8 +458,7 @@ class SoccerLiveBracketCard extends LitElement {
     return html`
       <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''} ${canNavSched ? 'sched-link' : ''}"
         @click=${canNavSched ? () => {
-          const tz = this.hass?.config?.time_zone;
-          this._schedScrollToDate = new Date(tieDate).toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
+          this._schedScrollToDate = this._dateKey(tieDate);
           this._schedFilter = 'all';
           this._activeTab = 'schedule';
         } : null}>

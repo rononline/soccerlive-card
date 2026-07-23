@@ -466,13 +466,13 @@ class SoccerLiveClubCard extends LitElement {
     const transfer = this._selectedTransfer;
     const item = (label, value) => value !== null && value !== undefined && value !== '' ? html`<div><span>${label}</span><strong>${value}</strong></div>` : '';
     if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedTransfer = null; }}>
-      <section class="clb-player-modal"><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedTransfer = null; }}>×</button>
+      <section class="clb-player-modal" role="dialog" aria-modal="true" aria-label=${transfer.player || this._t('club.transfers')}><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedTransfer = null; }}>×</button>
         ${transfer.photo ? html`<img src=${transfer.photo} alt="">` : html`<div class="clb-transfer-avatar">${transfer.direction === 'in' ? '↓' : '↑'}</div>`}<h3>${transfer.player}</h3><p>${transfer.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}</p>
         <div class="clb-player-facts">${item(this._t('club.from'), this._clubNameLabel(transfer.from))}${item(this._t('club.to'), this._clubNameLabel(transfer.to))}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), this._transferTypeLabel(transfer.type))}${item(this._t('club.transfer_fee'), this._transferFee(transfer))}</div>
       </section></div>`;
     if (!player) return '';
     return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>
-      <section class="clb-player-modal"><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedPlayer = null; }}>×</button>
+      <section class="clb-player-modal" role="dialog" aria-modal="true" aria-label=${player.name}><button aria-label=${this._t('generic.close')} title=${this._t('generic.close')} @click=${() => { this._selectedPlayer = null; }}>×</button>
         ${player.photo ? html`<img src=${player.photo} alt="">` : ''}<h3>${player.name}</h3><p>${this._positionLabel(player.position)}</p>
         <div class="clb-player-facts">${item(this._t('club.market_value'), player.market_value ? this._formatValue(player.market_value) : '')}
           ${item(this._t('club.age_label'), player.age)}${item(this._t('club.shirt_number'), player.number)}${item(this._t('club.nationality'), player.nationality)}${item(this._t('club.contract_until'), player.contract_until)}
@@ -625,7 +625,7 @@ class SoccerLiveClubCard extends LitElement {
             <div class="clb-pos-group">
               <div class="clb-pos">${this._t(key)}</div>
               ${players.map(p => html`
-                <div class="clb-player" role="button" tabindex="0" @click=${() => { this._selectedPlayer = p; }} @keydown=${event => { if (event.key === 'Enter') this._selectedPlayer = p; }}>
+                <div class="clb-player" role="button" tabindex="0" @click=${() => { this._selectedPlayer = p; }} @keydown=${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this._selectedPlayer = p; } }}>
                   <span class="clb-num">${p.number ?? '·'}</span>
                   <span class="clb-pname">${p.name}</span>
                   ${p.age != null ? html`<span class="clb-age">${this._t('club.age', { n: p.age })}</span>` : ''}
@@ -678,7 +678,7 @@ class SoccerLiveClubCard extends LitElement {
           return html`<span>${this._t(`club.${period}_window`)} ${year}<b>${count}</b></span>`;
         })}</div>` : ''}
         ${visible.map(tr => html`
-          <div class="clb-transfer" role="button" tabindex="0" @click=${() => { this._selectedTransfer = tr; }} @keydown=${event => { if (event.key === 'Enter') this._selectedTransfer = tr; }}>
+          <div class="clb-transfer" role="button" tabindex="0" @click=${() => { this._selectedTransfer = tr; }} @keydown=${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this._selectedTransfer = tr; } }}>
             <span class="clb-dir ${tr.direction}" title="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}"
                   aria-label="${tr.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}">${tr.direction === 'in' ? '↓' : '↑'}</span>
             <div class="clb-tinfo">

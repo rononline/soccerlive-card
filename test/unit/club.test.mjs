@@ -175,6 +175,16 @@ test('selectionImpact uses one common workload metric for the whole squad', () =
   assert.equal(impact.loadPercent, 50);
 });
 
+test('selectionImpact skips an all-zero metric when appearances carry workload', () => {
+  const impact = selectionImpact({
+    squad: [
+      { name: 'A', starts: 0, appearances: 10, injured: true },
+      { name: 'B', starts: 0, appearances: 30 },
+    ],
+  });
+  assert.equal(impact.loadPercent, 25);
+});
+
 test('seasonProgress calculates cumulative points and excludes friendlies', () => {
   const progress = seasonProgress([
     { state: 'post', date_iso: '2026-08-01T12:00:00Z', home_id: 10, away_id: 20, home_team: 'Us', away_team: 'A', home_score: 2, away_score: 0 },

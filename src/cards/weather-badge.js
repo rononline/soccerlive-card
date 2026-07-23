@@ -43,8 +43,10 @@ export async function renderWeatherBadge(venue, hass = null, config = null, venu
     const weather = await getWeather(coords.lat, coords.lon, kickoffISO);
     if (!weather) return html``;
 
-    const windTooltip = hass ? t('weather.wind', resolveLang(hass, config)) : 'Wind speed (Beaufort)';
-    const title = weather.forecast ? `${venue}: ${weather.description} (⏱)` : `${venue}: ${weather.description}`;
+    const lang = hass ? resolveLang(hass, config) : 'en';
+    const windTooltip = t('weather.wind', lang);
+    const description = t(weather.description_key || 'weather.unknown', lang);
+    const title = weather.forecast ? `${venue}: ${description} (⏱)` : `${venue}: ${description}`;
 
     return html`
       <div class="weather-badge" title="${title}">

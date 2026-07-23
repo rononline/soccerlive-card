@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.31.4 (2026-07-23)
+- Make hidden-finished filtering and Ticker ordering provider-neutral and date-aware
+- Parse Bracket schedule dates consistently across ISO and localized sensor formats
+- Translate live Team statuses and weather descriptions in all supported languages
+- Improve Club modal semantics, keyboard support and editor control labels
+- Ignore all-zero workload metrics when calculating unavailable squad impact
+- Add regressions for mixed match phases, localized dates and sparse player workload data
+
 ## v3.31.3 (2026-07-23)
 - Exclude cancelled, disallowed and missed goals from derived match stories
 - Avoid declaring a prediction winner when the highest percentages are tied

@@ -278,6 +278,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} matches',
     'generic.unknown_entity': 'Unknown entity',
     'generic.close': 'Close',
+    'generic.remove': 'Remove',
 
     'generic.unknown': 'Unknown',
     'generic.home': 'Home',
@@ -503,6 +504,16 @@ const TRANSLATIONS = {
 
     // Weather
     'weather.wind': 'Wind speed (Beaufort)',
+    'weather.clear': 'Clear',
+    'weather.partly_cloudy': 'Partly cloudy',
+    'weather.cloudy': 'Cloudy',
+    'weather.foggy': 'Foggy',
+    'weather.drizzle': 'Drizzle',
+    'weather.rain': 'Rain',
+    'weather.snow': 'Snow',
+    'weather.showers': 'Showers',
+    'weather.thunderstorm': 'Thunderstorm',
+    'weather.unknown': 'Unknown weather',
     // Editor labels
     'editor.sensor': 'Sensor',
     'editor.settings': 'Settings',
@@ -982,6 +993,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} wedstrijden',
     'generic.unknown_entity': 'Onbekende entiteit',
     'generic.close': 'Sluiten',
+    'generic.remove': 'Verwijderen',
 
     'generic.unknown': 'Onbekend',
     'generic.home': 'Thuis',
@@ -1199,6 +1211,16 @@ const TRANSLATIONS = {
     'tab.h2h': 'O.O.',
 
     'weather.wind': 'Windsnelheid (Beaufort)',
+    'weather.clear': 'Helder',
+    'weather.partly_cloudy': 'Gedeeltelijk bewolkt',
+    'weather.cloudy': 'Bewolkt',
+    'weather.foggy': 'Mistig',
+    'weather.drizzle': 'Motregen',
+    'weather.rain': 'Regen',
+    'weather.snow': 'Sneeuw',
+    'weather.showers': 'Buien',
+    'weather.thunderstorm': 'Onweer',
+    'weather.unknown': 'Onbekend weer',
     // Editorlabels
     'editor.sensor': 'Sensor',
     'editor.settings': 'Instellingen',
@@ -1633,6 +1655,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} partite',
     'generic.unknown_entity': 'Entità sconosciuta',
     'generic.close': 'Chiudi',
+    'generic.remove': 'Rimuovi',
 
     'generic.unknown': 'Sconosciuto',
     'generic.home': 'Casa',
@@ -1709,6 +1732,16 @@ const TRANSLATIONS = {
     'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocità del vento (Beaufort)',
+    'weather.clear': 'Sereno',
+    'weather.partly_cloudy': 'Parzialmente nuvoloso',
+    'weather.cloudy': 'Nuvoloso',
+    'weather.foggy': 'Nebbia',
+    'weather.drizzle': 'Pioggerella',
+    'weather.rain': 'Pioggia',
+    'weather.snow': 'Neve',
+    'weather.showers': 'Rovesci',
+    'weather.thunderstorm': 'Temporale',
+    'weather.unknown': 'Meteo sconosciuto',
     // Editor labels
     'editor.sensor': 'Sensore',
     'editor.settings': 'Impostazioni',
@@ -2018,6 +2051,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} matchs',
     'generic.unknown_entity': 'Entité inconnue',
     'generic.close': 'Fermer',
+    'generic.remove': 'Supprimer',
 
     'generic.unknown': 'Inconnu',
     'generic.home': 'Domicile',
@@ -2094,6 +2128,16 @@ const TRANSLATIONS = {
     'tab.h2h': 'H2H',
 
     'weather.wind': 'Vitesse du vent (Beaufort)',
+    'weather.clear': 'Dégagé',
+    'weather.partly_cloudy': 'Partiellement nuageux',
+    'weather.cloudy': 'Nuageux',
+    'weather.foggy': 'Brouillard',
+    'weather.drizzle': 'Bruine',
+    'weather.rain': 'Pluie',
+    'weather.snow': 'Neige',
+    'weather.showers': 'Averses',
+    'weather.thunderstorm': 'Orage',
+    'weather.unknown': 'Météo inconnue',
     // Editor labels
     'editor.sensor': 'Capteur',
     'editor.settings': 'Paramètres',
@@ -2403,6 +2447,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} partidos',
     'generic.unknown_entity': 'Entidad desconocida',
     'generic.close': 'Cerrar',
+    'generic.remove': 'Eliminar',
 
     'generic.unknown': 'Desconocido',
     'generic.home': 'Local',
@@ -2479,6 +2524,16 @@ const TRANSLATIONS = {
     'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocidad del viento (Beaufort)',
+    'weather.clear': 'Despejado',
+    'weather.partly_cloudy': 'Parcialmente nublado',
+    'weather.cloudy': 'Nublado',
+    'weather.foggy': 'Niebla',
+    'weather.drizzle': 'Llovizna',
+    'weather.rain': 'Lluvia',
+    'weather.snow': 'Nieve',
+    'weather.showers': 'Chubascos',
+    'weather.thunderstorm': 'Tormenta',
+    'weather.unknown': 'Tiempo desconocido',
     // Editor labels
     'editor.sensor': 'Sensor',
     'editor.settings': 'Ajustes',
@@ -2771,6 +2826,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} Spiele',
     'generic.unknown_entity': 'Unbekannte Entität',
     'generic.close': 'Schließen',
+    'generic.remove': 'Entfernen',
 
     'generic.unknown': 'Unbekannt',
     'generic.home': 'Heim',
@@ -2847,6 +2903,16 @@ const TRANSLATIONS = {
     'tab.h2h': 'H2H',
 
     'weather.wind': 'Windgeschwindigkeit (Beaufort)',
+    'weather.clear': 'Klar',
+    'weather.partly_cloudy': 'Teilweise bewölkt',
+    'weather.cloudy': 'Bewölkt',
+    'weather.foggy': 'Neblig',
+    'weather.drizzle': 'Nieselregen',
+    'weather.rain': 'Regen',
+    'weather.snow': 'Schnee',
+    'weather.showers': 'Schauer',
+    'weather.thunderstorm': 'Gewitter',
+    'weather.unknown': 'Unbekanntes Wetter',
     // Stat labels
     'stat.assists': 'Vorlagen',
     'stat.goals': 'Tore',
@@ -3174,6 +3240,7 @@ const TRANSLATIONS = {
     'generic.matches_count': '{n} jogos',
     'generic.unknown_entity': 'Entidade desconhecida',
     'generic.close': 'Fechar',
+    'generic.remove': 'Remover',
 
     'generic.unknown': 'Desconhecido',
     'generic.home': 'Casa',
@@ -3250,6 +3317,16 @@ const TRANSLATIONS = {
     'tab.h2h': 'H2H',
 
     'weather.wind': 'Velocidade do vento (Beaufort)',
+    'weather.clear': 'Céu limpo',
+    'weather.partly_cloudy': 'Parcialmente nublado',
+    'weather.cloudy': 'Nublado',
+    'weather.foggy': 'Nevoeiro',
+    'weather.drizzle': 'Chuvisco',
+    'weather.rain': 'Chuva',
+    'weather.snow': 'Neve',
+    'weather.showers': 'Aguaceiros',
+    'weather.thunderstorm': 'Trovoada',
+    'weather.unknown': 'Tempo desconhecido',
     // Editor labels
     'editor.sensor': 'Sensor',
     'editor.settings': 'Definições',

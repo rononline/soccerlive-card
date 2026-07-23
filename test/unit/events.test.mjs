@@ -34,8 +34,9 @@ test('classifyEvent: an odd substitution with one athlete still renders neutrall
   assert.deepEqual(c.athletes, ['S. van Persie']);
 });
 
-test('isGoalEvent: excludes missed/disallowed', () => {
+test('isGoalEvent: excludes missed, disallowed and cancelled goals', () => {
   assert.equal(isGoalEvent({ type: 'Goal' }), true);
   assert.equal(isGoalEvent({ type: 'Goal', type_text: 'Goal Disallowed' }), false);
+  assert.equal(isGoalEvent({ type: 'Goal', type_text: 'Goal Cancelled' }), false);
   assert.equal(isGoalEvent({ type_text: 'Penalty - Missed' }), false);
 });

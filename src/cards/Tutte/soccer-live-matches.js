@@ -13,6 +13,7 @@ import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '..
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { standingText } from '../shared-standing.js';
 import { kickoffMinutes, kickoffDurationParts, prematchContext, reviewContext, predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
+import { isFinishedMatch } from '../shared-match-order.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -370,7 +371,7 @@ class SoccerLiveMatchesCard extends LitElement {
     if (this._config.filter_venue === 'away' && stateObj.attributes.team_id) matches = matches.filter(match => String(match.away_id) === String(stateObj.attributes.team_id));
 
     if (!this.showFinishedMatches) {
-      matches = matches.filter((m) => m.status !== "Full Time");
+      matches = matches.filter((m) => !isFinishedMatch(m));
     }
     const smartOrder = this._config.smart_order === true ||
       (this._config.smart_order === undefined && stateObj.attributes.recommended_match_order === 'smart');

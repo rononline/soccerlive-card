@@ -174,6 +174,7 @@ function _buildWeather(temperature, weather_code, wind_speed, forecast = false) 
     wind_unit: 'BFT',
     icon: getWeatherIcon(weather_code),
     description: getWeatherDescription(weather_code),
+    description_key: getWeatherDescriptionKey(weather_code),
     forecast,
     timestamp: Date.now()
   };
@@ -297,6 +298,19 @@ function getWeatherDescription(code) {
     95: 'Thunderstorm', 96: 'Thunderstorm + hail', 99: 'Thunderstorm + heavy hail'
   };
   return descriptions[code] || 'Unknown';
+}
+
+function getWeatherDescriptionKey(code) {
+  if (code === 0) return 'weather.clear';
+  if (code === 1 || code === 2) return 'weather.partly_cloudy';
+  if (code === 3) return 'weather.cloudy';
+  if (code === 45 || code === 48) return 'weather.foggy';
+  if (code >= 51 && code <= 55) return 'weather.drizzle';
+  if (code >= 61 && code <= 65) return 'weather.rain';
+  if (code >= 71 && code <= 77) return 'weather.snow';
+  if (code >= 80 && code <= 86) return 'weather.showers';
+  if (code === 95 || code === 96 || code === 99) return 'weather.thunderstorm';
+  return 'weather.unknown';
 }
 
 export { getVenueCoordinates, getWeather, KNOWN_VENUES };

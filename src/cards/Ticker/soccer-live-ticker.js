@@ -5,6 +5,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderSyncStatusOrEmpty } from "../card-error.js";
 import { displayCompetitionName } from '../shared-competition.js';
+import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 
 class SoccerLiveTickerCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _sel: {} }; }
@@ -95,7 +96,7 @@ class SoccerLiveTickerCard extends LitElement {
           </div>
         </div>
         ${league ? html`<div class="td-comp">${league}</div>` : ''}
-        <button class="td-close" @click=${() => this._sel = null} aria-label="close">
+        <button class="td-close" @click=${() => this._sel = null} aria-label=${this._t('generic.close')} title=${this._t('generic.close')}>
           <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
         </button>
       </div>
@@ -125,10 +126,7 @@ class SoccerLiveTickerCard extends LitElement {
     if (!matches.length) return renderSyncStatusOrEmpty(attrs, (k) => this._t(k),
       () => html`<ha-card><div class="empty">${this._t('ui.no_match_data')}</div></ha-card>`);
 
-    const sorted = [...matches].sort((a, b) => {
-      const order = { in: 0, pre: 1, post: 2 };
-      return (order[a.state] ?? 3) - (order[b.state] ?? 3);
-    });
+    const sorted = sortMatchesByStateAndDate(matches);
 
     const filter = this._config.filter;
     let visible = filter === 'live' ? sorted.filter(m => m.state === 'in') : sorted;
