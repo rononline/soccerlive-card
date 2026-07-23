@@ -170,7 +170,8 @@
     const mode = params.get("mode") || "card";       // card | editor | minimal | multiteam | club
     if (mode === "matches") {
       Object.assign(attrs.matches[0], {
-        league_name: "Eredivisie", week_number: 1, venue: "Stadion Feijenoord",
+        league_name: "Club Friendlies", week_number: 1, venue: "Stadion Feijenoord",
+        date_iso: new Date(Date.now() + ((2 * 24 + 22) * 60 + 38) * 60000).toISOString(),
         preview: { home_form: "WWDWW", away_form: "LDWLL", h2h_count: 5 },
         home_rank: 2, home_points: 7, away_rank: 11, away_points: 3,
         injuries_home: [{ player: "Spits", reason: "Knee" }],

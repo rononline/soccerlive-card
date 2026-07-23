@@ -4,6 +4,20 @@ export function kickoffMinutes(match, now = Date.now()) {
   return Number.isFinite(time) ? Math.ceil((time - now) / 60000) : null;
 }
 
+export function kickoffDurationParts(totalMinutes, maxParts = 2) {
+  if (!Number.isFinite(totalMinutes) || totalMinutes <= 0) return [];
+  let remaining = Math.ceil(totalMinutes);
+  const values = [
+    ['day', Math.floor(remaining / 1440)],
+    ['hour', Math.floor((remaining % 1440) / 60)],
+    ['minute', remaining % 60],
+  ];
+  return values
+    .filter(([, value]) => value > 0)
+    .slice(0, Math.max(1, maxParts))
+    .map(([unit, value]) => ({ unit, value }));
+}
+
 export function formResults(value) {
   if (Array.isArray(value)) return value.map(item => String(item?.result || item || '').slice(0, 1).toUpperCase()).filter(item => 'WDL'.includes(item)).slice(-5);
   return String(value || '').toUpperCase().split('').filter(item => 'WDL'.includes(item)).slice(-5);

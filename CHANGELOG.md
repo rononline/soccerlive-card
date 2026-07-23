@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.30.1 (2026-07-23)
+- Localize provider competition names such as `Club Friendlies` in the Matches detail popup
+- Replace the minute-only kickoff countdown with a compact, localized days/hours/minutes duration
+- Add unit and Playwright regression coverage for both popup refinements
+
 ## v3.30.0 (2026-07-23)
 - Turn the Matches detail popup into a phase-aware pre-match/live/post-match dossier
 - Add optional kickoff countdown, competition/round, venue, broadcasts, weather, form, standings, team averages, H2H, prediction, odds and absentees

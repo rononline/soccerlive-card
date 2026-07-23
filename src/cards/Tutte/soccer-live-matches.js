@@ -12,7 +12,7 @@ import { renderSyncStatusOrEmpty } from '../card-error.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { standingText } from '../shared-standing.js';
-import { kickoffMinutes, prematchContext, reviewContext } from '../shared-match-popup-model.js';
+import { kickoffMinutes, kickoffDurationParts, prematchContext, reviewContext } from '../shared-match-popup-model.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -856,10 +856,18 @@ class SoccerLiveMatchesCard extends LitElement {
       ? [m.weather.icon, m.weather.temperature != null ? `${m.weather.temperature}°` : '', m.weather.wind].filter(Boolean).join(' ')
       : '';
     const hasContext = context.competition || context.round !== '' || minutes != null || m.venue || weather || (m.broadcasts || []).length;
+    const durationParts = kickoffDurationParts(minutes);
+    const duration = durationParts.map(({ unit, value }) => this._t(
+      `popup.duration_${unit}${value === 1 ? '' : 's'}`,
+      { n: value },
+    ));
+    const countdown = duration.length > 1
+      ? `${duration.slice(0, -1).join(', ')} ${this._t('popup.duration_and')} ${duration.at(-1)}`
+      : duration[0];
     return html`<div class="mp-prematch">
-      ${minutes != null && minutes > 0 ? html`<div class="mp-countdown">${this._t('popup.kickoff_in', { n: minutes })}</div>` : ''}
+      ${countdown ? html`<div class="mp-countdown">${this._t('popup.kickoff_in', { value: countdown })}</div>` : ''}
       ${hasContext ? html`<div class="mp-context">
-        ${context.competition ? html`<span>🏆 ${context.competition}</span>` : ''}
+        ${context.competition ? html`<span>🏆 ${this._displayCompetitionName(context.competition)}</span>` : ''}
         ${context.round !== '' ? html`<span>№ ${this._t('popup.round')} ${context.round}</span>` : ''}
         ${weather ? html`<span>${weather}</span>` : ''}
       </div>${renderMatchMeta(m, { lang, t: (key, vars) => this._t(key, vars), showDate: true })}` : ''}

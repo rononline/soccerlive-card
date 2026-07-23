@@ -236,4 +236,7 @@ test('matches — prematch detail popup is capability based', async ({ page }) =
   await expect(dialog).toContainText('Positie op de ranglijst');
   await expect(dialog).toContainText('Voorspelling');
   await expect(dialog).toContainText('Databron');
+  await expect(dialog).toContainText('Oefenwedstrijd');
+  await expect(dialog.locator('.mp-countdown')).toContainText(/Aftrap over \d+ dagen?( en \d+ uur)?/);
+  await expect(dialog.locator('.mp-countdown')).not.toContainText(/^\s*Aftrap over \d+ min\s*$/);
 });

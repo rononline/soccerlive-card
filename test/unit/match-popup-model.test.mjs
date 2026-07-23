@@ -1,11 +1,24 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kickoffMinutes, formResults, prematchContext, reviewContext } from '../../src/cards/shared-match-popup-model.js';
+import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext } from '../../src/cards/shared-match-popup-model.js';
 
 test('kickoffMinutes uses ISO time and remains null without a valid date', () => {
   const now = new Date('2026-07-23T12:00:00Z').getTime();
   assert.equal(kickoffMinutes({ date_iso: '2026-07-23T13:30:00Z' }, now), 90);
   assert.equal(kickoffMinutes({}, now), null);
+});
+
+test('kickoffDurationParts presents a compact human duration', () => {
+  assert.deepEqual(kickoffDurationParts(4238), [
+    { unit: 'day', value: 2 },
+    { unit: 'hour', value: 22 },
+  ]);
+  assert.deepEqual(kickoffDurationParts(95), [
+    { unit: 'hour', value: 1 },
+    { unit: 'minute', value: 35 },
+  ]);
+  assert.deepEqual(kickoffDurationParts(8), [{ unit: 'minute', value: 8 }]);
+  assert.deepEqual(kickoffDurationParts(0), []);
 });
 
 test('prematchContext normalizes form, standings and h2h capability', () => {
