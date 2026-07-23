@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.31.1 (2026-07-23)
+- Localize provider club placeholders such as `Free agent` inside the Club transfer popup
+- Reuse the same club-name and transfer-type translation helpers in transfer lists and popup details
+- Add a Dutch Playwright regression for an outgoing contract transfer to a free agent
+
 ## v3.31.0 (2026-07-23)
 - Compare pre-match expectations with the final result and optional xG in Match Center and the Matches detail popup
 - Derive a compact live/post-match story from provider-neutral goal and red-card events when no provider story exists

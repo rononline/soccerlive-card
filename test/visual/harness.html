@@ -115,7 +115,10 @@
           { id: 4, name: "Spits", number: 9, position: "Attacker", age: 27, market_value: 15000000, injured: true, goals: 12 },
         ],
         injuries: [{ player: "Spits", type: "Knee", expected_return: "August" }],
-        transfers: [{ player: "Nieuwe speler", player_id: 5, direction: "in", from: "Andere club", to: "Feyenoord", date: "2026-07-16", type: "Permanent", fee: 5000000 }],
+        transfers: [
+          { player: "Nieuwe speler", player_id: 5, direction: "in", from: "Andere club", to: "Feyenoord", date: "2026-07-16", type: "Permanent", fee: 5000000 },
+          { player: "Calvin Stengs", player_id: 6, direction: "out", from: "Feyenoord", to: "Free agent", date: "2026-07-22", type: "Contract" },
+        ],
       },
       club_changes: [{ type: "transfer_added", player: "Nieuwe speler", direction: "in" }],
     };

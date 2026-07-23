@@ -465,7 +465,7 @@ class SoccerLiveClubCard extends LitElement {
     if (transfer) return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedTransfer = null; }}>
       <section class="clb-player-modal"><button @click=${() => { this._selectedTransfer = null; }}>×</button>
         ${transfer.photo ? html`<img src=${transfer.photo} alt="">` : html`<div class="clb-transfer-avatar">${transfer.direction === 'in' ? '↓' : '↑'}</div>`}<h3>${transfer.player}</h3><p>${transfer.direction === 'in' ? this._t('club.transfer_in') : this._t('club.transfer_out')}</p>
-        <div class="clb-player-facts">${item(this._t('club.from'), transfer.from)}${item(this._t('club.to'), transfer.to)}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), this._transferTypeLabel(transfer.type))}${item(this._t('club.transfer_fee'), this._transferFee(transfer))}</div>
+        <div class="clb-player-facts">${item(this._t('club.from'), this._clubNameLabel(transfer.from))}${item(this._t('club.to'), this._clubNameLabel(transfer.to))}${item(this._t('club.transfer_date'), formatTransferDate(transfer.date))}${item(this._t('club.transfer_type'), this._transferTypeLabel(transfer.type))}${item(this._t('club.transfer_fee'), this._transferFee(transfer))}</div>
       </section></div>`;
     if (!player) return '';
     return html`<div class="clb-player-overlay" @click=${event => { if (event.target === event.currentTarget) this._selectedPlayer = null; }}>

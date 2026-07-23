@@ -201,6 +201,14 @@ test('club — analysis, comparison and transfer top-layer popup', async ({ page
   await expect(dialog).toHaveAttribute('open', '');
   await expect(dialog).toContainText('Nieuwe speler');
   await expect(dialog).toContainText('Andere club');
+  await page.evaluate(() => {
+    document.querySelector('soccer-live-club')._selectedTransfer = null;
+    const root = document.querySelector('soccer-live-club').shadowRoot;
+    [...root.querySelectorAll('.clb-transfer')].find(row => row.textContent.includes('Calvin Stengs')).click();
+  });
+  await expect(dialog).toContainText('Calvin Stengs');
+  await expect(dialog).toContainText('Transfervrij');
+  await expect(dialog).not.toContainText('Free agent');
 });
 
 test('club — dashboard mode and configured section order', async ({ page }) => {
