@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.31.10 (2026-07-24)
+- Color Match Center H2H scores from the tracked team's perspective instead of the selected fixture's home side
+- Prefer exact team IDs with normalized team-name fallback and use neutral styling when the tracked team is unknown
+- Use singular countdown day labels at exactly one day in every supported language
+- Add H2H outcome regression coverage
+
 ## v3.31.9 (2026-07-24)
 - Complete the source migration from `lit-element` imports to the unified `lit` package
 - Remove `lit-element` as a direct dependency while retaining Lit's required transitive module

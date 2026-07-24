@@ -345,7 +345,7 @@ class SoccerLiveCountdownCard extends LitElement {
     }
 
     const countdown = this._countdown(match.date);
-    const lDay = this._t('cd.days') || 'days';
+    const lDay = this._t(countdown?.days === 1 ? 'cd.day' : 'cd.days') || (countdown?.days === 1 ? 'day' : 'days');
     const lHrs = this._t('cd.hrs') || 'hrs';
     const lMin = this._t('cd.min') || 'min';
     const lSec = this._t('cd.sec') || 'sec';

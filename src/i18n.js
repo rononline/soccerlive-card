@@ -229,7 +229,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': '{n} min ago',
     'time.n_h_ago': '{n} h ago',
     'time.n_d_ago': '{n} d ago',
-    'cd.days': 'days', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'sec',
+    'cd.day': 'day', 'cd.days': 'days', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'sec',
 
     // Lineup
     'lineup.bench': 'Bench',
@@ -954,7 +954,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': '{n} min geleden',
     'time.n_h_ago': '{n} uur geleden',
     'time.n_d_ago': '{n} dagen geleden',
-    'cd.days': 'dagen', 'cd.hrs': 'uur', 'cd.min': 'min', 'cd.sec': 'sec',
+    'cd.day': 'dag', 'cd.days': 'dagen', 'cd.hrs': 'uur', 'cd.min': 'min', 'cd.sec': 'sec',
 
     'lineup.bench': 'Bank',
     'lineup.empty.title': 'Opstellingen niet beschikbaar',
@@ -1622,7 +1622,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': '{n} min fa',
     'time.n_h_ago': '{n} h fa',
     'time.n_d_ago': '{n} g fa',
-    'cd.days': 'giorni', 'cd.hrs': 'ore', 'cd.min': 'min', 'cd.sec': 'sec',
+    'cd.day': 'giorno', 'cd.days': 'giorni', 'cd.hrs': 'ore', 'cd.min': 'min', 'cd.sec': 'sec',
 
     'lineup.bench': 'Panchina',
     'lineup.empty.title': 'Formazioni non disponibili',
@@ -2022,7 +2022,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': 'il y a {n} min',
     'time.n_h_ago': 'il y a {n} h',
     'time.n_d_ago': 'il y a {n} j',
-    'cd.days': 'jours', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'sec',
+    'cd.day': 'jour', 'cd.days': 'jours', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'sec',
 
     'lineup.bench': 'Banc',
     'lineup.empty.title': 'Compositions non disponibles',
@@ -2422,7 +2422,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': 'hace {n} min',
     'time.n_h_ago': 'hace {n} h',
     'time.n_d_ago': 'hace {n} d',
-    'cd.days': 'días', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'seg',
+    'cd.day': 'día', 'cd.days': 'días', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'seg',
 
     'lineup.bench': 'Banquillo',
     'lineup.empty.title': 'Alineaciones no disponibles',
@@ -2805,7 +2805,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': 'vor {n} Min.',
     'time.n_h_ago': 'vor {n} Std.',
     'time.n_d_ago': 'vor {n} T.',
-    'cd.days': 'Tage', 'cd.hrs': 'Std', 'cd.min': 'Min', 'cd.sec': 'Sek',
+    'cd.day': 'Tag', 'cd.days': 'Tage', 'cd.hrs': 'Std', 'cd.min': 'Min', 'cd.sec': 'Sek',
 
     'lineup.bench': 'Bank',
     'lineup.empty.title': 'Aufstellungen nicht verfügbar',
@@ -3223,7 +3223,7 @@ const TRANSLATIONS = {
     'time.n_min_ago': 'há {n} min',
     'time.n_h_ago': 'há {n} h',
     'time.n_d_ago': 'há {n} d',
-    'cd.days': 'dias', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'seg',
+    'cd.day': 'dia', 'cd.days': 'dias', 'cd.hrs': 'hrs', 'cd.min': 'min', 'cd.sec': 'seg',
 
     'lineup.bench': 'Banco',
     'lineup.empty.title': 'Escalações não disponíveis',

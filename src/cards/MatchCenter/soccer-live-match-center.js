@@ -18,6 +18,7 @@ import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js';
 import { predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
 import { sortMatchesByStateAndDate } from '../shared-match-order.js';
+import { h2hResult } from '../shared-h2h-model.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
@@ -189,7 +190,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
           ${this._activeTab === 'stats'     ? this._renderStats(match)    : ''}
           ${this._activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
           ${this._activeTab === 'lineup'    ? this._renderLineup(match)   : ''}
-          ${this._activeTab === 'h2h'       ? this._renderH2H(match)      : ''}
+          ${this._activeTab === 'h2h'       ? this._renderH2H(match, attrs) : ''}
         </div>
       </ha-card>
     `;
@@ -494,7 +495,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     `;
   }
 
-  _renderH2H(match) {
+  _renderH2H(match, attrs = {}) {
     const h2h = match.head_to_head || [];
     const reportedCount = Number(match.preview?.h2h_count || 0);
     if (!h2h.length) {
@@ -502,24 +503,20 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ? this._t('match.h2h_available', { n: reportedCount })
         : this._t('ui.no_h2h_yet')}</p>`;
     }
-    const currentHome = (match.home_team || '').toLowerCase();
+    const tracked = {
+      id: attrs.team_id ?? null,
+      name: this._config.team_name || this._config.my_team || attrs.team_name || '',
+    };
     return html`
       <div class="h2h-list">
         ${h2h.map(m => {
-          const hs  = parseInt(m.home_score ?? m.home_goals);
-          const as_ = parseInt(m.away_score ?? m.away_goals);
-          const hw  = !isNaN(hs) && !isNaN(as_) && hs > as_;
-          const aw  = !isNaN(hs) && !isNaN(as_) && as_ > hs;
-          const h2hHomeIsOurs = currentHome && m.home_team && m.home_team.toLowerCase().includes(currentHome);
-          const ourWon  = h2hHomeIsOurs ? hw : aw;
-          const ourLost = h2hHomeIsOurs ? aw : hw;
-          const scoreClass = currentHome ? (ourWon ? 'our-win' : ourLost ? 'our-loss' : 'draw') : (hw ? 'home-win' : aw ? 'away-win' : 'draw');
+          const result = h2hResult(m, tracked);
           return html`
             <div class="h2h-row">
               <span class="h2h-date">${formatDateOnly(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split('T')[0]}</span>
-              <span class="h2h-team ${hw ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
-              <span class="h2h-score ${scoreClass}">${Number.isFinite(hs) ? hs : '?'}–${Number.isFinite(as_) ? as_ : '?'}</span>
-              <span class="h2h-team right ${aw ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>
+              <span class="h2h-team ${result.homeWon ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
+              <span class="h2h-score ${result.scoreClass}">${Number.isFinite(result.homeScore) ? result.homeScore : '?'}–${Number.isFinite(result.awayScore) ? result.awayScore : '?'}</span>
+              <span class="h2h-team right ${result.awayWon ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>
             </div>
           `;
         })}
@@ -635,11 +632,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .h2h-team.right { text-align: right; }
       .h2h-team.win { font-weight: 700; }
       .h2h-score { min-width: 46px; text-align: center; font-weight: 700; }
-      .h2h-score.home-win { color: var(--cl-accent, #6366f1); }
-      .h2h-score.away-win { color: #f43f5e; }
       .h2h-score.our-win { color: var(--cl-green); }
       .h2h-score.our-loss { color: var(--cl-live); }
       .h2h-score.draw { color: var(--cl-text-2, #94a3b8); }
+      .h2h-score.neutral { color: var(--cl-text); }
       /* Shared */
       .empty { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 12px; padding: 24px 16px; margin: 0; }
     `];
