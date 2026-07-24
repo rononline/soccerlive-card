@@ -1,4 +1,4 @@
-import { html, css } from 'lit-element';
+import { html, css } from 'lit';
 
 /**
  * Shared header component matching the Team card design contract.

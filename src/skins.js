@@ -1,4 +1,4 @@
-import { css } from "lit-element";
+import { css } from "lit";
 import { normalizeCssColor, hexToRgbTriplet, getAutoColors, buildGradient, clampOpacity, normalizeWatermarkSize, sanitizeWatermarkUrl } from "./skin-colors.js";
 import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults } from "./skin-config.js";
 

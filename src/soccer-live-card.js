@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from './i18n.js';
 
 import "./cards/Standings/soccer-live-standings.js";

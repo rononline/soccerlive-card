@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from '../../i18n.js';
 import { scoreText } from '../shared-score.js';
 import { standingText } from '../shared-standing.js';

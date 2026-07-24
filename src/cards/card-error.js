@@ -1,4 +1,4 @@
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { syncStatusInfo } from './sync-status.js';
 
 // For real errors: wrong entity, integration down, timeout (red accent)

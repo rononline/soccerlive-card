@@ -1,4 +1,4 @@
-import { html, css } from 'lit-element';
+import { html, css } from 'lit';
 
 /**
  * Shared match meta component: venue row + broadcast/attendance/link chips.

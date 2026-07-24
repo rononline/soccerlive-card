@@ -1,4 +1,4 @@
-import { html, css } from 'lit-element';
+import { html, css } from 'lit';
 
 export const spinnerStyles = css`
   .spinner-container {

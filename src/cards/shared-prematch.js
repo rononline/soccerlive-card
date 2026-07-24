@@ -2,7 +2,7 @@
 // Match Center cards. Shown for upcoming and live matches (hidden once finished)
 // so the pre-match snapshot stays visible as context during the game; each
 // returns '' when the match doesn't carry the data, so nothing shows when empty.
-import { html, css } from 'lit-element';
+import { html, css } from 'lit';
 import { translateAdvice } from './shared-advice.js';
 import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals, formatGoalLine } from './shared-prematch-model.js';
 

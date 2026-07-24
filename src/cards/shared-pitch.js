@@ -2,7 +2,7 @@
 // Used by the MatchCenter, Lineup and popup (Team / Tutte) cards so the
 // formation view is defined and styled in a single place.
 
-import { html, css } from "lit-element";
+import { html, css } from "lit";
 
 /** Parse "4-3-3" / "4-4-1-1" into outfield line counts. Lenient: keeps any
  *  positive integers, so partial/odd formations still render something. */

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { t, resolveLang, formatMatchDateFull, formatDateOnly } from '../../i18n.js';
 import { scoreText } from '../shared-score.js';
 import { skinStyles, applySkin } from '../../skins.js';
@@ -496,7 +496,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   _renderH2H(match) {
     const h2h = match.head_to_head || [];
-    if (!h2h.length) return html`<p class="empty">${this._t('ui.no_h2h_yet')}</p>`;
+    const reportedCount = Number(match.preview?.h2h_count || 0);
+    if (!h2h.length) {
+      return html`<p class="empty">${reportedCount
+        ? this._t('match.h2h_available', { n: reportedCount })
+        : this._t('ui.no_h2h_yet')}</p>`;
+    }
     const currentHome = (match.home_team || '').toLowerCase();
     return html`
       <div class="h2h-list">

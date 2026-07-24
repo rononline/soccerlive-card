@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { parseMatchDate, resolveLang, t } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";

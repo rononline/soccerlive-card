@@ -1,4 +1,4 @@
-import { html, css } from 'lit-element';
+import { html, css } from 'lit';
 import { t, resolveLang } from '../i18n.js';
 import { getVenueCoordinates, getWeather } from './weather.js';
 

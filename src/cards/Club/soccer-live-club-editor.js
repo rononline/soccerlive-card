@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
 import { normalizeClubSectionOrder } from '../shared-club-model.js';

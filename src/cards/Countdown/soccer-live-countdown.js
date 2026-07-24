@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { t, resolveLang, parseMatchDate } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";

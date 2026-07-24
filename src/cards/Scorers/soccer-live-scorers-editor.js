@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { renderLanguageControl } from '../editor-helper.js';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
