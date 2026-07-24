@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.31.9 (2026-07-24)
+- Complete the source migration from `lit-element` imports to the unified `lit` package
+- Remove `lit-element` as a direct dependency while retaining Lit's required transitive module
+- Show the reported H2H encounter count in Match Center when detailed H2H rows are not available
+- Keep the committed source and production bundle synchronized
+
 ## v3.31.8 (2026-07-24)
 - Use `date_iso` with a localized-date fallback throughout Matches, Schedule, Team Competitions and Bracket
 - Keep undated results from replacing the latest dated result in Team Competitions
