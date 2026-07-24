@@ -6,6 +6,7 @@ import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from '../shared-competition.js';
 import { renderSyncStatusOrEmpty } from '../card-error.js';
 import { scoreText } from '../shared-score.js';
+import { matchTimestamp } from '../shared-match-order.js';
 
 class SoccerLiveBracketCard extends LitElement {
   static get properties() {
@@ -81,6 +82,10 @@ class SoccerLiveBracketCard extends LitElement {
     if (!date) return '';
     const tz = this.hass?.config?.time_zone;
     return date.toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
+  }
+
+  _matchDate(match) {
+    return match?.date_iso || match?.date || '';
   }
 
   _localizeRoundName(round) {
@@ -195,7 +200,7 @@ class SoccerLiveBracketCard extends LitElement {
     const next = scheduleMatches.find(m => {
       if (!(this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team))) return false;
       if (m.state === 'in') return true;
-      if (m.state === 'pre' && m.date) return (parseMatchDate(m.date)?.getTime() || 0) > now;
+      if (m.state === 'pre') return (matchTimestamp(m) || 0) > now;
       return false;
     });
     if (!next) return '';
@@ -208,20 +213,21 @@ class SoccerLiveBracketCard extends LitElement {
           <span class="mnb-name">${next.home_team}</span>
           ${isLive
             ? html`<span class="mnb-score">${scoreText(next.home_score)} – ${scoreText(next.away_score)}</span>`
-            : html`<span class="mnb-vs">vs</span>`}
+            : html`<span class="mnb-vs">${this._t('match.vs')}</span>`}
           <span class="mnb-name away">${next.away_team}</span>
           ${next.away_logo ? html`<img src="${next.away_logo}" class="mnb-logo">` : ''}
         </div>
         <div class="mnb-meta">
           ${round ? html`<span class="mnb-round-tag">${round}</span>` : ''}
-          ${!isLive && next.date ? (() => {
-            const diff = (parseMatchDate(next.date)?.getTime() || 0) - now;
+          ${!isLive && this._matchDate(next) ? (() => {
+            const diff = (matchTimestamp(next) || 0) - now;
             if (diff > 0 && diff < 24 * 3600 * 1000) {
               const h = Math.floor(diff / 3600000);
               const m = Math.floor((diff % 3600000) / 60000);
               return html`<span class="mnb-countdown">⏱ ${h > 0 ? `${h}u ${m}m` : `${m}m`}</span>`;
             }
-            return html`<span class="mnb-date">${this._formatDate(next.date)} · ${this._formatTime(next.date)}</span>`;
+            const date = this._matchDate(next);
+            return html`<span class="mnb-date">${this._formatDate(date)} · ${this._formatTime(date)}</span>`;
           })() : ''}
           ${next.venue ? html`<span class="mnb-venue">📍 ${next.venue}</span>` : ''}
         </div>
@@ -239,20 +245,26 @@ class SoccerLiveBracketCard extends LitElement {
 
     // Base filter: hide ESPN placeholder dates (post=must be past, pre=within 45 days)
     const relevant = matches.filter(m => {
-      if (!m.date) return false;
-      const d = parseMatchDate(m.date)?.getTime();
-      if (!Number.isFinite(d)) return false;
+      const d = matchTimestamp(m);
+      if (d === null) return false;
       if (m.state === 'in') return true;
       if (m.state === 'post') return d <= now;
       return d >= now && d <= maxFuture;
     });
     const base = [...(relevant.length ? relevant : matches)]
-      .sort((a, b) => (parseMatchDate(a.date)?.getTime() || 0) - (parseMatchDate(b.date)?.getTime() || 0));
+      .sort((a, b) => {
+        const aTime = matchTimestamp(a);
+        const bTime = matchTimestamp(b);
+        if (aTime === null && bTime === null) return 0;
+        if (aTime === null) return 1;
+        if (bTime === null) return -1;
+        return aTime - bTime;
+      });
 
     // Precompute chip counts
     const todayKey = new Date().toLocaleDateString('en-CA', tz ? { timeZone: tz } : {});
     const liveCount = base.filter(m => m.state === 'in').length;
-    const todayCount = base.filter(m => this._dateKey(m.date) === todayKey).length;
+    const todayCount = base.filter(m => this._dateKey(this._matchDate(m)) === todayKey).length;
     const myTeamCount = this._myTeam
       ? base.filter(m => this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team)).length
       : 0;
@@ -269,12 +281,12 @@ class SoccerLiveBracketCard extends LitElement {
       : effectiveFilter === 'my-team'
         ? base.filter(m => this._matchesMyTeam(m.home_team) || this._matchesMyTeam(m.away_team))
         : effectiveFilter === 'today'
-          ? base.filter(m => this._dateKey(m.date) === todayKey)
+          ? base.filter(m => this._dateKey(this._matchDate(m)) === todayKey)
           : base;
 
     const byDate = {};
     for (const m of displayed) {
-      const key = this._dateKey(m.date);
+      const key = this._dateKey(this._matchDate(m));
       if (!byDate[key]) byDate[key] = [];
       byDate[key].push(m);
     }
@@ -302,7 +314,7 @@ class SoccerLiveBracketCard extends LitElement {
             <div class="sched-day-label">
               ${dayLogo ? html`<img class="sched-comp-logo" src="${dayLogo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
               ${(ms[0].season_info && ms[0].season_info !== 'N/A') ? (() => { const r = this._formatSeasonInfo(ms[0].season_info); return r ? html`<span class="sched-round-chip">${r}</span>` : ''; })() : ''}
-              <span>${this._formatDate(ms[0].date)}</span>
+              <span>${this._formatDate(this._matchDate(ms[0]))}</span>
             </div>
             <div class="sched-matches">
               ${ms.map(m => {
@@ -313,7 +325,7 @@ class SoccerLiveBracketCard extends LitElement {
                 const matchMyTeam = this._matchesMyTeam(homeName) || this._matchesMyTeam(awayName);
                 const scoreOrTime = (isDone || isLive)
                   ? `${scoreText(m.home_score, '-')} – ${scoreText(m.away_score, '-')}`
-                  : this._formatTime(m.date);
+                  : this._formatTime(this._matchDate(m));
                 return html`
                   <div class="sched-match ${isLive ? 'live' : ''} ${isDone ? 'done' : ''} ${matchMyTeam && this._myTeam ? 'my-team' : ''}">
                     <div class="sched-team">

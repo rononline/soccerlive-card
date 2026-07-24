@@ -6,12 +6,20 @@ export function isFinishedMatch(match) {
     .includes(String(match?.status || '').trim().toLowerCase());
 }
 
+export function matchTimestamp(match) {
+  return parseMatchTimestamp(match?.date_iso) || parseMatchTimestamp(match?.date) || null;
+}
+
 export function sortMatchesByStateAndDate(matches) {
   const rank = state => state === 'in' ? 0 : state === 'pre' ? 1 : state === 'post' ? 2 : 3;
-  const time = match => parseMatchTimestamp(match?.date_iso) || parseMatchTimestamp(match?.date);
   return [...(Array.isArray(matches) ? matches : [])].sort((a, b) => {
     const stateDiff = rank(a?.state) - rank(b?.state);
     if (stateDiff) return stateDiff;
-    return a?.state === 'post' ? time(b) - time(a) : time(a) - time(b);
+    const aTime = matchTimestamp(a);
+    const bTime = matchTimestamp(b);
+    if (aTime === null && bTime === null) return 0;
+    if (aTime === null) return 1;
+    if (bTime === null) return -1;
+    return a?.state === 'post' ? bTime - aTime : aTime - bTime;
   });
 }

@@ -546,12 +546,12 @@ class SoccerLiveMatchesCard extends LitElement {
                           <span class="league-chip">${this._displayCompetitionName(match.league_name)}</span>
                         ` : ''}
                         ${broadcast && isUpcoming && !this._config.hide_broadcasts ? html`
-                          <span class="tv-chip" title="Live TV">
+                          <span class="tv-chip" title="${this._t('ui.live_tv')}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
                             ${broadcast}
                           </span>
                         ` : ''}
-                        ${detailCaps.includes('statistics') ? html`<span class="detail-cap" title="Stats">▥</span>` : ''}
+                        ${detailCaps.includes('statistics') ? html`<span class="detail-cap" title="${this._t('card.stats')}">▥</span>` : ''}
                         ${detailCaps.includes('lineups') ? html`<span class="detail-cap" title="${this._t('popup.lineups')}">♟</span>` : ''}
                         ${detailCaps.includes('shotmap') ? html`<span class="detail-cap" title="${this._t('popup.shotmap')}">◉</span>` : ''}
                       </div>

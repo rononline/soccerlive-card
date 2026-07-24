@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.31.7 (2026-07-24)
+- Keep undated or `TBD` fixtures behind dated matches instead of treating them as epoch dates
+- Reuse the provider-neutral shared match ordering in Match Center
+- Support `date_iso` throughout the Bracket schedule and next-match banner
+- Localize the Matches capability tooltips and the Bracket versus label
+- Add regressions for ISO-date precedence and undated match ordering
+
 ## v3.31.6 (2026-07-23)
 - Localize entity-selection placeholders, team hints and unknown card-type errors in all supported languages
 - Translate provider live statuses consistently inside Team and Matches detail popups

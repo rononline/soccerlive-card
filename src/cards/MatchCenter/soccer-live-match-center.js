@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { t, resolveLang, formatMatchDateFull, formatDateOnly, parseMatchDate } from '../../i18n.js';
+import { t, resolveLang, formatMatchDateFull, formatDateOnly } from '../../i18n.js';
 import { scoreText } from '../shared-score.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { OfflineCache } from '../offline-cache.js';
@@ -17,6 +17,7 @@ import { displayCompetitionName, resolveCompetitionLogo } from '../shared-compet
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js';
 import { predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
+import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 
@@ -71,22 +72,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const selected = (attrs?.matches || []).find(match => String(match.event_id) === String(this._selectedEventId));
     if (selected) return selected;
     if (attrs?.next_match) return attrs.next_match;
-    const matches = [...(attrs?.matches || [])];
-    const dateValue = match => {
-      const parsed = parseMatchDate(match.date) || new Date(match.date_iso || 0);
-      return Number.isNaN(parsed?.getTime?.()) ? 0 : parsed.getTime();
-    };
-    const live = matches.filter(match => match.state === 'in').sort((a, b) => dateValue(a) - dateValue(b));
-    const upcoming = matches.filter(match => match.state === 'pre').sort((a, b) => dateValue(a) - dateValue(b));
-    const finished = matches.filter(match => match.state === 'post').sort((a, b) => dateValue(b) - dateValue(a));
-    return live[0] || upcoming[0] || finished[0] || matches[0];
+    return sortMatchesByStateAndDate(attrs?.matches)[0];
   }
 
   _orderedMatches(attrs) {
-    const matches = [...(attrs?.matches || [])];
-    const value = match => parseMatchDate(match.date)?.getTime() || new Date(match.date_iso || 0).getTime() || 0;
-    const rank = state => state === 'in' ? 0 : state === 'pre' ? 1 : state === 'post' ? 2 : 3;
-    return matches.sort((a, b) => rank(a.state) - rank(b.state) || (a.state === 'post' ? value(b) - value(a) : value(a) - value(b)));
+    return sortMatchesByStateAndDate(attrs?.matches);
   }
 
   async _chooseMatch(eventId, attrs) {
