@@ -26,6 +26,20 @@ class SoccerLiveScheduleCard extends LitElement {
   static getConfigElement() { return document.createElement("soccer-live-schedule-editor"); }
   static getStubConfig() { return { entity: "", max_matches: 15 }; }
 
+  _matchDateValue(match) { return match?.date_iso || match?.date || ""; }
+  _matchDate(match) { return parseMatchDate(this._matchDateValue(match)); }
+  _matchTime(match) {
+    if (!match?.date_iso && match?.date) return match.date.split(" ")[1] || "";
+    const date = this._matchDate(match);
+    if (!date) return "";
+    const lang = resolveLang(this.hass, this._config);
+    const tz = this.hass?.config?.time_zone;
+    return date.toLocaleTimeString(lang, {
+      hour: "2-digit", minute: "2-digit",
+      ...(tz ? { timeZone: tz } : {}),
+    });
+  }
+
   _rows(attrs) {
     const show = this._config.show || "upcoming"; // upcoming | previous | all
     const up = attrs.upcoming_matches || [];
@@ -91,7 +105,7 @@ class SoccerLiveScheduleCard extends LitElement {
     let when;
     if (kind === "live") when = html`<span class="mn-live">${this._t("status.live")} ${m.home_score ?? ""}–${m.away_score ?? ""}</span>`;
     else if (kind === "tbd") when = this._relativeDay(m) + " · " + this._t("generic.unknown");
-    else if (kind === "time") when = this._relativeDay(m) + " · " + (m.date || "").split(" ")[1];
+    else if (kind === "time") when = this._relativeDay(m) + " · " + this._matchTime(m);
     else when = this._relativeDay(m);
     return html`
       <div class="mn-next">
@@ -101,8 +115,8 @@ class SoccerLiveScheduleCard extends LitElement {
   }
 
   _relativeDay(m) {
-    const d = parseMatchDate(m.date);
-    if (!d) return (m.date || "").split(" ")[0] || "";
+    const d = this._matchDate(m);
+    if (!d) return this._matchDateValue(m).split(" ")[0] || "";
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const md = new Date(d); md.setHours(0, 0, 0, 0);
     const diff = Math.round((md - today) / 86400000);
@@ -152,8 +166,9 @@ class SoccerLiveScheduleCard extends LitElement {
   }
 
   _row(m, i, dateFmt, showComp) {
-    const d = parseMatchDate(m.date);
-    const dateLabel = (d ? dateFmt.format(d) : (m.date ? m.date.split(" ")[0] : "")).replace(/\.$/, "");
+    const d = this._matchDate(m);
+    const rawDate = this._matchDateValue(m);
+    const dateLabel = (d ? dateFmt.format(d) : (rawDate ? rawDate.split(" ")[0] : "")).replace(/\.$/, "");
     const tracked = { name: this._config.my_team || "", id: null };
     const isHome = tracked.name && matchSideIsTeam(m, "home", tracked);
     const isAway = tracked.name && matchSideIsTeam(m, "away", tracked);
@@ -177,7 +192,7 @@ class SoccerLiveScheduleCard extends LitElement {
       return this._t("status.full_time");
     }
     if (m.time_tbd) return this._t("generic.unknown");
-    const time = (m.date || "").split(" ")[1];
+    const time = this._matchTime(m);
     return time || this._t("generic.unknown");
   }
 

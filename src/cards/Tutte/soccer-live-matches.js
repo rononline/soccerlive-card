@@ -13,7 +13,7 @@ import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '..
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { standingText } from '../shared-standing.js';
 import { kickoffMinutes, kickoffDurationParts, prematchContext, reviewContext, predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
-import { isFinishedMatch } from '../shared-match-order.js';
+import { isFinishedMatch, matchTimestamp, sortMatchesByStateAndDate } from '../shared-match-order.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -236,12 +236,33 @@ class SoccerLiveMatchesCard extends LitElement {
     return parseMatchDate(dateStr);
   }
 
+  _matchDateValue(match) {
+    return match?.date_iso || match?.date || '';
+  }
+
+  _parsedMatchDate(match) {
+    return this._parseMatchDate(this._matchDateValue(match));
+  }
+
   _matchTimeLabel(match) {
     if (match.state === 'in') return match.clock && match.clock !== 'N/A' ? match.clock : this._t('status.live');
     if (match.state === 'post') return this._t('status.full_time');
-    if (match.date) {
-      const parts = match.date.split(' ');
-      return parts[1] || parts[0];
+    const dateValue = this._matchDateValue(match);
+    if (dateValue) {
+      if (!match.date_iso && match.date) {
+        const parts = match.date.split(' ');
+        return parts[1] || parts[0];
+      }
+      const parsed = this._parsedMatchDate(match);
+      if (parsed) {
+        const lang = resolveLang(this.hass, this._config);
+        const tz = this.hass?.config?.time_zone;
+        return parsed.toLocaleTimeString(lang, {
+          hour: '2-digit',
+          minute: '2-digit',
+          ...(tz ? { timeZone: tz } : {}),
+        });
+      }
     }
     return '—';
   }
@@ -266,9 +287,10 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _dayKey(match) {
-    if (!match.date) return '—';
-    const d = this._parseMatchDate(match.date);
-    if (!d) return match.date.split(' ')[0] || '—';
+    const dateValue = this._matchDateValue(match);
+    if (!dateValue) return '—';
+    const d = this._parsedMatchDate(match);
+    if (!d) return String(dateValue).split(' ')[0] || '—';
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const matchDay = new Date(d);
@@ -377,23 +399,24 @@ class SoccerLiveMatchesCard extends LitElement {
       (this._config.smart_order === undefined && stateObj.attributes.recommended_match_order === 'smart');
     // Smart order keeps the actionable part of a mixed-season team feed at
     // the top: live, upcoming ascending, then results newest-first.
-    matches = matches.slice().sort((a, b) => {
-      const da = this._parseMatchDate(a.date) || new Date(0);
-      const db = this._parseMatchDate(b.date) || new Date(0);
-      if (smartOrder) {
-        const rank = state => state === 'in' ? 0 : state === 'pre' ? 1 : state === 'post' ? 2 : 3;
-        const stateDiff = rank(a.state) - rank(b.state);
-        if (stateDiff) return stateDiff;
-        return a.state === 'post' ? db - da : da - db;
-      }
-      return this.reverseOrder ? db - da : da - db;
-    });
+    if (smartOrder) {
+      matches = sortMatchesByStateAndDate(matches);
+    } else {
+      matches = matches.slice().sort((a, b) => {
+        const aTime = matchTimestamp(a);
+        const bTime = matchTimestamp(b);
+        if (aTime === null && bTime === null) return 0;
+        if (aTime === null) return 1;
+        if (bTime === null) return -1;
+        return this.reverseOrder ? bTime - aTime : aTime - bTime;
+      });
+    }
 
     if (this.hidePastDays > 0) {
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - this.hidePastDays);
       matches = matches.filter((m) => {
-        const d = this._parseMatchDate(m.date);
+        const d = this._parsedMatchDate(m);
         return d ? d >= cutoff : true;
       });
     }
@@ -436,7 +459,7 @@ class SoccerLiveMatchesCard extends LitElement {
         const key = this._dayKey(m);
         if (key !== currentKey) {
           currentKey = key;
-          const d = this._parseMatchDate(m.date);
+          const d = this._parsedMatchDate(m);
           let dayDiff = null;
           if (d) {
             const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -510,7 +533,7 @@ class SoccerLiveMatchesCard extends LitElement {
             <div class="day-divider ${groupBy === 'competition' ? 'comp' : (group.dayDiff === 0 ? 'today' : group.dayDiff === -1 ? 'yesterday' : group.dayDiff === 1 ? 'tomorrow' : '')}">
               ${groupBy === 'competition' && group.logo ? html`<img class="comp-divider-logo" src="${group.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
               ${group.key}
-              ${groupBy !== 'competition' && group.dayDiff !== null && group.dayDiff > 1 ? html`<span class="day-rel">· over ${group.dayDiff} d</span>` : ''}
+              ${groupBy !== 'competition' && group.dayDiff !== null && group.dayDiff > 1 ? html`<span class="day-rel">· ${this._t('time.in_n_d', { n: group.dayDiff })}</span>` : ''}
             </div>
             ${group.matches.map(match => {
               const matchKey = `${match.home_team}_${match.away_team}`;

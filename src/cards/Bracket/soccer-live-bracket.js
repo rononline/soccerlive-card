@@ -320,8 +320,8 @@ class SoccerLiveBracketCard extends LitElement {
               ${ms.map(m => {
                 const isLive = m.state === 'in';
                 const isDone = m.state === 'post';
-                const homeName = m.home_team || 'TBD';
-                const awayName = m.away_team || 'TBD';
+                const homeName = m.home_team || this._t('bracket.tbd');
+                const awayName = m.away_team || this._t('bracket.tbd');
                 const matchMyTeam = this._matchesMyTeam(homeName) || this._matchesMyTeam(awayName);
                 const scoreOrTime = (isDone || isLive)
                   ? `${scoreText(m.home_score, '-')} – ${scoreText(m.away_score, '-')}`
@@ -396,7 +396,7 @@ class SoccerLiveBracketCard extends LitElement {
       <div class="tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''}">
         <div class="tie-row ${isAWinner ? 'winner' : ''} ${isBWinner ? 'loser' : ''}">
           <img src="${a.logo}" alt="${a.name}" />
-          <span class="tname">${a.name || 'TBD'}</span>
+          <span class="tname">${a.name || this._t('bracket.tbd')}</span>
           <span class="legs">
             ${single ? html`<span class="leg">${this._formatScore(aSingle)}</span>` : html`
               <span class="leg">${this._formatScore(aL1)}</span>
@@ -406,7 +406,7 @@ class SoccerLiveBracketCard extends LitElement {
         </div>
         <div class="tie-row ${isBWinner ? 'winner' : ''} ${isAWinner ? 'loser' : ''}">
           <img src="${b.logo}" alt="${b.name}" />
-          <span class="tname">${b.name || 'TBD'}</span>
+          <span class="tname">${b.name || this._t('bracket.tbd')}</span>
           <span class="legs">
             ${single ? html`<span class="leg">${this._formatScore(bSingle)}</span>` : html`
               <span class="leg">${this._formatScore(bL1)}</span>
@@ -461,11 +461,11 @@ class SoccerLiveBracketCard extends LitElement {
                    (tie.single?.state === 'in' ? tie.single : null);
     const liveClock = liveLeg?.clock || '';
     const isPending = !tie.leg1 && !tie.single;
-    const abbrA = a.abbrev || (a.name ? a.name.substring(0, 3).toUpperCase() : 'TBD');
-    const abbrB = b.abbrev || (b.name ? b.name.substring(0, 3).toUpperCase() : 'TBD');
+    const abbrA = a.abbrev || (a.name ? a.name.substring(0, 3).toUpperCase() : this._t('bracket.tbd'));
+    const abbrB = b.abbrev || (b.name ? b.name.substring(0, 3).toUpperCase() : this._t('bracket.tbd'));
 
     const hasMyTeam = this._myTeam ? this._tieHasMyTeam(tie) : null;
-    const tieDate = tie.leg1?.date || tie.leg2?.date || tie.single?.date || tie.first_leg_date || null;
+    const tieDate = this._matchDate(tie.leg1) || this._matchDate(tie.leg2) || this._matchDate(tie.single) || tie.first_leg_date || null;
     const canNavSched = !!(this._matchesEntity && tieDate);
     return html`
       <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''} ${canNavSched ? 'sched-link' : ''}"
@@ -675,7 +675,10 @@ class SoccerLiveBracketCard extends LitElement {
           const collapsed = this._isCollapsed(round);
           const prog = this._roundProgress(round);
           const allDone = prog && prog.done === prog.total && prog.total > 0;
-          const roundDates = round.ties.map(t => t.first_leg_date).filter(Boolean).sort();
+          const roundDates = round.ties
+            .map(t => t.first_leg_date || this._matchDate(t.leg1) || this._matchDate(t.single) || this._matchDate(t.leg2))
+            .filter(Boolean)
+            .sort((a, b) => (parseMatchDate(a)?.getTime() || 0) - (parseMatchDate(b)?.getTime() || 0));
           const dateRange = roundDates.length
             ? (roundDates[0] === roundDates[roundDates.length - 1]
                 ? this._formatDate(roundDates[0])
@@ -695,7 +698,7 @@ class SoccerLiveBracketCard extends LitElement {
                   </span>
                 ` : ''}
                 ${this._matchesEntity ? html`
-                  <span class="early-sched-btn" title="View in schedule" @click=${e => {
+                  <span class="early-sched-btn" title="${this._t('bracket.view_schedule')}" @click=${e => {
                     e.stopPropagation();
                     this._schedScrollToDate = roundDates[0] || null;
                     this._schedFilter = 'all';

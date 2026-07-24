@@ -10,6 +10,16 @@ export function matchTimestamp(match) {
   return parseMatchTimestamp(match?.date_iso) || parseMatchTimestamp(match?.date) || null;
 }
 
+export function matchIdentity(match) {
+  if (match?.event_id !== null && match?.event_id !== undefined && match?.event_id !== '') {
+    return `event:${match.event_id}`;
+  }
+  const kickoff = matchTimestamp(match) ?? String(match?.date_iso || match?.date || '');
+  const home = match?.home_id ?? match?.home_team ?? '';
+  const away = match?.away_id ?? match?.away_team ?? '';
+  return `fixture:${kickoff}:${home}:${away}`;
+}
+
 export function sortMatchesByStateAndDate(matches) {
   const rank = state => state === 'in' ? 0 : state === 'pre' ? 1 : state === 'post' ? 2 : 3;
   return [...(Array.isArray(matches) ? matches : [])].sort((a, b) => {

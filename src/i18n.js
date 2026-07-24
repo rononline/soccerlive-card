@@ -98,6 +98,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Bracket',
     'bracket.tab_groups': 'Groups',
     'bracket.tab_schedule': 'Schedule',
+    'bracket.view_schedule': 'View in schedule',
     'bracket.won': 'Won',
     'bracket.eliminated': 'Eliminated',
 
@@ -827,6 +828,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Schema',
     'bracket.tab_groups': 'Groepen',
     'bracket.tab_schedule': 'Wedstrijden',
+    'bracket.view_schedule': 'Bekijk in speelschema',
     'bracket.won': 'Gewonnen',
     'bracket.eliminated': 'Uitgeschakeld',
 
@@ -1501,6 +1503,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Tabellone',
     'bracket.tab_groups': 'Gironi',
     'bracket.tab_schedule': 'Partite',
+    'bracket.view_schedule': 'Vedi nel calendario',
     'bracket.won': 'Vinto',
     'bracket.eliminated': 'Eliminato',
 
@@ -1900,6 +1903,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Tableau',
     'bracket.tab_groups': 'Groupes',
     'bracket.tab_schedule': 'Matchs',
+    'bracket.view_schedule': 'Voir dans le calendrier',
     'bracket.won': 'Gagné',
     'bracket.eliminated': 'Éliminé',
 
@@ -2299,6 +2303,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Cuadro',
     'bracket.tab_groups': 'Grupos',
     'bracket.tab_schedule': 'Partidos',
+    'bracket.view_schedule': 'Ver en el calendario',
     'bracket.won': 'Ganado',
     'bracket.eliminated': 'Eliminado',
 
@@ -2698,6 +2703,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'K.o.-Baum',
     'bracket.tab_groups': 'Gruppen',
     'bracket.tab_schedule': 'Spiele',
+    'bracket.view_schedule': 'Im Spielplan anzeigen',
     'bracket.won': 'Gewonnen',
     'bracket.eliminated': 'Ausgeschieden',
 
@@ -2958,7 +2964,7 @@ const TRANSLATIONS = {
     'minimal.variant_next': 'Nächstes Spiel',
     'minimal.variant_standings': 'Tabelle',
     'minimal.variant_form': 'Form',
-    'minimal.variant_unsupported': "This view isn't supported by the selected sensor",
+    'minimal.variant_unsupported': 'Diese Ansicht wird vom ausgewählten Sensor nicht unterstützt',
     'mini.team': 'Team',
     'mini.p': 'Sp',
     'mini.gd': 'TD',
@@ -3098,6 +3104,7 @@ const TRANSLATIONS = {
     'bracket.tab_bracket': 'Chave',
     'bracket.tab_groups': 'Grupos',
     'bracket.tab_schedule': 'Jogos',
+    'bracket.view_schedule': 'Ver no calendário',
     'bracket.won': 'Ganhou',
     'bracket.eliminated': 'Eliminado',
 

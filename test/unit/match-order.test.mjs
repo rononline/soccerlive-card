@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isFinishedMatch, matchTimestamp, sortMatchesByStateAndDate } from '../../src/cards/shared-match-order.js';
+import { isFinishedMatch, matchIdentity, matchTimestamp, sortMatchesByStateAndDate } from '../../src/cards/shared-match-order.js';
 
 test('isFinishedMatch prefers provider-neutral state and supports legacy statuses', () => {
   assert.equal(isFinishedMatch({ state: 'post', status: 'Einde wedstrijd' }), true);
@@ -41,4 +41,15 @@ test('sortMatchesByStateAndDate keeps TBD matches behind dated matches', () => {
   assert.deepEqual(sorted.map(match => match.event_id), [
     'dated-upcoming', 'tbd-upcoming', 'dated-result', 'tbd-result',
   ]);
+});
+
+test('matchIdentity distinguishes ISO-only fixtures and prefers event ids', () => {
+  assert.equal(
+    matchIdentity({ event_id: 42, date_iso: '2026-08-01T12:00:00Z' }),
+    'event:42',
+  );
+  assert.notEqual(
+    matchIdentity({ date_iso: '2026-08-01T12:00:00Z', home_team: 'A', away_team: 'B' }),
+    matchIdentity({ date_iso: '2026-08-08T12:00:00Z', home_team: 'A', away_team: 'C' }),
+  );
 });

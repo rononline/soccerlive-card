@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit-element";
-import { t, resolveLang, parseMatchTimestamp } from "../../i18n.js";
+import { t, resolveLang } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { standingText } from "../shared-standing.js";
 import { skinStyles, applySkin } from "../../skins.js";
@@ -8,6 +8,7 @@ import { renderCardError, renderInfoState, renderSyncStatusOrEmpty } from "../ca
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
+import { matchIdentity, matchTimestamp } from '../shared-match-order.js';
 
 class SoccerLiveTeamCompetitionsCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _selectedComp: { type: String } }; }
@@ -31,8 +32,8 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
   }
 
   _sortByDateAsc(a, b) {
-    const ta = parseMatchTimestamp(a.date) || Infinity;
-    const tb = parseMatchTimestamp(b.date) || Infinity;
+    const ta = matchTimestamp(a) ?? Infinity;
+    const tb = matchTimestamp(b) ?? Infinity;
     return ta - tb;
   }
 
@@ -53,7 +54,8 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
           all: [],
         };
       }
-      const dup = groups[key].all.some(x => x.date === m.date && x.home_team === m.home_team);
+      const identity = matchIdentity(m);
+      const dup = groups[key].all.some(x => matchIdentity(x) === identity);
       if (!dup) groups[key].all.push(m);
     }
 
@@ -61,10 +63,11 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
       const live     = g.all.find(m => m.state === 'in');
       const nextM    = g.all.filter(m => m.state === 'pre').sort((a, b) => this._sortByDateAsc(a, b))[0];
       const finished = g.all.filter(m => m.state === 'post').sort((a, b) => this._sortByDateAsc(a, b));
-      const last     = finished[finished.length - 1];
+      const last     = [...finished].reverse().find(m => matchTimestamp(m) !== null)
+        || finished[finished.length - 1];
       const featured = live || nextM || last || g.all[0];
       const upcoming = g.all.filter(m => m.state === 'pre').sort((a, b) => this._sortByDateAsc(a, b));
-      return { ...g, featured, previous: finished, upcoming };
+      return { ...g, featured, previous: finished, last, upcoming };
     }).filter(g => g.featured).sort((a, b) => {
       const score = m => m.featured.state === 'in' ? 0 : m.featured.state === 'pre' ? 1 : 2;
       return score(a) - score(b);
@@ -163,8 +166,8 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
 
     const featured   = active.featured;
     const form       = this._computeForm(active.all, teamName);
-    const standing   = this._getStanding(active.previous[active.previous.length - 1] || featured, teamName);
-    const prevMatch  = active.previous[active.previous.length - 1];
+    const standing   = this._getStanding(active.last || featured, teamName);
+    const prevMatch  = active.last;
     const nextMatch  = active.upcoming[0];
 
     return html`

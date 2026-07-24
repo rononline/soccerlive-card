@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.31.8 (2026-07-24)
+- Use `date_iso` with a localized-date fallback throughout Matches, Schedule, Team Competitions and Bracket
+- Keep undated results from replacing the latest dated result in Team Competitions
+- Deduplicate fixtures by event ID or full kickoff/team identity instead of an incomplete date/home-team pair
+- Localize remaining Bracket, Matches and Club comparison labels in all supported languages
+- Complete the German Minimal unsupported-view translation
+- Add regressions for ISO-only kickoff times and provider-neutral fixture identities
+
 ## v3.31.7 (2026-07-24)
 - Keep undated or `TBD` fixtures behind dated matches instead of treating them as epoch dates
 - Reuse the provider-neutral shared match ordering in Match Center

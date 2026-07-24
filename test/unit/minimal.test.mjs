@@ -50,6 +50,10 @@ test('nextWhenKind: live / tbd / time / date', () => {
   assert.equal(nextWhenKind(null), 'none');
 });
 
+test('nextWhenKind recognizes an ISO-only kickoff time', () => {
+  assert.equal(nextWhenKind({ state: 'pre', date_iso: '2026-08-01T12:00:00Z' }), 'time');
+});
+
 test('computeForm: requires a tracked team (empty must not match all)', () => {
   const attrs = { previous_matches: [{ state: 'post', home_team: 'Feyenoord', away_team: 'Ajax', home_score: '2', away_score: '0' }] };
   assert.equal(computeForm(attrs, ''), null);

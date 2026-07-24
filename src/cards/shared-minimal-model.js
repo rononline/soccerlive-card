@@ -18,7 +18,7 @@ export function nextWhenKind(m) {
   if (!m) return "none";
   if (m.state === "in") return "live";
   if (m.time_tbd) return "tbd";
-  const time = (m.date || "").split(" ")[1];
+  const time = m.date_iso || (m.date || "").split(" ")[1];
   return time ? "time" : "date";
 }
 

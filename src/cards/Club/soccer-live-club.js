@@ -432,7 +432,7 @@ class SoccerLiveClubCard extends LitElement {
     return html`<section class="clb-comparison">
       <div class="clb-comparison-head"><div class="clb-title">${this._t('club.player_comparison')}</div><button @click=${() => { this._comparisonPlayers = []; }}>${this._t('club.clear')}</button></div>
       ${!comparison ? html`<div class="clb-compare-pick"><span>${selected[0].name}</span><small>${this._t('club.select_second_player')}</small></div>` : html`
-        <div class="clb-compare-names"><strong>${comparison.players[0].name}</strong><span>vs</span><strong>${comparison.players[1].name}</strong></div>
+        <div class="clb-compare-names"><strong>${comparison.players[0].name}</strong><span>${this._t('match.vs')}</span><strong>${comparison.players[1].name}</strong></div>
         ${comparison.fields.map(field => html`<div class="clb-compare-row"><b>${this._comparisonValue(field, comparison.players[0][field])}</b><span>${this._t(field === 'age' ? 'club.age_label' : field === 'market_value' ? 'club.market_value' : field === 'appearances' ? 'club.appearances' : field === 'rating' ? 'club.rating' : `stat.${field}`)}</span><b>${this._comparisonValue(field, comparison.players[1][field])}</b></div>`)}
       `}
     </section>`;
