@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.31.11 (2026-07-26)
+- Localize Match Center preview coverage labels instead of showing raw section names
+- Split the Club card's recent-match detail line into rating and minutes so it reads cleanly
+
 ## v3.31.10 (2026-07-24)
 - Color Match Center H2H scores from the tracked team's perspective instead of the selected fixture's home side
 - Prefer exact team IDs with normalized team-name fallback and use neutral styling when the tracked team is unknown

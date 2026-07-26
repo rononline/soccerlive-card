@@ -21,6 +21,25 @@ import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { h2hResult } from '../shared-h2h-model.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
+const PREVIEW_COVERAGE_KEYS = {
+  overview: 'tab.overview',
+  stats: 'tab.stats',
+  timeline: 'tab.timeline',
+  lineup: 'tab.lineup',
+  lineups: 'tab.lineup',
+  h2h: 'tab.h2h',
+};
+
+function formatPreviewCoverage(item, t) {
+  const raw = String(item || '').trim();
+  const key = PREVIEW_COVERAGE_KEYS[raw.toLowerCase()];
+  if (key) return t(key);
+  return raw
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, ch => ch.toUpperCase());
+}
 
 class SoccerLiveMatchCenterCard extends LitElement {
   static get properties() {
@@ -297,7 +316,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       <h4>${this._t('match.preview')}</h4>
       <div class="brief-form-row">${form(preview.home_form)}<span>${this._t('team.form')}</span>${form(preview.away_form)}</div>
       ${preview.h2h_count ? html`<p>${this._t('match.h2h_available', { n: preview.h2h_count })}</p>` : ''}
-      ${preview.coverage?.length ? html`<div class="brief-chips">${preview.coverage.map(item => html`<span>${item}</span>`)}</div>` : ''}
+      ${preview.coverage?.length ? html`<div class="brief-chips">${preview.coverage.map(item => html`<span>${formatPreviewCoverage(item, key => this._t(key))}</span>`)}</div>` : ''}
     </section>`;
   }
 

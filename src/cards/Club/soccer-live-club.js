@@ -504,7 +504,7 @@ class SoccerLiveClubCard extends LitElement {
           ${player.recent_matches.slice(0, 5).map(match => html`<div class="clb-recent-row">
             <i class=${match.starter ? 'starter' : 'substitute'} aria-hidden="true">${match.starter ? 'XI' : '↥'}</i>
             <span><strong>${match.opponent || match.name}</strong><small>${match.starter ? this._t('club.starting_player') : this._t('club.substitute')}</small></span>
-            <b class=${Number(match.rating) >= 7 ? 'good' : ''}>${match.rating || match.minutes || '–'}</b>
+            <b class=${Number(match.rating) >= 7 ? 'good' : ''}>${[match.rating, match.minutes != null && match.minutes !== '' ? `${match.minutes}'` : ''].filter(Boolean).join(' · ') || '–'}</b>
           </div>`)}
         </div>` : ''}
       </section>
