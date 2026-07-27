@@ -1,6 +1,7 @@
 name: Visual
 
 on:
+  workflow_call:
   push:
     branches: [main]
     paths:
@@ -25,6 +26,10 @@ on:
         description: 'Regenerate baselines and upload them as an artifact (bootstrap Linux baselines)'
         type: boolean
         default: false
+
+concurrency:
+  group: ${{ github.workflow }}-visual-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   visual:

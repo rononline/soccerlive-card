@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- release automation: publish only after the existing unit, smoke, Playwright and HACS checks succeed
+- release notes: use the matching changelog section and verify the production bundle before and after upload
+- build: enforce a 950 KiB production-bundle budget
+- CI: cancel stale runs and enable weekly Dependabot updates for GitHub Actions and npm dependencies
+
 ## v3.31.12 (2026-07-27)
 - Fix offline cache rewrites after clearing an entity or all Soccer Live entries
 - Remove malformed and expired cache records and cap retained entities at fifty

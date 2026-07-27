@@ -4,7 +4,8 @@
   "description": "Football Live cards for Home Assistant",
   "main": "webpack.config.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack && npm run check:bundle-size",
+    "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "preview": "npm run build && python3 -m http.server 4173",
     "smoke:preview": "node scripts/smoke-preview.mjs",
     "smoke:i18n": "node scripts/smoke-i18n.mjs",
