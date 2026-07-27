@@ -46,7 +46,7 @@ jobs:
         run: npx playwright test ${{ (github.event_name == 'workflow_dispatch' && inputs.update) && '--update-snapshots=all' || '' }}
       - name: Upload baselines / report
         if: always()
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: visual-results
           path: |
