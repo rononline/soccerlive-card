@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.31.12 (2026-07-27)
+- Fix offline cache rewrites after clearing an entity or all Soccer Live entries
+- Remove malformed and expired cache records and cap retained entities at fifty
+- Add focused offline-cache regression coverage
+- Update test and visual workflows to Node 24-based GitHub Actions
+- Keep the committed production bundle synchronized with the cache fix
+
 ## v3.31.11 (2026-07-26)
 - Localize Match Center preview coverage labels instead of showing raw section names
 - Split the Club card's recent-match detail line into rating and minutes so it reads cleanly

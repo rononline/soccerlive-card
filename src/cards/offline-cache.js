@@ -5,8 +5,44 @@ const CACHE_KEY_PREFIX = 'soccer_live_cache_';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const _lastWritten = new Map(); // entityId -> last JSON string written
 const MAX_LAST_WRITTEN = 50;
+const MAX_CACHE_ENTRIES = 50;
 
 export class OfflineCache {
+  static _cacheKeys() {
+    return Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index))
+      .filter(key => key?.startsWith(CACHE_KEY_PREFIX));
+  }
+
+  static _prune() {
+    try {
+      const now = Date.now();
+      const valid = [];
+      for (const key of this._cacheKeys()) {
+        try {
+          const cached = JSON.parse(localStorage.getItem(key));
+          if (!Number.isFinite(cached?.timestamp) || now - cached.timestamp >= CACHE_DURATION) {
+            localStorage.removeItem(key);
+            _lastWritten.delete(key.slice(CACHE_KEY_PREFIX.length));
+            continue;
+          }
+          valid.push({ key, timestamp: cached.timestamp });
+        } catch (_error) {
+          localStorage.removeItem(key);
+          _lastWritten.delete(key.slice(CACHE_KEY_PREFIX.length));
+        }
+      }
+      valid
+        .sort((a, b) => b.timestamp - a.timestamp)
+        .slice(MAX_CACHE_ENTRIES)
+        .forEach(({ key }) => {
+          localStorage.removeItem(key);
+          _lastWritten.delete(key.slice(CACHE_KEY_PREFIX.length));
+        });
+    } catch (e) {
+      console.debug('Failed to prune cache:', e);
+    }
+  }
+
   static set(entityId, data) {
     try {
       const json = JSON.stringify(data);
@@ -19,6 +55,7 @@ export class OfflineCache {
         CACHE_KEY_PREFIX + entityId,
         JSON.stringify({ timestamp: Date.now(), data })
       );
+      this._prune();
     } catch (e) {
       console.debug('Failed to cache:', e);
     }
@@ -49,6 +86,7 @@ export class OfflineCache {
   static clear(entityId) {
     try {
       localStorage.removeItem(CACHE_KEY_PREFIX + entityId);
+      _lastWritten.delete(entityId);
     } catch (e) {
       console.debug('Failed to clear cache:', e);
     }
@@ -56,11 +94,8 @@ export class OfflineCache {
 
   static clearAll() {
     try {
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith(CACHE_KEY_PREFIX)) {
-          localStorage.removeItem(key);
-        }
-      });
+      this._cacheKeys().forEach(key => localStorage.removeItem(key));
+      _lastWritten.clear();
     } catch (e) {
       console.debug('Failed to clear all cache:', e);
     }
