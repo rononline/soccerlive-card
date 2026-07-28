@@ -41,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.0
       - run: npm ci
+      - run: npm run check:playwright-sync
       - run: npm run build
       - name: Run visual tests
         run: npx playwright test ${{ (github.event_name == 'workflow_dispatch' && inputs.update) && '--update-snapshots=all' || '' }}
