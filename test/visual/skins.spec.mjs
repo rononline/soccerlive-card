@@ -269,6 +269,7 @@ const CARD_MATRIX = [
   'mini-standings', 'scorers', 'multi-team', 'team-competitions',
   'match-center', 'team-form', 'club', 'diagnostics', 'ticker',
   'lineup', 'timeline', 'minimal',
+  'matchday', 'archive',
 ];
 
 async function expectHealthyCard(page, type) {

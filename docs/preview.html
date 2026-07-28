@@ -367,6 +367,12 @@
       live_matches_count: 1,
       upcoming_matches_count: 1,
       finished_matches_count: 1,
+      data_quality: { provider: "preview", average_completeness: 78, level: "good", issues: [], conflicts: [] },
+      matchday: { date: "2026-06-22", competition: "FIFA World Cup", phase: "live", total: 3, live: 1, upcoming: 1, finished: 1, matches: [live, upcoming, done] },
+      match_archive: [
+        { ...done, event_id: "archive-1", date_iso: "2026-06-18T18:00:00Z", competition_name: "FIFA World Cup", provider: "preview" },
+        { ...done, event_id: "archive-2", date_iso: "2026-06-10T18:00:00Z", home_team: "Netherlands", away_team: "Japan", home_score: 2, away_score: 0, competition_name: "Friendly", provider: "preview" }
+      ],
       request_count: 1,
       last_successful_update: "22-06-2026 12:00",
       standings_groups: [{
@@ -588,6 +594,8 @@
       ["Minimal · standings", "minimal", { entity: "sensor.preview_standings", variant: "standings", my_team: "Netherlands" }],
       ["Minimal · form", "minimal", { entity: "sensor.preview_team", variant: "form", my_team: "Netherlands" }],
       ["Diagnostics", "diagnostics", { entity: "sensor.preview_diagnostics" }],
+      ["Matchday", "matchday", { entity: "sensor.preview_team" }],
+      ["Archive", "archive", { entity: "sensor.preview_team", team_name: "Netherlands" }],
       ["Team · long names / no logos", "team", { entity: "sensor.preview_missing_logos" }, "wide"],
       ["Matches · empty", "matches", { entity: "sensor.preview_empty" }],
       ["Ticker · no live matches", "ticker", { entity: "sensor.preview_live_empty", filter: "live", hide_when_empty: false }],

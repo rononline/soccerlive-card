@@ -61,6 +61,8 @@ class SoccerLiveDiagnosticsCard extends LitElement {
         background: rgba(239,68,68,0.10);
         font-size: 12px;
       }
+      .quality-bar { height: 7px; margin-top: 8px; overflow: hidden; border-radius: 99px; background: var(--cl-divider); }
+      .quality-bar > i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,var(--cl-live),var(--cl-warning),var(--cl-green)); }
       .recommendations {
         margin-top: 10px;
         padding: 10px;
@@ -139,6 +141,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const lastUpdate = attrs.last_successful_update || attrs.last_request_time;
     const sensorType = attrs.sensor_type || "unknown";
     const recommended = this._recommendedCards(sensorType);
+    const quality = attrs.data_quality || {};
     const metrics = [
       [this._t("diag.sensor"), sensorType],
       [this._t("diag.state"), stateObj.state],
@@ -149,6 +152,8 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       [this._t("diag.requests"), attrs.request_count],
       [this._t("diag.last_update"), lastUpdate],
       [this._t("diag.sensor_age"), this._age(lastUpdate)],
+      [this._t("quality.completeness"), quality.average_completeness != null ? `${quality.average_completeness}%` : null],
+      [this._t("quality.conflicts"), quality.conflicts?.length],
     ];
 
     return html`
@@ -175,6 +180,13 @@ class SoccerLiveDiagnosticsCard extends LitElement {
               </div>
             </div>
           ` : ""}
+          ${quality.average_completeness != null ? html`
+            <div class="recommendations">
+              <div class="label">${this._t("quality.coverage")} · ${this._t(`quality.${quality.level || 'limited'}`)}</div>
+              <div class="quality-bar"><i style="width:${quality.average_completeness}%"></i></div>
+              ${quality.issues?.length ? html`<div class="chips">${quality.issues.map(issue => html`<span class="chip">⚠ ${this._t(`quality.issue_${issue}`)}</span>`)}</div>` : ''}
+            </div>
+          ` : ''}
           ${attrs.last_error ? html`<div class="error-box">${attrs.last_error}</div>` : ""}
         </div>
       </ha-card>

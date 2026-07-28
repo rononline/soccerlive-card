@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- add a capability-based Matchday card with fixture state, counters and per-match completeness
+- add a local Match Archive card with tracked-team W/D/L summary and compact results
+- expand Diagnostics with data coverage, conflicts and provider issue indicators
+- let the Club card use the integration-level player watchlist while retaining local favourites
+- enrich the Club quality strip with the provider-neutral completeness score
+- add English and Dutch labels, preview fixtures and smoke coverage for both new card types
 - release automation: publish only after the existing unit, smoke, Playwright and HACS checks succeed
 - release notes: use the matching changelog section and verify the production bundle before and after upload
 - build: enforce a 950 KiB production-bundle budget

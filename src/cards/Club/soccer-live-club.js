@@ -156,7 +156,7 @@ class SoccerLiveClubCard extends LitElement {
       news: () => this._config.show_team_news !== false ? this._renderTeamNews(club, attrs.club_changes || club.changes) : '',
       season: () => !dashboardMode && this._config.show_season_progress !== false ? this._renderSeasonProgress(attrs) : '',
       changes: () => this._renderClubChanges(attrs.club_changes || club.changes),
-      favorites: () => this._renderFavorites(club.squad || []),
+      favorites: () => this._renderFavorites(club.squad || [], attrs.player_watchlist),
       records: () => dashboardMode ? '' : this._renderClubRecords(attrs),
       analysis: () => !dashboardMode && this._config.show_squad_analysis !== false ? this._renderCollapsible('analysis', this._t('club.squad_analysis'), this._renderSquadAnalysis(club.squad || []), true) : '',
       injuries: () => this._config.show_injuries !== false ? this._renderCollapsible('injuries', this._t('club.injury_center'), this._renderInjuryCenter(club), true) : '',
@@ -188,7 +188,12 @@ class SoccerLiveClubCard extends LitElement {
     const state = this.hass?.states?.[this._config.entity];
     const updated = state?.last_updated ? new Date(state.last_updated) : null;
     const age = updated ? Math.max(0, Math.round((Date.now() - updated.getTime()) / 60000)) : null;
-    return html`<section class="clb-quality ${status}"><span>${status === 'ready' ? '●' : '▲'} ${provider}</span><small>${age == null ? this._t('club.freshness_unknown') : age < 1 ? this._t('club.just_updated') : this._t('club.updated_minutes', { n: age })}</small></section>`;
+    const quality = attrs.data_quality || {};
+    return html`<section class="clb-quality ${status}">
+      <span>${status === 'ready' ? '●' : '▲'} ${provider}</span>
+      ${quality.average_completeness != null ? html`<b title=${this._t('quality.completeness')}>${quality.average_completeness}%</b>` : ''}
+      <small>${age == null ? this._t('club.freshness_unknown') : age < 1 ? this._t('club.just_updated') : this._t('club.updated_minutes', { n: age })}</small>
+    </section>`;
   }
 
   _renderAvailability(squad) {
@@ -275,8 +280,12 @@ class SoccerLiveClubCard extends LitElement {
     this._saveClubPreferences();
   }
 
-  _renderFavorites(squad) {
-    const favorites = (squad || []).filter(player => this._favoriteIds?.includes(this._playerKey(player)));
+  _renderFavorites(squad, integrationWatchlist) {
+    const configured = Array.isArray(integrationWatchlist) ? integrationWatchlist : [];
+    const local = (squad || []).filter(player => this._favoriteIds?.includes(this._playerKey(player)));
+    const favorites = [...configured, ...local].filter(
+      (player, index, all) => all.findIndex(item => this._playerKey(item) === this._playerKey(player)) === index
+    );
     if (!favorites.length) return '';
     return html`<section class="clb-favorites"><div class="clb-title">★ ${this._t('club.favorites')}</div><div class="clb-favorite-grid">${favorites.map(player => html`<button data-focus-key=${this._detailFocusKey('player', player)} @click=${event => this._selectPlayer(player, event.currentTarget)}>${player.photo ? html`<img src=${player.photo} alt="">` : html`<span>${player.number ?? '★'}</span>`}<strong>${player.name}</strong><small>${player.injured ? this._t('club.unavailable') : [player.goals != null ? `${player.goals} G` : '', player.assists != null ? `${player.assists} A` : '', player.rating || ''].filter(Boolean).join(' · ') || player.position || ''}</small></button>`)}</div></section>`;
   }

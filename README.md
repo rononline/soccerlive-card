@@ -44,6 +44,8 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
 | Timeline | `timeline` | Minute-by-minute match events |
 | Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
+| Matchday | `matchday` | Focused matchday with live/upcoming counters and data completeness |
+| Archive | `archive` | Personal local history of finished matches with W/D/L summary |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
 | Minimal | `minimal` | Minimal text views for fixtures, next match, standings or form (`schedule` remains an alias) |
 

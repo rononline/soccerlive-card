@@ -105,6 +105,13 @@
       api_status: "ok",
       sensor_type: "team_match",
       provider: "api_football",
+      data_quality: { provider: "api_football", average_completeness: 82, level: "good", issues: [], conflicts: [] },
+      matchday: { date: "2026-07-26", competition: "Eredivisie", phase: "upcoming", total: 1, live: 0, upcoming: 1, finished: 0, matches: [] },
+      match_archive: [
+        { event_id: "a1", date: "17-07-2026 13:30", home_team: "Feyenoord", away_team: "Charleroi", home_score: "3", away_score: "1", competition_name: "Oefenwedstrijd", provider: "api_football" },
+        { event_id: "a2", date: "11-07-2026 14:00", home_team: "Feyenoord", away_team: "Club Brugge", home_score: "3", away_score: "1", competition_name: "Oefenwedstrijd", provider: "api_football" },
+      ],
+      player_watchlist: [{ id: 3, name: "Middenvelder", position: "Midfielder", goals: 4, assists: 6 }],
       team_id: 209,
       club: {
         profile: { name: "Feyenoord", logo: "https://media.api-sports.io/football/teams/209.png", venue: "Stadion Feijenoord", venue_city: "Rotterdam", founded: 1908 },
@@ -149,6 +156,7 @@
         away_statistics: { possessionPct: "42%", shotsTotal: "8", shotsOnTarget: "3" },
         head_to_head: [{ home_team: "Feyenoord", away_team: "Rayo Vallecano", home_score: "2", away_score: "1", date: "01-08-2025 15:00" }],
       });
+      attrs.matchday.matches = attrs.matches;
     }
 
     // Variant tweaks to the mock for targeted cases.
@@ -177,7 +185,8 @@
       attrs.sync_status = params.get("sync_status");
     }
     if (params.get("data") === "empty") {
-      for (const key of ["matches", "previous_matches", "upcoming_matches", "standings", "standings_groups", "scorers", "articles", "commentary", "rounds"]) attrs[key] = [];
+      for (const key of ["matches", "previous_matches", "upcoming_matches", "standings", "standings_groups", "scorers", "articles", "commentary", "rounds", "match_archive"]) attrs[key] = [];
+      attrs.matchday = null;
       attrs.club = {};
       attrs.total_matches = 0;
       attrs.live_matches_count = 0;
@@ -306,12 +315,14 @@
         "match-center": "soccer-live-match-center", "team-form": "soccer-live-team-form",
         club: "soccer-live-club", diagnostics: "soccer-live-diagnostics", ticker: "soccer-live-ticker",
         lineup: "soccer-live-lineup", timeline: "soccer-live-timeline", minimal: "soccer-live-schedule",
+        matchday: "soccer-live-matchday", archive: "soccer-live-archive",
       };
       tag = tags[type];
       cfg = { ...config, language: params.get("lang") || "nl", my_team: "Feyenoord" };
       if (type === "minimal") cfg.variant = "fixtures";
       if (type === "bracket") cfg.style = "list";
       if (type === "multi-team") cfg.entities = [primaryEntity];
+      if (type === "archive") cfg.team_name = "Feyenoord";
     } else {
       tag = "soccer-live-team";
       cfg = config;

@@ -37,6 +37,9 @@ import "./cards/Timeline/soccer-live-timeline.js";
 import "./cards/Timeline/soccer-live-timeline-editor.js";
 import "./cards/Schedule/soccer-live-schedule.js";
 import "./cards/Schedule/soccer-live-schedule-editor.js";
+import "./cards/Matchday/soccer-live-matchday.js";
+import "./cards/Archive/soccer-live-archive.js";
+import "./cards/Insights/soccer-live-insights-editor.js";
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -59,6 +62,8 @@ const CARD_REGISTRY = [
   { value: 'lineup',            element: 'soccer-live-lineup',            editor: 'soccer-live-lineup-editor',            label: 'Lineup',            description: 'Starting eleven for both teams', sensorTypes: ['team_match'] },
   { value: 'timeline',          element: 'soccer-live-timeline',          editor: 'soccer-live-timeline-editor',          label: 'Timeline',          description: 'Minute-by-minute match events', sensorTypes: ['team_match'] },
   { value: 'minimal',           element: 'soccer-live-schedule',          editor: 'soccer-live-schedule-editor',          label: 'Minimal',           description: 'Minimalist text views: fixtures, next match, standings or form', sensorTypes: ['team_matches', 'team_matches_mixed', 'team_match', 'all_matches_today', 'standings'] },
+  { value: 'matchday',          element: 'soccer-live-matchday',          editor: 'soccer-live-insights-editor',          label: 'Matchday',          description: 'One matchday with status, fixtures and data completeness', sensorTypes: ['team_matches', 'team_matches_mixed', 'match_day', 'all_matches_today'] },
+  { value: 'archive',           element: 'soccer-live-archive',           editor: 'soccer-live-insights-editor',          label: 'Archive',           description: 'Personal locally stored history of finished matches', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
 ];
 
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)
