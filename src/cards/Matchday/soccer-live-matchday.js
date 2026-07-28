@@ -3,6 +3,7 @@ import { t, resolveLang, formatMatchDate } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { soccerCardShellStyles } from '../card-shell.js';
 import { renderCardError, renderInfoState } from '../card-error.js';
+import { readinessStyles, renderReadiness } from '../shared-readiness.js';
 
 class SoccerLiveMatchdayCard extends LitElement {
   static properties = { hass: {}, _config: {} };
@@ -28,6 +29,8 @@ class SoccerLiveMatchdayCard extends LitElement {
     const matches = summary?.matches || attrs.matches || [];
     if (!matches.length) return renderInfoState('📅', this._t('matchday.empty'), this._t('matchday.empty_hint'), '');
     const phase = summary?.phase || (matches.some(m => m.state === 'in') ? 'live' : matches.some(m => m.state === 'pre') ? 'upcoming' : 'finished');
+    const focus = matches.find(match => String(match.event_id) === String(summary?.focus_event_id))
+      || matches.find(match => match.state === 'pre');
     return html`
       <ha-card>
         <div class="hero-bg"></div>
@@ -41,6 +44,7 @@ class SoccerLiveMatchdayCard extends LitElement {
             <b>${summary?.live ?? matches.filter(m => m.state === 'in').length}<small>${this._t('matchday.live')}</small></b>
             <b>${summary?.upcoming ?? matches.filter(m => m.state === 'pre').length}<small>${this._t('matchday.upcoming')}</small></b>
           </div>
+          ${renderReadiness(focus, key => this._t(key), { compact: true })}
           <section>
             ${matches.map(match => html`
               <article class=${match.state || ''}>
@@ -56,7 +60,7 @@ class SoccerLiveMatchdayCard extends LitElement {
     `;
   }
 
-  static styles = [skinStyles, soccerCardShellStyles, css`
+  static styles = [skinStyles, soccerCardShellStyles, readinessStyles, css`
     ha-card{position:relative;overflow:hidden;border-radius:20px;background:var(--cl-bg);color:var(--cl-text)}
     main{position:relative;z-index:1;padding:16px} header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
     header small{color:var(--cl-text-2);font-weight:800;text-transform:uppercase;letter-spacing:.08em}h2{margin:3px 0 0;font-size:17px}
@@ -64,7 +68,7 @@ class SoccerLiveMatchdayCard extends LitElement {
     header>span.live{color:var(--cl-live)}.counters{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
     .counters b{padding:9px;text-align:center;border:1px solid var(--cl-divider);border-radius:10px;background:var(--cl-surface);font-size:17px;color:var(--cl-accent)}
     .counters small{display:block;margin-top:2px;color:var(--cl-text-2);font-size:8px;text-transform:uppercase}
-    section{border-top:1px solid var(--cl-divider)}article{display:grid;grid-template-columns:55px 1fr auto auto;gap:8px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--cl-divider)}
+    section{margin-top:10px;border-top:1px solid var(--cl-divider)}article{display:grid;grid-template-columns:55px 1fr auto auto;gap:8px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--cl-divider)}
     article time{font-size:9px;color:var(--cl-text-2)}article div{display:grid;gap:3px;font-size:11px}article strong{font-size:13px}article.live strong{color:var(--cl-live)}
     article i{min-width:28px;padding:3px;border-radius:6px;background:var(--cl-chip-bg);color:var(--cl-text-2);font-size:8px;font-style:normal;text-align:center}
     @media(max-width:380px){article{grid-template-columns:45px 1fr auto}article i{display:none}}

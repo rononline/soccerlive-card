@@ -2,17 +2,29 @@
 
 ## Unreleased
 
+## v3.33.0 (2026-07-28)
+
+- sources: optionally enrich a primary sensor from a second provider while preserving primary values and excluding secondary-only fixtures
+- match readiness: add a provider-neutral pre-match coverage indicator to Matchday and Match Center, with a standalone card fallback
+- archive: add season and competition filters, expanded W/D/L and goal statistics, JSON copy export and integration-backed rebuild/clear actions
+- diagnostics: expose source blending, field provenance and provider conflicts
+- loading: defer editor modules while eagerly registering card elements for safe direct-YAML backwards compatibility, all in one HACS bundle
+- bundle: remove the unnecessary Babel pass for Home Assistant's evergreen browsers, reducing production JavaScript from about 880 KiB to 770 KiB
+- bundle: minify static Lit CSS templates at build time with a tested local loader, reducing the final bundle further to about 722 KiB without changing source readability
+- bundle: pack repeated i18n keys into indexed language arrays at build time while preserving English fallback, bringing the final asset to about 676 KiB
+- dependencies: remove Babel, preset-env and babel-loader plus their transitive packages from the development toolchain
+- security: update the transitive `fast-uri` build dependency to the patched release; `npm audit` now reports zero vulnerabilities
+- editor: add a translated supplementary-sensor picker and an archive-statistics visibility option
+- documentation: cover source blending, readiness, archive workflows, compatibility and all 20 card types
+- tests: add source-blending, archive and readiness unit coverage and exercise lazy editor loading throughout the 66-scenario Playwright suite
 - release automation: publish only after the existing unit, smoke, Playwright and HACS checks succeed
 - release notes: use the matching changelog section and verify the production bundle before and after upload
-- build: enforce a 950 KiB production-bundle budget
+- build: tighten the production-bundle budget from 950 KiB to 750 KiB
 - CI: cancel stale runs and enable weekly Dependabot updates for GitHub Actions and npm dependencies
 - dependencies: group weekly updates and avoid duplicate branch/pull-request test runs
 - visual tests: pin Playwright exactly and fail early with a clear message when its package and Docker image versions differ
 - security: pin the moving HACS action to an audited commit
 - release verification: retry GitHub asset lookups to tolerate short API consistency delays
-
-## v3.32.0 (2026-07-28)
-
 - add a capability-based Matchday card with fixture state, counters and per-match completeness
 - add a local Match Archive card with tracked-team W/D/L summary and compact results
 - expand Diagnostics with data coverage, conflicts and provider issue indicators
@@ -594,8 +606,6 @@
 - Countdown: use card-width container queries and bounded timer sizing so narrow dashboard columns cannot overflow
 - Preview smoke test: parse actual panel definitions and compare them with the card registry instead of counting unrelated arrays
 - Sync `package-lock.json` with package version `3.21.54`
-
-## Unreleased
 
 ## v3.21.51 (2026-06-24)
 - Team/Matches/Standings: on partial subscription failure release succeeded subscriptions and store empty array so a full retry happens on next hass update (previously a partial list blocked retries)

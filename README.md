@@ -43,9 +43,9 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Club | `club` | Matchday dashboard, club profile, squad analysis, injuries, market values, team news and transfers |
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
 | Timeline | `timeline` | Minute-by-minute match events |
-| Diagnostics | `diagnostics` | Sensor health, update status, API state and match counters |
-| Matchday | `matchday` | Focused matchday with live/upcoming counters and data completeness |
-| Archive | `archive` | Personal local history of finished matches with W/D/L summary |
+| Diagnostics | `diagnostics` | Sensor health, update status, API state, source blending and match counters |
+| Matchday | `matchday` | Focused matchday with counters, data completeness and pre-match readiness |
+| Archive | `archive` | Filterable local history with season statistics, streaks and backup controls |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
 | Minimal | `minimal` | Minimal text views for fixtures, next match, standings or form (`schedule` remains an alias) |
 
@@ -64,6 +64,10 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🔮 **Match preview** (API-Football, Team card) — for upcoming matches: win-probability prediction + advice, averaged 1X2 odds, and injured/suspended players — each shown only when data exists
 - 📊 **xG** — expected goals in the live stats row when the provider supplies it
 - 🧩 **Capability-based enrichment** — richer blocks appear when a sensor supplies the required attributes; cards remain usable with standard Soccer Live data
+- 🔀 **Optional source blending** — select a supplementary sensor to fill missing fields on matching fixtures while the primary schedule remains authoritative
+- ✅ **Match readiness** — provider-neutral pre-match coverage for kick-off, venue, broadcast, weather, H2H, prediction, odds, absences and lineup
+- 🗃️ **Season archive** — filters, W/D/L, goals, clean sheets, unbeaten/winning runs and copy/rebuild/clear controls
+- ⚡ **Lazy editor execution** — card elements remain immediately available for legacy direct YAML, while editors load only when opened; HACS still installs one bundle
 - 🏟️ **Phase-aware match details** — preview, live and review content can include form, standings, H2H, lineups, statistics, predictions, absentees and a derived match story
 - 👥 **Club dashboard** — optional records, selection analysis, availability, expected/official lineup, team news, player profiles, injuries, market values and transfer windows
 - ♿ **Accessible interaction** — translated controls, keyboard-operable rows and modal semantics for interactive Club details
@@ -112,6 +116,7 @@ All cards share these common options:
 | Option | Default | Description |
 |---|---|---|
 | `entity` | required | The Soccer Live sensor entity ID |
+| `enrichment_entity` | empty | Optional supplementary sensor. It only fills missing fields on matching fixtures and never appends secondary-only schedule rows. |
 | `language` | `auto` | Force language: `auto`, `en`, `nl`, `de`, `pt`, `fr`, `es`, `it` |
 | `appearance` | `dark` | Structural appearance: `dark`, `light` or Home Assistant theme (`ha`) |
 | `palette` | appearance-dependent | `purple`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `team` or `custom` |
@@ -493,6 +498,40 @@ entity: sensor.soccer_live_next_ned_1_ajax
 
 Shows sensor type, API status, match counters, request counters and the last successful update. Useful when checking whether missing card data is a card issue or an integration/data issue.
 
+When `enrichment_entity` is configured, Diagnostics also shows the primary and
+supplementary providers, how many match fields were filled and how many
+authoritative-primary conflicts were detected.
+
+### 📅 Matchday
+
+```yaml
+type: custom:soccer-live-card
+card_type: matchday
+entity: sensor.soccer_live_all_mixed_feyenoord
+enrichment_entity: sensor.soccer_live_fotmob_all_mixed_10235  # optional
+```
+
+Shows the most relevant fixture day, live/upcoming counters and per-match
+coverage. For an upcoming focus fixture it adds a readiness bar based only on
+data that is useful before kick-off.
+
+### 🗃️ Archive
+
+```yaml
+type: custom:soccer-live-card
+card_type: archive
+entity: sensor.soccer_live_all_mixed_feyenoord
+max_matches: 50
+show_archive_stats: true
+```
+
+Filters locally stored results by season and competition and calculates W/D/L,
+win percentage, goals, clean sheets and longest unbeaten/winning runs. The
+copy button puts a versioned JSON backup on the clipboard. With integration
+schema v4 the card can also rebuild or clear the selected entry's archive.
+Import remains an explicit `soccer_live.import_match_archive` service action so
+a dashboard click cannot accidentally replace history.
+
 ### 📺 Ticker
 
 ```yaml
@@ -542,6 +581,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Recorder-safe club changes and market-value noise threshold | v3.7.1 |
 | Provider-neutral `match_phase`, `current_match` and half-time event | v3.8.0 |
 | Valid sanitized entity IDs for competitions and clubs | v3.9.1 |
+| Match readiness, 500-match archive, summary and archive management services | v3.11.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -573,6 +613,17 @@ test checks key parity so one language cannot silently lag behind.
 
 ---
 
+## ⚡ Bundle
+
+HACS installs one production asset. The build therefore keeps all legacy card
+elements immediately available, loads editors only when opened, targets the
+evergreen browsers supported by Home Assistant and minifies static Lit CSS
+without rewriting the readable source. `npm run build` enforces a 750 KiB
+uncompressed ceiling; the current bundle is about 676 KiB (roughly 164 KiB
+gzip or 120 KiB Brotli, depending on the compressor implementation).
+
+---
+
 ## ✅ Release checklist
 
 For maintainers:
@@ -580,7 +631,7 @@ For maintainers:
 1. Update `package.json` version.
 2. Add a matching section to `CHANGELOG.md`.
 3. Run `npm test` (unit tests, i18n parity and preview smoke test).
-4. Run `npm run test:visual` for the 18-card browser regression layer.
+4. Run `npm run test:visual` for the 20-card browser regression layer.
 5. Run `npm run build` and `git diff --check`.
 6. Commit source, documentation, tests, version and `dist/soccer-live-card.bundle.js`.
 7. Push `main`.

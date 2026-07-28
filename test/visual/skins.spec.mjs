@@ -13,6 +13,52 @@ async function open(page, params) {
 
 const target = (page) => page.locator('#target');
 
+test('legacy direct card elements are registered before configuration', async ({ page }) => {
+  await page.goto(HARNESS);
+  const available = await page.evaluate(() => {
+    const card = document.createElement('soccer-live-team');
+    return Boolean(customElements.get('soccer-live-team') && typeof card.setConfig === 'function');
+  });
+  expect(available).toBe(true);
+});
+
+test('wrapper applies optional secondary-source enrichment', async ({ page }) => {
+  await open(page, { mode: 'card', lang: 'nl' });
+  await page.evaluate(() => {
+    const hass = window.__previewHass;
+    const primary = hass.states['sensor.preview_team'].attributes.matches[0];
+    hass.states['sensor.preview_enrichment'] = {
+      state: 'ok',
+      attributes: {
+        provider: 'fotmob',
+        matches: [
+          { ...primary, event_id: 'fotmob-fixture', venue: 'De Kuip' },
+          {
+            event_id: 'previous-season-only',
+            date_iso: '2025-05-01T12:00:00+00:00',
+            home_team: 'Feyenoord',
+            away_team: 'AZ',
+          },
+        ],
+      },
+    };
+    const target = document.getElementById('target');
+    target.replaceChildren();
+    const card = document.createElement('soccer-live-card');
+    card.setConfig({
+      entity: 'sensor.preview_team',
+      enrichment_entity: 'sensor.preview_enrichment',
+      card_type: 'diagnostics',
+      language: 'nl',
+    });
+    card.hass = hass;
+    target.appendChild(card);
+  });
+  await expect(target(page)).toContainText('Gecombineerde bronnen');
+  await expect(target(page)).toContainText('api_football + fotmob');
+  await expect(target(page)).toContainText('Aangevulde velden');
+});
+
 // --- Team card: appearance × palette, legacy skin, inline names ---
 
 test('team card — dark + purple', async ({ page }) => {
@@ -383,9 +429,15 @@ test('Dutch labels cover diagnostics, tables, bracket and editors', async ({ pag
   await expect(target(page).locator('soccer-live-team-editor')).toContainText('Normaal');
   await expect(target(page).locator('soccer-live-team-editor')).toContainText('Zeer groot');
 
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const current = document.querySelector('#target > *');
     current.remove();
+    const loader = document.createElement('soccer-live-card-editor');
+    loader.style.display = 'none';
+    loader.setConfig({ card_type: 'ticker', entity: 'sensor.preview_team', language: 'nl' });
+    document.body.appendChild(loader);
+    await customElements.whenDefined('soccer-live-ticker-editor');
+    loader.remove();
     const editor = document.createElement('soccer-live-ticker-editor');
     editor.setConfig({ entity: 'sensor.preview_team', auto_scroll: true, language: 'nl' });
     editor.hass = window.__previewHass || {

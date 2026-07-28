@@ -40,6 +40,10 @@ class SoccerLiveInsightsEditor extends LitElement {
         <label>${this._t('editor.max_matches')}<select @change=${e => this._set('max_matches', Number(e.target.value))}>
           ${[10,20,30,50,100].map(n => html`<option value=${n} ?selected=${Number(this._config.max_matches || 20) === n}>${n}</option>`)}
         </select></label>
+        <label class="switch"><span>${this._t('editor.show_archive_stats')}</span><ha-switch
+          .checked=${this._config.show_archive_stats !== false}
+          @change=${event => this._set('show_archive_stats', event.target.checked)}
+        ></ha-switch></label>
       ` : ''}
       <h3>${this._t('editor.appearance')}</h3>
       ${renderSkinControls(this, this._config, key => this._t(key))}
@@ -49,6 +53,7 @@ class SoccerLiveInsightsEditor extends LitElement {
   static styles = [editorStyles, css`
     .card-config{display:flex;flex-direction:column;gap:14px}label{display:grid;gap:5px;font-size:12px}
     select,input{box-sizing:border-box;width:100%;padding:10px;border:1px solid var(--divider-color);border-radius:8px;background:var(--card-background-color);color:var(--primary-text-color)}
+    label.switch{display:flex;align-items:center;justify-content:space-between}
   `];
 }
 

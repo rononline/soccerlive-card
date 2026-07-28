@@ -142,6 +142,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const sensorType = attrs.sensor_type || "unknown";
     const recommended = this._recommendedCards(sensorType);
     const quality = attrs.data_quality || {};
+    const blend = attrs.source_blend || {};
     const metrics = [
       [this._t("diag.sensor"), sensorType],
       [this._t("diag.state"), stateObj.state],
@@ -154,6 +155,11 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       [this._t("diag.sensor_age"), this._age(lastUpdate)],
       [this._t("quality.completeness"), quality.average_completeness != null ? `${quality.average_completeness}%` : null],
       [this._t("quality.conflicts"), quality.conflicts?.length],
+      ...(blend.secondary ? [
+        [this._t("diag.source_blend"), `${blend.primary} + ${blend.secondary}`],
+        [this._t("diag.enriched_fields"), blend.enriched_fields],
+        [this._t("quality.conflicts"), blend.conflicts],
+      ] : []),
     ];
 
     return html`

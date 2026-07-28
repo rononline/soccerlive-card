@@ -1,47 +1,125 @@
 import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from './i18n.js';
-
-import "./cards/Standings/soccer-live-standings.js";
-import "./cards/Standings/soccer-live-standings-editor.js";
-import "./cards/Tutte/soccer-live-matches.js";
-import "./cards/Tutte/soccer-live-matches-editor.js";
-import "./cards/Team/soccer-live-team.js";
-import "./cards/Team/soccer-live-team-editor.js";
-import "./cards/News/soccer-live-news.js";
-import "./cards/News/soccer-live-news-editor.js";
-import "./cards/Bracket/soccer-live-bracket.js";
-import "./cards/Bracket/soccer-live-bracket-editor.js";
-import "./cards/Scorers/soccer-live-scorers.js";
-import "./cards/Scorers/soccer-live-scorers-editor.js";
-import "./cards/Club/soccer-live-club.js";
-import "./cards/Club/soccer-live-club-editor.js";
-import "./cards/MiniStandings/soccer-live-mini-standings.js";
-import "./cards/MiniStandings/soccer-live-mini-standings-editor.js";
-import "./cards/Countdown/soccer-live-countdown.js";
-import "./cards/Countdown/soccer-live-countdown-editor.js";
-import "./cards/MultiTeam/soccer-live-multi-team.js";
-import "./cards/MultiTeam/soccer-live-multi-team-editor.js";
-import "./cards/TeamCompetitions/soccer-live-team-competitions.js";
-import "./cards/TeamCompetitions/soccer-live-team-competitions-editor.js";
-import "./cards/MatchCenter/soccer-live-match-center.js";
-import "./cards/MatchCenter/soccer-live-match-center-editor.js";
-import "./cards/TeamForm/soccer-live-team-form.js";
-import "./cards/TeamForm/soccer-live-team-form-editor.js";
-import "./cards/Diagnostics/soccer-live-diagnostics.js";
-import "./cards/Diagnostics/soccer-live-diagnostics-editor.js";
-import "./cards/Ticker/soccer-live-ticker.js";
-import "./cards/Ticker/soccer-live-ticker-editor.js";
-import "./cards/Lineup/soccer-live-lineup.js";
-import "./cards/Lineup/soccer-live-lineup-editor.js";
-import "./cards/Timeline/soccer-live-timeline.js";
-import "./cards/Timeline/soccer-live-timeline-editor.js";
-import "./cards/Schedule/soccer-live-schedule.js";
-import "./cards/Schedule/soccer-live-schedule-editor.js";
-import "./cards/Matchday/soccer-live-matchday.js";
-import "./cards/Archive/soccer-live-archive.js";
-import "./cards/Insights/soccer-live-insights-editor.js";
+import { blendHassSources } from "./cards/shared-source-blend.js";
+// Card elements stay eagerly registered for backwards-compatible direct YAML
+// (`custom:soccer-live-team`, etc.). Home Assistant may call setConfig
+// immediately after creating such an element, before an async import settles.
+// Editors are safe to load on demand through getConfigElement().
+import './cards/Team/soccer-live-team.js';
+import './cards/Standings/soccer-live-standings.js';
+import './cards/Tutte/soccer-live-matches.js';
+import './cards/Countdown/soccer-live-countdown.js';
+import './cards/News/soccer-live-news.js';
+import './cards/Bracket/soccer-live-bracket.js';
+import './cards/MiniStandings/soccer-live-mini-standings.js';
+import './cards/Scorers/soccer-live-scorers.js';
+import './cards/MultiTeam/soccer-live-multi-team.js';
+import './cards/TeamCompetitions/soccer-live-team-competitions.js';
+import './cards/MatchCenter/soccer-live-match-center.js';
+import './cards/TeamForm/soccer-live-team-form.js';
+import './cards/Club/soccer-live-club.js';
+import './cards/Diagnostics/soccer-live-diagnostics.js';
+import './cards/Ticker/soccer-live-ticker.js';
+import './cards/Lineup/soccer-live-lineup.js';
+import './cards/Timeline/soccer-live-timeline.js';
+import './cards/Schedule/soccer-live-schedule.js';
+import './cards/Matchday/soccer-live-matchday.js';
+import './cards/Archive/soccer-live-archive.js';
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
+
+const CARD_MODULES = {
+  team: {
+    card: () => import('./cards/Team/soccer-live-team.js'),
+    editor: () => import('./cards/Team/soccer-live-team-editor.js'),
+  },
+  standings: {
+    card: () => import('./cards/Standings/soccer-live-standings.js'),
+    editor: () => import('./cards/Standings/soccer-live-standings-editor.js'),
+  },
+  matches: {
+    card: () => import('./cards/Tutte/soccer-live-matches.js'),
+    editor: () => import('./cards/Tutte/soccer-live-matches-editor.js'),
+  },
+  countdown: {
+    card: () => import('./cards/Countdown/soccer-live-countdown.js'),
+    editor: () => import('./cards/Countdown/soccer-live-countdown-editor.js'),
+  },
+  news: {
+    card: () => import('./cards/News/soccer-live-news.js'),
+    editor: () => import('./cards/News/soccer-live-news-editor.js'),
+  },
+  bracket: {
+    card: () => import('./cards/Bracket/soccer-live-bracket.js'),
+    editor: () => import('./cards/Bracket/soccer-live-bracket-editor.js'),
+  },
+  'mini-standings': {
+    card: () => import('./cards/MiniStandings/soccer-live-mini-standings.js'),
+    editor: () => import('./cards/MiniStandings/soccer-live-mini-standings-editor.js'),
+  },
+  scorers: {
+    card: () => import('./cards/Scorers/soccer-live-scorers.js'),
+    editor: () => import('./cards/Scorers/soccer-live-scorers-editor.js'),
+  },
+  'multi-team': {
+    card: () => import('./cards/MultiTeam/soccer-live-multi-team.js'),
+    editor: () => import('./cards/MultiTeam/soccer-live-multi-team-editor.js'),
+  },
+  'team-competitions': {
+    card: () => import('./cards/TeamCompetitions/soccer-live-team-competitions.js'),
+    editor: () => import('./cards/TeamCompetitions/soccer-live-team-competitions-editor.js'),
+  },
+  'match-center': {
+    card: () => import('./cards/MatchCenter/soccer-live-match-center.js'),
+    editor: () => import('./cards/MatchCenter/soccer-live-match-center-editor.js'),
+  },
+  'team-form': {
+    card: () => import('./cards/TeamForm/soccer-live-team-form.js'),
+    editor: () => import('./cards/TeamForm/soccer-live-team-form-editor.js'),
+  },
+  club: {
+    card: () => import('./cards/Club/soccer-live-club.js'),
+    editor: () => import('./cards/Club/soccer-live-club-editor.js'),
+  },
+  diagnostics: {
+    card: () => import('./cards/Diagnostics/soccer-live-diagnostics.js'),
+    editor: () => import('./cards/Diagnostics/soccer-live-diagnostics-editor.js'),
+  },
+  ticker: {
+    card: () => import('./cards/Ticker/soccer-live-ticker.js'),
+    editor: () => import('./cards/Ticker/soccer-live-ticker-editor.js'),
+  },
+  lineup: {
+    card: () => import('./cards/Lineup/soccer-live-lineup.js'),
+    editor: () => import('./cards/Lineup/soccer-live-lineup-editor.js'),
+  },
+  timeline: {
+    card: () => import('./cards/Timeline/soccer-live-timeline.js'),
+    editor: () => import('./cards/Timeline/soccer-live-timeline-editor.js'),
+  },
+  minimal: {
+    card: () => import('./cards/Schedule/soccer-live-schedule.js'),
+    editor: () => import('./cards/Schedule/soccer-live-schedule-editor.js'),
+  },
+  matchday: {
+    card: () => import('./cards/Matchday/soccer-live-matchday.js'),
+    editor: () => import('./cards/Insights/soccer-live-insights-editor.js'),
+  },
+  archive: {
+    card: () => import('./cards/Archive/soccer-live-archive.js'),
+    editor: () => import('./cards/Insights/soccer-live-insights-editor.js'),
+  },
+};
+
+const MODULE_PROMISES = new Map();
+function loadCardModule(type, kind) {
+  const normalized = type === 'schedule' ? 'minimal' : type;
+  const loader = CARD_MODULES[normalized]?.[kind];
+  if (!loader) return Promise.resolve();
+  const key = `${normalized}:${kind}`;
+  if (!MODULE_PROMISES.has(key)) MODULE_PROMISES.set(key, loader());
+  return MODULE_PROMISES.get(key);
+}
 
 const CARD_REGISTRY = [
   { value: 'team',              element: 'soccer-live-team',              editor: 'soccer-live-team-editor',              label: 'Team',              description: 'Live score, form, lineup, weather for one team', sensorTypes: ['team_match'] },
@@ -85,7 +163,7 @@ function resolveElement(cardType) {
 }
 
 // Shared config fields preserved when switching card type
-const SHARED_FIELDS = ['entity', 'skin', 'language', 'show_event_toasts'];
+const SHARED_FIELDS = ['entity', 'enrichment_entity', 'skin', 'language', 'show_event_toasts'];
 
 const WRAPPER_TYPE = 'custom:soccer-live-card';
 
@@ -98,11 +176,12 @@ class SoccerLiveCard extends HTMLElement {
     this._config = {};
     this._child = null;
     this._childType = null;
+    this._loadToken = 0;
   }
 
   set hass(hass) {
     this._hass = hass;
-    if (this._child) this._child.hass = hass;
+    if (this._child) this._child.hass = blendHassSources(hass, this._config);
   }
 
   setConfig(config) {
@@ -114,6 +193,25 @@ class SoccerLiveCard extends HTMLElement {
       this._destroyChild();
       this.innerHTML = '';
       this.appendChild(type ? this._errorCard(this._t('ui.unknown_card_type', { type })) : this._placeholder());
+      return;
+    }
+
+    const normalized = normalizeCardType(type);
+    if (!customElements.get(element)) {
+      const token = ++this._loadToken;
+      this._destroyChild();
+      this.innerHTML = '';
+      this.appendChild(this._loadingCard());
+      loadCardModule(normalized, 'card').then(() => {
+        if (token === this._loadToken && resolveElement(this._config.card_type) === element) {
+          this.setConfig(this._config);
+        }
+      }).catch(error => {
+        if (token === this._loadToken) {
+          this.innerHTML = '';
+          this.appendChild(this._errorCard(String(error)));
+        }
+      });
       return;
     }
 
@@ -131,7 +229,7 @@ class SoccerLiveCard extends HTMLElement {
     } catch (e) {
       if (this._config.entity) console.warn(`SoccerLiveCard: setConfig failed for ${this._childType}:`, e);
     }
-    if (this._hass) this._child.hass = this._hass;
+    if (this._hass) this._child.hass = blendHassSources(this._hass, this._config);
   }
 
   _destroyChild() {
@@ -146,6 +244,13 @@ class SoccerLiveCard extends HTMLElement {
     el.style.cssText = 'padding:24px;text-align:center;color:#94a3b8;font-size:13px;';
     const lang = this._hass ? (this._hass.language || 'en').split('-')[0] : 'en';
     el.textContent = t('ui.open_editor_to_configure', lang);
+    return el;
+  }
+
+  _loadingCard() {
+    const el = document.createElement('ha-card');
+    el.style.cssText = 'padding:24px;text-align:center;color:#94a3b8;font-size:13px;';
+    el.textContent = this._t('ui.loading');
     return el;
   }
 
@@ -204,6 +309,10 @@ class SoccerLiveCardEditor extends LitElement {
     this.requestUpdate();
   }
 
+  _t(key, vars) {
+    return t(key, resolveLang(this.hass, this._config), vars);
+  }
+
   // Pass hass through to sub-editor whenever it changes
   updated(changedProps) {
     if (changedProps.has('hass') && this._subEditor) {
@@ -228,6 +337,18 @@ class SoccerLiveCardEditor extends LitElement {
       container.innerHTML = '';
       this._subEditor = null;
       this._subEditorType = null;
+      return;
+    }
+
+    if (!customElements.get(editorName)) {
+      const token = `${type}:${Date.now()}`;
+      this._editorLoadToken = token;
+      container.textContent = this._t('ui.loading');
+      loadCardModule(type, 'editor').then(() => {
+        if (this._editorLoadToken === token) this._syncSubEditor();
+      }).catch(error => {
+        if (this._editorLoadToken === token) container.textContent = String(error);
+      });
       return;
     }
 
@@ -333,6 +454,24 @@ class SoccerLiveCardEditor extends LitElement {
         ></ha-form>
         ${meta ? html`<p class="picker-desc">${meta.description}</p>` : ''}
         ${this._sensorHint(meta)}
+        <label class="enrichment-picker">
+          <span>${t('editor.enrichment_entity', resolveLang(this.hass, this._config))}</span>
+          <ha-entity-picker
+            .hass=${this.hass}
+            .value=${this._config.enrichment_entity || ''}
+            .includeDomains=${['sensor']}
+            allow-custom-entity
+            @value-changed=${event => {
+              const value = event.detail?.value || '';
+              if (value === (this._config.enrichment_entity || '')) return;
+              const next = { ...this._config };
+              if (value) next.enrichment_entity = value;
+              else delete next.enrichment_entity;
+              this._dispatch(next);
+            }}
+          ></ha-entity-picker>
+          <small>${t('editor.enrichment_entity_hint', resolveLang(this.hass, this._config))}</small>
+        </label>
       </div>
       <details class="sub-editor-details" open>
         <summary>Card settings</summary>
@@ -359,6 +498,19 @@ class SoccerLiveCardEditor extends LitElement {
         padding: 8px 10px;
         border-radius: 6px;
         font-size: 12px;
+      }
+      .enrichment-picker {
+        display: grid;
+        gap: 6px;
+        margin-top: 12px;
+        color: var(--primary-text-color);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .enrichment-picker small {
+        color: var(--secondary-text-color);
+        font-size: 11px;
+        font-weight: 400;
       }
       .editor-info {
         color: var(--primary-text-color);

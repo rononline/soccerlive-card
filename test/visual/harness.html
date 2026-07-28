@@ -32,6 +32,7 @@
 <body>
   <div id="target"></div>
   <script>
+    (async () => {
     // Compact but representative mock: a team with an upcoming match (prediction),
     // recent and upcoming fixtures, and team colours — enough for the visual cases.
     const attrs = {
@@ -105,11 +106,12 @@
       api_status: "ok",
       sensor_type: "team_match",
       provider: "api_football",
+      config_entry_id: "preview-feyenoord",
       data_quality: { provider: "api_football", average_completeness: 82, level: "good", issues: [], conflicts: [] },
       matchday: { date: "2026-07-26", competition: "Eredivisie", phase: "upcoming", total: 1, live: 0, upcoming: 1, finished: 0, matches: [] },
       match_archive: [
-        { event_id: "a1", date: "17-07-2026 13:30", home_team: "Feyenoord", away_team: "Charleroi", home_score: "3", away_score: "1", competition_name: "Oefenwedstrijd", provider: "api_football" },
-        { event_id: "a2", date: "11-07-2026 14:00", home_team: "Feyenoord", away_team: "Club Brugge", home_score: "3", away_score: "1", competition_name: "Oefenwedstrijd", provider: "api_football" },
+        { event_id: "a1", date: "17-07-2026 13:30", date_iso: "2026-07-17T11:30:00Z", season: "2026/27", home_team: "Feyenoord", away_team: "Charleroi", home_score: "3", away_score: "1", competition_name: "Oefenwedstrijd", provider: "api_football" },
+        { event_id: "a2", date: "11-07-2026 14:00", date_iso: "2026-07-11T12:00:00Z", season: "2026/27", home_team: "Feyenoord", away_team: "Club Brugge", home_score: "3", away_score: "1", competition_name: "Oefenwedstrijd", provider: "api_football" },
       ],
       player_watchlist: [{ id: 3, name: "Middenvelder", position: "Midfielder", goals: 4, assists: 6 }],
       team_id: 209,
@@ -249,6 +251,7 @@
       language: params.get("lang") || "en",
       locale: { language: params.get("lang") || "en" },
     };
+    window.__previewHass = hass;
 
     // Build the config from URL params (only set the axes that are provided).
     const config = { show_previous_matches: true, show_form_trend: true };
@@ -328,13 +331,57 @@
       cfg = config;
     }
 
+    // Card modules are loaded on demand by the public wrapper. Exercise that
+    // route in the visual suite and wait for the selected legacy element before
+    // declaring the page ready. This prevents screenshots of the loading shell.
+    const requestedTag = tag;
+    if (mode === "editor") {
+      const loader = document.createElement("soccer-live-card-editor");
+      loader.style.display = "none";
+      loader.setConfig(cfg);
+      loader.hass = hass;
+      document.body.appendChild(loader);
+      await customElements.whenDefined(requestedTag);
+      loader.remove();
+    } else {
+      const cardTypeByTag = {
+        "soccer-live-team": "team",
+        "soccer-live-standings": "standings",
+        "soccer-live-matches": "matches",
+        "soccer-live-countdown": "countdown",
+        "soccer-live-news": "news",
+        "soccer-live-bracket": "bracket",
+        "soccer-live-mini-standings": "mini-standings",
+        "soccer-live-scorers": "scorers",
+        "soccer-live-multi-team": "multi-team",
+        "soccer-live-team-competitions": "team-competitions",
+        "soccer-live-match-center": "match-center",
+        "soccer-live-team-form": "team-form",
+        "soccer-live-club": "club",
+        "soccer-live-diagnostics": "diagnostics",
+        "soccer-live-ticker": "ticker",
+        "soccer-live-lineup": "lineup",
+        "soccer-live-timeline": "timeline",
+        "soccer-live-schedule": "minimal",
+        "soccer-live-matchday": "matchday",
+        "soccer-live-archive": "archive",
+      };
+      const loader = document.createElement("soccer-live-card");
+      loader.style.display = "none";
+      loader.setConfig({ ...cfg, card_type: cardTypeByTag[requestedTag] });
+      loader.hass = hass;
+      document.body.appendChild(loader);
+      await customElements.whenDefined(requestedTag);
+      loader.remove();
+    }
+
     const el = document.createElement(tag);
     el.setConfig(cfg);
     el.hass = hass;
     document.getElementById("target").appendChild(el);
-
     // Signal readiness for the test runner once rendered.
     requestAnimationFrame(() => requestAnimationFrame(() => { document.body.dataset.ready = "1"; }));
+    })();
   </script>
 </body>
 </html>

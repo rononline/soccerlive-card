@@ -19,6 +19,7 @@ import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js
 import { predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
 import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { h2hResult } from '../shared-h2h-model.js';
+import { readinessStyles, renderReadiness } from '../shared-readiness.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 const PREVIEW_COVERAGE_KEYS = {
@@ -265,6 +266,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     })}</div>` : html`<div class="ov-form-dots"></div>`;
 
     return html`
+      ${renderReadiness(match, key => this._t(key))}
       <div class="ov-section">
         ${(homeForm || awayForm) ? html`
           <div class="ov-row">
@@ -548,7 +550,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
       .mc-hero-section { position: relative; overflow: hidden; }
@@ -570,6 +572,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .mc-picker select { min-width:0; flex:1; padding:7px 9px; border-radius:8px; border:1px solid var(--cl-divider); background:rgba(255,255,255,.06); color:var(--cl-text); }
       .mc-picker span { color:var(--cl-accent); font-size:11px; }
       .brief-card { margin:8px 12px; padding:11px; border-radius:12px; border:1px solid var(--cl-divider); background:rgba(255,255,255,.025); }
+      .readiness { margin:10px 12px; }
       .brief-card h4 { margin:0 0 9px; color:var(--cl-accent); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
       .brief-card p { margin:7px 0; color:var(--cl-text-2); font-size:11px; }.brief-card strong{color:var(--cl-text)}
       .brief-form-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; color:var(--cl-text-2); font-size:10px; }

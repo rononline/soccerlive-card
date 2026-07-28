@@ -322,6 +322,7 @@
     const emptyAttrs = {
       sensor_type: "team_matches_mixed",
       api_status: "ok",
+      config_entry_id: "preview-netherlands",
       team_name: "No fixtures",
       team_logo: "",
       league_name: "Preview Empty State",
@@ -370,8 +371,8 @@
       data_quality: { provider: "preview", average_completeness: 78, level: "good", issues: [], conflicts: [] },
       matchday: { date: "2026-06-22", competition: "FIFA World Cup", phase: "live", total: 3, live: 1, upcoming: 1, finished: 1, matches: [live, upcoming, done] },
       match_archive: [
-        { ...done, event_id: "archive-1", date_iso: "2026-06-18T18:00:00Z", competition_name: "FIFA World Cup", provider: "preview" },
-        { ...done, event_id: "archive-2", date_iso: "2026-06-10T18:00:00Z", home_team: "Netherlands", away_team: "Japan", home_score: 2, away_score: 0, competition_name: "Friendly", provider: "preview" }
+        { ...done, event_id: "archive-1", date_iso: "2026-06-18T18:00:00Z", season: "2025/26", competition_name: "FIFA World Cup", provider: "preview" },
+        { ...done, event_id: "archive-2", date_iso: "2026-06-10T18:00:00Z", season: "2025/26", home_team: "Netherlands", away_team: "Japan", home_score: 2, away_score: 0, competition_name: "Friendly", provider: "preview" }
       ],
       request_count: 1,
       last_successful_update: "22-06-2026 12:00",
