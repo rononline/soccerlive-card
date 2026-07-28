@@ -25,6 +25,9 @@
 - visual tests: pin Playwright exactly and fail early with a clear message when its package and Docker image versions differ
 - security: pin the moving HACS action to an audited commit
 - release verification: retry GitHub asset lookups to tolerate short API consistency delays
+
+## v3.32.0 (2026-07-28)
+
 - add a capability-based Matchday card with fixture state, counters and per-match completeness
 - add a local Match Archive card with tracked-team W/D/L summary and compact results
 - expand Diagnostics with data coverage, conflicts and provider issue indicators
