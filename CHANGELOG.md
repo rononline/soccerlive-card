@@ -2,12 +2,6 @@
 
 ## Unreleased
 
-- add a capability-based Matchday card with fixture state, counters and per-match completeness
-- add a local Match Archive card with tracked-team W/D/L summary and compact results
-- expand Diagnostics with data coverage, conflicts and provider issue indicators
-- let the Club card use the integration-level player watchlist while retaining local favourites
-- enrich the Club quality strip with the provider-neutral completeness score
-- add English and Dutch labels, preview fixtures and smoke coverage for both new card types
 - release automation: publish only after the existing unit, smoke, Playwright and HACS checks succeed
 - release notes: use the matching changelog section and verify the production bundle before and after upload
 - build: enforce a 950 KiB production-bundle budget
@@ -16,6 +10,15 @@
 - visual tests: pin Playwright exactly and fail early with a clear message when its package and Docker image versions differ
 - security: pin the moving HACS action to an audited commit
 - release verification: retry GitHub asset lookups to tolerate short API consistency delays
+
+## v3.32.0 (2026-07-28)
+
+- add a capability-based Matchday card with fixture state, counters and per-match completeness
+- add a local Match Archive card with tracked-team W/D/L summary and compact results
+- expand Diagnostics with data coverage, conflicts and provider issue indicators
+- let the Club card use the integration-level player watchlist while retaining local favourites
+- enrich the Club quality strip with the provider-neutral completeness score
+- add translations in all seven supported languages, preview fixtures and visual coverage for both new card types
 
 ## v3.31.12 (2026-07-27)
 - Fix offline cache rewrites after clearing an entity or all Soccer Live entries
