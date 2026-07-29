@@ -64,9 +64,9 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🔮 **Match preview** (API-Football, Team card) — for upcoming matches: win-probability prediction + advice, averaged 1X2 odds, and injured/suspended players — each shown only when data exists
 - 📊 **xG** — expected goals in the live stats row when the provider supplies it
 - 🧩 **Capability-based enrichment** — richer blocks appear when a sensor supplies the required attributes; cards remain usable with standard Soccer Live data
-- 🔀 **Optional source blending** — select a supplementary sensor to fill missing fields on matching fixtures while the primary schedule remains authoritative
+- 🔀 **Optional source blending** — select a supplementary sensor, or let the card find the richest overlapping provider, while the primary schedule remains authoritative
 - ✅ **Match readiness** — provider-neutral pre-match coverage for kick-off, venue, broadcast, weather, H2H, prediction, odds, absences and lineup
-- 🗃️ **Season archive** — filters, W/D/L, goals, clean sheets, unbeaten/winning runs and copy/rebuild/clear controls
+- 🗃️ **Season archive** — season, competition, opponent, result and home/away filters; trends, comparisons, import/export and optional external history
 - ⚡ **Lazy editor execution** — card elements remain immediately available for legacy direct YAML, while editors load only when opened; HACS still installs one bundle
 - 🏟️ **Phase-aware match details** — preview, live and review content can include form, standings, H2H, lineups, statistics, predictions, absentees and a derived match story
 - 👥 **Club dashboard** — optional records, selection analysis, availability, expected/official lineup, team news, player profiles, injuries, market values and transfer windows
@@ -228,6 +228,8 @@ expected lineup. During and after the match it can add official lineups,
 statistics, timeline events, scorers, xG, standout statistics, player of the
 match and a compact match story. Missing blocks are omitted instead of rendered
 as empty placeholders.
+Match Center and the Matches popup can also show which provider supplied each
+section, how fresh it is, and a compact score/comeback/xG/attempts narrative.
 
 ### 📰 News
 
@@ -502,6 +504,19 @@ When `enrichment_entity` is configured, Diagnostics also shows the primary and
 supplementary providers, how many match fields were filled and how many
 authoritative-primary conflicts were detected.
 
+Source enrichment is optional. Pick a sensor explicitly or let the card find
+the richest overlapping provider:
+
+```yaml
+enrichment_entity: sensor.soccer_live_fotmob_all_mixed_10235
+# or:
+auto_enrichment: true
+```
+
+Only matching fixtures are supplemented; the selected primary sensor remains
+authoritative for the schedule, scores and conflicting values. Without another
+compatible sensor every card continues to work standalone.
+
 ### 📅 Matchday
 
 ```yaml
@@ -521,16 +536,18 @@ data that is useful before kick-off.
 type: custom:soccer-live-card
 card_type: archive
 entity: sensor.soccer_live_all_mixed_feyenoord
+archive_entity: sensor.my_historical_feyenoord_results # optional
 max_matches: 50
 show_archive_stats: true
 ```
 
-Filters locally stored results by season and competition and calculates W/D/L,
-win percentage, goals, clean sheets and longest unbeaten/winning runs. The
-copy button puts a versioned JSON backup on the clipboard. With integration
-schema v4 the card can also rebuild or clear the selected entry's archive.
-Import remains an explicit `soccer_live.import_match_archive` service action so
-a dashboard click cannot accidentally replace history.
+Filters locally stored results by season, competition, opponent, result and
+home/away venue and calculates W/D/L, win percentage, goals, clean sheets,
+streaks, monthly form and season comparisons. The copy/import buttons exchange
+a versioned JSON backup through the clipboard; rebuild and clear remain
+integration-backed actions. `archive_entity` can merge another compatible
+sensor and also recognizes common Dutch `datum`, `thuis`, `uit` and `uitslag`
+fields. Soccer Live remains fully standalone when it is omitted.
 
 ### 📺 Ticker
 
@@ -582,6 +599,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Provider-neutral `match_phase`, `current_match` and half-time event | v3.8.0 |
 | Valid sanitized entity IDs for competitions and clubs | v3.9.1 |
 | Match readiness, 500-match archive, summary and archive management services | v3.11.0 |
+| Per-section source/freshness metadata, replay lab and native helper entities | v3.12.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -619,8 +637,8 @@ HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. `npm run build` enforces a 750 KiB
-uncompressed ceiling; the current bundle is about 676 KiB (roughly 164 KiB
-gzip or 120 KiB Brotli, depending on the compressor implementation).
+uncompressed ceiling; the current bundle is about 693 KiB (roughly 169 KiB
+gzip or 125 KiB Brotli, depending on the compressor implementation).
 
 ---
 

@@ -163,7 +163,7 @@ function resolveElement(cardType) {
 }
 
 // Shared config fields preserved when switching card type
-const SHARED_FIELDS = ['entity', 'enrichment_entity', 'skin', 'language', 'show_event_toasts'];
+const SHARED_FIELDS = ['entity', 'enrichment_entity', 'auto_enrichment', 'archive_entity', 'skin', 'language', 'show_event_toasts'];
 
 const WRAPPER_TYPE = 'custom:soccer-live-card';
 
@@ -472,6 +472,14 @@ class SoccerLiveCardEditor extends LitElement {
           ></ha-entity-picker>
           <small>${t('editor.enrichment_entity_hint', resolveLang(this.hass, this._config))}</small>
         </label>
+        <label class="enrichment-auto">
+          <span>${t('editor.auto_enrichment', resolveLang(this.hass, this._config))}</span>
+          <ha-switch
+            .checked=${this._config.auto_enrichment === true}
+            @change=${event => this._dispatch({ ...this._config, auto_enrichment: event.target.checked })}
+          ></ha-switch>
+          <small>${t('editor.auto_enrichment_hint', resolveLang(this.hass, this._config))}</small>
+        </label>
       </div>
       <details class="sub-editor-details" open>
         <summary>Card settings</summary>
@@ -492,6 +500,7 @@ class SoccerLiveCardEditor extends LitElement {
         font-size: 12px;
         color: var(--secondary-text-color);
       }
+      .enrichment-auto{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin:10px 0}.enrichment-auto small{grid-column:1/3;color:var(--secondary-text-color);font-size:12px}
       .editor-info,
       .editor-warning {
         margin-top: 8px;

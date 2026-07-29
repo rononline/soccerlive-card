@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext, predictionOutcome, derivedMatchStory } from '../../src/cards/shared-match-popup-model.js';
+import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext, predictionOutcome, derivedMatchStory, matchNarrative } from '../../src/cards/shared-match-popup-model.js';
 
 test('kickoffMinutes uses ISO time and remains null without a valid date', () => {
   const now = new Date('2026-07-23T12:00:00Z').getTime();
@@ -87,4 +87,26 @@ test('derivedMatchStory excludes cancelled and missed goals', () => {
     ],
   });
   assert.deepEqual(story.map(item => item.player), ['Winner']);
+});
+
+test('matchNarrative summarizes score, comeback and dominant statistics', () => {
+  const narrative = matchNarrative({
+    state: 'post',
+    home_team: 'Feyenoord',
+    away_team: 'Sparta',
+    home_score: 3,
+    away_score: 1,
+    key_events: [
+      { scoring_play: true, home_score: 0, away_score: 1 },
+      { scoring_play: true, home_score: 1, away_score: 1 },
+    ],
+    expected_goals: { home: 2.7, away: 0.8 },
+    home_statistics: { shots: 18 },
+    away_statistics: { shots: 7 },
+  });
+  assert.deepEqual(narrative.map(item => item.key), [
+    'story.final_result',
+    'story.comeback',
+    'story.xg_dominance',
+  ]);
 });

@@ -34,3 +34,15 @@ test('calculates archive filters and tracked-team statistics', () => {
 test('returns null when a configured team is not part of a match', () => {
   assert.equal(archiveResult(matches[0], 'Ajax'), null);
 });
+
+test('filters by venue, result and opponent and compares seasons', () => {
+  const model = archiveModel(matches, 'Feyenoord', '', '', {
+    location: 'home',
+    result: 'w',
+    opponent: 'a',
+  });
+  assert.equal(model.matches.length, 1);
+  assert.equal(model.matches[0].away_team, 'A');
+  assert.equal(model.monthly.length, 1);
+  assert.equal(model.seasonComparison.length, 2);
+});

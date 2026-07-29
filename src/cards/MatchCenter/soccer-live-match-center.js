@@ -16,10 +16,11 @@ import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js';
-import { predictionOutcome, derivedMatchStory } from '../shared-match-popup-model.js';
+import { predictionOutcome, derivedMatchStory, matchNarrative } from '../shared-match-popup-model.js';
 import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { h2hResult } from '../shared-h2h-model.js';
 import { readinessStyles, renderReadiness } from '../shared-readiness.js';
+import { renderSourceSections, sourceStatusStyles } from '../shared-source-status.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 const PREVIEW_COVERAGE_KEYS = {
@@ -267,6 +268,11 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
     return html`
       ${renderReadiness(match, key => this._t(key))}
+      ${renderSourceSections(match, {
+        t: (key, vars) => this._t(key, vars),
+        provider: this.hass?.states?.[this._config.entity]?.attributes?.provider,
+        updatedAt: this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update,
+      })}
       <div class="ov-section">
         ${(homeForm || awayForm) ? html`
           <div class="ov-row">
@@ -297,7 +303,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ${this._renderPreview(match.preview)}
       ${this._renderReview(match.review)}
       ${this._renderPredictionOutcome(match)}
-      ${this._renderMatchStory(derivedMatchStory(match))}
+      ${this._renderMatchStory(derivedMatchStory(match), matchNarrative(match))}
       ${this._renderTeamOfMatch(match.team_of_the_match)}
       ${renderMatchMeta(match, {
         lang: resolveLang(this.hass, this._config),
@@ -351,12 +357,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
     </section>`;
   }
 
-  _renderMatchStory(story) {
-    if (!Array.isArray(story) || !story.length) return '';
+  _renderMatchStory(story, narrative = []) {
+    if ((!Array.isArray(story) || !story.length) && !narrative.length) return '';
     const labels = { opening_goal: 'story.opening_goal', equalizer: 'story.equalizer', decisive_goal: 'story.decisive_goal', red_card: 'story.red_card' };
     return html`<section class="brief-card story"><h4>${this._t('match.story')}</h4><div class="story-line">
       ${story.map(item => html`<div><b>${item.minute ? `${item.minute}'` : '·'}</b><i></i><span><strong>${this._t(labels[item.type] || 'match.event')}</strong><small>${item.player || ''}${item.team ? ` · ${item.team}` : ''}</small></span></div>`)}
-    </div></section>`;
+    </div>${narrative.length ? html`<ul class="story-summary">${narrative.map(item => html`<li>${this._t(item.key, item.vars)}</li>`)}</ul>` : ''}</section>`;
   }
 
   _renderTeamOfMatch(players) {
@@ -550,7 +556,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, sourceStatusStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
       .mc-hero-section { position: relative; overflow: hidden; }
@@ -581,6 +587,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .brief-ratings { display:grid; gap:4px; }.brief-ratings span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:10px}.brief-ratings b{color:#fbbf24}
       .outcome-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}.outcome-grid span{display:flex;flex-direction:column}.outcome-grid span:last-child{text-align:right}.outcome-grid small{color:var(--cl-text-2);font-size:9px}.outcome-grid strong{color:var(--cl-text);font-size:11px}.outcome-grid>b{color:var(--cl-success,#10b981);font-size:18px}.outcome.surprise .outcome-grid>b{color:var(--cl-warning,#f59e0b)}.outcome>p{margin:8px 0 0;text-align:center;color:var(--cl-text-2);font-size:10px}
       .story-line{display:grid}.story-line>div{display:grid;grid-template-columns:32px 12px 1fr;align-items:stretch;min-height:42px}.story-line>div>b{color:var(--cl-accent);font-size:10px;padding-top:3px}.story-line i{position:relative;border-left:2px solid var(--cl-divider)}.story-line i::before{content:'';position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--cl-accent)}.story-line span{display:flex;flex-direction:column;padding-bottom:8px}.story-line span strong{font-size:10px}.story-line span small{color:var(--cl-text-2);font-size:9px}
+      .story-summary{display:grid;gap:5px;margin:7px 0 0;padding:8px 8px 8px 22px;border-radius:8px;background:var(--cl-chip-bg);color:var(--cl-text-2);font-size:9px}
       .best-xi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.best-xi-grid>div{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:5px;padding:6px;border-radius:8px;background:rgba(255,255,255,.04);min-width:0}.best-xi-grid img{width:28px;height:28px;border-radius:50%;object-fit:cover}.best-xi-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cl-text);font-size:9px}.best-xi-grid b{color:#fbbf24;font-size:10px}.best-xi-grid small{grid-column:2/-1;color:var(--cl-text-2);font-size:8px}.best-xi-grid .away{box-shadow:inset 2px 0 var(--cl-accent-2)}.best-xi-grid .home{box-shadow:inset 2px 0 var(--cl-accent)}
       .tab-content { min-height: 80px; }
       /* Overview */

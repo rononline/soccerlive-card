@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## v3.34.0 (2026-07-29)
+
+- source blending: optionally auto-discover the richest overlapping sensor while keeping the selected sensor authoritative
+- source transparency: show provider, freshness and availability per schedule, preview, lineup, timeline, statistics and review section
+- Match Center and Matches: add a concise score/comeback/xG/attempts narrative when the underlying data supports it
+- archive: add home/away, result and opponent filters, monthly-form bars, season comparisons and clipboard import
+- external history: optionally merge a second archive sensor, including common Dutch `datum`/`thuis`/`uit`/`uitslag` fields
+- empty states: keep archive import and rebuild controls available before the first archived fixture exists
+- editor: add automatic enrichment and external archive sensor controls
+- tests: cover automatic provider selection, section provenance, narrative summaries and expanded archive filters
 
 ## v3.33.0 (2026-07-28)
 

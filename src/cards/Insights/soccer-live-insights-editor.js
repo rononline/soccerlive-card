@@ -29,6 +29,9 @@ class SoccerLiveInsightsEditor extends LitElement {
   render() {
     if (!this._config || !this.hass) return html``;
     const archive = this._config.card_type === 'archive';
+    const archiveEntities = Object.keys(this.hass.states)
+      .filter(id => id.startsWith('sensor.'))
+      .sort();
     return html`<div class="card-config">
       <h3>${this._t('editor.sensor')}</h3>
       <label>${this._t('editor.entity')}<select @change=${e => this._set('entity', e.target.value)}>
@@ -37,6 +40,10 @@ class SoccerLiveInsightsEditor extends LitElement {
       <label>${this._t('editor.card_title')}<input .value=${this._config.title || ''} @input=${e => this._set('title', e.target.value)}></label>
       ${archive ? html`
         <label>${this._t('editor.team_name')}<input .value=${this._config.team_name || ''} @input=${e => this._set('team_name', e.target.value)}></label>
+        <label>${this._t('editor.archive_entity')}<select @change=${e => this._set('archive_entity', e.target.value)}>
+          <option value="">—</option>
+          ${archiveEntities.map(id => html`<option value=${id} ?selected=${id === this._config.archive_entity}>${id}</option>`)}
+        </select></label>
         <label>${this._t('editor.max_matches')}<select @change=${e => this._set('max_matches', Number(e.target.value))}>
           ${[10,20,30,50,100].map(n => html`<option value=${n} ?selected=${Number(this._config.max_matches || 20) === n}>${n}</option>`)}
         </select></label>

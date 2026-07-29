@@ -113,4 +113,45 @@ export function derivedMatchStory(match) {
   return [...new Map(story.map(item => [`${item.type}:${item.minute}:${item.player || item.athletes?.[0] || ''}`, item])).values()]
     .sort((a, b) => Number(a.minute || 0) - Number(b.minute || 0));
 }
+
+export function matchNarrative(match) {
+  if (!match || !['in', 'live', 'post'].includes(match.state)) return [];
+  const items = [];
+  const home = Number(match.home_score);
+  const away = Number(match.away_score);
+  if (Number.isFinite(home) && Number.isFinite(away)) {
+    items.push({
+      key: match.state === 'post' ? 'story.final_result' : 'story.current_score',
+      vars: { home: match.home_team, away: match.away_team, score: `${home}–${away}` },
+    });
+  }
+  const goals = (match.key_events || []).filter(isGoalEvent);
+  const winner = home > away ? match.home_team : away > home ? match.away_team : '';
+  if (winner && goals.some(event => {
+    const eventHome = Number(event.home_score);
+    const eventAway = Number(event.away_score);
+    if (!Number.isFinite(eventHome) || !Number.isFinite(eventAway)) return false;
+    return winner === match.home_team ? eventHome < eventAway : eventAway < eventHome;
+  })) {
+    items.push({ key: 'story.comeback', vars: { team: winner } });
+  }
+  const xg = match.review?.expected_goals || match.expected_goals || {};
+  const xgHome = Number(xg.home);
+  const xgAway = Number(xg.away);
+  if (Number.isFinite(xgHome) && Number.isFinite(xgAway) && Math.abs(xgHome - xgAway) >= 1) {
+    items.push({
+      key: 'story.xg_dominance',
+      vars: { team: xgHome > xgAway ? match.home_team : match.away_team, value: Math.max(xgHome, xgAway).toFixed(2) },
+    });
+  }
+  const homeShots = Number(match.home_statistics?.shots ?? match.home_statistics?.total_shots);
+  const awayShots = Number(match.away_statistics?.shots ?? match.away_statistics?.total_shots);
+  if (Number.isFinite(homeShots) && Number.isFinite(awayShots) && Math.abs(homeShots - awayShots) >= 5) {
+    items.push({
+      key: 'story.shot_dominance',
+      vars: { team: homeShots > awayShots ? match.home_team : match.away_team, value: Math.max(homeShots, awayShots) },
+    });
+  }
+  return items.slice(0, 3);
+}
 import { isGoalEvent } from './shared-event-i18n.js';

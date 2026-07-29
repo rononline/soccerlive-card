@@ -120,6 +120,38 @@ export function blendMatch(primary, secondary, primaryProvider = 'primary', seco
   };
 }
 
+const SOURCE_SECTIONS = {
+  schedule: ['date', 'date_iso', 'venue', 'competition_name', 'league_name', 'broadcasts'],
+  preview: ['head_to_head', 'prediction', 'odds', 'injuries_home', 'injuries_away', 'weather'],
+  lineup: ['lineup_home', 'lineup_away', 'formation_home', 'formation_away'],
+  timeline: ['key_events', 'match_details'],
+  statistics: ['home_statistics', 'away_statistics', 'momentum', 'shotmap'],
+  review: ['review', 'player_of_the_match', 'team_of_the_match', 'match_story'],
+};
+
+function sourceSections(match, primaryProvider, secondaryProvider, primaryUpdated, secondaryUpdated) {
+  const provenance = match?.source_provenance || {};
+  return Object.fromEntries(Object.entries(SOURCE_SECTIONS).map(([section, fields]) => {
+    const paths = Object.keys(provenance);
+    const enrichedFields = fields.filter(field =>
+      paths.some(path => path === field || path.startsWith(`${field}.`)));
+    const enriched = enrichedFields.length > 0;
+    const available = fields.some(field => present(match?.[field]));
+    const primaryAvailable = fields.some(field =>
+      present(match?.[field]) && !enrichedFields.includes(field));
+    return [section, {
+      available,
+      provider: (
+        enriched && primaryAvailable
+          ? `${primaryProvider} + ${secondaryProvider}`
+          : enriched ? secondaryProvider : primaryProvider
+      ),
+      updated_at: enriched ? secondaryUpdated : primaryUpdated,
+      enriched,
+    }];
+  }));
+}
+
 function matchingSecondary(primary, secondaryMatches) {
   return secondaryMatches.find(candidate => sameFixture(primary, candidate));
 }
@@ -136,13 +168,26 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
   const primaryProvider = primary.provider || 'primary';
   const secondaryProvider = secondary.provider || 'secondary';
   const secondaryMatches = secondary.matches || [];
-  const matches = (primary.matches || []).map(match =>
-    blendMatch(
+  const primaryUpdated = primary.last_successful_update || primary.data_quality?.updated_at;
+  const secondaryUpdated = secondary.last_successful_update || secondary.data_quality?.updated_at;
+  const matches = (primary.matches || []).map(match => {
+    const blended = blendMatch(
       match,
       matchingSecondary(match, secondaryMatches),
       primaryProvider,
       secondaryProvider,
-    ));
+    );
+    return {
+      ...blended,
+      source_sections: sourceSections(
+        blended,
+        primaryProvider,
+        secondaryProvider,
+        primaryUpdated,
+        secondaryUpdated,
+      ),
+    };
+  });
   const merged = mergeObject(primary, secondary, '', {}, [], secondaryProvider);
   if (primary.matches) merged.matches = matches;
   for (const key of ['next_match', 'current_match']) {
@@ -151,7 +196,17 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
       (secondary[key] && sameFixture(primary[key], secondary[key]) && secondary[key])
       || matchingSecondary(primary[key], secondaryMatches)
     );
-    merged[key] = blendMatch(primary[key], candidate, primaryProvider, secondaryProvider);
+    const blended = blendMatch(primary[key], candidate, primaryProvider, secondaryProvider);
+    merged[key] = {
+      ...blended,
+      source_sections: sourceSections(
+        blended,
+        primaryProvider,
+        secondaryProvider,
+        primaryUpdated,
+        secondaryUpdated,
+      ),
+    };
   }
   const enriched = matches.reduce(
     (count, match) => count + Object.keys(match.source_provenance || {}).length,
@@ -172,7 +227,8 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
 
 export function blendHassSources(hass, config) {
   const primaryId = config?.entity;
-  const secondaryId = config?.enrichment_entity;
+  const secondaryId = config?.enrichment_entity
+    || (config?.auto_enrichment ? findEnrichmentEntity(hass, config) : '');
   if (!hass?.states || !primaryId || !secondaryId || primaryId === secondaryId) return hass;
   const primary = hass.states[primaryId];
   const secondary = hass.states[secondaryId];
@@ -189,4 +245,48 @@ export function blendHassSources(hass, config) {
     value: states,
   });
   return composite;
+}
+
+function richness(attrs) {
+  const matches = attrs?.matches || [];
+  return matches.reduce((score, match) => score + [
+    'key_events', 'lineup_home', 'home_statistics', 'head_to_head',
+    'prediction', 'odds', 'injuries_home', 'review', 'momentum',
+  ].filter(key => present(match?.[key])).length, 0);
+}
+
+export function findEnrichmentEntity(hass, config) {
+  const primaryId = config?.entity;
+  const primary = hass?.states?.[primaryId];
+  if (!primary) return '';
+  const attrs = primary.attributes || {};
+  const primaryMatches = attrs.matches || [];
+  const primaryDays = new Set(primaryMatches.map(kickoffDay).filter(Boolean));
+  const primaryIds = new Set(
+    primaryMatches.map(match => String(match?.event_id || '')).filter(Boolean),
+  );
+  const provider = attrs.provider;
+  const candidates = Object.entries(hass.states)
+    .filter(([id, state]) =>
+      id !== primaryId
+      && id.startsWith('sensor.')
+      && state?.attributes
+      && state.attributes.provider
+      && state.attributes.provider !== provider
+      && Array.isArray(state.attributes.matches)
+      && state.attributes.matches.some(match => (
+        primaryDays.has(kickoffDay(match))
+        || primaryIds.has(String(match?.event_id || ''))
+      )))
+    .map(([id, state]) => {
+      const matches = state.attributes.matches;
+      const overlap = primaryMatches.reduce(
+        (count, match) => count + (matches.some(candidate => sameFixture(match, candidate)) ? 1 : 0),
+        0,
+      );
+      return { id, score: overlap * 100 + richness(state.attributes) };
+    })
+    .filter(candidate => candidate.score >= 100)
+    .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+  return candidates[0]?.id || '';
 }

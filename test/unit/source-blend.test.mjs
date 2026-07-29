@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   blendAttributes,
   blendHassSources,
+  findEnrichmentEntity,
   sameFixture,
 } from '../../src/cards/shared-source-blend.js';
 
@@ -66,4 +67,41 @@ test('creates a non-mutating hass view for the selected card', () => {
   });
   assert.equal(blended.states['sensor.primary'].attributes.matches[0].venue, 'De Kuip');
   assert.equal(hass.states['sensor.primary'].attributes.matches[0].venue, undefined);
+});
+
+test('automatically selects a richer overlapping provider', () => {
+  const hass = {
+    states: {
+      'sensor.primary': {
+        attributes: { provider: 'api_football', matches: [match()] },
+      },
+      'sensor.unrelated': {
+        attributes: {
+          provider: 'fotmob',
+          matches: [match({ home_team: 'Ajax', away_team: 'PSV' })],
+        },
+      },
+      'sensor.richer': {
+        attributes: {
+          provider: 'fotmob',
+          matches: [match({
+            event_id: 'fotmob-1',
+            lineup_home: [{ name: 'Keeper' }],
+            home_statistics: { shots: 10 },
+          })],
+        },
+      },
+    },
+  };
+  assert.equal(
+    findEnrichmentEntity(hass, { entity: 'sensor.primary' }),
+    'sensor.richer',
+  );
+  const blended = blendHassSources(hass, {
+    entity: 'sensor.primary',
+    auto_enrichment: true,
+  });
+  const enriched = blended.states['sensor.primary'].attributes.matches[0];
+  assert.equal(enriched.source_sections.lineup.provider, 'fotmob');
+  assert.equal(enriched.source_sections.schedule.provider, 'api_football');
 });
