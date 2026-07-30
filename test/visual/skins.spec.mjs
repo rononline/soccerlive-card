@@ -401,6 +401,32 @@ test('enriched post-match insights and selection impact stay capability based', 
   await expect(target(page)).not.toContainText('Verwachting versus werkelijkheid');
 });
 
+test('data alerts and keyboard navigation remain accessible', async ({ page }) => {
+  await open(page, { mode: 'matrix', type: 'match-center', phase: 'live', lang: 'nl' });
+  await page.evaluate(() => {
+    const card = document.querySelector('soccer-live-match-center');
+    const state = card.hass.states[card._config.entity];
+    state.attributes.data_alerts = [{
+      code: 'live_data_stale',
+      severity: 'warning',
+      event_id: state.attributes.matches[0].event_id,
+    }];
+    card.requestUpdate();
+  });
+  await expect(target(page)).toContainText('De live-data is mogelijk verouderd');
+
+  const selected = target(page).locator('soccer-live-match-center .tab[aria-selected="true"]');
+  await expect(selected).toHaveCount(1);
+  await selected.press('ArrowRight');
+  await expect(target(page).locator('soccer-live-match-center .tab[aria-selected="true"]')).toContainText('Stats');
+
+  await open(page, { mode: 'matrix', type: 'matches', phase: 'live', lang: 'nl' });
+  const row = target(page).locator('soccer-live-matches .match-row').first();
+  await expect(row).toHaveAttribute('role', 'button');
+  await row.press('Enter');
+  await expect(page.locator('dialog.soccer-live-matches-popup-portal')).toBeVisible();
+});
+
 test('Dutch labels cover diagnostics, tables, bracket and editors', async ({ page }) => {
   await open(page, { mode: 'matrix', type: 'diagnostics', lang: 'nl' });
   await expect(target(page)).toContainText('Wedstrijden');

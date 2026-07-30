@@ -71,6 +71,8 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🏟️ **Phase-aware match details** — preview, live and review content can include form, standings, H2H, lineups, statistics, predictions, absentees and a derived match story
 - 👥 **Club dashboard** — optional records, selection analysis, availability, expected/official lineup, team news, player profiles, injuries, market values and transfer windows
 - ♿ **Accessible interaction** — translated controls, keyboard-operable rows and modal semantics for interactive Club details
+- 🧭 **Keyboard & motion preferences** — Match Center tabs support arrow/Home/End navigation, match rows open with Enter/Space, focus is visible and reduced-motion preferences disable decorative animation
+- 🩺 **Actionable data alerts** — Match Center and Diagnostics explain stale live data, provider errors, conflicting sources and fixture changes when schema v5 data is available
 
 ---
 
@@ -382,6 +384,9 @@ Tabbed view of a single match with five tabs:
 - **H2H** — historical head-to-head results with win/draw/loss bar.
 
 The active tab is remembered across page refreshes (per entity, via sessionStorage).
+Tabs follow the ARIA tabs pattern and can be navigated with Left/Right,
+Home and End. The selected fixture's integration-level data alerts appear at
+the top of Overview only when there is something actionable to report.
 
 The Overview tab is phase-aware: before kick-off it can show preview context;
 after full time it can compare the prediction with the result and show optional
@@ -600,6 +605,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Valid sanitized entity IDs for competitions and clubs | v3.9.1 |
 | Match readiness, 500-match archive, summary and archive management services | v3.11.0 |
 | Per-section source/freshness metadata, replay lab and native helper entities | v3.12.0 |
+| Actionable data alerts and canonical fixture identity (schema v5) | v3.13.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -637,7 +643,7 @@ HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. `npm run build` enforces a 750 KiB
-uncompressed ceiling; the current bundle is about 693 KiB (roughly 169 KiB
+uncompressed ceiling; the current bundle is about 698 KiB (roughly 170 KiB
 gzip or 125 KiB Brotli, depending on the compressor implementation).
 
 ---

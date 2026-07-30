@@ -1,6 +1,10 @@
 import { css, html } from "lit";
 
 export const soccerCardShellStyles = css`
+  :host {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   ha-card {
     position: relative;
     overflow: hidden;
@@ -77,6 +81,45 @@ export const soccerCardShellStyles = css`
   .top-bar {
     position: relative;
     z-index: 1;
+  }
+
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  summary:focus-visible,
+  a:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--cl-accent, #6366f1) 72%, white);
+    outline-offset: 2px;
+  }
+
+  .match-row,
+  .h2h-row,
+  .tl-row,
+  .squad-row,
+  .transfer-row,
+  .injury-row {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 52px;
+  }
+
+  @media (pointer: coarse) {
+    button,
+    [role="button"],
+    select {
+      min-height: 36px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 `;
 

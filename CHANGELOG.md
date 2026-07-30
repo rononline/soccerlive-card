@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.35.0 (2026-07-30)
+
+- data quality: show actionable integration `data_alerts` in Match Center and Diagnostics, filtered to the selected fixture
+- accessibility: add keyboard navigation and ARIA tab semantics to Match Center and keyboard-openable match rows
+- accessibility: add consistent focus rings, coarse-pointer targets and a global reduced-motion mode
+- performance: let browsers skip off-screen layout and paint work for long match, timeline, H2H, squad, transfer and injury lists
+- tests: cover malformed, global and fixture-specific data-alert filtering
+
 ## v3.34.0 (2026-07-29)
 
 - source blending: optionally auto-discover the richest overlapping sensor while keeping the selected sensor authoritative

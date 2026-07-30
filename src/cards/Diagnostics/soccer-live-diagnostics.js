@@ -3,6 +3,7 @@ import { parseMatchDate, resolveLang, t } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderCardError } from "../card-error.js";
 import { soccerCardShellStyles } from "../card-shell.js";
+import { dataAlertStyles, renderDataAlerts } from "../shared-data-alerts.js";
 
 class SoccerLiveDiagnosticsCard extends LitElement {
   static get properties() {
@@ -24,7 +25,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
   static getStubConfig() { return { entity: "sensor.soccer_live_", card_type: "diagnostics" }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, css`
+    return [skinStyles, soccerCardShellStyles, dataAlertStyles, css`
       ha-card {
         background: var(--cl-bg);
         color: var(--cl-text);
@@ -193,6 +194,10 @@ class SoccerLiveDiagnosticsCard extends LitElement {
               ${quality.issues?.length ? html`<div class="chips">${quality.issues.map(issue => html`<span class="chip">⚠ ${this._t(`quality.issue_${issue}`)}</span>`)}</div>` : ''}
             </div>
           ` : ''}
+          ${renderDataAlerts(attrs.data_alerts, {
+            t: (key, vars) => this._t(key, vars),
+            compact: true,
+          })}
           ${attrs.last_error ? html`<div class="error-box">${attrs.last_error}</div>` : ""}
         </div>
       </ha-card>

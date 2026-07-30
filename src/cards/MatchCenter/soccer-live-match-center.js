@@ -21,6 +21,7 @@ import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { h2hResult } from '../shared-h2h-model.js';
 import { readinessStyles, renderReadiness } from '../shared-readiness.js';
 import { renderSourceSections, sourceStatusStyles } from '../shared-source-status.js';
+import { alertsForMatch, dataAlertStyles, renderDataAlerts } from '../shared-data-alerts.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 const PREVIEW_COVERAGE_KEYS = {
@@ -139,6 +140,24 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
 
+  _selectTab(id) {
+    this._activeTab = id;
+    this._tlFilter = 'all';
+    try { sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, id); } catch (_) {}
+  }
+
+  _onTabKeydown(event, id) {
+    const index = TAB_IDS.indexOf(id);
+    const direction = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+    if (!direction && event.key !== 'Home' && event.key !== 'End') return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 0
+      : event.key === 'End' ? TAB_IDS.length - 1
+        : (index + direction + TAB_IDS.length) % TAB_IDS.length;
+    this._selectTab(TAB_IDS[next]);
+    this.updateComplete.then(() => this.renderRoot.querySelector(`#mc-tab-${TAB_IDS[next]}`)?.focus());
+  }
+
   render() {
     applySkin(this, this._config);
     if (!this.hass || !this._config) return renderLoading(this._t('ui.loading'));
@@ -198,16 +217,23 @@ class SoccerLiveMatchCenterCard extends LitElement {
             ${this._config.hide_header !== true ? this._renderHero(match) : ''}
           </div>
         </div>
-        <div class="tab-bar">
+        <div class="tab-bar" role="tablist" aria-label=${this._t('card.match_center')}>
           ${tabs.map(tab => html`
             <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
-              @click=${() => { this._activeTab = tab.id; this._tlFilter = 'all'; try { sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, tab.id); } catch (_) {} }}>
+              id="mc-tab-${tab.id}" role="tab"
+              aria-selected=${this._activeTab === tab.id ? 'true' : 'false'}
+              aria-controls="mc-panel-${tab.id}"
+              tabindex=${this._activeTab === tab.id ? '0' : '-1'}
+              @keydown=${event => this._onTabKeydown(event, tab.id)}
+              @click=${() => this._selectTab(tab.id)}>
               ${tab.label}
             </button>
           `)}
         </div>
-        <div class="tab-content${this._activeTab === 'lineup' ? ' lineup' : ''}">
-          ${this._activeTab === 'overview'  ? this._renderOverview(match) : ''}
+        <div class="tab-content${this._activeTab === 'lineup' ? ' lineup' : ''}"
+          id="mc-panel-${this._activeTab}" role="tabpanel"
+          aria-labelledby="mc-tab-${this._activeTab}">
+          ${this._activeTab === 'overview'  ? this._renderOverview(match, attrs) : ''}
           ${this._activeTab === 'stats'     ? this._renderStats(match)    : ''}
           ${this._activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
           ${this._activeTab === 'lineup'    ? this._renderLineup(match)   : ''}
@@ -235,7 +261,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     return html`
       ${renderSoccerHeader({ logo: compLogo, title: compName, badge })}
 
-      <div class="scoreboard">
+      <div class="scoreboard" aria-live="polite" aria-atomic="true">
         <div class="mc-team">
           ${match.home_logo ? html`<img class="mc-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
           <span class="mc-name">${match.home_team || '?'}</span>
@@ -253,7 +279,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     `;
   }
 
-  _renderOverview(match) {
+  _renderOverview(match, attrs) {
     const clean = value => value && value !== 'N/A' ? value : '';
     const homeRec = clean(match.home_record_summary || match.home_record);
     const awayRec = clean(match.away_record_summary || match.away_record);
@@ -267,6 +293,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
     })}</div>` : html`<div class="ov-form-dots"></div>`;
 
     return html`
+      ${renderDataAlerts(alertsForMatch(attrs?.data_alerts, match), {
+        t: (key, vars) => this._t(key, vars),
+      })}
       ${renderReadiness(match, key => this._t(key))}
       ${renderSourceSections(match, {
         t: (key, vars) => this._t(key, vars),
@@ -556,7 +585,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, sourceStatusStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, sourceStatusStyles, dataAlertStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
       .mc-hero-section { position: relative; overflow: hidden; }

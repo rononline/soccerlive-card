@@ -549,6 +549,14 @@ class SoccerLiveMatchesCard extends LitElement {
               const detailCaps = match.detail_capabilities || [];
               return html`
                 <div class="match-row ${isLive ? 'live' : ''} ${recent === 'goal' ? 'goal-pulse' : ''} ${recent === 'card' ? 'card-pulse' : ''}"
+                     role="button" tabindex="0"
+                     aria-label="${match.home_team} – ${match.away_team}"
+                     @keydown="${event => {
+                       if (event.key === 'Enter' || event.key === ' ') {
+                         event.preventDefault();
+                         this.showDetails(match);
+                       }
+                     }}"
                      @click="${() => this.showDetails(match)}">
                   <div class="match-time ${isLive ? 'live-time' : ''} ${match.state === 'post' ? 'ft' : ''}">
                     ${this._matchTimeLabel(match)}
