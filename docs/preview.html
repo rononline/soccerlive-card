@@ -385,6 +385,20 @@
           { rank: 4, team_name: "Tunisia", team_logo: logo(290), wins: 0, draws: 0, losses: 1, points: "0", goal_difference: -4 }
         ]
       }],
+      standings_history: [
+        { captured_at: "2026-06-10T12:00:00Z", groups: [{ name: "Group F", standings: [
+          { rank: 2, team_name: "Sweden", points: 0 },
+          { rank: 1, team_name: "Japan", points: 3 },
+          { rank: 4, team_name: "Netherlands", points: 0 },
+          { rank: 3, team_name: "Tunisia", points: 0 }
+        ] }] },
+        { captured_at: "2026-06-18T12:00:00Z", groups: [{ name: "Group F", standings: [
+          { rank: 1, team_name: "Sweden", points: 3 },
+          { rank: 2, team_name: "Japan", points: 1 },
+          { rank: 3, team_name: "Netherlands", points: 1 },
+          { rank: 4, team_name: "Tunisia", points: 0 }
+        ] }] }
+      ],
       scorers: [
         { rank: 1, player: "Virgil van Dijk", short_name: "V. van Dijk", team_name: "Netherlands", team_logo: logo(449), goals: 1 },
         { rank: 2, player: "Yasin Ayari", short_name: "Y. Ayari", team_name: "Sweden", team_logo: logo(466), goals: 2 }
@@ -576,6 +590,7 @@
       ["Team", "team", { entity: "sensor.preview_team", show_previous_matches: true, show_form_trend: true }],
       ["Countdown", "countdown", { entity: "sensor.preview_team" }],
       ["Match Center", "match-center", { entity: "sensor.preview_team" }, "wide"],
+      ["Match Hub", "hub", { entity: "sensor.preview_team" }, "wide"],
       ["Matches", "matches", { entity: "sensor.preview_matches", max_events_visible: 5 }],
       ["Ticker", "ticker", { entity: "sensor.preview_matches", auto_scroll: false }],
       ["Team Competitions", "team-competitions", { entity: "sensor.preview_matches" }, "wide"],
@@ -583,6 +598,7 @@
       ["Club", "club", { entity: "sensor.preview_club" }],
       ["Multi Team", "multi-team", { entities: ["sensor.preview_team", "sensor.preview_matches"], title: "My teams" }],
       ["Standings", "standings", { entity: "sensor.preview_standings", max_teams_visible: 4 }],
+      ["Competition Race", "race", { entity: "sensor.preview_standings", highlight_team: "Netherlands" }],
       ["Mini Standings", "mini-standings", { entity: "sensor.preview_standings", max_rows: 4, highlight_team: "Netherlands" }],
       ["Top Scorers", "scorers", { entity: "sensor.preview_scorers" }],
       ["News", "news", { entity: "sensor.preview_news" }],

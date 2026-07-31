@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.36.0 (2026-07-31)
+
+- add a Competition Race card with title-gap context, maximum points and persisted position trajectory
+- add a phase-aware Match Hub that automatically follows preview, live timeline and post-match review
+- merge optional external archives into Match Center H2H, including common Dutch archive fields
+- add live standings impact through an explicit or automatically matched standings sensor
+- extend Archive with home/away splits, common opponents and biggest win/loss report blocks
+- allow multiple ordered supplementary sensors while keeping the primary schedule authoritative
+- deduplicate repeated translated values at build time, keeping the enriched bundle at 710 KiB
+- test race calculations, virtual standings, historical H2H, reports and multi-source blending
+
 ## v3.35.0 (2026-07-30)
 
 - data quality: show actionable integration `data_alerts` in Match Center and Diagnostics, filtered to the selected fixture

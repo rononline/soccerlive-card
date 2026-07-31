@@ -69,6 +69,33 @@ test('creates a non-mutating hass view for the selected card', () => {
   assert.equal(hass.states['sensor.primary'].attributes.matches[0].venue, undefined);
 });
 
+test('combines multiple supplementary entities in order', () => {
+  const hass = {
+    states: {
+      'sensor.primary': {
+        state: '1',
+        attributes: { provider: 'espn', matches: [match()] },
+      },
+      'sensor.lineup': {
+        state: '1',
+        attributes: { provider: 'lineup', matches: [match({ event_id: 'l', lineup_home: [{ name: 'A' }] })] },
+      },
+      'sensor.stats': {
+        state: '1',
+        attributes: { provider: 'stats', matches: [match({ event_id: 's', home_statistics: { shots: 8 } })] },
+      },
+    },
+  };
+  const blended = blendHassSources(hass, {
+    entity: 'sensor.primary',
+    supplementary_entities: ['sensor.lineup', 'sensor.stats'],
+  });
+  const attrs = blended.states['sensor.primary'].attributes;
+  assert.equal(attrs.matches[0].lineup_home[0].name, 'A');
+  assert.equal(attrs.matches[0].home_statistics.shots, 8);
+  assert.deepEqual(attrs.source_blend.supplementary_entities, ['sensor.lineup', 'sensor.stats']);
+});
+
 test('automatically selects a richer overlapping provider', () => {
   const hass = {
     states: {

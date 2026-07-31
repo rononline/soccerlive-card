@@ -22,6 +22,8 @@ import { h2hResult } from '../shared-h2h-model.js';
 import { readinessStyles, renderReadiness } from '../shared-readiness.js';
 import { renderSourceSections, sourceStatusStyles } from '../shared-source-status.js';
 import { alertsForMatch, dataAlertStyles, renderDataAlerts } from '../shared-data-alerts.js';
+import { archiveMatchesFromState, historicalH2H } from '../shared-archive-model.js';
+import { standingsForMatch, virtualStandingsImpact } from '../shared-race-model.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 const PREVIEW_COVERAGE_KEYS = {
@@ -68,6 +70,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._lastMatchState = null;
     this._selectedEventId = null;
     this._detailsLoading = false;
+    this._manualTab = false;
   }
 
   setConfig(config) {
@@ -75,6 +78,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._config = config;
     applySkin(this, config);
     this._isLoading = true;
+    this._manualTab = false;
     try {
       const saved = sessionStorage.getItem(`soccer-mc-tab:${config.entity}`);
       if (saved && TAB_IDS.includes(saved)) this._activeTab = saved;
@@ -121,7 +125,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
         if (match?.venue && match.venue !== this._lastWeatherVenue) {
           this._loadWeather(match.venue, match.venue_lat, match.venue_lon, match.date_iso);
         }
-        if (this._lastMatchState === 'pre' && match?.state === 'in' && this._activeTab === 'overview') {
+        if (this._config.card_type === 'hub' && !this._manualTab) {
+          this._activeTab = match?.state === 'in' ? 'timeline' : 'overview';
+        } else if (this._lastMatchState === 'pre' && match?.state === 'in' && this._activeTab === 'overview') {
           this._activeTab = 'timeline';
         }
         this._lastMatchState = match?.state ?? this._lastMatchState;
@@ -140,8 +146,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
 
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
 
-  _selectTab(id) {
+  _selectTab(id, manual = true) {
     this._activeTab = id;
+    if (manual) this._manualTab = true;
     this._tlFilter = 'all';
     try { sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, id); } catch (_) {}
   }
@@ -154,7 +161,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     const next = event.key === 'Home' ? 0
       : event.key === 'End' ? TAB_IDS.length - 1
         : (index + direction + TAB_IDS.length) % TAB_IDS.length;
-    this._selectTab(TAB_IDS[next]);
+    this._selectTab(TAB_IDS[next], true);
     this.updateComplete.then(() => this.renderRoot.querySelector(`#mc-tab-${TAB_IDS[next]}`)?.focus());
   }
 
@@ -291,6 +298,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
       const cls = c === 'W' ? 'w' : (c === 'L' || c === 'V') ? 'l' : 'd';
       return html`<span class="ov-fd ${cls}"></span>`;
     })}</div>` : html`<div class="ov-form-dots"></div>`;
+    const standings = standingsForMatch(this.hass, this._config, match);
+    const impact = virtualStandingsImpact(
+      standings,
+      match,
+      this._config.team_name || attrs.team_name || '',
+    );
 
     return html`
       ${renderDataAlerts(alertsForMatch(attrs?.data_alerts, match), {
@@ -330,6 +343,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ${match.week_label ? html`<div class="ov-meta"><span class="ov-cal">◈</span> ${match.week_label}</div>` : ''}
       </div>
       ${this._renderPreview(match.preview)}
+      ${impact ? html`<section class="brief-card impact">
+        <h4>${this._t('race.standings_impact')}</h4>
+        <div class="impact-row"><strong>${impact.team}</strong><b>${impact.previous_rank} → ${impact.rank}</b><span>${impact.change > 0 ? `▲ ${impact.change}` : impact.change < 0 ? `▼ ${Math.abs(impact.change)}` : '–'} · ${impact.points} ${this._t('col.points')}</span></div>
+      </section>` : ''}
       ${this._renderReview(match.review)}
       ${this._renderPredictionOutcome(match)}
       ${this._renderMatchStory(derivedMatchStory(match), matchNarrative(match))}
@@ -552,7 +569,25 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderH2H(match, attrs = {}) {
-    const h2h = match.head_to_head || [];
+    const archiveState = this._config.archive_entity
+      ? this.hass?.states?.[this._config.archive_entity]
+      : null;
+    const historical = historicalH2H(
+      archiveMatchesFromState(archiveState),
+      match.home_team,
+      match.away_team,
+    );
+    const merged = new Map();
+    [...(match.head_to_head || []), ...historical].forEach(item => {
+      const key = String(item.event_id || [
+        String(item.date_iso || item.date || '').slice(0, 10),
+        item.home_team,
+        item.away_team,
+      ].join('|'));
+      if (!merged.has(key)) merged.set(key, item);
+    });
+    const h2h = [...merged.values()].sort((a, b) =>
+      String(b.date_iso || b.date || '').localeCompare(String(a.date_iso || a.date || '')));
     const reportedCount = Number(match.preview?.h2h_count || 0);
     if (!h2h.length) {
       return html`<p class="empty">${reportedCount
@@ -565,11 +600,15 @@ class SoccerLiveMatchCenterCard extends LitElement {
     };
     return html`
       <div class="h2h-list">
+        ${historical.length ? html`<p class="h2h-source">${this._t('match.historical_h2h', { n: historical.length })}</p>` : ''}
         ${h2h.map(m => {
           const result = h2hResult(m, tracked);
           return html`
             <div class="h2h-row">
-              <span class="h2h-date">${formatDateOnly(m.date, resolveLang(this.hass, this._config)) || (m.date || '').split('T')[0]}</span>
+              <span class="h2h-date">${formatDateOnly(
+                m.date || m.date_iso,
+                resolveLang(this.hass, this._config),
+              ) || String(m.date || m.date_iso || '').split('T')[0]}</span>
               <span class="h2h-team ${result.homeWon ? 'win' : ''}">${m.home_team || m.home_abbrev || '?'}</span>
               <span class="h2h-score ${result.scoreClass}">${Number.isFinite(result.homeScore) ? result.homeScore : '?'}–${Number.isFinite(result.awayScore) ? result.awayScore : '?'}</span>
               <span class="h2h-team right ${result.awayWon ? 'win' : ''}">${m.away_team || m.away_abbrev || '?'}</span>
@@ -614,6 +653,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .brief-form { display:flex; gap:3px; }.brief-form-row>.brief-form:last-child{justify-content:flex-end}.brief-form b{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;color:white;font-size:9px}.brief-form .w{background:#16a34a}.brief-form .d{background:#64748b}.brief-form .l{background:#dc2626}
       .brief-chips,.brief-scorers { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }.brief-chips span,.brief-scorers span{padding:4px 7px;border-radius:999px;background:rgba(148,163,184,.1);color:var(--cl-text-2);font-size:9px}
       .brief-ratings { display:grid; gap:4px; }.brief-ratings span{display:flex;justify-content:space-between;color:var(--cl-text-2);font-size:10px}.brief-ratings b{color:#fbbf24}
+      .impact-row{display:grid;grid-template-columns:1fr auto;gap:4px;align-items:center}.impact-row strong{font-size:11px}.impact-row b{color:var(--cl-accent);font-size:15px}.impact-row span{grid-column:1/-1;color:var(--cl-text-2);font-size:9px}
       .outcome-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}.outcome-grid span{display:flex;flex-direction:column}.outcome-grid span:last-child{text-align:right}.outcome-grid small{color:var(--cl-text-2);font-size:9px}.outcome-grid strong{color:var(--cl-text);font-size:11px}.outcome-grid>b{color:var(--cl-success,#10b981);font-size:18px}.outcome.surprise .outcome-grid>b{color:var(--cl-warning,#f59e0b)}.outcome>p{margin:8px 0 0;text-align:center;color:var(--cl-text-2);font-size:10px}
       .story-line{display:grid}.story-line>div{display:grid;grid-template-columns:32px 12px 1fr;align-items:stretch;min-height:42px}.story-line>div>b{color:var(--cl-accent);font-size:10px;padding-top:3px}.story-line i{position:relative;border-left:2px solid var(--cl-divider)}.story-line i::before{content:'';position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--cl-accent)}.story-line span{display:flex;flex-direction:column;padding-bottom:8px}.story-line span strong{font-size:10px}.story-line span small{color:var(--cl-text-2);font-size:9px}
       .story-summary{display:grid;gap:5px;margin:7px 0 0;padding:8px 8px 8px 22px;border-radius:8px;background:var(--cl-chip-bg);color:var(--cl-text-2);font-size:9px}
@@ -694,6 +734,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
       .h2h-score.our-loss { color: var(--cl-live); }
       .h2h-score.draw { color: var(--cl-text-2, #94a3b8); }
       .h2h-score.neutral { color: var(--cl-text); }
+      .h2h-source{margin:5px 0 8px;color:var(--cl-text-2);font-size:9px}
       /* Shared */
       .empty { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 12px; padding: 24px 16px; margin: 0; }
     `];

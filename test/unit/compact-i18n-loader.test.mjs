@@ -20,6 +20,7 @@ test('packs repeated translation keys into one indexed dictionary', () => {
   `;
   const packed = compactI18n(source);
   assert.match(packed, /const TRANSLATION_INDEX=\{"hello":0,"bye":1\}/);
+  assert.match(packed, /const TRANSLATION_VALUES=\[\]/);
   assert.match(packed, /"nl":\["Hallo \{name\}","Dag"\]/);
   assert.doesNotMatch(packed, /'hello':/);
   assert.match(packed, /TRANSLATION_INDEX\[key\]/);
@@ -33,7 +34,7 @@ test('keeps missing translations as fallback slots', () => {
   const packed = compactI18n(source);
   assert.match(packed, /"en":\["A",null\]/);
   assert.match(packed, /"nl":\[null,"B"\]/);
-  assert.match(packed, /if \(str == null\) str = TRANSLATIONS\.en\[index\]/);
+  assert.match(packed, /if \(token == null\) token = TRANSLATIONS\.en\[index\]/);
 });
 
 test('packed production translations preserve localization and English fallback', () => {

@@ -8,6 +8,58 @@ function seasonOf(match) {
   return `${start}/${String(start + 1).slice(-2)}`;
 }
 
+export function normalizeArchiveMatch(match) {
+  if (!match || typeof match !== 'object') return null;
+  let homeScore = match.home_score ?? match.thuis_score ?? match.score_home;
+  let awayScore = match.away_score ?? match.uit_score ?? match.score_away;
+  const score = String(match.uitslag || match.score || '').match(/(\d+)\s*[-–:]\s*(\d+)/);
+  if (score) {
+    homeScore ??= Number(score[1]);
+    awayScore ??= Number(score[2]);
+  }
+  const rawDate = String(match.date_iso ?? match.datetime ?? match.date ?? match.datum ?? '');
+  const localized = rawDate.match(/^(\d{2})-(\d{2})-((?:19|20)\d{2})(.*)$/);
+  return {
+    ...match,
+    event_id: match.event_id ?? match.id ?? match.wedstrijd_id,
+    date_iso: localized ? `${localized[3]}-${localized[2]}-${localized[1]}${localized[4]}` : rawDate,
+    date: match.date ?? match.datum,
+    home_team: match.home_team ?? match.home ?? match.thuis ?? match.team_home,
+    away_team: match.away_team ?? match.away ?? match.uit ?? match.team_away,
+    home_score: homeScore,
+    away_score: awayScore,
+    competition_name: match.competition_name ?? match.league_name ?? match.competitie ?? match.soort,
+  };
+}
+
+export function archiveMatchesFromState(state) {
+  const attrs = state?.attributes || {};
+  const raw = attrs.match_archive || attrs.matches || attrs.uitslagen || [];
+  return Array.isArray(raw) ? raw.map(normalizeArchiveMatch).filter(Boolean) : [];
+}
+
+function normalizedTeam(value) {
+  return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/\b(fc|cf|sc|afc|rotterdam)\b/g, '').replace(/[^a-z0-9]/g, '');
+}
+
+function sameTeam(a, b) {
+  const left = normalizedTeam(a);
+  const right = normalizedTeam(b);
+  return Boolean(left && right && (left === right || left.includes(right) || right.includes(left)));
+}
+
+export function historicalH2H(matches, homeTeam, awayTeam) {
+  return (matches || []).map(normalizeArchiveMatch).filter(match => (
+    match && (
+      (sameTeam(match.home_team, homeTeam) && sameTeam(match.away_team, awayTeam))
+      || (sameTeam(match.home_team, awayTeam) && sameTeam(match.away_team, homeTeam))
+    )
+    && Number.isFinite(Number(match.home_score))
+    && Number.isFinite(Number(match.away_score))
+  )).sort((a, b) => String(b.date_iso || b.date || '').localeCompare(String(a.date_iso || a.date || '')));
+}
+
 export function archiveResult(match, teamName) {
   const team = String(teamName || '').toLowerCase();
   const homeName = String(match?.home_team || '').toLowerCase();
@@ -94,6 +146,25 @@ export function archiveModel(matches, teamName, season = '', competition = '', f
     season: value,
     ...calculateStats(all.filter(match => seasonOf(match) === value), teamName),
   }));
+  const results = filtered.map(match => ({ match, result: archiveResult(match, teamName) }))
+    .filter(item => item.result);
+  const opponentCounts = new Map();
+  results.forEach(({ result }) => opponentCounts.set(
+    result.opponent,
+    (opponentCounts.get(result.opponent) || 0) + 1,
+  ));
+  const homeAway = ['home', 'away'].map(location => ({
+    location,
+    ...calculateStats(
+      filtered.filter(match => archiveResult(match, teamName)?.venue === location),
+      teamName,
+    ),
+  }));
+  const byMargin = results.map(({ match, result }) => ({
+    match,
+    result,
+    margin: result.own - result.other,
+  }));
   return {
     matches: filtered,
     seasons,
@@ -101,5 +172,11 @@ export function archiveModel(matches, teamName, season = '', competition = '', f
     stats: calculateStats(filtered, teamName),
     monthly,
     seasonComparison,
+    homeAway,
+    commonOpponents: [...opponentCounts.entries()]
+      .sort((a, b) => b[1] - a[1]).slice(0, 8)
+      .map(([name, matches]) => ({ name, matches })),
+    biggestWin: byMargin.filter(item => item.margin > 0).sort((a, b) => b.margin - a.margin)[0] || null,
+    biggestLoss: byMargin.filter(item => item.margin < 0).sort((a, b) => a.margin - b.margin)[0] || null,
   };
 }

@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { archiveModel, archiveResult } from '../../src/cards/shared-archive-model.js';
+import {
+  archiveMatchesFromState,
+  archiveModel,
+  archiveResult,
+  historicalH2H,
+} from '../../src/cards/shared-archive-model.js';
 
 const matches = [
   {
@@ -45,4 +50,22 @@ test('filters by venue, result and opponent and compares seasons', () => {
   assert.equal(model.matches[0].away_team, 'A');
   assert.equal(model.monthly.length, 1);
   assert.equal(model.seasonComparison.length, 2);
+  assert.equal(model.homeAway.find(item => item.location === 'home').matches, 1);
+  assert.equal(model.commonOpponents[0].matches, 1);
+  assert.equal(model.biggestWin.result.opponent, 'A');
+});
+
+test('normalizes Dutch external archives for historical H2H', () => {
+  const external = archiveMatchesFromState({
+    attributes: {
+      uitslagen: [
+        { datum: '01-05-1921', thuis: 'Feyenoord', uit: 'Sparta', uitslag: '2-1' },
+        { datum: '02-05-1921', thuis: 'Ajax', uit: 'Sparta', uitslag: '1-0' },
+      ],
+    },
+  });
+  const h2h = historicalH2H(external, 'Sparta Rotterdam', 'Feyenoord Rotterdam');
+  assert.equal(h2h.length, 1);
+  assert.equal(h2h[0].date_iso, '1921-05-01');
+  assert.equal(h2h[0].home_score, 2);
 });

@@ -3,7 +3,12 @@ import { t, resolveLang, formatDateOnly } from '../../i18n.js';
 import { skinStyles, applySkin } from '../../skins.js';
 import { soccerCardShellStyles } from '../card-shell.js';
 import { renderCardError } from '../card-error.js';
-import { archiveModel, archiveResult } from '../shared-archive-model.js';
+import {
+  archiveMatchesFromState,
+  archiveModel,
+  archiveResult,
+  normalizeArchiveMatch,
+} from '../shared-archive-model.js';
 
 class SoccerLiveArchiveCard extends LitElement {
   static properties = {
@@ -86,14 +91,10 @@ class SoccerLiveArchiveCard extends LitElement {
     const externalState = this._config.archive_entity
       ? this.hass.states[this._config.archive_entity]
       : null;
-    const externalAttrs = externalState?.attributes || {};
-    const external = externalAttrs.match_archive
-      || externalAttrs.matches
-      || externalAttrs.uitslagen
-      || [];
+    const external = archiveMatchesFromState(externalState);
     const byId = new Map();
     [...primary, ...(Array.isArray(external) ? external : [])].forEach(rawMatch => {
-      const match = this._normalizeArchiveMatch(rawMatch);
+      const match = normalizeArchiveMatch(rawMatch);
       if (!match || !match.home_team || !match.away_team) return;
       const key = String(match.event_id || [
         match.date_iso || match.date,
@@ -104,39 +105,6 @@ class SoccerLiveArchiveCard extends LitElement {
     });
     return [...byId.values()].sort((a, b) =>
       String(b.date_iso || b.date || '').localeCompare(String(a.date_iso || a.date || '')));
-  }
-
-  _normalizeArchiveMatch(match) {
-    if (!match || typeof match !== 'object') return null;
-    let homeScore = match.home_score ?? match.thuis_score ?? match.score_home;
-    let awayScore = match.away_score ?? match.uit_score ?? match.score_away;
-    const score = String(match.uitslag || match.score || '')
-      .match(/(\d+)\s*[-–:]\s*(\d+)/);
-    if (score) {
-      homeScore ??= Number(score[1]);
-      awayScore ??= Number(score[2]);
-    }
-    const rawDate = String(match.date_iso ?? match.datetime ?? match.date ?? match.datum ?? '');
-    const localizedDate = rawDate.match(/^(\d{2})-(\d{2})-((?:19|20)\d{2})(.*)$/);
-    const dateIso = localizedDate
-      ? `${localizedDate[3]}-${localizedDate[2]}-${localizedDate[1]}${localizedDate[4]}`
-      : rawDate;
-    return {
-      ...match,
-      event_id: match.event_id ?? match.id ?? match.wedstrijd_id,
-      date_iso: dateIso,
-      date: match.date ?? match.datum,
-      home_team: match.home_team ?? match.home ?? match.thuis ?? match.team_home,
-      away_team: match.away_team ?? match.away ?? match.uit ?? match.team_away,
-      home_score: homeScore,
-      away_score: awayScore,
-      competition_name: (
-        match.competition_name
-        ?? match.league_name
-        ?? match.competitie
-        ?? match.soort
-      ),
-    };
   }
 
   render() {
@@ -199,6 +167,14 @@ class SoccerLiveArchiveCard extends LitElement {
           ${model.seasonComparison.length > 1 ? html`<div class="season-compare">
             ${model.seasonComparison.map(item => html`<span><b>${item.season}</b><small>${item.win_percentage}% · ${item.goals_for}–${item.goals_against}</small></span>`)}
           </div>` : ''}
+          ${this._config.show_season_report !== false && model.stats.matches ? html`
+            <div class="report-grid">
+              ${model.homeAway.map(item => html`<span><small>${this._t(`archive.${item.location}`)}</small><b>${item.win_percentage}%</b><em>${item.won}-${item.drawn}-${item.lost}</em></span>`)}
+              ${model.biggestWin ? html`<span><small>${this._t('archive.biggest_win')}</small><b>${model.biggestWin.result.own}–${model.biggestWin.result.other}</b><em>${model.biggestWin.result.opponent}</em></span>` : ''}
+              ${model.biggestLoss ? html`<span><small>${this._t('archive.biggest_loss')}</small><b>${model.biggestLoss.result.own}–${model.biggestLoss.result.other}</b><em>${model.biggestLoss.result.opponent}</em></span>` : ''}
+            </div>
+            ${model.commonOpponents.length ? html`<div class="opponents"><small>${this._t('archive.common_opponents')}</small>${model.commonOpponents.slice(0, 5).map(item => html`<span>${item.name}<b>${item.matches}</b></span>`)}</div>` : ''}
+          ` : ''}
           <div class="actions">
             <button @click=${() => this._copyArchive(allMatches)}>⧉ ${this._t('archive.copy')}</button>
             ${attrs.config_entry_id ? html`
@@ -232,6 +208,7 @@ class SoccerLiveArchiveCard extends LitElement {
     .actions{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.actions button{padding:6px 8px;border:1px solid var(--cl-divider);border-radius:8px;background:var(--cl-chip-bg);color:var(--cl-text-2);font:inherit;font-size:8px;cursor:pointer}.actions button.danger{color:var(--cl-live)}.notice{margin:4px 0 8px;color:var(--cl-accent);font-size:8px}
     .empty{display:grid;gap:5px;padding:18px 10px;text-align:center;color:var(--cl-text-2)}.empty b{color:var(--cl-text);font-size:11px}.empty small{font-size:8px}
     .trend{display:flex;align-items:end;height:58px;gap:5px;margin:10px 0;padding:8px;border:1px solid var(--cl-divider);border-radius:10px;background:var(--cl-surface)}.trend span{display:grid;grid-template-rows:1fr auto;align-items:end;flex:1;height:100%;text-align:center}.trend i{display:block;min-height:5px;border-radius:4px 4px 1px 1px;background:linear-gradient(var(--cl-accent),var(--cl-accent-2))}.trend small{font-size:6px;color:var(--cl-text-2)}.season-compare{display:flex;gap:5px;overflow:auto;margin:8px 0}.season-compare span{min-width:86px;padding:7px;border-radius:8px;background:var(--cl-chip-bg)}.season-compare b,.season-compare small{display:block;font-size:8px}.season-compare small{color:var(--cl-text-2);margin-top:2px}
+    .report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:9px 0}.report-grid span{display:grid;grid-template-columns:1fr auto;gap:2px;padding:8px;border:1px solid var(--cl-divider);border-radius:9px;background:var(--cl-surface)}.report-grid small{color:var(--cl-text-2);font-size:7px;text-transform:uppercase}.report-grid b{color:var(--cl-accent);font-size:12px}.report-grid em{grid-column:1/-1;color:var(--cl-text-2);font-size:8px;font-style:normal}.opponents{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.opponents>small{width:100%;color:var(--cl-text-2);font-size:7px;text-transform:uppercase}.opponents span{padding:5px 7px;border-radius:99px;background:var(--cl-chip-bg);font-size:8px}.opponents b{margin-left:5px;color:var(--cl-accent)}
     section{border-top:1px solid var(--cl-divider)}article{display:grid;grid-template-columns:48px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--cl-divider)}
     article time,article small{font-size:8px;color:var(--cl-text-2)}article div{display:grid;gap:2px;font-size:10px}article strong{font-size:12px}article small{grid-column:2/4}
     @media(max-width:380px){.stats{grid-template-columns:repeat(2,1fr)}}

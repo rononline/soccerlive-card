@@ -32,6 +32,7 @@ class SoccerLiveMatchCenterEditor extends LitElement {
       ['team_match', 'team_matches_mixed'].includes(this.hass.states[id]?.attributes?.sensor_type)
     ).sort();
     const current = this._config.entity || '';
+    const sensors = Object.keys(this.hass.states).filter(id => id.startsWith('sensor.')).sort();
     return html`
       <div class="card-config">
         <h3>${this._t('editor.sensor')}</h3>
@@ -47,6 +48,20 @@ class SoccerLiveMatchCenterEditor extends LitElement {
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._toggleChanged}></ha-switch>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.archive_entity')}</label>
+          <select data-config-value="archive_entity" @change=${this._selectChanged}>
+            <option value="">—</option>
+            ${sensors.map(id => html`<option value=${id} ?selected=${id === this._config.archive_entity}>${id}</option>`)}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.standings_entity')}</label>
+          <select data-config-value="standings_entity" @change=${this._selectChanged}>
+            <option value="">${this._t('editor.automatic')}</option>
+            ${sensors.filter(id => this.hass.states[id]?.attributes?.standings_groups).map(id => html`<option value=${id} ?selected=${id === this._config.standings_entity}>${id}</option>`)}
+          </select>
         </div>
         <div class="option">
           <label>${this._t('editor.hide_broadcasts')}</label>

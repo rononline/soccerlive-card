@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { t, resolveLang } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSyncStatus } from "../card-error.js";
+import { raceModel } from "../shared-race-model.js";
 
 // Generate an inclusive integer range
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
@@ -420,6 +421,7 @@ class SoccerLiveStandingsCard extends LitElement {
     const entityId = this._config.entity;
     const stateObj = this.hass.states[entityId];
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${entityId}</ha-card>`;
+    if (this._config.card_type === 'race') return this._renderRace(stateObj);
 
     const rawSeasonName = stateObj.attributes.season || '';
     const leagueAbbr = stateObj.attributes.league_abbreviation && stateObj.attributes.league_abbreviation !== 'N/A'
@@ -497,6 +499,36 @@ class SoccerLiveStandingsCard extends LitElement {
         ${this._renderLegend(standingsGroup)}
       </ha-card>
     `;
+  }
+
+  _renderRace(stateObj) {
+    const team = this._config.highlight_team || this._config.my_team || '';
+    const model = raceModel(stateObj.attributes, team);
+    if (!model) {
+      return renderSyncStatus(stateObj.attributes.sync_status, key => this._t(key))
+        || html`<ha-card class="empty">${this._t('ui.no_standings_data')}</ha-card>`;
+    }
+    const rows = model.tracked
+      ? model.rows.filter(row => Math.abs(Number(row.rank) - Number(model.tracked.rank)) <= 2)
+      : model.rows.slice(0, 6);
+    const maxPoints = Math.max(...rows.map(row => row.maximum), 1);
+    const trajectory = model.trajectory.slice(-12);
+    return html`<ha-card class="race-card">
+      <header class="race-head"><span>🏁</span><div><small>${this._t('card.race')}</small><h2>${stateObj.attributes.league_name || model.group}</h2></div><b>${stateObj.attributes.season || ''}</b></header>
+      ${model.tracked ? html`<section class="race-focus">
+        ${model.tracked.team_logo ? html`<img src=${model.tracked.team_logo} alt="">` : ''}
+        <div><strong>${model.tracked.team_name}</strong><small>#${model.tracked.rank} · ${model.tracked.points} ${this._t('col.points')}</small></div>
+        <span>${model.tracked.gapLeader ? `−${model.tracked.gapLeader}` : this._t('race.leader')}</span>
+      </section>` : ''}
+      <div class="race-list">${rows.map(row => html`<div class=${row === model.tracked ? 'tracked' : ''}>
+        <b>${row.rank}</b><span>${row.team_name}<i style="width:${Math.max(3, row.points / maxPoints * 100)}%"></i></span>
+        <strong>${row.points}</strong><small>${row.maximum} ${this._t('race.maximum')}</small>
+      </div>`)}</div>
+      ${trajectory.length > 1 ? html`<section class="trajectory"><small>${this._t('race.trajectory')}</small><div>
+        ${trajectory.map(point => html`<span title="${point.date || ''}: #${point.rank}"><i style="height:${Math.max(12, 100 - ((point.rank - 1) / Math.max(1, model.rows.length - 1)) * 88)}%"></i><b>${point.rank}</b></span>`)}
+      </div></section>` : ''}
+      <footer>${this._t('race.remaining', { n: model.tracked?.remaining ?? model.rows[0]?.remaining ?? 0 })}</footer>
+    </ha-card>`;
   }
 
   _renderFullTable(standings, total) {
@@ -1148,6 +1180,7 @@ class SoccerLiveStandingsCard extends LitElement {
         90%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
         100% { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
       }
+      .race-card{padding:16px;background:var(--cl-bg);color:var(--cl-text)}.race-head{display:flex;align-items:center;gap:9px}.race-head>span{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--cl-accent-soft)}.race-head div{flex:1}.race-head small{color:var(--cl-text-2);font-size:8px;font-weight:800;text-transform:uppercase}.race-head h2{margin:2px 0 0;font-size:16px}.race-head>b{color:var(--cl-text-2);font-size:9px}.race-focus{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:9px;margin:13px 0;padding:11px;border:1px solid var(--cl-divider);border-radius:12px;background:var(--cl-surface)}.race-focus img{width:40px;height:40px;object-fit:contain}.race-focus div{display:grid;gap:3px}.race-focus small{color:var(--cl-text-2);font-size:9px}.race-focus>span{color:var(--cl-accent);font-weight:900}.race-list{display:grid}.race-list>div{display:grid;grid-template-columns:22px 1fr 28px 64px;align-items:center;gap:7px;padding:8px 4px;border-bottom:1px solid var(--cl-divider);font-size:10px}.race-list>div.tracked{background:var(--cl-accent-soft);border-radius:8px}.race-list span{display:grid;gap:4px}.race-list i{display:block;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--cl-accent),var(--cl-accent-2))}.race-list strong{text-align:right}.race-list small{color:var(--cl-text-2);text-align:right;font-size:8px}.trajectory{margin-top:12px;padding:10px;border-radius:10px;background:var(--cl-surface)}.trajectory>small{color:var(--cl-text-2);font-size:8px;text-transform:uppercase}.trajectory>div{display:flex;align-items:end;gap:4px;height:64px;margin-top:7px}.trajectory span{display:grid;grid-template-rows:1fr auto;align-items:end;flex:1;height:100%;text-align:center}.trajectory i{display:block;border-radius:3px 3px 0 0;background:var(--cl-accent);opacity:.75}.trajectory b{font-size:7px;color:var(--cl-text-2)}.race-card footer{margin-top:9px;color:var(--cl-text-2);font-size:8px;text-align:right}
     `];
   }
 }

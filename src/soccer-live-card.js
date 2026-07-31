@@ -73,6 +73,14 @@ const CARD_MODULES = {
     card: () => import('./cards/MatchCenter/soccer-live-match-center.js'),
     editor: () => import('./cards/MatchCenter/soccer-live-match-center-editor.js'),
   },
+  hub: {
+    card: () => import('./cards/MatchCenter/soccer-live-match-center.js'),
+    editor: () => import('./cards/MatchCenter/soccer-live-match-center-editor.js'),
+  },
+  race: {
+    card: () => import('./cards/Standings/soccer-live-standings.js'),
+    editor: () => import('./cards/Standings/soccer-live-standings-editor.js'),
+  },
   'team-form': {
     card: () => import('./cards/TeamForm/soccer-live-team-form.js'),
     editor: () => import('./cards/TeamForm/soccer-live-team-form-editor.js'),
@@ -133,6 +141,8 @@ const CARD_REGISTRY = [
   { value: 'multi-team',        element: 'soccer-live-multi-team',        editor: 'soccer-live-multi-team-editor',        label: 'Multi Team',        description: 'Multiple teams in one compact card', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'team-competitions', element: 'soccer-live-team-competitions', editor: 'soccer-live-team-competitions-editor', label: 'Team Competitions', description: 'All competitions for a team with tab selector', sensorTypes: ['team_matches_mixed'] },
   { value: 'match-center',      element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Center',      description: 'Tabbed match view: overview, stats, timeline, lineup, H2H', sensorTypes: ['team_match'] },
+  { value: 'hub',               element: 'soccer-live-match-center',      editor: 'soccer-live-match-center-editor',      label: 'Match Hub',         description: 'Phase-aware match view that follows preview, live play and review', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
+  { value: 'race',              element: 'soccer-live-standings',         editor: 'soccer-live-standings-editor',         label: 'Competition Race',  description: 'Title, Europe and relegation gaps with table trajectory', sensorTypes: ['standings'] },
   { value: 'team-form',         element: 'soccer-live-team-form',         editor: 'soccer-live-team-form-editor',         label: 'Team Form',         description: 'Form trend, W/D/L dots, goals chart, home/away split', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'club',              element: 'soccer-live-club',              editor: 'soccer-live-club-editor',              label: 'Club',              description: 'Club profile, matchday, season progress, squad and transfers', sensorTypes: ['club', 'team_match', 'team_matches', 'team_matches_mixed'] },
   { value: 'diagnostics',       element: 'soccer-live-diagnostics',       editor: 'soccer-live-diagnostics-editor',       label: 'Diagnostics',       description: 'Sensor health, update status and schedule counters', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed', 'all_matches_today', 'standings', 'top_scorers', 'bracket', 'news'] },
@@ -163,7 +173,7 @@ function resolveElement(cardType) {
 }
 
 // Shared config fields preserved when switching card type
-const SHARED_FIELDS = ['entity', 'enrichment_entity', 'auto_enrichment', 'archive_entity', 'skin', 'language', 'show_event_toasts'];
+const SHARED_FIELDS = ['entity', 'enrichment_entity', 'supplementary_entities', 'auto_enrichment', 'archive_entity', 'standings_entity', 'skin', 'language', 'show_event_toasts'];
 
 const WRAPPER_TYPE = 'custom:soccer-live-card';
 
@@ -472,6 +482,21 @@ class SoccerLiveCardEditor extends LitElement {
           ></ha-entity-picker>
           <small>${t('editor.enrichment_entity_hint', resolveLang(this.hass, this._config))}</small>
         </label>
+        <label class="enrichment-picker">
+          <span>${t('editor.supplementary_entities', resolveLang(this.hass, this._config))}</span>
+          <input
+            .value=${(this._config.supplementary_entities || []).join(', ')}
+            placeholder="sensor.source_1, sensor.source_2"
+            @change=${event => {
+              const values = event.target.value.split(',').map(value => value.trim()).filter(Boolean);
+              const next = { ...this._config };
+              if (values.length) next.supplementary_entities = values;
+              else delete next.supplementary_entities;
+              this._dispatch(next);
+            }}
+          >
+          <small>${t('editor.supplementary_entities_hint', resolveLang(this.hass, this._config))}</small>
+        </label>
         <label class="enrichment-auto">
           <span>${t('editor.auto_enrichment', resolveLang(this.hass, this._config))}</span>
           <ha-switch
@@ -500,6 +525,7 @@ class SoccerLiveCardEditor extends LitElement {
         font-size: 12px;
         color: var(--secondary-text-color);
       }
+      .enrichment-picker input{box-sizing:border-box;width:100%;padding:10px;border:1px solid var(--divider-color);border-radius:8px;background:var(--card-background-color);color:var(--primary-text-color)}
       .enrichment-auto{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin:10px 0}.enrichment-auto small{grid-column:1/3;color:var(--secondary-text-color);font-size:12px}
       .editor-info,
       .editor-warning {

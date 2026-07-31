@@ -60,23 +60,41 @@ function compactI18n(source) {
   )];
 
   const index = Object.fromEntries(keys.map((key, position) => [key, position]));
+  const valueCounts = Object.values(dictionaries)
+    .flatMap(dictionary => Object.values(dictionary))
+    .reduce((counts, value) => {
+      counts.set(value, (counts.get(value) || 0) + 1);
+      return counts;
+    }, new Map());
+  const values = [...valueCounts]
+    .filter(([value, count]) => count > 1 && value.length >= 4)
+    .map(([value]) => value);
+  const valueIndex = new Map(values.map((value, position) => [value, position]));
   const packed = Object.fromEntries(
     Object.entries(dictionaries).map(([language, dictionary]) => [
       language,
-      keys.map(key => dictionary[key] ?? null),
+      keys.map(key => (
+        dictionary[key] == null
+          ? null
+          : (valueIndex.has(dictionary[key])
+            ? valueIndex.get(dictionary[key])
+            : dictionary[key])
+      )),
     ]),
   );
   const declarations = (
     `const TRANSLATION_INDEX=${JSON.stringify(index)};\n`
+    + `const TRANSLATION_VALUES=${JSON.stringify(values)};\n`
     + `const TRANSLATIONS=${JSON.stringify(packed)};`
   );
   const translate = `function t(key, lang, vars) {
   const index = TRANSLATION_INDEX[key];
   if (index === undefined) return key;
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
-  let str = dict[index];
-  if (str == null) str = TRANSLATIONS.en[index];
-  if (str == null) return key;
+  let token = dict[index];
+  if (token == null) token = TRANSLATIONS.en[index];
+  if (token == null) return key;
+  let str = typeof token === 'number' ? TRANSLATION_VALUES[token] : token;
   if (vars) {
     Object.keys(vars).forEach(k => {
       str = str.replace(new RegExp('\\\\{' + k + '\\\\}', 'g'), vars[k]);

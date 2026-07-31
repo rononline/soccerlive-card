@@ -316,6 +316,7 @@ const CARD_MATRIX = [
   'match-center', 'team-form', 'club', 'diagnostics', 'ticker',
   'lineup', 'timeline', 'minimal',
   'matchday', 'archive',
+  'hub', 'race',
 ];
 
 async function expectHealthyCard(page, type) {

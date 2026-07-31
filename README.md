@@ -39,6 +39,8 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
 | Match Center | `match-center` | Tabbed match view: Overview (with form strips), Stats, Timeline (filterable), Lineup (pitch view), H2H |
+| Match Hub | `hub` | Match Center that automatically follows preview, live play and post-match review |
+| Competition Race | `race` | Points gaps, maximum attainable points and table-position trajectory |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 | Club | `club` | Matchday dashboard, club profile, squad analysis, injuries, market values, team news and transfers |
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
@@ -73,6 +75,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - ♿ **Accessible interaction** — translated controls, keyboard-operable rows and modal semantics for interactive Club details
 - 🧭 **Keyboard & motion preferences** — Match Center tabs support arrow/Home/End navigation, match rows open with Enter/Space, focus is visible and reduced-motion preferences disable decorative animation
 - 🩺 **Actionable data alerts** — Match Center and Diagnostics explain stale live data, provider errors, conflicting sources and fixture changes when schema v5 data is available
+- 🏁 **Competition race** — title-gap context, virtual table impact and position history with schema-v6 standings data
 
 ---
 
@@ -388,6 +391,13 @@ Tabs follow the ARIA tabs pattern and can be navigated with Left/Right,
 Home and End. The selected fixture's integration-level data alerts appear at
 the top of Overview only when there is something actionable to report.
 
+Use `card_type: hub` for the automatic Match Hub variant. It opens the preview
+before kick-off, follows the timeline while the match is live, and returns to
+the overview/review after full time. Manual tab selection remains possible.
+Set `archive_entity` to add long-term historical meetings to H2H and
+`standings_entity` to show the virtual table impact of the current score. When
+the latter is omitted, the card tries to match a standings sensor by league.
+
 The Overview tab is phase-aware: before kick-off it can show preview context;
 after full time it can compare the prediction with the result and show optional
 xG and match-story highlights. These blocks appear only when the sensor
@@ -518,6 +528,15 @@ enrichment_entity: sensor.soccer_live_fotmob_all_mixed_10235
 auto_enrichment: true
 ```
 
+More sources can be applied in order. Each one only fills fields that are still
+missing, and secondary-only fixtures are never appended:
+
+```yaml
+supplementary_entities:
+  - sensor.my_lineup_source
+  - sensor.my_statistics_source
+```
+
 Only matching fixtures are supplemented; the selected primary sensor remains
 authoritative for the schedule, scores and conflicting values. Without another
 compatible sensor every card continues to work standalone.
@@ -544,6 +563,7 @@ entity: sensor.soccer_live_all_mixed_feyenoord
 archive_entity: sensor.my_historical_feyenoord_results # optional
 max_matches: 50
 show_archive_stats: true
+show_season_report: true
 ```
 
 Filters locally stored results by season, competition, opponent, result and
@@ -553,6 +573,21 @@ a versioned JSON backup through the clipboard; rebuild and clear remain
 integration-backed actions. `archive_entity` can merge another compatible
 sensor and also recognizes common Dutch `datum`, `thuis`, `uit` and `uitslag`
 fields. Soccer Live remains fully standalone when it is omitted.
+The season report adds home/away win rates, biggest win/loss and common
+opponents to the existing monthly and season comparisons.
+
+### 🏁 Competition Race
+
+```yaml
+type: custom:soccer-live-card
+card_type: race
+entity: sensor.soccerlive_standings_eredivisie
+highlight_team: Feyenoord
+```
+
+Shows the tracked club around its nearest rivals, the gap to the leader,
+remaining and maximum attainable points, and a position trajectory once the
+integration has recorded multiple schema-v6 standings snapshots.
 
 ### 📺 Ticker
 
@@ -606,6 +641,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Match readiness, 500-match archive, summary and archive management services | v3.11.0 |
 | Per-section source/freshness metadata, replay lab and native helper entities | v3.12.0 |
 | Actionable data alerts and canonical fixture identity (schema v5) | v3.13.0 |
+| Competition race and standings history (schema v6) | next integration release |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 

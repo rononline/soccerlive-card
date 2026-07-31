@@ -227,16 +227,33 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
 
 export function blendHassSources(hass, config) {
   const primaryId = config?.entity;
-  const secondaryId = config?.enrichment_entity
-    || (config?.auto_enrichment ? findEnrichmentEntity(hass, config) : '');
-  if (!hass?.states || !primaryId || !secondaryId || primaryId === secondaryId) return hass;
+  const configured = [
+    config?.enrichment_entity,
+    ...(Array.isArray(config?.supplementary_entities) ? config.supplementary_entities : []),
+  ].filter(Boolean);
+  if (!configured.length && config?.auto_enrichment) {
+    configured.push(findEnrichmentEntity(hass, config));
+  }
+  const secondaryIds = [...new Set(configured)]
+    .filter(id => id && id !== primaryId && hass?.states?.[id]);
+  if (!hass?.states || !primaryId || !secondaryIds.length) return hass;
   const primary = hass.states[primaryId];
-  const secondary = hass.states[secondaryId];
-  if (!primary || !secondary) return hass;
+  if (!primary) return hass;
+  const attributes = secondaryIds.reduce(
+    (current, id) => blendAttributes(current, hass.states[id].attributes),
+    primary.attributes,
+  );
   const states = Object.create(hass.states);
   states[primaryId] = {
     ...primary,
-    attributes: blendAttributes(primary.attributes, secondary.attributes),
+    attributes: {
+      ...attributes,
+      source_blend: {
+        ...(attributes.source_blend || {}),
+        primary: primary.attributes.provider || 'primary',
+        supplementary_entities: secondaryIds,
+      },
+    },
   };
   const composite = Object.create(hass);
   Object.defineProperty(composite, 'states', {
