@@ -40,12 +40,12 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
 | Match Center | `match-center` | Tabbed match view: Overview (with form strips), Stats, Timeline (filterable), Lineup (pitch view), H2H |
 | Match Hub | `hub` | Match Center that automatically follows preview, live play and post-match review |
-| Competition Race | `race` | Points gaps, maximum attainable points and table-position trajectory |
+| Competition Race | `race` | Actual remaining fixtures, games in hand, projections, result scenarios and position trajectory |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 | Club | `club` | Matchday dashboard, club profile, squad analysis, injuries, market values, team news and transfers |
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
 | Timeline | `timeline` | Minute-by-minute match events |
-| Diagnostics | `diagnostics` | Sensor health, update status, API state, source blending and match counters |
+| Diagnostics | `diagnostics` | Setup/sensor health, update status, API state, source conflicts, blending and match counters |
 | Matchday | `matchday` | Focused matchday with counters, data completeness and pre-match readiness |
 | Archive | `archive` | Filterable local history with season statistics, streaks and backup controls |
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
@@ -75,7 +75,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - ♿ **Accessible interaction** — translated controls, keyboard-operable rows and modal semantics for interactive Club details
 - 🧭 **Keyboard & motion preferences** — Match Center tabs support arrow/Home/End navigation, match rows open with Enter/Space, focus is visible and reduced-motion preferences disable decorative animation
 - 🩺 **Actionable data alerts** — Match Center and Diagnostics explain stale live data, provider errors, conflicting sources and fixture changes when schema v5 data is available
-- 🏁 **Competition race** — title-gap context, virtual table impact and position history with schema-v6 standings data
+- 🏁 **Competition race** — actual schedule context, projections, virtual table impact and position history with schema-v7 standings data
 
 ---
 
@@ -569,7 +569,7 @@ show_season_report: true
 Filters locally stored results by season, competition, opponent, result and
 home/away venue and calculates W/D/L, win percentage, goals, clean sheets,
 streaks, monthly form and season comparisons. The copy/import buttons exchange
-a versioned JSON backup through the clipboard; rebuild and clear remain
+a `soccer_live.archive.v1` JSON backup through the clipboard; rebuild and clear remain
 integration-backed actions. `archive_entity` can merge another compatible
 sensor and also recognizes common Dutch `datum`, `thuis`, `uit` and `uitslag`
 fields. Soccer Live remains fully standalone when it is omitted.
@@ -586,8 +586,9 @@ highlight_team: Feyenoord
 ```
 
 Shows the tracked club around its nearest rivals, the gap to the leader,
-remaining and maximum attainable points, and a position trajectory once the
-integration has recorded multiple schema-v6 standings snapshots.
+actual remaining fixtures when available, games in hand, projected points,
+next-result rank scenarios and maximum attainable points. A position trajectory
+appears once the integration has recorded multiple standings snapshots.
 
 ### 📺 Ticker
 
@@ -641,7 +642,8 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Match readiness, 500-match archive, summary and archive management services | v3.11.0 |
 | Per-section source/freshness metadata, replay lab and native helper entities | v3.12.0 |
 | Actionable data alerts and canonical fixture identity (schema v5) | v3.13.0 |
-| Competition race and standings history (schema v6) | next integration release |
+| Competition race and standings history (schema v6) | v3.14.0 |
+| Race v2, club provenance, setup status and API-Football brackets (schema v7) | v3.15.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -679,7 +681,7 @@ HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. `npm run build` enforces a 750 KiB
-uncompressed ceiling; the current bundle is about 698 KiB (roughly 170 KiB
+uncompressed ceiling; the current bundle is about 715 KiB (roughly 180 KiB
 gzip or 125 KiB Brotli, depending on the compressor implementation).
 
 ---

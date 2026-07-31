@@ -101,6 +101,14 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     return String(value);
   }
 
+  _setupState(configEntryId) {
+    if (!configEntryId) return null;
+    return Object.values(this.hass?.states || {}).find(state => (
+      state?.attributes?.config_entry_id === configEntryId
+      && state?.attributes?.configured_entities != null
+    )) || null;
+  }
+
   _age(value) {
     const date = parseMatchDate(value);
     if (!date) return "-";
@@ -144,7 +152,10 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const recommended = this._recommendedCards(sensorType);
     const quality = attrs.data_quality || {};
     const blend = attrs.source_blend || {};
+    const setup = this._setupState(attrs.config_entry_id);
+    const clubConflicts = attrs.club?.source_conflicts?.length || 0;
     const metrics = [
+      [this._t("diag.setup_status"), setup?.state],
       [this._t("diag.sensor"), sensorType],
       [this._t("diag.state"), stateObj.state],
       [this._t("diag.matches"), attrs.schedule_match_count ?? attrs.total_matches],
@@ -156,6 +167,7 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       [this._t("diag.sensor_age"), this._age(lastUpdate)],
       [this._t("quality.completeness"), quality.average_completeness != null ? `${quality.average_completeness}%` : null],
       [this._t("quality.conflicts"), quality.conflicts?.length],
+      [this._t("diag.club_source_conflicts"), clubConflicts || null],
       ...(blend.secondary ? [
         [this._t("diag.source_blend"), `${blend.primary} + ${blend.secondary}`],
         [this._t("diag.enriched_fields"), blend.enriched_fields],

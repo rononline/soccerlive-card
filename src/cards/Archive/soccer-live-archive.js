@@ -52,7 +52,9 @@ class SoccerLiveArchiveCard extends LitElement {
 
   async _copyArchive(matches) {
     try {
-      await navigator.clipboard.writeText(JSON.stringify({ version: 1, matches }, null, 2));
+      await navigator.clipboard.writeText(JSON.stringify({
+        schema: 'soccer_live.archive.v1', version: 1, matches,
+      }, null, 2));
       this._notice = this._t('archive.copied');
     } catch (_) {
       this._notice = this._t('archive.copy_failed');

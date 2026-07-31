@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.37.0 (2026-07-31)
+
+- live UX: show translated toasts for score corrections and fixture changes without playing a second goal celebration
+- Competition Race v2: consume actual remaining fixtures, games in hand, projected points and next-result rank scenarios from the integration
+- club provenance: show manual-override and provider-conflict badges in the club profile
+- diagnostics: discover and display the entry-level Setup status sensor and club-source conflict count
+- archive: export the documented `soccer_live.archive.v1` envelope for portable feyod/MySQL history
+- bundle: use repeat-pass Terser compression while retaining the one-file HACS distribution
+- tests: cover the enriched race contract and keep source, bundle and preview fixtures synchronized
+
 ## v3.36.0 (2026-07-31)
 
 - add a Competition Race card with title-gap context, maximum points and persisted position trajectory

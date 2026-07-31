@@ -108,7 +108,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const generation = this._eventSubscriptionGeneration || 0;
     const handler = this._handleSoccerLiveEvent.bind(this);
     const subscriptionPromise = Promise.allSettled(
-      ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card'].map(evt =>
+      ['soccer_live_goal', 'soccer_live_goal_cancelled', 'soccer_live_yellow_card', 'soccer_live_red_card', 'soccer_live_kickoff_changed', 'soccer_live_venue_changed', 'soccer_live_opponent_changed'].map(evt =>
         this.hass.connection.subscribeEvents(handler, evt)
       )
     );
@@ -200,12 +200,18 @@ class SoccerLiveMatchesCard extends LitElement {
     if (eventType === 'soccer_live_goal') {
       message = `${this._t('event.goal').toUpperCase()}! ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'goal';
+    } else if (eventType === 'soccer_live_goal_cancelled') {
+      message = `↩ ${this._t('event.goal_cancelled')} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
+      variant = 'red';
     } else if (eventType === 'soccer_live_yellow_card') {
       message = `🟨 ${this._t('event.yellow_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'yellow';
     } else if (eventType === 'soccer_live_red_card') {
       message = `🟥 ${this._t('event.red_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'red';
+    } else if (eventType.endsWith('_changed')) {
+      message = `🗓 ${this._t('event.fixture_changed')} · ${eventData.home_team} – ${eventData.away_team}`;
+      variant = 'yellow';
     }
     if (!message) return;
     this._toastMessage = message;

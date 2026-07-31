@@ -4,8 +4,9 @@ function number(value, fallback = 0) {
 }
 
 export function raceModel(attrs = {}, teamName = '') {
+  const supplied = attrs.competition_race?.groups?.[0];
   const group = attrs.standings_groups?.[0];
-  const rows = group?.standings || [];
+  const rows = supplied?.rows || group?.standings || [];
   if (!rows.length) return null;
   const ordered = [...rows].sort((a, b) => number(a.rank, 999) - number(b.rank, 999));
   const leaderPoints = number(ordered[0]?.points);
@@ -16,15 +17,18 @@ export function raceModel(attrs = {}, teamName = '') {
   const raceRows = ordered.map((row, index) => {
     const points = number(row.points);
     const played = number(row.games_played);
-    const remaining = Math.max(0, totalMatches - played);
+    const remaining = row.remaining == null ? Math.max(0, totalMatches - played) : number(row.remaining);
     return {
       ...row,
       points,
       played,
       remaining,
-      maximum: points + remaining * 3,
-      gapLeader: Math.max(0, leaderPoints - points),
-      gapAbove: index ? Math.max(0, number(ordered[index - 1].points) - points) : 0,
+      maximum: row.maximum_points == null ? points + remaining * 3 : number(row.maximum_points),
+      projected: row.projected_points == null ? points : number(row.projected_points),
+      gamesInHand: number(row.games_in_hand),
+      scenarios: row.next_match_scenarios || null,
+      gapLeader: row.gap_to_leader == null ? Math.max(0, leaderPoints - points) : number(row.gap_to_leader),
+      gapAbove: row.gap_to_above == null ? (index ? Math.max(0, number(ordered[index - 1].points) - points) : 0) : number(row.gap_to_above),
     };
   });
   const wanted = String(teamName || '').toLowerCase();
@@ -42,7 +46,12 @@ export function raceModel(attrs = {}, teamName = '') {
       points: number(row.points),
     } : null;
   }).filter(Boolean);
-  return { rows: raceRows, tracked, trajectory, totalMatches, group: group?.name || '' };
+  return {
+    rows: raceRows, tracked, trajectory,
+    totalMatches: supplied?.total_matches ?? totalMatches,
+    remainingSource: supplied?.remaining_source || 'table_format',
+    group: supplied?.name || group?.name || '',
+  };
 }
 
 export function standingsForMatch(hass, config, match) {

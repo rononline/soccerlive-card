@@ -198,7 +198,7 @@ class SoccerLiveStandingsCard extends LitElement {
     const generation = this._eventSubscriptionGeneration || 0;
     const handler = this._handleSoccerLiveEvent.bind(this);
     const subscriptionPromise = Promise.allSettled(
-      ['soccer_live_goal', 'soccer_live_yellow_card', 'soccer_live_red_card', 'soccer_live_match_finished'].map(evt =>
+      ['soccer_live_goal', 'soccer_live_goal_cancelled', 'soccer_live_yellow_card', 'soccer_live_red_card', 'soccer_live_match_finished'].map(evt =>
         this.hass.connection.subscribeEvents(handler, evt)
       )
     );
@@ -252,6 +252,9 @@ class SoccerLiveStandingsCard extends LitElement {
     if (eventType === 'soccer_live_goal') {
       message = `${this._t('event.goal').toUpperCase()}! ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
       variant = 'goal';
+    } else if (eventType === 'soccer_live_goal_cancelled') {
+      message = `↩ ${this._t('event.goal_cancelled')} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
+      variant = 'red';
     } else if (eventType === 'soccer_live_yellow_card') {
       message = `🟨 ${this._t('event.yellow_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
       variant = 'yellow';
@@ -524,6 +527,16 @@ class SoccerLiveStandingsCard extends LitElement {
         <b>${row.rank}</b><span>${row.team_name}<i style="width:${Math.max(3, row.points / maxPoints * 100)}%"></i></span>
         <strong>${row.points}</strong><small>${row.maximum} ${this._t('race.maximum')}</small>
       </div>`)}</div>
+      ${model.tracked && (model.tracked.gamesInHand || model.tracked.projected !== model.tracked.points) ? html`
+        <section class="race-projection">
+          ${model.tracked.gamesInHand ? html`<span>${this._t('race.games_in_hand', { n: model.tracked.gamesInHand })}</span>` : ''}
+          <span>${this._t('race.projected_points', { n: model.tracked.projected })}</span>
+          ${model.tracked.scenarios ? html`<span>${this._t('race.next_scenarios', {
+            win: model.tracked.scenarios.win,
+            draw: model.tracked.scenarios.draw,
+            loss: model.tracked.scenarios.loss,
+          })}</span>` : ''}
+        </section>` : ''}
       ${trajectory.length > 1 ? html`<section class="trajectory"><small>${this._t('race.trajectory')}</small><div>
         ${trajectory.map(point => html`<span title="${point.date || ''}: #${point.rank}"><i style="height:${Math.max(12, 100 - ((point.rank - 1) / Math.max(1, model.rows.length - 1)) * 88)}%"></i><b>${point.rank}</b></span>`)}
       </div></section>` : ''}
@@ -1180,7 +1193,7 @@ class SoccerLiveStandingsCard extends LitElement {
         90%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
         100% { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
       }
-      .race-card{padding:16px;background:var(--cl-bg);color:var(--cl-text)}.race-head{display:flex;align-items:center;gap:9px}.race-head>span{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--cl-accent-soft)}.race-head div{flex:1}.race-head small{color:var(--cl-text-2);font-size:8px;font-weight:800;text-transform:uppercase}.race-head h2{margin:2px 0 0;font-size:16px}.race-head>b{color:var(--cl-text-2);font-size:9px}.race-focus{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:9px;margin:13px 0;padding:11px;border:1px solid var(--cl-divider);border-radius:12px;background:var(--cl-surface)}.race-focus img{width:40px;height:40px;object-fit:contain}.race-focus div{display:grid;gap:3px}.race-focus small{color:var(--cl-text-2);font-size:9px}.race-focus>span{color:var(--cl-accent);font-weight:900}.race-list{display:grid}.race-list>div{display:grid;grid-template-columns:22px 1fr 28px 64px;align-items:center;gap:7px;padding:8px 4px;border-bottom:1px solid var(--cl-divider);font-size:10px}.race-list>div.tracked{background:var(--cl-accent-soft);border-radius:8px}.race-list span{display:grid;gap:4px}.race-list i{display:block;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--cl-accent),var(--cl-accent-2))}.race-list strong{text-align:right}.race-list small{color:var(--cl-text-2);text-align:right;font-size:8px}.trajectory{margin-top:12px;padding:10px;border-radius:10px;background:var(--cl-surface)}.trajectory>small{color:var(--cl-text-2);font-size:8px;text-transform:uppercase}.trajectory>div{display:flex;align-items:end;gap:4px;height:64px;margin-top:7px}.trajectory span{display:grid;grid-template-rows:1fr auto;align-items:end;flex:1;height:100%;text-align:center}.trajectory i{display:block;border-radius:3px 3px 0 0;background:var(--cl-accent);opacity:.75}.trajectory b{font-size:7px;color:var(--cl-text-2)}.race-card footer{margin-top:9px;color:var(--cl-text-2);font-size:8px;text-align:right}
+      .race-card{padding:16px;background:var(--cl-bg);color:var(--cl-text)}.race-head{display:flex;align-items:center;gap:9px}.race-head>span{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--cl-accent-soft)}.race-head div{flex:1}.race-head small{color:var(--cl-text-2);font-size:8px;font-weight:800;text-transform:uppercase}.race-head h2{margin:2px 0 0;font-size:16px}.race-head>b{color:var(--cl-text-2);font-size:9px}.race-focus{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:9px;margin:13px 0;padding:11px;border:1px solid var(--cl-divider);border-radius:12px;background:var(--cl-surface)}.race-focus img{width:40px;height:40px;object-fit:contain}.race-focus div{display:grid;gap:3px}.race-focus small{color:var(--cl-text-2);font-size:9px}.race-focus>span{color:var(--cl-accent);font-weight:900}.race-list{display:grid}.race-list>div{display:grid;grid-template-columns:22px 1fr 28px 64px;align-items:center;gap:7px;padding:8px 4px;border-bottom:1px solid var(--cl-divider);font-size:10px}.race-list>div.tracked{background:var(--cl-accent-soft);border-radius:8px}.race-list span{display:grid;gap:4px}.race-list i{display:block;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--cl-accent),var(--cl-accent-2))}.race-list strong{text-align:right}.race-list small{color:var(--cl-text-2);text-align:right;font-size:8px}.race-projection{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.race-projection span{padding:5px 8px;border:1px solid var(--cl-divider);border-radius:999px;background:var(--cl-surface);color:var(--cl-text-2);font-size:8px;font-weight:800}.trajectory{margin-top:12px;padding:10px;border-radius:10px;background:var(--cl-surface)}.trajectory>small{color:var(--cl-text-2);font-size:8px;text-transform:uppercase}.trajectory>div{display:flex;align-items:end;gap:4px;height:64px;margin-top:7px}.trajectory span{display:grid;grid-template-rows:1fr auto;align-items:end;flex:1;height:100%;text-align:center}.trajectory i{display:block;border-radius:3px 3px 0 0;background:var(--cl-accent);opacity:.75}.trajectory b{font-size:7px;color:var(--cl-text-2)}.race-card footer{margin-top:9px;color:var(--cl-text-2);font-size:8px;text-align:right}
     `];
   }
 }

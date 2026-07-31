@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './src/soccer-live-card.js',
@@ -26,6 +27,17 @@ module.exports = {
     ],
   },
   mode: 'production',
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      terserOptions: {
+        ecma: 2022,
+        compress: { passes: 3 },
+        format: { comments: false },
+      },
+      extractComments: false,
+    })],
+  },
   plugins: [
     // Editor imports defer module execution, but HACS installs one plugin
     // asset. Merge async chunks into that single distributable bundle.

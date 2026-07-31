@@ -354,6 +354,8 @@
 
     const attrs = {
       sensor_type: "team_matches_mixed",
+      config_entry_id: "preview-netherlands",
+      data_schema_version: 7,
       api_status: "ok",
       team_name: "Netherlands",
       team_logo: logo(449),
@@ -379,12 +381,20 @@
       standings_groups: [{
         name: "Group F",
         standings: [
-          { rank: 1, team_name: "Sweden", team_logo: logo(466), wins: 1, draws: 0, losses: 0, points: "3", goal_difference: 4, zone_color: "#22c55e" },
-          { rank: 2, team_name: "Japan", team_logo: logo(627), wins: 0, draws: 1, losses: 0, points: "1", goal_difference: 0 },
-          { rank: 3, team_name: "Netherlands", team_logo: logo(449), wins: 0, draws: 1, losses: 0, points: "1", goal_difference: 0 },
-          { rank: 4, team_name: "Tunisia", team_logo: logo(290), wins: 0, draws: 0, losses: 1, points: "0", goal_difference: -4 }
+          { rank: 1, team_name: "Sweden", team_logo: logo(466), games_played: 1, wins: 1, draws: 0, losses: 0, points: "3", goal_difference: 4, zone_color: "#22c55e" },
+          { rank: 2, team_name: "Japan", team_logo: logo(627), games_played: 1, wins: 0, draws: 1, losses: 0, points: "1", goal_difference: 0 },
+          { rank: 3, team_name: "Netherlands", team_logo: logo(449), games_played: 1, wins: 0, draws: 1, losses: 0, points: "1", goal_difference: 0 },
+          { rank: 4, team_name: "Tunisia", team_logo: logo(290), games_played: 1, wins: 0, draws: 0, losses: 1, points: "0", goal_difference: -4 }
         ]
       }],
+      competition_race: { groups: [{
+        name: "Group F", total_matches: 3, remaining_source: "fixtures", rows: [
+          { rank: 1, team_name: "Sweden", team_logo: logo(466), points: 3, games_played: 1, remaining: 2, games_in_hand: 0, maximum_points: 9, projected_points: 7, next_match_scenarios: { win: 1, draw: 1, loss: 2 }, gap_to_leader: 0, gap_to_above: 0 },
+          { rank: 2, team_name: "Japan", team_logo: logo(627), points: 1, games_played: 1, remaining: 2, games_in_hand: 0, maximum_points: 7, projected_points: 4, next_match_scenarios: { win: 1, draw: 2, loss: 2 }, gap_to_leader: 2, gap_to_above: 2 },
+          { rank: 3, team_name: "Netherlands", team_logo: logo(449), points: 1, games_played: 1, remaining: 2, games_in_hand: 1, maximum_points: 7, projected_points: 5, next_match_scenarios: { win: 1, draw: 2, loss: 3 }, gap_to_leader: 2, gap_to_above: 0 },
+          { rank: 4, team_name: "Tunisia", team_logo: logo(290), points: 0, games_played: 1, remaining: 2, games_in_hand: 0, maximum_points: 6, projected_points: 2, next_match_scenarios: { win: 2, draw: 3, loss: 4 }, gap_to_leader: 3, gap_to_above: 1 }
+        ]
+      }] },
       standings_history: [
         { captured_at: "2026-06-10T12:00:00Z", groups: [{ name: "Group F", standings: [
           { rank: 2, team_name: "Sweden", points: 0 },
@@ -550,6 +560,8 @@
       club: {
         profile: { name: "Feyenoord", logo: logo(449), founded: 1908, country: "Netherlands", venue: "Stadion Feijenoord", venue_city: "Rotterdam" },
         coach: "B. Priske",
+        field_sources: { coach: { provider: "manual", provider_value: "R. van Persie", value: "B. Priske", overridden: true } },
+        source_conflicts: [{ field: "coach", selected: "B. Priske", provider: "api_football", provider_value: "R. van Persie" }],
         squad: [
           { name: "T. Wellenreuther", number: 1, position: "Goalkeeper", age: 29 },
           { name: "G. Trauner", number: 4, position: "Defender", age: 34 },
@@ -580,6 +592,7 @@
       "sensor.preview_bracket_groups": { state: "FIFA World Cup", attributes: bracketGroupsAttrs },
       "sensor.preview_commentary": { state: "live", attributes: attrs },
       "sensor.preview_diagnostics": { state: "ok", attributes: attrs },
+      "sensor.preview_setup_status": { state: "ready", attributes: { config_entry_id: "preview-netherlands", configured_entities: 4, entities_with_data: 4 } },
       "sensor.preview_empty": { state: "0", attributes: emptyAttrs },
       "sensor.preview_unavailable": { state: "unavailable", attributes: unavailableAttrs },
       "sensor.preview_missing_logos": { state: "long names", attributes: longNameAttrs },

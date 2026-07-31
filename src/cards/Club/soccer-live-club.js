@@ -146,7 +146,7 @@ class SoccerLiveClubCard extends LitElement {
     const hideHeader = this._config.hide_header === true;
     const dashboardMode = this._config.dashboard_mode === true;
     const sections = {
-      profile: () => this._renderProfile(profile, club.coach),
+      profile: () => this._renderProfile(profile, club.coach, club),
       matchday: () => this._config.show_matchday !== false ? this._renderMatchday(attrs) : '',
       dashboard: () => dashboardMode ? '' : this._renderDashboard(club, attrs),
       quality: () => this._config.show_data_quality !== false ? this._renderDataQuality(attrs) : '',
@@ -632,7 +632,7 @@ class SoccerLiveClubCard extends LitElement {
     }).format(Number(value));
   }
 
-  _renderProfile(profile, coach) {
+  _renderProfile(profile, coach, club = {}) {
     const chip = (icon, text) => text ? html`<span class="clb-chip"><span class="clb-ic">${icon}</span>${text}</span>` : '';
     const venue = profile.venue
       ? `${profile.venue}${profile.venue_city ? ` · ${profile.venue_city}` : ''}`
@@ -643,6 +643,12 @@ class SoccerLiveClubCard extends LitElement {
         ${chip('🏟️', venue)}
         ${chip('📅', profile.founded ? this._t('club.founded', { year: profile.founded }) : '')}
         ${chip('👤', coach || '')}
+        ${(club.source_conflicts || []).length ? html`
+          <span class="clb-source-warning" title=${this._t('club.source_conflict_hint')}>
+            ⚠ ${this._t('club.source_conflicts', { n: club.source_conflicts.length })}
+          </span>` : ''}
+        ${Object.values(club.field_sources || {}).some(source => source.overridden) ? html`
+          <span class="clb-source-manual">✎ ${this._t('club.manual_overrides')}</span>` : ''}
       </div>
     `;
   }
@@ -749,6 +755,7 @@ class SoccerLiveClubCard extends LitElement {
   static get styles() {
     return [skinStyles, soccerCardShellStyles, css`
       .clb-profile { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 14px 10px; }
+      .clb-source-warning,.clb-source-manual{display:inline-flex;align-items:center;padding:7px 10px;border:1px solid var(--cl-divider);border-radius:10px;background:var(--cl-surface);font-size:10px;font-weight:800}.clb-source-warning{color:var(--cl-warning)}.clb-source-manual{color:var(--cl-accent)}
       .clb-quality{display:flex;justify-content:space-between;margin:0 14px 8px;padding:5px 9px;border-radius:8px;background:var(--cl-card-2,rgba(255,255,255,.03));font-size:9px;color:var(--cl-text-2)}.clb-quality span{color:var(--cl-success,#10b981)}.clb-quality:not(.ready) span{color:var(--cl-warning,#f59e0b)}
       .clb-radar{display:grid;gap:7px}.clb-radar>div{display:grid;grid-template-columns:78px 1fr 32px 15px;align-items:center;gap:7px;font-size:10px;color:var(--cl-text-2)}.clb-radar i{height:7px;border-radius:9px;background:rgba(148,163,184,.18);overflow:hidden}.clb-radar i b{display:block;height:100%;background:var(--cl-success,#10b981)}.clb-radar .thin i b{background:var(--cl-warning,#f59e0b)}.clb-radar strong{color:var(--cl-text);text-align:right}.clb-radar em{font-style:normal}
       .clb-lineup>small{display:block;text-align:center;color:var(--cl-text-2);margin-bottom:8px}.clb-lineup>div{display:flex;justify-content:center;gap:5px;margin:6px 0}.clb-lineup button{border:1px solid var(--cl-divider);border-radius:10px;padding:5px 7px;background:var(--cl-card-2);color:var(--cl-text);font-size:9px;cursor:pointer}
