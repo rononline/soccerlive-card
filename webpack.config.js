@@ -32,7 +32,11 @@ module.exports = {
     minimizer: [new TerserPlugin({
       terserOptions: {
         ecma: 2022,
-        compress: { passes: 3 },
+        compress: {
+          passes: 5,
+          booleans_as_integers: true,
+          drop_debugger: true,
+        },
         format: { comments: false },
       },
       extractComments: false,

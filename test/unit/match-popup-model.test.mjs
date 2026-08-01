@@ -45,6 +45,20 @@ test('reviewContext stays hidden without content and maps provider review', () =
   assert.equal(review.scorers.length, 1);
 });
 
+test('reviewContext uses the schema-v8 structured summary as fallback', () => {
+  const review = reviewContext({
+    match_summary: {
+      goal_scorers: ['A. Player'],
+      home_xg: 1.7,
+      away_xg: 0.8,
+      player_of_the_match: { name: 'A. Player' },
+    },
+  });
+  assert.equal(review.present, true);
+  assert.equal(review.scorers[0].player, 'A. Player');
+  assert.deepEqual(review.expectedGoals, { home: 1.7, away: 0.8 });
+});
+
 test('predictionOutcome compares the forecast with the final result', () => {
   const result = predictionOutcome({
     state: 'post', home_team: 'Feyenoord', away_team: 'Rayo', home_score: 3, away_score: 1,

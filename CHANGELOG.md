@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.38.0 (2026-08-01)
+
+- Diagnostics: show a source capability matrix with available, pending, unsupported and provider-error reasons
+- Diagnostics: surface season rollover and external archive synchronization status from schema v8
+- Competition Race: show mathematical title points, champion status, secured European football and relegation safety
+- Match Center and Matches: use the provider-neutral structured post-match summary when a richer provider review is unavailable
+- preview: exercise schema-v8 capability, season, summary and race data without requiring Home Assistant
+- bundle: increase repeat-pass compression while retaining the single HACS asset and 750 KiB release ceiling
+- docs/tests: document schema v8 and cover race and structured-review fallbacks
+
 ## v3.37.0 (2026-07-31)
 
 - live UX: show translated toasts for score corrections and fixture changes without playing a second goal celebration

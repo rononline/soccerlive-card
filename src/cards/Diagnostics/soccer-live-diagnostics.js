@@ -89,8 +89,12 @@ class SoccerLiveDiagnosticsCard extends LitElement {
         font-size: 11px;
         font-weight: 800;
       }
+      .capabilities { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; margin-top: 8px; }
+      .capability { display:flex; align-items:center; gap:7px; min-width:0; padding:7px 8px; border:1px solid var(--cl-divider); border-radius:9px; background:var(--cl-surface); font-size:10px; }
+      .capability b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .capability.available i { color:var(--cl-green); }.capability.pending i { color:var(--cl-warning); }.capability.error i,.capability.unavailable i { color:var(--cl-text-2); }
       @media (max-width: 420px) {
-        .grid { grid-template-columns: 1fr; }
+        .grid, .capabilities { grid-template-columns: 1fr; }
       }
     `];
   }
@@ -154,6 +158,8 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const blend = attrs.source_blend || {};
     const setup = this._setupState(attrs.config_entry_id);
     const clubConflicts = attrs.club?.source_conflicts?.length || 0;
+    const capabilityMatrix = attrs.capability_matrix || setup?.attributes?.capability_matrix || {};
+    const season = attrs.season_transition || {};
     const metrics = [
       [this._t("diag.setup_status"), setup?.state],
       [this._t("diag.sensor"), sensorType],
@@ -168,6 +174,8 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       [this._t("quality.completeness"), quality.average_completeness != null ? `${quality.average_completeness}%` : null],
       [this._t("quality.conflicts"), quality.conflicts?.length],
       [this._t("diag.club_source_conflicts"), clubConflicts || null],
+      [this._t("diag.season_status"), season.status],
+      [this._t("diag.archive_sync"), setup?.attributes?.archive_sync_status],
       ...(blend.secondary ? [
         [this._t("diag.source_blend"), `${blend.primary} + ${blend.secondary}`],
         [this._t("diag.enriched_fields"), blend.enriched_fields],
@@ -204,6 +212,17 @@ class SoccerLiveDiagnosticsCard extends LitElement {
               <div class="label">${this._t("quality.coverage")} · ${this._t(`quality.${quality.level || 'limited'}`)}</div>
               <div class="quality-bar"><i style="width:${quality.average_completeness}%"></i></div>
               ${quality.issues?.length ? html`<div class="chips">${quality.issues.map(issue => html`<span class="chip">⚠ ${this._t(`quality.issue_${issue}`)}</span>`)}</div>` : ''}
+            </div>
+          ` : ''}
+          ${Object.keys(capabilityMatrix).length ? html`
+            <div class="recommendations">
+              <div class="label">${this._t('diag.capabilities')}</div>
+              <div class="capabilities">${Object.entries(capabilityMatrix).map(([key, item]) => html`
+                <div class="capability ${item.status}" title=${this._t(`capability.reason_${item.reason}`)}>
+                  <i>${item.available ? '●' : item.status === 'pending' ? '◐' : '○'}</i>
+                  <b>${this._t(`capability.${key}`)}</b>
+                </div>
+              `)}</div>
             </div>
           ` : ''}
           ${renderDataAlerts(attrs.data_alerts, {

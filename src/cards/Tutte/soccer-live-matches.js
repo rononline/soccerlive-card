@@ -976,7 +976,7 @@ class SoccerLiveMatchesCard extends LitElement {
       ${review.playerOfMatch ? html`<div><small>${this._t('popup.player_of_match')}</small><strong>${review.playerOfMatch.name || review.playerOfMatch.player}</strong></div>` : ''}
       ${review.expectedGoals ? html`<div><small>xG</small><strong>${review.expectedGoals.home ?? '–'} – ${review.expectedGoals.away ?? '–'}</strong></div>` : ''}
       ${review.standout ? html`<div><small>${review.standout.key}</small><strong>${review.standout.home} – ${review.standout.away}</strong></div>` : ''}
-      ${review.scorers.length ? html`<div><small>${this._t('event.goal')}</small><strong>${review.scorers.map(item => `${item.player} ${item.minute}'`).join(' · ')}</strong></div>` : ''}
+      ${review.scorers.length ? html`<div><small>${this._t('event.goal')}</small><strong>${review.scorers.map(item => `${item.player}${item.minute != null ? ` ${item.minute}'` : ''}`).join(' · ')}</strong></div>` : ''}
     </div></div>`;
   }
 

@@ -76,6 +76,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 - 🧭 **Keyboard & motion preferences** — Match Center tabs support arrow/Home/End navigation, match rows open with Enter/Space, focus is visible and reduced-motion preferences disable decorative animation
 - 🩺 **Actionable data alerts** — Match Center and Diagnostics explain stale live data, provider errors, conflicting sources and fixture changes when schema v5 data is available
 - 🏁 **Competition race** — actual schedule context, projections, virtual table impact and position history with schema-v7 standings data
+- 🧭 **Schema-v8 insights** — source capability reasons, season rollover state, structured post-match summaries and mathematical title/Europe/relegation milestones
 
 ---
 
@@ -514,6 +515,9 @@ entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
 Shows sensor type, API status, match counters, request counters and the last successful update. Useful when checking whether missing card data is a card issue or an integration/data issue.
+With schema v8 it also shows a capability matrix explaining whether each block
+is available, not published yet, unsupported by the provider or temporarily
+unavailable, plus season and external-archive synchronization status.
 
 When `enrichment_entity` is configured, Diagnostics also shows the primary and
 supplementary providers, how many match fields were filled and how many
@@ -589,6 +593,9 @@ Shows the tracked club around its nearest rivals, the gap to the leader,
 actual remaining fixtures when available, games in hand, projected points,
 next-result rank scenarios and maximum attainable points. A position trajectory
 appears once the integration has recorded multiple standings snapshots.
+When mathematically known, the card also shows the points still required for
+the title, champion status, secured European football and safety from
+relegation. These facts can trigger `soccer_live_race_milestone` automations.
 
 ### 📺 Ticker
 
@@ -644,6 +651,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Actionable data alerts and canonical fixture identity (schema v5) | v3.13.0 |
 | Competition race and standings history (schema v6) | v3.14.0 |
 | Race v2, club provenance, setup status and API-Football brackets (schema v7) | v3.15.0 |
+| Native match-state entities, unified enrichment, capability/season/summary contract and race milestones (schema v8) | v3.16.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -681,7 +689,7 @@ HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. `npm run build` enforces a 750 KiB
-uncompressed ceiling; the current bundle is about 715 KiB (roughly 180 KiB
+uncompressed ceiling; the current bundle is about 720 KiB (roughly 180 KiB
 gzip or 125 KiB Brotli, depending on the compressor implementation).
 
 ---

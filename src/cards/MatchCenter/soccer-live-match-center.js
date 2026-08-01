@@ -348,6 +348,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
         <div class="impact-row"><strong>${impact.team}</strong><b>${impact.previous_rank} → ${impact.rank}</b><span>${impact.change > 0 ? `▲ ${impact.change}` : impact.change < 0 ? `▼ ${Math.abs(impact.change)}` : '–'} · ${impact.points} ${this._t('col.points')}</span></div>
       </section>` : ''}
       ${this._renderReview(match.review)}
+      ${this._renderStructuredSummary(
+        match.review && Object.keys(match.review).length ? null : match.match_summary
+      )}
       ${this._renderPredictionOutcome(match)}
       ${this._renderMatchStory(derivedMatchStory(match), matchNarrative(match))}
       ${this._renderTeamOfMatch(match.team_of_the_match)}
@@ -385,6 +388,17 @@ class SoccerLiveMatchCenterCard extends LitElement {
       ${(xg.home != null || xg.away != null) ? html`<p>xG <strong>${xg.home ?? '—'} – ${xg.away ?? '—'}</strong></p>` : ''}
       ${standout ? html`<p>${translateStatKey(standout.key, key => this._t(key))}: <strong>${standout.home} – ${standout.away}</strong></p>` : ''}
       ${review.top_rated_players?.length ? html`<div class="brief-ratings">${review.top_rated_players.map(player => html`<span>${player.name}<b>${player.rating}</b></span>`)}</div>` : ''}
+    </section>`;
+  }
+
+  _renderStructuredSummary(summary) {
+    if (!summary) return '';
+    return html`<section class="brief-card review">
+      <h4>${this._t('match.summary')}</h4>
+      <p><strong>${this._t(`match.outcome_${summary.outcome}`)}</strong> · ${summary.score}</p>
+      ${summary.goal_scorers?.length ? html`<div class="brief-scorers">${summary.goal_scorers.map(player => html`<span>⚽ ${player}</span>`)}</div>` : ''}
+      ${(summary.home_xg != null || summary.away_xg != null) ? html`<p>xG <strong>${summary.home_xg ?? '—'} – ${summary.away_xg ?? '—'}</strong></p>` : ''}
+      ${summary.player_of_the_match ? html`<p>⭐ <strong>${summary.player_of_the_match.name || summary.player_of_the_match}</strong></p>` : ''}
     </section>`;
   }
 

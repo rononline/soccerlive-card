@@ -43,15 +43,24 @@ export function prematchContext(match) {
 
 export function reviewContext(match) {
   const review = match?.review || {};
-  const scorers = Array.isArray(review.scorers) ? review.scorers : [];
+  const summary = match?.match_summary || {};
+  const scorers = Array.isArray(review.scorers)
+    ? review.scorers
+    : (summary.goal_scorers || []).map(player => ({ player }));
   const rated = Array.isArray(review.top_rated_players) ? review.top_rated_players : [];
+  const expectedGoals = review.expected_goals || (
+    summary.home_xg != null || summary.away_xg != null
+      ? { home: summary.home_xg, away: summary.away_xg }
+      : null
+  );
+  const playerOfMatch = review.player_of_the_match || match?.player_of_the_match || summary.player_of_the_match || null;
   return {
     scorers,
-    playerOfMatch: review.player_of_the_match || match?.player_of_the_match || null,
+    playerOfMatch,
     rated,
-    expectedGoals: review.expected_goals || null,
+    expectedGoals,
     standout: review.standout_stat || null,
-    present: Boolean(scorers.length || review.player_of_the_match || rated.length || review.expected_goals || review.standout_stat),
+    present: Boolean(scorers.length || playerOfMatch || rated.length || expectedGoals || review.standout_stat),
   };
 }
 

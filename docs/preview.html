@@ -303,6 +303,7 @@
       away_abbrev: "JPN",
       home_score: "2",
       away_score: "2",
+      match_summary: { outcome: "draw", score: "2-2", goal_scorers: ["Cody Gakpo", "Memphis Depay"], goal_count: 4, card_count: 2, home_xg: "1.8", away_xg: "1.3" },
     };
 
     const longNames = {
@@ -355,7 +356,7 @@
     const attrs = {
       sensor_type: "team_matches_mixed",
       config_entry_id: "preview-netherlands",
-      data_schema_version: 7,
+      data_schema_version: 8,
       api_status: "ok",
       team_name: "Netherlands",
       team_logo: logo(449),
@@ -371,6 +372,15 @@
       upcoming_matches_count: 1,
       finished_matches_count: 1,
       data_quality: { provider: "preview", average_completeness: 78, level: "good", issues: [], conflicts: [] },
+      season_transition: { status: "current", previous_seasons: ["2025"], upcoming_seasons: ["2026"] },
+      capability_matrix: {
+        fixtures: { status: "available", reason: "available", available: true, provider_support: true },
+        scores: { status: "available", reason: "available", available: true, provider_support: true },
+        lineups: { status: "available", reason: "available", available: true, provider_support: true },
+        statistics: { status: "available", reason: "available", available: true, provider_support: true },
+        odds: { status: "pending", reason: "not_yet_published", available: false, provider_support: true },
+        injuries: { status: "unavailable", reason: "provider_unsupported", available: false, provider_support: false }
+      },
       matchday: { date: "2026-06-22", competition: "FIFA World Cup", phase: "live", total: 3, live: 1, upcoming: 1, finished: 1, matches: [live, upcoming, done] },
       match_archive: [
         { ...done, event_id: "archive-1", date_iso: "2026-06-18T18:00:00Z", season: "2025/26", competition_name: "FIFA World Cup", provider: "preview" },
@@ -391,7 +401,7 @@
         name: "Group F", total_matches: 3, remaining_source: "fixtures", rows: [
           { rank: 1, team_name: "Sweden", team_logo: logo(466), points: 3, games_played: 1, remaining: 2, games_in_hand: 0, maximum_points: 9, projected_points: 7, next_match_scenarios: { win: 1, draw: 1, loss: 2 }, gap_to_leader: 0, gap_to_above: 0 },
           { rank: 2, team_name: "Japan", team_logo: logo(627), points: 1, games_played: 1, remaining: 2, games_in_hand: 0, maximum_points: 7, projected_points: 4, next_match_scenarios: { win: 1, draw: 2, loss: 2 }, gap_to_leader: 2, gap_to_above: 2 },
-          { rank: 3, team_name: "Netherlands", team_logo: logo(449), points: 1, games_played: 1, remaining: 2, games_in_hand: 1, maximum_points: 7, projected_points: 5, next_match_scenarios: { win: 1, draw: 2, loss: 3 }, gap_to_leader: 2, gap_to_above: 0 },
+          { rank: 3, team_name: "Netherlands", team_logo: logo(449), points: 1, games_played: 1, remaining: 2, games_in_hand: 1, maximum_points: 7, projected_points: 5, next_match_scenarios: { win: 1, draw: 2, loss: 3 }, gap_to_leader: 2, gap_to_above: 0, title_possible: true, magic_points_title: 7 },
           { rank: 4, team_name: "Tunisia", team_logo: logo(290), points: 0, games_played: 1, remaining: 2, games_in_hand: 0, maximum_points: 6, projected_points: 2, next_match_scenarios: { win: 2, draw: 3, loss: 4 }, gap_to_leader: 3, gap_to_above: 1 }
         ]
       }] },

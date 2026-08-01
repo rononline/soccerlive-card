@@ -48,6 +48,7 @@ test('prefers integration race v2 with schedule and projection data', () => {
         rank: 2, team_name: 'Feyenoord', points: 8, games_played: 4,
         remaining: 3, games_in_hand: 1, maximum_points: 17,
         projected_points: 14, next_match_scenarios: { win: 1, draw: 2, loss: 3 },
+        title_possible: true, magic_points_title: 8, europe_secured: false,
       }],
     }] },
   }, 'Feyenoord');
@@ -56,6 +57,8 @@ test('prefers integration race v2 with schedule and projection data', () => {
   assert.equal(model.tracked.gamesInHand, 1);
   assert.equal(model.tracked.projected, 14);
   assert.deepEqual(model.tracked.scenarios, { win: 1, draw: 2, loss: 3 });
+  assert.equal(model.tracked.title_possible, true);
+  assert.equal(model.tracked.magic_points_title, 8);
 });
 
 test('does not add points again after the standings have been updated', () => {

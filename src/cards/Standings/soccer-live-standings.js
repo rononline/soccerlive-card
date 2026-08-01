@@ -527,7 +527,7 @@ class SoccerLiveStandingsCard extends LitElement {
         <b>${row.rank}</b><span>${row.team_name}<i style="width:${Math.max(3, row.points / maxPoints * 100)}%"></i></span>
         <strong>${row.points}</strong><small>${row.maximum} ${this._t('race.maximum')}</small>
       </div>`)}</div>
-      ${model.tracked && (model.tracked.gamesInHand || model.tracked.projected !== model.tracked.points) ? html`
+      ${model.tracked && (model.tracked.gamesInHand || model.tracked.projected !== model.tracked.points || model.tracked.title_clinched || model.tracked.title_possible || model.tracked.europe_secured || model.tracked.relegation_safe) ? html`
         <section class="race-projection">
           ${model.tracked.gamesInHand ? html`<span>${this._t('race.games_in_hand', { n: model.tracked.gamesInHand })}</span>` : ''}
           <span>${this._t('race.projected_points', { n: model.tracked.projected })}</span>
@@ -536,6 +536,10 @@ class SoccerLiveStandingsCard extends LitElement {
             draw: model.tracked.scenarios.draw,
             loss: model.tracked.scenarios.loss,
           })}</span>` : ''}
+          ${model.tracked.title_clinched ? html`<span>🏆 ${this._t('race.title_clinched')}</span>` : ''}
+          ${!model.tracked.title_clinched && model.tracked.title_possible ? html`<span>${this._t('race.magic_points', { n: model.tracked.magic_points_title })}</span>` : ''}
+          ${model.tracked.europe_secured ? html`<span>✓ ${this._t('race.europe_secured')}</span>` : ''}
+          ${model.tracked.relegation_safe ? html`<span>✓ ${this._t('race.relegation_safe')}</span>` : ''}
         </section>` : ''}
       ${trajectory.length > 1 ? html`<section class="trajectory"><small>${this._t('race.trajectory')}</small><div>
         ${trajectory.map(point => html`<span title="${point.date || ''}: #${point.rank}"><i style="height:${Math.max(12, 100 - ((point.rank - 1) / Math.max(1, model.rows.length - 1)) * 88)}%"></i><b>${point.rank}</b></span>`)}
