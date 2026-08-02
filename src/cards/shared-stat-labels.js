@@ -31,6 +31,19 @@ const STAT_KEY_MAP = {
   aerialDuelsWon:   'stat.aerial_duels_won',
   freeKickGoals:    'stat.free_kick_goals',
   penaltyGoals:     'stat.penalty_goals',
+  accurateCrosses:  'stat.accurate_crosses',
+  clearances:       'stat.clearances',
+  successfulDribbles: 'stat.successful_dribbles',
+  duelsWon:         'stat.duels_won',
+  groundDuelsWon:   'stat.ground_duels_won',
+  accurateLongBalls: 'stat.accurate_long_balls',
+  oppositionHalfPasses: 'stat.opposition_half_passes',
+  ownHalfPasses:    'stat.own_half_passes',
+  throws:           'stat.throws',
+  blocks:           'stat.blocks',
+  shotsInsideBox:   'stat.shots_inside_box',
+  shotsOutsideBox:  'stat.shots_outside_box',
+  hitWoodwork:      'stat.hit_woodwork',
 };
 
 const NORMALIZED_STAT_KEYS = Object.fromEntries(
@@ -38,6 +51,7 @@ const NORMALIZED_STAT_KEYS = Object.fromEntries(
 );
 
 Object.assign(NORMALIZED_STAT_KEYS, {
+  ballpossesion: 'possessionPct',
   touchesoppbox: 'touchesInOppositionBox',
   touchesoppositionbox: 'touchesInOppositionBox',
   bigchance: 'bigChances',
@@ -49,6 +63,26 @@ Object.assign(NORMALIZED_STAT_KEYS, {
   shotsontarget: 'shotsOnTarget',
   shotsofftarget: 'shotsOffTarget',
   corners: 'wonCorners',
+  offsides: 'offsides',
+  accuratecrosses: 'accurateCrosses',
+  aerialswon: 'aerialDuelsWon',
+  clearances: 'clearances',
+  dribblessucceeded: 'successfulDribbles',
+  duelwon: 'duelsWon',
+  fouls: 'foulsCommitted',
+  groundduelswon: 'groundDuelsWon',
+  interceptions: 'interceptions',
+  keepersaves: 'saves',
+  longballsaccurate: 'accurateLongBalls',
+  matchstatsheaderstackles: 'tacklesTotal',
+  oppositionhalfpasses: 'oppositionHalfPasses',
+  ownhalfpasses: 'ownHalfPasses',
+  playerthrows: 'throws',
+  redcards: 'redCards',
+  shotblocks: 'blocks',
+  shotsinsidebox: 'shotsInsideBox',
+  shotsoutsidebox: 'shotsOutsideBox',
+  shotswoodwork: 'hitWoodwork',
 });
 
 /**

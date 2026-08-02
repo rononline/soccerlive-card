@@ -452,6 +452,39 @@ test('team competitions replaces a provider clock placeholder with Live', async 
   await expect(target(page)).not.toContainText('N/A');
 });
 
+test('match hub translates the complete FotMob statistics vocabulary', async ({ page }) => {
+  await open(page, { mode: 'matrix', type: 'hub', phase: 'live', lang: 'nl' });
+  await page.evaluate(() => {
+    const card = document.querySelector('soccer-live-match-center');
+    const match = card.hass.states[card._config.entity].attributes.matches[0];
+    match.home_statistics = {
+      accurate_crosses: '2 (29%)',
+      clearances: 6,
+      dribbles_succeeded: '3 (21%)',
+      duel_won: 26,
+      shots_inside_box: 8,
+      shots_woodwork: 2,
+    };
+    match.away_statistics = {
+      accurate_crosses: '1 (17%)',
+      clearances: 14,
+      dribbles_succeeded: '2 (29%)',
+      duel_won: 31,
+      shots_inside_box: 4,
+      shots_woodwork: 1,
+    };
+    card.requestUpdate();
+  });
+  await target(page).getByRole('tab', { name: 'Stats' }).click();
+
+  await expect(target(page)).toContainText('Nauwkeurige voorzetten');
+  await expect(target(page)).toContainText('Weggewerkte ballen');
+  await expect(target(page)).toContainText('Geslaagde dribbels');
+  await expect(target(page)).toContainText('Duels gewonnen');
+  await expect(target(page)).toContainText('Schoten binnen strafschopgebied');
+  await expect(target(page)).toContainText('Raakte het houtwerk');
+});
+
 test('Dutch labels cover diagnostics, tables, bracket and editors', async ({ page }) => {
   await open(page, { mode: 'matrix', type: 'diagnostics', lang: 'nl' });
   await expect(target(page)).toContainText('Wedstrijden');

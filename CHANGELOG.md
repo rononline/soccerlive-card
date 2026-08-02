@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.40.2 (2026-08-02)
+
+- Match Center and Match Hub: translate the complete FotMob match-stat vocabulary instead of displaying fallback English labels
+- statistics: normalize provider variants for saves, tackles, fouls, aerial duels, crosses, clearances, dribbles, passing zones, blocks and shot locations
+- i18n: add the new football-stat labels for all seven supported languages
+- tests: verify every statistic returned by the Feyenoord–Atalanta match payload and its rendered Dutch labels
+
 ## v3.40.1 (2026-08-02)
 
 - Team Competitions: replace provider clock placeholders such as `N/A` with the translated live label
