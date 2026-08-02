@@ -98,11 +98,14 @@ export function predictionOutcome(match) {
 }
 
 export function derivedMatchStory(match) {
-  if (Array.isArray(match?.match_story) && match.match_story.length) return match.match_story;
   const events = (Array.isArray(match?.key_events) ? match.key_events : [])
     .filter(event => event && (isGoalEvent(event) || /red/i.test(`${event.type || ''} ${event.type_text || ''}`)))
     .sort((a, b) => Number(a.minute ?? a.clock ?? 0) - Number(b.minute ?? b.clock ?? 0));
-  if (!events.length) return [];
+  if (!events.length) {
+    return (Array.isArray(match?.match_story) ? match.match_story : [])
+      .slice()
+      .sort((a, b) => Number(a.minute || 0) - Number(b.minute || 0));
+  }
   const goals = events.filter(isGoalEvent);
   const story = [];
   if (goals[0]) story.push({ ...goals[0], type: 'opening_goal', minute: goals[0].minute ?? goals[0].clock });
@@ -117,7 +120,18 @@ export function derivedMatchStory(match) {
   const home = Number(match.home_score);
   const away = Number(match.away_score);
   const winningTeam = home > away ? match.home_team : away > home ? match.away_team : '';
-  const decisive = [...goals].reverse().find(event => winningTeam && event.team === winningTeam);
+  const winnerLeads = event => {
+    const eventHome = Number(event.home_score);
+    const eventAway = Number(event.away_score);
+    if (!Number.isFinite(eventHome) || !Number.isFinite(eventAway)) return false;
+    return winningTeam === match.home_team ? eventHome > eventAway : eventAway > eventHome;
+  };
+  const decisive = goals.find((event, index) => (
+    winningTeam
+    && event.team === winningTeam
+    && winnerLeads(event)
+    && goals.slice(index + 1).every(winnerLeads)
+  ));
   if (decisive && decisive !== goals[0]) story.push({ ...decisive, type: 'decisive_goal', minute: decisive.minute ?? decisive.clock });
   return [...new Map(story.map(item => [`${item.type}:${item.minute}:${item.player || item.athletes?.[0] || ''}`, item])).values()]
     .sort((a, b) => Number(a.minute || 0) - Number(b.minute || 0));

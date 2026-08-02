@@ -91,6 +91,37 @@ test('derivedMatchStory creates milestones from provider-neutral events', () => 
   assert.deepEqual(story.map(item => item.type), ['opening_goal', 'equalizer', 'decisive_goal']);
 });
 
+test('derivedMatchStory corrects reverse provider order and omits a decider in a draw', () => {
+  const story = derivedMatchStory({
+    home_team: 'Feyenoord', away_team: 'Atalanta', home_score: 1, away_score: 1,
+    match_story: [
+      { minute: 11, type: 'decisive_goal', player: 'Ayase Ueda' },
+      { minute: 45, type: 'opening_goal', player: 'Nikola Krstovic' },
+    ],
+    key_events: [
+      { minute: 45, scoring_play: true, team: 'Atalanta', player: 'Nikola Krstovic', home_score: 1, away_score: 1 },
+      { minute: 11, scoring_play: true, team: 'Feyenoord', player: 'Ayase Ueda', home_score: 1, away_score: 0 },
+    ],
+  });
+  assert.deepEqual(story.map(item => [item.minute, item.type, item.player]), [
+    [11, 'opening_goal', 'Ayase Ueda'],
+    [45, 'equalizer', 'Nikola Krstovic'],
+  ]);
+});
+
+test('derivedMatchStory marks the first permanent lead as the decisive goal', () => {
+  const story = derivedMatchStory({
+    home_team: 'A', away_team: 'B', home_score: 3, away_score: 1,
+    key_events: [
+      { minute: 10, scoring_play: true, team: 'A', player: 'One', home_score: 1, away_score: 0 },
+      { minute: 20, scoring_play: true, team: 'B', player: 'Equal', home_score: 1, away_score: 1 },
+      { minute: 30, scoring_play: true, team: 'A', player: 'Winner', home_score: 2, away_score: 1 },
+      { minute: 70, scoring_play: true, team: 'A', player: 'Insurance', home_score: 3, away_score: 1 },
+    ],
+  });
+  assert.equal(story.find(item => item.type === 'decisive_goal').player, 'Winner');
+});
+
 test('derivedMatchStory excludes cancelled and missed goals', () => {
   const story = derivedMatchStory({
     home_team: 'A', away_team: 'B', home_score: 1, away_score: 0,

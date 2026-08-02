@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.40.0 (2026-08-02)
+
+- live clock resilience: suppress a demonstrably stale provider minute when later timeline events are already available
+- source blending: let every wrapped card use the normalized primary snapshot, even when supplementary enrichment is disabled
+- Match Hub and Match Center: derive match-story milestones chronologically from provider-neutral events instead of trusting a reversed provider summary
+- match story: label a drawn match as opening goal plus equalizer, never as a decisive goal
+- match story: identify the first permanent winning lead as the decisive goal instead of simply choosing the final scorer
+- tests: cover stale standalone clocks, reverse event order, drawn matches and multi-goal winning sequences
+
 ## v3.39.0 (2026-08-02)
 
 - Match Hub/source blending: use the clock, phase and score from a matching supplementary live source when it is demonstrably further ahead than the primary source

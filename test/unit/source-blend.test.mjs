@@ -99,6 +99,27 @@ test('accepts a newer score without moving the live clock backwards', () => {
   assert.equal(result.matches[0].source_provenance.away_score, 'espn');
 });
 
+test('hides a demonstrably stale primary clock when no enrichment is configured', () => {
+  const hass = {
+    states: {
+      'sensor.primary': {
+        state: '1',
+        attributes: {
+          provider: 'fotmob_private',
+          matches: [match({
+            state: 'in', clock: '1', home_score: 1, away_score: 1,
+            key_events: [{ minute: 11 }, { minute: 45 }],
+          })],
+        },
+      },
+    },
+  };
+  const normalized = blendHassSources(hass, { entity: 'sensor.primary' });
+  assert.equal(normalized.states['sensor.primary'].attributes.matches[0].clock, '');
+  assert.equal(normalized.states['sensor.primary'].attributes.matches[0].stale_clock, '1');
+  assert.equal(hass.states['sensor.primary'].attributes.matches[0].clock, '1');
+});
+
 test('does not append secondary-only previous-season fixtures', () => {
   const result = blendAttributes(
     { matches: [match()] },

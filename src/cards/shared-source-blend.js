@@ -71,6 +71,31 @@ function liveProgress(match) {
   return 0;
 }
 
+function latestEventMinute(match) {
+  return (Array.isArray(match?.key_events) ? match.key_events : []).reduce(
+    (latest, event) => Math.max(latest, clockProgress(event?.minute ?? event?.clock)),
+    -1,
+  );
+}
+
+function normalizeLiveClock(match) {
+  if (!match || liveProgress(match) < 100 || liveProgress(match) >= 1000) return match;
+  const clock = clockProgress(match.clock);
+  const eventMinute = latestEventMinute(match);
+  if (clock < 0 || eventMinute <= clock) return match;
+  return { ...match, clock: '', stale_clock: match.clock };
+}
+
+function normalizeAttributes(attrs) {
+  const source = attrs || {};
+  const normalized = { ...source };
+  if (Array.isArray(source.matches)) normalized.matches = source.matches.map(normalizeLiveClock);
+  for (const key of ['next_match', 'current_match']) {
+    if (source[key]) normalized[key] = normalizeLiveClock(source[key]);
+  }
+  return normalized;
+}
+
 function preferFresherLiveCore(merged, primary, secondary, provenance, secondaryProvider) {
   const primaryProgress = liveProgress(primary);
   const secondaryProgress = liveProgress(secondary);
@@ -277,6 +302,8 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
 
 export function blendHassSources(hass, config) {
   const primaryId = config?.entity;
+  const primary = hass?.states?.[primaryId];
+  if (!hass?.states || !primaryId || !primary) return hass;
   const configured = [
     config?.enrichment_entity,
     ...(Array.isArray(config?.supplementary_entities) ? config.supplementary_entities : []),
@@ -286,12 +313,9 @@ export function blendHassSources(hass, config) {
   }
   const secondaryIds = [...new Set(configured)]
     .filter(id => id && id !== primaryId && hass?.states?.[id]);
-  if (!hass?.states || !primaryId || !secondaryIds.length) return hass;
-  const primary = hass.states[primaryId];
-  if (!primary) return hass;
   const attributes = secondaryIds.reduce(
     (current, id) => blendAttributes(current, hass.states[id].attributes),
-    primary.attributes,
+    normalizeAttributes(primary.attributes),
   );
   const states = Object.create(hass.states);
   states[primaryId] = {
