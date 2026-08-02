@@ -28,7 +28,9 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
   _selectComp(key) { this._selectedComp = key; this.requestUpdate(); }
 
   _validText(value) {
-    return value && value !== 'N/A' ? value : '';
+    if (value === null || value === undefined) return '';
+    const text = String(value).trim();
+    return /^(?:n\/?a|unknown|none|null|undefined|-)$/i.test(text) ? '' : text;
   }
 
   _sortByDateAsc(a, b) {
@@ -118,7 +120,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
             <span class="tm-name">${m.home_team || '?'}</span>
           </div>
           <div class="match-score">
-            ${isLive ? html`<span class="live-badge"><span class="live-dot"></span>${m.clock || this._t('status.live')}</span>` : ''}
+            ${isLive ? html`<span class="live-badge"><span class="live-dot"></span>${this._validText(m.clock) || this._t('status.live')}</span>` : ''}
             ${isLive || isFt
               ? html`<span class="score-text">${scoreText(m.home_score)}–${scoreText(m.away_score)}</span>`
               : html`<span class="date-text">${m.date || this._t('match.vs')}</span>`}

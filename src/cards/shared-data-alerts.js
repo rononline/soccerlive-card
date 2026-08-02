@@ -10,8 +10,12 @@ export function alertsForMatch(alerts, match) {
   if (!Array.isArray(alerts)) return [];
   const eventId = String(match?.event_id || '');
   const canonicalId = String(match?.canonical_id || '');
+  const hasCompleteLineup = Boolean(match?.lineup_home?.length && match?.lineup_away?.length);
   return alerts.filter(alert => {
     if (!alert || typeof alert !== 'object') return false;
+    // Provider alerts can lag one refresh behind the concrete match payload.
+    // Once both lineups are present, the warning is demonstrably stale.
+    if (alert.code === 'live_lineup_missing' && hasCompleteLineup) return false;
     if (!alert.event_id && !alert.canonical_id) return true;
     return (eventId && String(alert.event_id) === eventId)
       || (canonicalId && String(alert.canonical_id) === canonicalId);

@@ -31,6 +31,24 @@ test('uses the integration-provided readiness model when available', () => {
   assert.equal(readinessModel({ match_readiness: published }), published);
 });
 
+test('concrete lineup data repairs a stale integration-provided readiness model', () => {
+  const model = readinessModel({
+    lineup_home: [{ name: 'Home keeper' }],
+    lineup_away: [{ name: 'Away keeper' }],
+    match_readiness: {
+      score: 50,
+      level: 'building',
+      available: ['kickoff'],
+      missing: ['lineup', 'odds'],
+    },
+  });
+
+  assert.equal(model.score, 65);
+  assert.equal(model.level, 'good');
+  assert.deepEqual(model.available, ['kickoff', 'lineup']);
+  assert.deepEqual(model.missing, ['odds']);
+});
+
 test('does not count provider placeholder strings', () => {
   const model = readinessModel({
     date: 'N/A',

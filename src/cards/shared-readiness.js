@@ -11,34 +11,53 @@ const present = value => {
   return true;
 };
 
+const WEIGHTS = {
+  kickoff: 15, competition: 10, venue: 10, broadcasts: 5, weather: 5,
+  head_to_head: 10, prediction: 10, odds: 10, absences: 10, lineup: 15,
+};
+
+const concreteChecks = match => ({
+  kickoff: present(match?.date_iso || match?.date),
+  competition: present(match?.competition_name || match?.league_name),
+  venue: present(match?.venue),
+  broadcasts: Boolean(match?.broadcasts?.length),
+  weather: present(match?.weather) || present(match?.temperature) || present(match?.venue_lat),
+  head_to_head: Boolean(match?.head_to_head?.length),
+  prediction: present(match?.prediction),
+  odds: present(match?.odds),
+  absences: Boolean(match?.injuries_home?.length || match?.injuries_away?.length || match?.absences?.length),
+  lineup: Boolean(
+    match?.lineup_home?.length || match?.lineup_away?.length
+    || match?.expected_lineup_home?.length || match?.expected_lineup_away?.length
+  ),
+});
+
+const readinessLevel = score => (
+  score >= 80 ? 'ready' : score >= 55 ? 'good' : score >= 30 ? 'building' : 'early'
+);
+
 export function readinessModel(match) {
-  if (match?.match_readiness?.score != null) return match.match_readiness;
-  const checks = {
-    kickoff: present(match?.date_iso || match?.date),
-    competition: present(match?.competition_name || match?.league_name),
-    venue: present(match?.venue),
-    broadcasts: Boolean(match?.broadcasts?.length),
-    weather: present(match?.weather) || present(match?.temperature) || present(match?.venue_lat),
-    head_to_head: Boolean(match?.head_to_head?.length),
-    prediction: present(match?.prediction),
-    odds: present(match?.odds),
-    absences: Boolean(match?.injuries_home?.length || match?.injuries_away?.length || match?.absences?.length),
-    lineup: Boolean(
-      match?.lineup_home?.length || match?.lineup_away?.length
-      || match?.expected_lineup_home?.length || match?.expected_lineup_away?.length
-    ),
-  };
-  const weights = {
-    kickoff: 15, competition: 10, venue: 10, broadcasts: 5, weather: 5,
-    head_to_head: 10, prediction: 10, odds: 10, absences: 10, lineup: 15,
-  };
+  const checks = concreteChecks(match);
+  if (match?.match_readiness?.score != null) {
+    const published = match.match_readiness;
+    const publishedAvailable = new Set(Array.isArray(published.available) ? published.available : []);
+    const newlyAvailable = Object.keys(checks).filter(key => checks[key] && !publishedAvailable.has(key));
+    if (!newlyAvailable.length) return published;
+    const available = [...publishedAvailable, ...newlyAvailable];
+    const missing = (Array.isArray(published.missing) ? published.missing : [])
+      .filter(key => !newlyAvailable.includes(key));
+    const score = Math.min(100, Number(published.score) + newlyAvailable.reduce(
+      (total, key) => total + (WEIGHTS[key] || 0), 0,
+    ));
+    return { ...published, score, level: readinessLevel(score), available, missing };
+  }
   const score = Object.entries(checks).reduce(
-    (total, [key, available]) => total + (available ? weights[key] : 0),
+    (total, [key, available]) => total + (available ? WEIGHTS[key] : 0),
     0,
   );
   return {
     score,
-    level: score >= 80 ? 'ready' : score >= 55 ? 'good' : score >= 30 ? 'building' : 'early',
+    level: readinessLevel(score),
     available: Object.keys(checks).filter(key => checks[key]),
     missing: Object.keys(checks).filter(key => !checks[key]),
   };

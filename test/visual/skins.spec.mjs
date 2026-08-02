@@ -416,6 +416,18 @@ test('data alerts and keyboard navigation remain accessible', async ({ page }) =
   });
   await expect(target(page)).toContainText('De live-data is mogelijk verouderd');
 
+  await page.evaluate(() => {
+    const card = document.querySelector('soccer-live-match-center');
+    const state = card.hass.states[card._config.entity];
+    state.attributes.data_alerts = [{
+      code: 'live_lineup_missing',
+      severity: 'info',
+      event_id: state.attributes.matches[0].event_id,
+    }];
+    card.requestUpdate();
+  });
+  await expect(target(page)).not.toContainText('De live-opstelling is nog niet beschikbaar');
+
   const selected = target(page).locator('soccer-live-match-center .tab[aria-selected="true"]');
   await expect(selected).toHaveCount(1);
   await selected.press('ArrowRight');
@@ -426,6 +438,18 @@ test('data alerts and keyboard navigation remain accessible', async ({ page }) =
   await expect(row).toHaveAttribute('role', 'button');
   await row.press('Enter');
   await expect(page.locator('dialog.soccer-live-matches-popup-portal')).toBeVisible();
+});
+
+test('team competitions replaces a provider clock placeholder with Live', async ({ page }) => {
+  await open(page, { mode: 'matrix', type: 'team-competitions', phase: 'live', lang: 'nl' });
+  await page.evaluate(() => {
+    const card = document.querySelector('soccer-live-team-competitions');
+    card.hass.states[card._config.entity].attributes.matches[0].clock = 'N/A';
+    card.requestUpdate();
+  });
+
+  await expect(target(page)).toContainText('Live');
+  await expect(target(page)).not.toContainText('N/A');
 });
 
 test('Dutch labels cover diagnostics, tables, bracket and editors', async ({ page }) => {

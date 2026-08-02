@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.40.1 (2026-08-02)
+
+- Team Competitions: replace provider clock placeholders such as `N/A` with the translated live label
+- Match Center and Match Hub: suppress a stale missing-lineup warning once both concrete lineups are available
+- match readiness: reconcile an integration-provided snapshot with newer concrete match data
+- tests: cover stale lineup alerts, partial lineups, readiness reconciliation and live clock placeholders
+
 ## v3.40.0 (2026-08-02)
 
 - live clock resilience: suppress a demonstrably stale provider minute when later timeline events are already available
