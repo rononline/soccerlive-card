@@ -51,6 +51,49 @@ function equivalent(left, right) {
   return String(left) === String(right);
 }
 
+function clockProgress(value) {
+  const text = String(value || '').toUpperCase().trim();
+  if (text === 'HT') return 45;
+  const parts = text.match(/\d+/g)?.map(Number) || [];
+  return parts.length ? parts.reduce((total, part) => total + part, 0) : -1;
+}
+
+function scoreTotal(match) {
+  const home = Number(match?.home_score);
+  const away = Number(match?.away_score);
+  return Number.isFinite(home) && Number.isFinite(away) ? home + away : -1;
+}
+
+function liveProgress(match) {
+  const state = String(match?.state || '').toLowerCase();
+  if (state === 'post') return 1000;
+  if (state === 'in' || state === 'live') return 100 + Math.max(0, clockProgress(match?.clock));
+  return 0;
+}
+
+function preferFresherLiveCore(merged, primary, secondary, provenance, secondaryProvider) {
+  const primaryProgress = liveProgress(primary);
+  const secondaryProgress = liveProgress(secondary);
+  const progressAdvanced = secondaryProgress > primaryProgress;
+  const scoreAdvanced = (
+    secondaryProgress >= 100
+    && scoreTotal(secondary) > scoreTotal(primary)
+  );
+  if (!progressAdvanced && !scoreAdvanced) return merged;
+
+  const result = { ...merged };
+  const fields = [
+    ...(progressAdvanced ? ['state', 'status', 'period', 'clock'] : []),
+    'home_score', 'away_score',
+  ];
+  for (const key of fields) {
+    if (!present(secondary[key])) continue;
+    result[key] = secondary[key];
+    provenance[key] = secondaryProvider;
+  }
+  return result;
+}
+
 function mergeObject(primary, secondary, path, provenance, conflicts, secondaryProvider) {
   if (!primary || typeof primary !== 'object' || Array.isArray(primary)) return primary;
   if (!secondary || typeof secondary !== 'object' || Array.isArray(secondary)) return primary;
@@ -82,7 +125,7 @@ function mergeObject(primary, secondary, path, provenance, conflicts, secondaryP
       present(primaryValue)
       && present(secondaryValue)
       && !equivalent(primaryValue, secondaryValue)
-      && ['home_score', 'away_score', 'state', 'status', 'date_iso', 'venue'].includes(key)
+      && ['home_score', 'away_score', 'state', 'status', 'period', 'clock', 'date_iso', 'venue'].includes(key)
     ) {
       conflicts.push({ field: fieldPath, primary: primaryValue, secondary: secondaryValue });
     }
@@ -94,12 +137,19 @@ export function blendMatch(primary, secondary, primaryProvider = 'primary', seco
   if (!secondary || !sameFixture(primary, secondary)) return primary;
   const provenance = {};
   const conflicts = [];
-  const merged = mergeObject(
+  let merged = mergeObject(
     primary,
     secondary,
     '',
     provenance,
     conflicts,
+    secondaryProvider,
+  );
+  merged = preferFresherLiveCore(
+    merged,
+    primary,
+    secondary,
+    provenance,
     secondaryProvider,
   );
   return {

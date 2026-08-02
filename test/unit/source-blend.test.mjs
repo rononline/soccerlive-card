@@ -42,6 +42,63 @@ test('enriches missing fields but keeps primary conflicts authoritative', () => 
   assert.equal(result.matches[0].source_provenance.venue, 'fotmob');
 });
 
+test('uses the supplementary live core when its clock has progressed further', () => {
+  const result = blendAttributes(
+    {
+      provider: 'fotmob_private',
+      matches: [match({
+        state: 'in', status: 'Live', period: '1H', clock: '1',
+        home_score: 1, away_score: 0,
+      })],
+    },
+    {
+      provider: 'espn',
+      matches: [match({
+        event_id: 'espn-1', state: 'in', status: 'In Progress', period: '1H',
+        clock: '45+12', home_score: 1, away_score: 1,
+      })],
+    },
+  );
+  const live = result.matches[0];
+  assert.equal(live.clock, '45+12');
+  assert.equal(live.home_score, 1);
+  assert.equal(live.away_score, 1);
+  assert.equal(live.source_provenance.clock, 'espn');
+  assert.equal(live.source_provenance.away_score, 'espn');
+});
+
+test('keeps a more advanced primary live clock authoritative', () => {
+  const result = blendAttributes(
+    {
+      provider: 'api_football',
+      matches: [match({ state: 'in', clock: '67', home_score: 2, away_score: 1 })],
+    },
+    {
+      provider: 'espn',
+      matches: [match({ event_id: 'espn-1', state: 'in', clock: '61', home_score: 2, away_score: 1 })],
+    },
+  );
+  assert.equal(result.matches[0].clock, '67');
+  assert.equal(result.matches[0].source_provenance.clock, undefined);
+});
+
+test('accepts a newer score without moving the live clock backwards', () => {
+  const result = blendAttributes(
+    {
+      provider: 'api_football',
+      matches: [match({ state: 'in', clock: '67', home_score: 1, away_score: 0 })],
+    },
+    {
+      provider: 'espn',
+      matches: [match({ event_id: 'espn-1', state: 'in', clock: '66', home_score: 1, away_score: 1 })],
+    },
+  );
+  assert.equal(result.matches[0].clock, '67');
+  assert.equal(result.matches[0].away_score, 1);
+  assert.equal(result.matches[0].source_provenance.clock, undefined);
+  assert.equal(result.matches[0].source_provenance.away_score, 'espn');
+});
+
 test('does not append secondary-only previous-season fixtures', () => {
   const result = blendAttributes(
     { matches: [match()] },

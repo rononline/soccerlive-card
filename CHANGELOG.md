@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.39.0 (2026-08-02)
+
+- Match Hub/source blending: use the clock, phase and score from a matching supplementary live source when it is demonstrably further ahead than the primary source
+- live score recovery: accept a newer supplementary score without moving an already newer primary clock backwards
+- source diagnostics: retain field conflicts and record provenance for live fields replaced by the fresher provider
+- tests: cover stale primary clocks, advanced supplementary clocks and independently advancing scores
+
 ## v3.38.0 (2026-08-01)
 
 - Diagnostics: show a source capability matrix with available, pending, unsupported and provider-error reasons
