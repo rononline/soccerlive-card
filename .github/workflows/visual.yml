@@ -39,7 +39,7 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.61.1-noble
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
       - run: npm ci
       - run: npm run check:playwright-sync
       - run: npm run build
@@ -47,7 +47,7 @@ jobs:
         run: npx playwright test ${{ (github.event_name == 'workflow_dispatch' && inputs.update) && '--update-snapshots=all' || '' }}
       - name: Upload baselines / report
         if: always()
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: visual-results
           path: |
