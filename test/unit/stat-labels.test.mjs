@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { translateStatKey } from '../../src/cards/shared-stat-labels.js';
+import { matchStatRows, translateStatKey } from '../../src/cards/shared-stat-labels.js';
 
 const labels = {
   'stat.touches_opposition_box': 'Balcontacten in strafschopgebied',
@@ -77,4 +77,16 @@ test('translateStatKey covers the complete FotMob match-stat vocabulary', () => 
   for (const [raw, key] of Object.entries(expected)) {
     assert.equal(translateStatKey(raw, keyTranslator), `translated:${key}`);
   }
+});
+
+test('matchStatRows deduplicates provider aliases and matches away aliases', () => {
+  const rows = matchStatRows(
+    { foulsCommitted: 12, fouls: 12, saves: 2, appearances: 11 },
+    { fouls: 14, foulsCommitted: 14, keeper_saves: 0 },
+  );
+
+  assert.deepEqual(rows, [
+    { key: 'foulsCommitted', home: 12, away: 14 },
+    { key: 'saves', home: 2, away: 0 },
+  ]);
 });

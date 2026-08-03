@@ -57,7 +57,10 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 
 - 🌍 **Multi-language** — EN / NL / DE / PT / FR / ES / IT, auto-detected via HA locale
 - 🎨 **Animations** — live pulse, score pop, goal confetti + banner
-- 🔔 **In-card toasts** — optional on goals and cards, no notification spam
+- 🔔 **In-card toasts** — optional on goals and cards; provider-neutral
+  `event_uid` values suppress duplicate toasts when overlapping sources report
+  the same incident, and score corrections render as a translated VAR-style
+  rollback
 - 🏆 **Bracket** — list style (collapsible rounds with progress counter) or tournament tree with SVG connector lines, group stage tab and team highlight
 - 🎨 **Themes** — `dark`, `light`, `auto`, `custom`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`
 - 📱 **Responsive** — works on mobile, tablet and desktop
@@ -689,7 +692,7 @@ HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. `npm run build` enforces a 750 KiB
-uncompressed ceiling; the current bundle is about 720 KiB (roughly 180 KiB
+uncompressed ceiling; the current bundle is about 726 KiB (roughly 180 KiB
 gzip or 125 KiB Brotli, depending on the compressor implementation).
 
 ---

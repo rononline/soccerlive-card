@@ -10,7 +10,7 @@ import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
-import { translateStatKey } from '../shared-stat-labels.js';
+import { matchStatRows, translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
@@ -435,15 +435,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderStats(match) {
-    let stats = [];
-    if (match.home_statistics && typeof match.home_statistics === 'object') {
-      const homeS = match.home_statistics;
-      const awayS = match.away_statistics || {};
-      const MATCH_STAT_EXCLUDE = new Set(['appearances']);
-      stats = Object.entries(homeS)
-        .filter(([k]) => k !== 'Unknown' && !MATCH_STAT_EXCLUDE.has(k))
-        .map(([k, hv]) => ({ label: translateStatKey(k, k2 => this._t(k2)), home: hv, away: awayS[k] ?? '—' }));
-    }
+    const stats = matchStatRows(match.home_statistics, match.away_statistics)
+      .map(row => ({ ...row, label: translateStatKey(row.key, key => this._t(key)) }));
     if (!stats.length) return html`<p class="empty">${this._t('ui.no_stats_yet')}</p>`;
     return html`
       <div class="stats-list">

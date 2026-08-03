@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.41.0 (2026-08-03)
+
+- event reliability: suppress duplicate in-card toasts with provider-neutral `event_uid` values while keeping cards independent
+- VAR corrections: render score rollbacks as a clear translated goal-cancelled toast
+- shared runtime: centralize live-event toast formatting for Matches, Team and Standings cards and reduce duplicated bundle code
+- Match Center/Match Hub: deduplicate provider statistic aliases after translation so equivalent rows such as fouls appear only once
+- bundle: keep the single HACS asset at 725.5 KiB after the new event behavior, below the enforced 750 KiB ceiling
+- visual regression: freeze the dynamic upcoming-fixture clock so snapshots cannot fail merely because CI runs on another date
+- tests/docs: add event-UID, VAR-toast and statistic-alias regressions and document overlapping-provider behavior
+
 ## v3.40.2 (2026-08-02)
 
 - Match Center and Match Hub: translate the complete FotMob match-stat vocabulary instead of displaying fallback English labels

@@ -16,6 +16,7 @@ import { EVENT_I18N, SKIP, isGoalEvent, translateMatchStatus } from '../shared-e
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
+import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
 
 /**
  * Soccer Live Team Card
@@ -205,6 +206,7 @@ class SoccerLiveTeamCard extends LitElement {
     const eventType = event.event_type;
     const eventData = event.data;
     if (!this._eventBelongsToThisCard(eventData)) return;
+    if (!claimLiveEvent(this, eventData)) return;
     if (!this.showEventToasts) return;
 
     if (eventType === 'soccer_live_goal') {
@@ -216,27 +218,10 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _showEventToast(eventType, eventData) {
-    let message = '';
-    let variant = 'goal';
-    if (eventType === 'soccer_live_goal') {
-      message = `${this._t('event.goal').toUpperCase()}! ${eventData.player} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
-      variant = 'goal';
-    } else if (eventType === 'soccer_live_goal_cancelled') {
-      message = `↩ ${this._t('event.goal_cancelled')} · ${eventData.home_team} ${eventData.home_score} - ${eventData.away_score} ${eventData.away_team}`;
-      variant = 'red';
-    } else if (eventType === 'soccer_live_yellow_card') {
-      message = `🟨 ${this._t('event.yellow_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
-      variant = 'yellow';
-    } else if (eventType === 'soccer_live_red_card') {
-      message = `🟥 ${this._t('event.red_card')} · ${eventData.player}${eventData.minute ? ` (${eventData.minute}')` : ''}`;
-      variant = 'red';
-    } else if (eventType.endsWith('_changed')) {
-      message = `🗓 ${this._t('event.fixture_changed')} · ${eventData.home_team} – ${eventData.away_team}`;
-      variant = 'yellow';
-    }
-    if (!message) return;
-    this._toastMessage = message;
-    this._toastVariant = variant;
+    const toast = liveEventToast(key => this._t(key), eventType, eventData);
+    if (!toast) return;
+    this._toastMessage = toast.message;
+    this._toastVariant = toast.variant;
     this._toastVisible = true;
     if (this._toastTimer) clearTimeout(this._toastTimer);
     this._toastTimer = setTimeout(() => {

@@ -89,9 +89,38 @@ Object.assign(NORMALIZED_STAT_KEYS, {
  * Returns a human-readable label for an ESPN stat key.
  * Falls back to camelCase → Title Case conversion when no translation exists.
  */
+export const canonicalStatKey = key => {
+  const rawKey = String(key || '');
+  return NORMALIZED_STAT_KEYS[rawKey.replace(/[^a-z0-9]/gi, '').toLowerCase()] || rawKey;
+};
+
+export const matchStatRows = (homeStats, awayStats = {}) => {
+  if (!homeStats || typeof homeStats !== 'object') return [];
+  const awayByCanonical = new Map();
+  if (awayStats && typeof awayStats === 'object') {
+    for (const [key, value] of Object.entries(awayStats)) {
+      const canonical = canonicalStatKey(key);
+      if (!awayByCanonical.has(canonical)) awayByCanonical.set(canonical, value);
+    }
+  }
+  const seen = new Set();
+  const rows = [];
+  for (const [key, home] of Object.entries(homeStats)) {
+    const canonical = canonicalStatKey(key);
+    if (canonical === 'Unknown' || canonical === 'appearances' || seen.has(canonical)) continue;
+    seen.add(canonical);
+    rows.push({
+      key: canonical,
+      home,
+      away: awayByCanonical.has(canonical) ? awayByCanonical.get(canonical) : '—',
+    });
+  }
+  return rows;
+};
+
 export const translateStatKey = (key, t) => {
   const rawKey = String(key || '');
-  const canonicalKey = NORMALIZED_STAT_KEYS[rawKey.replace(/[^a-z0-9]/gi, '').toLowerCase()] || rawKey;
+  const canonicalKey = canonicalStatKey(rawKey);
   const i18nKey = STAT_KEY_MAP[canonicalKey];
   if (i18nKey) {
     const translated = t(i18nKey);

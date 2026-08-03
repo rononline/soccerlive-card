@@ -149,6 +149,10 @@ test('editor — multi-entity shows the shared source', async ({ page }) => {
 for (const variant of ['fixtures', 'next', 'standings', 'form']) {
   test(`minimal — ${variant} at 320px`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 900 });
+    // The harness derives its upcoming fixture from Date.now(). Freeze both
+    // fixture creation and card rendering so this snapshot cannot cross the
+    // relative-date threshold merely because CI runs on another day.
+    await page.clock.setFixedTime(new Date('2026-08-03T11:37:00Z'));
     await open(page, { mode: 'minimal', variant, my_team: 'Feyenoord' });
     await expect(target(page)).toHaveScreenshot(`minimal-${variant}-320.png`);
   });
@@ -458,6 +462,8 @@ test('match hub translates the complete FotMob statistics vocabulary', async ({ 
     const card = document.querySelector('soccer-live-match-center');
     const match = card.hass.states[card._config.entity].attributes.matches[0];
     match.home_statistics = {
+      foulsCommitted: 12,
+      fouls: 12,
       accurate_crosses: '2 (29%)',
       clearances: 6,
       dribbles_succeeded: '3 (21%)',
@@ -466,6 +472,8 @@ test('match hub translates the complete FotMob statistics vocabulary', async ({ 
       shots_woodwork: 2,
     };
     match.away_statistics = {
+      fouls: 14,
+      foulsCommitted: 14,
       accurate_crosses: '1 (17%)',
       clearances: 14,
       dribbles_succeeded: '2 (29%)',
@@ -483,6 +491,7 @@ test('match hub translates the complete FotMob statistics vocabulary', async ({ 
   await expect(target(page)).toContainText('Duels gewonnen');
   await expect(target(page)).toContainText('Schoten binnen strafschopgebied');
   await expect(target(page)).toContainText('Raakte het houtwerk');
+  await expect(target(page).getByText('Overtredingen', { exact: true })).toHaveCount(1);
 });
 
 test('Dutch labels cover diagnostics, tables, bracket and editors', async ({ page }) => {
