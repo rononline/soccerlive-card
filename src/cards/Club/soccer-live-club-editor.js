@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
 import { normalizeClubSectionOrder } from '../shared-club-model.js';
+import { editorStyles } from '../editor-helper.js';
 
 class SoccerLiveClubEditor extends LitElement {
   static get properties() {
@@ -14,18 +15,10 @@ class SoccerLiveClubEditor extends LitElement {
   }
 
   static get styles() {
-    return css`
-      .card-config { display: flex; flex-direction: column; gap: 16px; }
-      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-      label { font-size: 14px; color: var(--primary-text-color); }
-      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
-      select, input[type="number"] {
-        width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px;
-        border: 1px solid var(--divider-color); background: var(--secondary-background-color); color: var(--primary-text-color);
-      }
+    return [editorStyles, css`
       .section-order{display:grid;gap:4px}.section-order div{display:flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--divider-color);border-radius:7px}.section-order span{flex:1;font-size:12px}.section-order button{width:28px;height:26px;border:1px solid var(--divider-color);border-radius:5px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer}
       h3 { margin: 0; font-size: 15px; }
-    `;
+    `];
   }
 
   setConfig(config) {

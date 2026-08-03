@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit';
-import { renderLanguageControl } from '../editor-helper.js';
+import { LitElement, html } from 'lit';
+import { editorStyles, renderLanguageControl, setEditorConfigValue, soccerEntityIds } from '../editor-helper.js';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
 
@@ -18,53 +18,7 @@ class SoccerLiveScorersEditor extends LitElement {
     this.entities = [];
   }
 
-  static get styles() {
-    return css`
-      .card-config {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .option {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-      label {
-        font-size: 14px;
-        color: var(--primary-text-color);
-      }
-      .field-label {
-        display: block;
-        font-size: 12px;
-        color: var(--secondary-text-color);
-        margin-bottom: 4px;
-        font-weight: 600;
-      }
-      select, input[type="number"] {
-        width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-        background: var(--card-background-color, #fff);
-        color: var(--primary-text-color, #000);
-        box-sizing: border-box;
-      }
-      select:focus, input:focus {
-        outline: 2px solid var(--primary-color, #03a9f4);
-        outline-offset: -1px;
-      }
-      h3 {
-        margin: 8px 0 0;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--secondary-text-color);
-      }
-    `;
-  }
+  static get styles() { return editorStyles; }
 
   setConfig(config) {
     if (!config) throw new Error('Invalid configuration');
@@ -82,49 +36,28 @@ class SoccerLiveScorersEditor extends LitElement {
 
   _fetchEntities() {
     if (!this.hass) return;
-    this.entities = Object.keys(this.hass.states)
-      .filter(id => id.includes('soccerlive_scorers') || id.includes('soccer_live_scorers'))
-      .sort();
+    this.entities = soccerEntityIds(this.hass, { includes: ['soccerlive_scorers', 'soccer_live_scorers'] });
   }
 
-  _fire(newConfig) {
-    this._config = newConfig;
-    this.dispatchEvent(new CustomEvent('config-changed', {
-      detail: { config: newConfig },
-      bubbles: true,
-      composed: true,
-    }));
-    this.requestUpdate();
-  }
-
-  _entityChanged(ev) {
-    const value = ev.target.value;
-    if (value === this._config.entity) return;
-    this._fire({ ...this._config, entity: value });
-  }
+  _entityChanged(ev) { setEditorConfigValue(this, 'entity', ev.target.value); }
 
   _selectChanged(ev) {
     const { configValue } = ev.target.dataset;
     if (!configValue) return;
-    const value = ev.target.value;
-    if (this._config[configValue] === value) return;
-    this._fire({ ...this._config, [configValue]: value });
+    setEditorConfigValue(this, configValue, ev.target.value, { removeEmpty: true });
   }
 
   _numberChanged(ev) {
     const { configValue } = ev.target.dataset;
     if (!configValue) return;
     const value = parseInt(ev.target.value, 10);
-    if (isNaN(value) || this._config[configValue] === value) return;
-    this._fire({ ...this._config, [configValue]: value });
+    if (!isNaN(value)) setEditorConfigValue(this, configValue, value);
   }
 
   _switchChanged(ev) {
     const { configValue } = ev.target.dataset;
     if (!configValue) return;
-    const value = ev.target.checked;
-    if (this._config[configValue] === value) return;
-    this._fire({ ...this._config, [configValue]: value });
+    setEditorConfigValue(this, configValue, ev.target.checked);
   }
 
   render() {

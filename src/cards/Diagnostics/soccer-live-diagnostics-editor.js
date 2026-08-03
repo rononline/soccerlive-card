@@ -19,17 +19,6 @@ class SoccerLiveDiagnosticsEditor extends LitElement {
 
   static get styles() {
     return [editorStyles, css`
-      .card-config { display: flex; flex-direction: column; gap: 16px; }
-      select, input {
-        width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-        background: var(--card-background-color, #fff);
-        color: var(--primary-text-color, #000);
-        box-sizing: border-box;
-      }
       .hint {
         padding: 10px 12px;
         border: 1px solid rgba(33,150,243,0.24);

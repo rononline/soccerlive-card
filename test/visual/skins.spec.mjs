@@ -59,6 +59,54 @@ test('wrapper applies optional secondary-source enrichment', async ({ page }) =>
   await expect(target(page)).toContainText('Aangevulde velden');
 });
 
+test('wrapper editor groups distinct cards and keeps legacy variants editable', async ({ page }) => {
+  await page.goto(HARNESS);
+  const result = await page.evaluate(async () => {
+    await customElements.whenDefined('soccer-live-card-editor');
+    const editor = document.createElement('soccer-live-card-editor');
+    editor.hass = window.__previewHass;
+    editor.setConfig({
+      type: 'custom:soccer-live-card', card_type: 'team',
+      entity: 'sensor.preview_team', language: 'nl',
+    });
+    document.getElementById('target').replaceChildren(editor);
+    await editor.updateComplete;
+    const groups = [...editor.shadowRoot.querySelectorAll('.type-picker optgroup')];
+    const values = [...editor.shadowRoot.querySelectorAll('.type-picker option')]
+      .map(option => option.value).filter(Boolean);
+
+    editor.setConfig({ type: 'custom:soccer-live-card', card_type: 'hub', entity: 'sensor.preview_team', language: 'nl' });
+    await editor.updateComplete;
+    const legacy = editor.shadowRoot.querySelector('.type-picker optgroup');
+    return {
+      groupLabels: groups.map(group => group.label),
+      distinctCount: values.length,
+      newPickerHasLegacy: values.includes('hub') || values.includes('race'),
+      legacyLabel: legacy?.label,
+      legacyValue: legacy?.querySelector('option')?.value,
+    };
+  });
+  expect(result.distinctCount).toBe(20);
+  expect(result.newPickerHasLegacy).toBe(false);
+  expect(result.groupLabels).toEqual([
+    'Belangrijkste kaarten', 'Compacte widgets', 'Competitie en inhoud', 'Geavanceerd',
+  ]);
+  expect(result.legacyLabel).toBe('Bestaande verouderde configuratie');
+  expect(result.legacyValue).toBe('hub');
+  await page.waitForFunction(() => Boolean(
+    document.querySelector('soccer-live-card-editor')?.shadowRoot
+      ?.querySelector('soccer-live-match-center-editor'),
+  ));
+  const migrated = await page.evaluate(() => new Promise(resolve => {
+    const editor = document.querySelector('soccer-live-card-editor');
+    editor.addEventListener('config-changed', event => resolve(event.detail.config), { once: true });
+    editor.shadowRoot.querySelector('soccer-live-match-center-editor')
+      ._modeChanged({ target: { value: 'tabs' } });
+  }));
+  expect(migrated.card_type).toBe('match-center');
+  expect(migrated.phase_aware).toBeUndefined();
+});
+
 // --- Team card: appearance × palette, legacy skin, inline names ---
 
 test('team card — dark + purple', async ({ page }) => {

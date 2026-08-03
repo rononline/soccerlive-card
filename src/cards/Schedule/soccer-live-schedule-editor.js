@@ -9,13 +9,7 @@ class SoccerLiveScheduleEditor extends LitElement {
 
   static get styles() {
     return [editorStyles, css`
-      .card-config { display: flex; flex-direction: column; gap: 14px; }
-      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-      label { font-size: 14px; color: var(--primary-text-color); }
-      select, input { width: 100%; box-sizing: border-box; padding: 9px 10px; border-radius: 8px;
-        border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff);
-        color: var(--primary-text-color, #000); font-size: 14px; }
-      h3 { margin: 6px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
+      .card-config { gap: 14px; }
     `];
   }
 

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
-import { editorStyles, renderLanguageControl } from '../editor-helper.js';
+import { editorStyles, renderLanguageControl, setEditorConfigValue, soccerEntityIds } from '../editor-helper.js';
 
 
 class SoccerLiveTeamCompetitionsEditor extends LitElement {
@@ -9,9 +9,7 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
   constructor() { super(); this.entities = []; }
 
   static get styles() {
-    return [editorStyles, css`
-      .hint { font-size: 11px; color: var(--secondary-text-color); }
-    `];
+    return [editorStyles, css`.hint{font-size:11px}`];
   }
 
   setConfig(config) { this._config = { ...config }; }
@@ -21,22 +19,14 @@ class SoccerLiveTeamCompetitionsEditor extends LitElement {
 
   _fetchEntities() {
     if (!this.hass) return;
-    this.entities = Object.keys(this.hass.states)
-      .filter(id => id.includes('all_mixed'))
-      .sort();
+    this.entities = soccerEntityIds(this.hass, { includes: ['all_mixed'] });
   }
 
-  _fire(cfg) {
-    this._config = cfg;
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: cfg }, bubbles: true, composed: true }));
-    this.requestUpdate();
-  }
-
-  _entityChanged(ev) { this._fire({ ...this._config, entity: ev.target.value }); }
-  _selectChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
-  _numberChanged(ev) { const v = parseInt(ev.target.value, 10); if (!isNaN(v)) this._fire({ ...this._config, [ev.target.dataset.configValue]: v }); }
-  _textChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
-  _switchChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.checked }); }
+  _entityChanged(ev) { setEditorConfigValue(this, 'entity', ev.target.value); }
+  _selectChanged(ev) { setEditorConfigValue(this, ev.target.dataset.configValue, ev.target.value, { removeEmpty: true }); }
+  _numberChanged(ev) { const value = parseInt(ev.target.value, 10); if (!isNaN(value)) setEditorConfigValue(this, ev.target.dataset.configValue, value); }
+  _textChanged(ev) { setEditorConfigValue(this, ev.target.dataset.configValue, ev.target.value, { removeEmpty: true }); }
+  _switchChanged(ev) { setEditorConfigValue(this, ev.target.dataset.configValue, ev.target.checked); }
 
   render() {
     if (!this._config || !this.hass) return html``;

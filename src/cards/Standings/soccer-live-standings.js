@@ -409,7 +409,7 @@ class SoccerLiveStandingsCard extends LitElement {
     const entityId = this._config.entity;
     const stateObj = this.hass.states[entityId];
     if (!stateObj) return html`<ha-card class="empty">${this._t('generic.unknown_entity')}: ${entityId}</ha-card>`;
-    if (this._config.card_type === 'race') return this._renderRace(stateObj);
+    if (this._config.card_type === 'race' || this._config.standings_view === 'race') return this._renderRace(stateObj);
 
     const rawSeasonName = stateObj.attributes.season || '';
     const leagueAbbr = stateObj.attributes.league_abbreviation && stateObj.attributes.league_abbreviation !== 'N/A'

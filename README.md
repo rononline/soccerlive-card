@@ -24,7 +24,10 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 
 ## ✨ Cards
 
-All cards share the same wrapper — add one **Soccer Live Card** via the HA picker, then choose the type in the editor.
+All cards share the same wrapper — add one **Soccer Live Card** via the HA picker,
+then choose the type in the categorized editor. The picker offers 20 distinct
+cards; the old `hub` and `race` identifiers remain supported as compatibility
+aliases, so existing dashboards do not need a migration.
 
 | Card | `card_type` | Description |
 |---|---|---|
@@ -38,9 +41,7 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Mini Standings | `mini-standings` | Compact standings table with configurable rows, groups, zone-colour indicators and team highlight |
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
-| Match Center | `match-center` | Tabbed match view: Overview (with form strips), Stats, Timeline (filterable), Lineup (pitch view), H2H |
-| Match Hub | `hub` | Match Center that automatically follows preview, live play and post-match review |
-| Competition Race | `race` | Actual remaining fixtures, games in hand, projections, result scenarios and position trajectory |
+| Match Center | `match-center` | Tabbed or phase-aware match view: Overview, Stats, Timeline, Lineup and H2H |
 | Team Form | `team-form` | Form trend with W/D/L dots, goals chart, home/away split, match list |
 | Club | `club` | Matchday dashboard, club profile, squad analysis, injuries, market values, team news and transfers |
 | Lineup | `lineup` | Starting eleven for both teams on a pitch, with bench |
@@ -51,7 +52,12 @@ All cards share the same wrapper — add one **Soccer Live Card** via the HA pic
 | Ticker | `ticker` | Horizontal scrollable strip of today's matches (live scores, upcoming times, FT results) |
 | Minimal | `minimal` | Minimal text views for fixtures, next match, standings or form (`schedule` remains an alias) |
 
-> **Legacy YAML** (old individual types like `custom:soccer-live-team`) still work for backward compatibility.
+The Standings editor also offers a **competition race** view with remaining
+fixtures, projections, result scenarios and position history. Match Center has
+a **phase-aware** mode that follows preview, live play and review automatically.
+
+> **Legacy YAML** (old individual types like `custom:soccer-live-team`, plus
+> `card_type: hub` and `card_type: race`) still works for backward compatibility.
 
 ### Features
 
@@ -380,6 +386,7 @@ All team competitions in one card with a tab selector to switch between leagues 
 type: custom:soccer-live-card
 card_type: match-center
 entity: sensor.soccer_live_next_ned_1_ajax
+phase_aware: true  # optional: automatically follow preview, live play and review
 ```
 
 Tabbed view of a single match with five tabs:
@@ -395,9 +402,10 @@ Tabs follow the ARIA tabs pattern and can be navigated with Left/Right,
 Home and End. The selected fixture's integration-level data alerts appear at
 the top of Overview only when there is something actionable to report.
 
-Use `card_type: hub` for the automatic Match Hub variant. It opens the preview
-before kick-off, follows the timeline while the match is live, and returns to
-the overview/review after full time. Manual tab selection remains possible.
+Enable `phase_aware: true` for the former Match Hub behaviour. It opens the
+preview before kick-off, follows the timeline while the match is live, and
+returns to the overview/review after full time. Manual tab selection remains
+possible. Existing `card_type: hub` YAML continues to resolve to this mode.
 Set `archive_entity` to add long-term historical meetings to H2H and
 `standings_entity` to show the virtual table impact of the current score. When
 the latter is omitted, the card tries to match a standings sensor by league.
@@ -587,8 +595,9 @@ opponents to the existing monthly and season comparisons.
 
 ```yaml
 type: custom:soccer-live-card
-card_type: race
+card_type: standings
 entity: sensor.soccerlive_standings_eredivisie
+standings_view: race
 highlight_team: Feyenoord
 ```
 
@@ -599,6 +608,7 @@ appears once the integration has recorded multiple standings snapshots.
 When mathematically known, the card also shows the points still required for
 the title, champion status, secured European football and safety from
 relegation. These facts can trigger `soccer_live_race_milestone` automations.
+Existing `card_type: race` YAML remains supported and renders the same view.
 
 ### 📺 Ticker
 
@@ -691,9 +701,10 @@ test checks key parity so one language cannot silently lag behind.
 HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
-without rewriting the readable source. `npm run build` enforces a 750 KiB
-uncompressed ceiling; the current bundle is about 726 KiB (roughly 180 KiB
-gzip or 125 KiB Brotli, depending on the compressor implementation).
+without rewriting the readable source. Shared popup sections and editor styles
+prevent the 20 distinct cards from carrying their own copies. `npm run build`
+reports both raw and gzip size and enforces a 735 KiB ceiling, with a preferred
+720 KiB target. The current bundle is 715 KiB (roughly 181 KiB gzip).
 
 ---
 

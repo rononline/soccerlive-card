@@ -1,12 +1,22 @@
 import { html, css } from 'lit';
 
 export const editorStyles = css`
+  .card-config { display: flex; flex-direction: column; gap: 16px; }
+  .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  label { font-size: 14px; color: var(--primary-text-color); }
   .editor-section { margin-bottom: 20px; }
   .editor-section h3 { margin: 12px 0 8px; font-size: 13px; text-transform: uppercase; color: var(--secondary-text-color); }
   .editor-field { margin-bottom: 12px; }
-  .field-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--primary-text-color); }
+  .field-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--secondary-text-color); }
   .field-hint { display: block; font-size: 11px; color: var(--secondary-text-color); margin-top: 2px; }
-  select, input, ha-entity-picker { width: 100%; }
+  select, input:not([type="checkbox"]), ha-entity-picker {
+    width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 14px;
+    border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
+    background: var(--card-background-color, #fff); color: var(--primary-text-color, #000);
+  }
+  select:focus, input:focus { outline: 2px solid var(--primary-color, #03a9f4); outline-offset: -1px; }
+  h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--secondary-text-color); }
+  .hint { font-size: 12px; color: var(--secondary-text-color); }
   .field-info { background: rgba(33, 150, 243, 0.1); border-left: 3px solid var(--primary-color); padding: 8px 12px; border-radius: 2px; font-size: 12px; margin-top: 8px; }
   .field-warning { background: rgba(255, 152, 0, 0.1); border-left: 3px solid #ff9800; padding: 8px 12px; border-radius: 2px; font-size: 12px; margin-top: 8px; }
 `;
@@ -24,12 +34,29 @@ const LANGUAGES = [
 ];
 const LANGUAGE_NAME = Object.fromEntries(LANGUAGES);
 
-function _fireConfig(host, next) {
+export function fireEditorConfig(host, next) {
   if (typeof host._fireConfigChanged === 'function') return host._fireConfigChanged(next);
   if (typeof host._fire === 'function') return host._fire(next);
   host._config = next;
   host.dispatchEvent(new CustomEvent('config-changed', { detail: { config: next }, bubbles: true, composed: true }));
   host.requestUpdate?.();
+}
+
+export function setEditorConfigValue(host, key, value, { removeEmpty = false } = {}) {
+  const next = { ...(host?._config || {}) };
+  if (removeEmpty && (value === '' || value === null || value === undefined)) delete next[key];
+  else next[key] = value;
+  fireEditorConfig(host, next);
+}
+
+export function soccerEntityIds(hass, { sensorTypes = [], includes = [] } = {}) {
+  if (!hass?.states) return [];
+  const types = new Set(sensorTypes);
+  return Object.keys(hass.states).filter(entityId => {
+    if (!entityId.startsWith('sensor.')) return false;
+    const sensorType = hass.states[entityId]?.attributes?.sensor_type;
+    return types.has(sensorType) || includes.some(part => entityId.includes(part));
+  }).sort();
 }
 
 /**
@@ -49,7 +76,7 @@ export function renderLanguageControl(host, config, t) {
     const v = e.target.value;
     const next = { ...config };
     if (v) next.language = v; else delete next.language;  // clear the key, don't store ''
-    _fireConfig(host, next);
+    fireEditorConfig(host, next);
   };
   return html`
     <label class="field-label">${label('editor.language')}</label>

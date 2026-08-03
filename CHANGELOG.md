@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.42.0 (2026-08-03)
+
+- card picker: group the 20 distinct cards by purpose instead of presenting one long flat list
+- compatibility: fold Match Hub into Match Center's phase-aware mode and Competition Race into the Standings race view while retaining the legacy `hub` and `race` YAML identifiers
+- shared match details: reuse lineup and timeline rendering and event normalization across Team, Matches and Match Center
+- editors: centralize common field styling, entity discovery and config-change handling across the card editors
+- bundle: reduce the single HACS asset from 725.5 KiB to 715.0 KiB and tighten the enforced ceiling from 750 to 735 KiB, with a 720 KiB preferred target and gzip reporting
+- tests/docs: cover shared timeline and lineup normalization and document the consolidated card modes and updated bundle budget
+
 ## v3.41.0 (2026-08-03)
 
 - event reliability: suppress duplicate in-card toasts with provider-neutral `event_uid` values while keeping cards independent

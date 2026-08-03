@@ -154,6 +154,17 @@ const CARD_REGISTRY = [
   { value: 'archive',           element: 'soccer-live-archive',           editor: 'soccer-live-insights-editor',          label: 'Archive',           description: 'Personal locally stored history of finished matches', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
 ];
 
+// Hub and Race remain accepted for existing YAML, but new configurations use
+// a mode on Match Center or Standings. This keeps the picker compact without
+// removing any public card type.
+const LEGACY_VARIANT_TYPES = new Set(['hub', 'race']);
+const CARD_CATEGORIES = [
+  ['editor.category_primary', ['team', 'matches', 'match-center', 'standings', 'club']],
+  ['editor.category_compact', ['countdown', 'mini-standings', 'multi-team', 'ticker', 'minimal']],
+  ['editor.category_content', ['news', 'bracket', 'scorers', 'team-competitions']],
+  ['editor.category_advanced', ['team-form', 'lineup', 'timeline', 'diagnostics', 'matchday', 'archive']],
+];
+
 // Derived lookups (never edit these manually — edit CARD_REGISTRY above)
 const TYPE_TO_ELEMENT = Object.fromEntries(CARD_REGISTRY.map(c => [c.value, c.element]));
 const LEGACY_ELEMENTS = new Set(CARD_REGISTRY.map(c => c.element));
@@ -375,8 +386,14 @@ class SoccerLiveCardEditor extends LitElement {
       this._subEditorType = type;
       this._subEditor.hass = this.hass;
       this._subEditor.addEventListener('config-changed', e => {
-        // Preserve card_type when sub-editor fires changes
-        this._dispatch({ ...e.detail.config, card_type: type });
+        // Regular sub-editors cannot accidentally change type. The two legacy
+        // variants may intentionally migrate themselves to their canonical
+        // card plus a mode flag when that mode selector is edited.
+        const requestedType = e.detail.config?.card_type;
+        const nextType = LEGACY_VARIANT_TYPES.has(type) && requestedType && requestedType !== type
+          ? requestedType
+          : type;
+        this._dispatch({ ...e.detail.config, card_type: nextType });
       });
       container.appendChild(this._subEditor);
     }
@@ -437,31 +454,26 @@ class SoccerLiveCardEditor extends LitElement {
       ? raw
       : (Object.entries(TYPE_TO_ELEMENT).find(([, el]) => el === raw)?.[0] || raw);
     const meta = CARD_TYPES.find(t => t.value === selected);
-    const schema = [{
-      name: 'card_type',
-      selector: {
-        select: {
-          mode: 'dropdown',
-          options: [
-            { value: '', label: '— Choose a card type —' },
-            ...CARD_TYPES.map(t => ({ value: t.value, label: t.label })),
-          ],
-        },
-      },
-    }];
+    const legacySelected = LEGACY_VARIANT_TYPES.has(selected) ? meta : null;
     return html`
       <div class="picker-wrap">
-        <ha-form
-          .hass=${this.hass}
-          .data=${{ card_type: selected }}
-          .schema=${schema}
-          .computeLabel=${() => 'Card type'}
-          @value-changed=${(e) => {
-            const type = e.detail.value?.card_type;
-            if (!type || type === (this._config?.card_type || '')) return;
-            this._typeChanged({ target: { value: type } });
-          }}
-        ></ha-form>
+        <label class="picker-label">${this._t('editor.card_type')}</label>
+        <select class="type-picker" @change=${event => this._typeChanged(event)}>
+          <option value="" ?selected=${!selected}>— ${this._t('editor.choose_card_type')} —</option>
+          ${legacySelected ? html`
+            <optgroup label=${this._t('editor.category_legacy')}>
+              <option value=${legacySelected.value} selected>${legacySelected.label}</option>
+            </optgroup>
+          ` : ''}
+          ${CARD_CATEGORIES.map(([label, values]) => html`
+            <optgroup label=${this._t(label)}>
+              ${values.map(value => {
+                const item = CARD_TYPES.find(type => type.value === value);
+                return item ? html`<option value=${value} ?selected=${value === selected}>${item.label}</option>` : '';
+              })}
+            </optgroup>
+          `)}
+        </select>
         ${meta ? html`<p class="picker-desc">${meta.description}</p>` : ''}
         ${this._sensorHint(meta)}
         <label class="enrichment-picker">
@@ -525,6 +537,8 @@ class SoccerLiveCardEditor extends LitElement {
         font-size: 12px;
         color: var(--secondary-text-color);
       }
+      .picker-label { display:block; margin-bottom:6px; color:var(--secondary-text-color); font-size:12px; }
+      .type-picker { box-sizing:border-box; width:100%; padding:12px; border:1px solid var(--divider-color); border-radius:8px; background:var(--card-background-color); color:var(--primary-text-color); font-size:16px; }
       .enrichment-picker input{box-sizing:border-box;width:100%;padding:10px;border:1px solid var(--divider-color);border-radius:8px;background:var(--card-background-color);color:var(--primary-text-color)}
       .enrichment-auto{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin:10px 0}.enrichment-auto small{grid-column:1/3;color:var(--secondary-text-color);font-size:12px}
       .editor-info,

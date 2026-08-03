@@ -1,23 +1,14 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
-import { editorStyles, renderLanguageControl } from '../editor-helper.js';
+import { editorStyles, renderLanguageControl, setEditorConfigValue, soccerEntityIds } from '../editor-helper.js';
 
 
 class SoccerLiveCountdownEditor extends LitElement {
   static get properties() { return { _config: { type: Object }, hass: { type: Object }, entities: { type: Array } }; }
   constructor() { super(); this.entities = []; }
 
-  static get styles() {
-    return [editorStyles, css`
-      .card-config { display: flex; flex-direction: column; gap: 16px; }
-      .option { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-      label { font-size: 14px; color: var(--primary-text-color); }
-      .field-label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 4px; font-weight: 600; }
-      select, input { width: 100%; padding: 10px 12px; font-size: 14px; border-radius: 8px; border: 1px solid var(--divider-color, rgba(0,0,0,0.12)); background: var(--card-background-color, #fff); color: var(--primary-text-color, #000); box-sizing: border-box; }
-      h3 { margin: 8px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary-text-color); }
-    `];
-  }
+  static get styles() { return editorStyles; }
 
   setConfig(config) { this._config = { ...config }; }
   _t(key) { return t(key, resolveLang(this.hass, this._config)); }
@@ -26,16 +17,15 @@ class SoccerLiveCountdownEditor extends LitElement {
 
   _fetchEntities() {
     if (!this.hass) return;
-    this.entities = Object.keys(this.hass.states).filter(id =>
-      id.includes('soccerlive_next') || id.includes('soccer_live_next') ||
-      this.hass.states[id]?.attributes?.sensor_type === 'team_match'
-    ).sort();
+    this.entities = soccerEntityIds(this.hass, {
+      sensorTypes: ['team_match'],
+      includes: ['soccerlive_next', 'soccer_live_next'],
+    });
   }
 
-  _fire(cfg) { this._config = cfg; this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: cfg }, bubbles: true, composed: true })); this.requestUpdate(); }
-  _entityChanged(ev) { this._fire({ ...this._config, entity: ev.target.value }); }
-  _selectChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.value }); }
-  _switchChanged(ev) { this._fire({ ...this._config, [ev.target.dataset.configValue]: ev.target.checked }); }
+  _entityChanged(ev) { setEditorConfigValue(this, 'entity', ev.target.value); }
+  _selectChanged(ev) { setEditorConfigValue(this, ev.target.dataset.configValue, ev.target.value, { removeEmpty: true }); }
+  _switchChanged(ev) { setEditorConfigValue(this, ev.target.dataset.configValue, ev.target.checked); }
 
   render() {
     if (!this._config || !this.hass) return html``;

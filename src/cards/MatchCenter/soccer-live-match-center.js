@@ -9,7 +9,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
-import { EVENT_I18N, SKIP, isGoalEvent } from '../shared-event-i18n.js';
+import { timelineEventKind, timelineEventText, visibleTimelineEvents } from '../shared-match-sections.js';
 import { matchStatRows, translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
@@ -125,7 +125,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
         if (match?.venue && match.venue !== this._lastWeatherVenue) {
           this._loadWeather(match.venue, match.venue_lat, match.venue_lon, match.date_iso);
         }
-        if (this._config.card_type === 'hub' && !this._manualTab) {
+        if ((this._config.card_type === 'hub' || this._config.phase_aware === true) && !this._manualTab) {
           this._activeTab = match?.state === 'in' ? 'timeline' : 'overview';
         } else if (this._lastMatchState === 'pre' && match?.state === 'in' && this._activeTab === 'overview') {
           this._activeTab = 'timeline';
@@ -467,20 +467,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderTimeline(match) {
-    const allEvents = (match.key_events || []).filter(e => {
-      const txt = (e.type_text || '').toLowerCase();
-      return !SKIP.some(s => txt.includes(s));
-    });
+    const allEvents = visibleTimelineEvents(match);
     if (!allEvents.length) return html`<p class="empty">${this._t('ui.no_events_yet')}</p>`;
-    const getBadgeType = ev => {
-      const ty = (ev.type || '').toLowerCase();
-      const txt = (ev.type_text || '').toLowerCase();
-      if (isGoalEvent(ev)) return 'goal';
-      if (txt.includes('yellow')) return 'yellow';
-      if (txt.includes('red card')) return 'red';
-      if (ty === 'substitution' || txt.includes('substitut')) return 'sub';
-      return 'meta';
-    };
     const badge = btype => {
       if (btype === 'goal')   return html`<span class="tl-badge goal">${this._t('event.goal')}</span>`;
       if (btype === 'yellow') return html`<span class="tl-badge yellow">${this._t('event.yellow_card')}</span>`;
@@ -488,19 +476,13 @@ class SoccerLiveMatchCenterCard extends LitElement {
       if (btype === 'sub')    return html`<span class="tl-badge sub">${this._t('event.substitution')}</span>`;
       return html`<span class="tl-badge meta">·</span>`;
     };
-    const getText = ev => {
-      const athletes = (ev.athletes || []).filter(Boolean);
-      if (athletes.length) return athletes.join(', ');
-      const i18nKey = EVENT_I18N[(ev.type_text || '').toLowerCase()];
-      return i18nKey ? this._t(i18nKey) : (ev.type_text || ev.short_text || '');
-    };
     const events = this._tlFilter === 'goals'
-      ? allEvents.filter(e => getBadgeType(e) === 'goal')
+      ? allEvents.filter(e => timelineEventKind(e) === 'goal')
       : this._tlFilter === 'cards'
-        ? allEvents.filter(e => ['yellow', 'red'].includes(getBadgeType(e)))
+        ? allEvents.filter(e => ['yellow', 'red'].includes(timelineEventKind(e)))
         : allEvents;
-    const hasGoals = allEvents.some(e => getBadgeType(e) === 'goal');
-    const hasCards = allEvents.some(e => ['yellow', 'red'].includes(getBadgeType(e)));
+    const hasGoals = allEvents.some(e => timelineEventKind(e) === 'goal');
+    const hasCards = allEvents.some(e => ['yellow', 'red'].includes(timelineEventKind(e)));
     return html`
       <div class="tl-filters">
         <button class="tl-chip ${this._tlFilter === 'all' ? 'active' : ''}" @click=${() => { this._tlFilter = 'all'; }}>${this._t('filter.all') || 'Alles'}</button>
@@ -509,13 +491,13 @@ class SoccerLiveMatchCenterCard extends LitElement {
       </div>
       <div class="tl-list">
         ${events.length ? events.map(ev => {
-          const btype = getBadgeType(ev);
+          const btype = timelineEventKind(ev);
           return html`
             <div class="tl-row">
               <span class="tl-min">${ev.clock || ev.minute ? `${ev.clock || ev.minute}'` : ''}</span>
               ${badge(btype)}
               <div class="tl-text">
-                <div>${getText(ev)}</div>
+                <div>${timelineEventText(ev, key => this._t(key))}</div>
                 ${ev.team ? html`<div class="tl-team">${ev.team}</div>` : ''}
               </div>
             </div>

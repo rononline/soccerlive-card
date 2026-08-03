@@ -17,58 +17,7 @@ class SoccerLiveMatchesEditor extends LitElement {
     this.entities = [];
   }
 
-  static get styles() {
-    return [editorStyles, css`
-      .card-config {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .option {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-      label {
-        font-size: 14px;
-        color: var(--primary-text-color);
-      }
-      .field-label {
-        display: block;
-        font-size: 12px;
-        color: var(--secondary-text-color);
-        margin-bottom: 4px;
-        font-weight: 600;
-      }
-      select, input[type="number"] {
-        width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-        background: var(--card-background-color, #fff);
-        color: var(--primary-text-color, #000);
-        box-sizing: border-box;
-      }
-      select:focus, input:focus {
-        outline: 2px solid var(--primary-color, #03a9f4);
-        outline-offset: -1px;
-      }
-      h3 {
-        margin: 8px 0 0;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--secondary-text-color);
-      }
-      .hint {
-        font-size: 12px;
-        color: var(--secondary-text-color);
-        margin-top: -4px;
-      }
-    `];
-  }
+  static get styles() { return [editorStyles, css`.hint{margin-top:-4px}`]; }
 
   setConfig(config) {
     if (!config) throw new Error('Invalid configuration');

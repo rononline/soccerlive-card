@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { t, resolveLang } from '../../i18n.js';
 import { editorStyles, renderLanguageControl } from '../editor-helper.js';
 import { renderSkinControls } from '../skin-editor.js';
@@ -19,53 +19,7 @@ class SoccerLiveStandingsEditor extends LitElement {
     this.groups = [];
   }
 
-  static get styles() {
-    return [editorStyles, css`
-      .card-config {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .option {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-      label {
-        font-size: 14px;
-        color: var(--primary-text-color);
-      }
-      .field-label {
-        display: block;
-        font-size: 12px;
-        color: var(--secondary-text-color);
-        margin-bottom: 4px;
-        font-weight: 600;
-      }
-      select, input[type="number"] {
-        width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid var(--divider-color, rgba(0,0,0,0.12));
-        background: var(--card-background-color, #fff);
-        color: var(--primary-text-color, #000);
-        box-sizing: border-box;
-      }
-      select:focus, input:focus {
-        outline: 2px solid var(--primary-color, #03a9f4);
-        outline-offset: -1px;
-      }
-      h3 {
-        margin: 8px 0 0;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--secondary-text-color);
-      }
-    `];
-  }
+  static get styles() { return editorStyles; }
 
   setConfig(config) {
     if (!config) throw new Error('Invalid configuration');
@@ -141,6 +95,15 @@ class SoccerLiveStandingsEditor extends LitElement {
     this._fireConfigChanged({ ...this._config, [key]: value });
   }
 
+  _viewChanged(ev) {
+    const next = { ...this._config };
+    if (ev.target.value === 'race') next.standings_view = 'race';
+    else delete next.standings_view;
+    // Convert the old visible Race type to the equivalent Standings mode.
+    if (next.card_type === 'race') next.card_type = 'standings';
+    this._fireConfigChanged(next);
+  }
+
   _fetchEntities() {
     if (!this.hass) return;
     this.entities = Object.keys(this.hass.states)
@@ -181,6 +144,13 @@ class SoccerLiveStandingsEditor extends LitElement {
         </div>
 
         <h3>${this._t("editor.settings")}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.standings_mode')}</label>
+          <select @change=${this._viewChanged}>
+            <option value="table" ?selected=${this._config.card_type !== 'race' && this._config.standings_view !== 'race'}>${this._t('editor.standings_table')}</option>
+            <option value="race" ?selected=${this._config.card_type === 'race' || this._config.standings_view === 'race'}>${this._t('editor.standings_race')}</option>
+          </select>
+        </div>
         <div>
           <label class="field-label">${this._t('editor.standings_group')}</label>
           <select @change=${this._groupChanged}>

@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { renderSkinControls } from '../skin-editor.js';
 import { t, resolveLang } from '../../i18n.js';
-import { editorStyles, renderLanguageControl } from '../editor-helper.js';
+import { editorStyles, fireEditorConfig, renderLanguageControl, setEditorConfigValue, soccerEntityIds } from '../editor-helper.js';
 
 
 class SoccerLiveMatchCenterEditor extends LitElement {
@@ -9,28 +9,29 @@ class SoccerLiveMatchCenterEditor extends LitElement {
     return { _config: { type: Object }, hass: { type: Object } };
   }
 
-  static get styles() { return [editorStyles, css`.option{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;}`]; }
+  static get styles() { return editorStyles; }
 
   setConfig(config) { this._config = config; }
   _t(key) { return t(key, resolveLang(this.hass, this._config)); }
 
-  _fire(config) {
-    this._config = config;
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config }, bubbles: true, composed: true }));
-    this.requestUpdate();
+  _entityChanged(e) { setEditorConfigValue(this, 'entity', e.target.value); }
+  _selectChanged(e) { setEditorConfigValue(this, e.target.dataset.configValue, e.target.value, { removeEmpty: true }); }
+  _toggleChanged(e) { setEditorConfigValue(this, e.target.dataset.configValue, e.target.checked); }
+  _modeChanged(e) {
+    const next = { ...this._config };
+    if (e.target.value === 'phase') next.phase_aware = true;
+    else delete next.phase_aware;
+    // Once edited, legacy Hub becomes the regular Match Center plus its mode.
+    if (next.card_type === 'hub') next.card_type = 'match-center';
+    fireEditorConfig(this, next);
   }
-
-  _entityChanged(e) { this._fire({ ...this._config, entity: e.target.value }); }
-  _selectChanged(e) { this._fire({ ...this._config, [e.target.dataset.configValue]: e.target.value }); }
-  _toggleChanged(e) { this._fire({ ...this._config, [e.target.dataset.configValue]: e.target.checked }); }
 
   render() {
     if (!this._config || !this.hass) return html``;
-    const entities = Object.keys(this.hass.states).filter(id =>
-      id.includes('soccer_live_next') || id.includes('soccerlive_next') ||
-      id.includes('soccer_live_all_mixed') || id.includes('soccerlive_all_mixed') ||
-      ['team_match', 'team_matches_mixed'].includes(this.hass.states[id]?.attributes?.sensor_type)
-    ).sort();
+    const entities = soccerEntityIds(this.hass, {
+      sensorTypes: ['team_match', 'team_matches_mixed'],
+      includes: ['soccer_live_next', 'soccerlive_next', 'soccer_live_all_mixed', 'soccerlive_all_mixed'],
+    });
     const current = this._config.entity || '';
     const sensors = Object.keys(this.hass.states).filter(id => id.startsWith('sensor.')).sort();
     return html`
@@ -45,6 +46,13 @@ class SoccerLiveMatchCenterEditor extends LitElement {
         </div>
 
         <h3>${this._t('editor.section_display')}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.match_center_mode')}</label>
+          <select @change=${this._modeChanged}>
+            <option value="tabs" ?selected=${this._config.card_type !== 'hub' && this._config.phase_aware !== true}>${this._t('editor.match_center_tabs')}</option>
+            <option value="phase" ?selected=${this._config.card_type === 'hub' || this._config.phase_aware === true}>${this._t('editor.match_center_phase')}</option>
+          </select>
+        </div>
         <div class="option">
           <label>${this._t('editor.hide_header')}</label>
           <ha-switch .checked=${this._config.hide_header === true} data-config-value="hide_header" @change=${this._toggleChanged}></ha-switch>

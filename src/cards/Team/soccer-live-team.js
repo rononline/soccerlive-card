@@ -12,11 +12,12 @@ import { soccerHeaderStyles } from '../shared-header.js';
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
-import { EVENT_I18N, SKIP, isGoalEvent, translateMatchStatus } from '../shared-event-i18n.js';
+import { EVENT_I18N, translateMatchStatus } from '../shared-event-i18n.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
-import { renderPitch, pitchStyles } from '../shared-pitch.js';
+import { pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
+import { renderPopupLineup, renderPopupSectionStyles, renderPopupTimeline } from '../shared-match-sections.js';
 
 /**
  * Soccer Live Team Card
@@ -964,7 +965,7 @@ class SoccerLiveTeamCard extends LitElement {
       document.body.appendChild(this._popupPortal);
     }
     this._copyPopupThemeVars(this._popupPortal);
-    render(html`${this._renderPopupPortalStyles()}${this._renderPopup()}`, this._popupPortal);
+    render(html`${this._renderPopupPortalStyles()}${renderPopupSectionStyles('popup', 8)}${this._renderPopup()}`, this._popupPortal);
     if (!this._popupPortal.open) {
       try {
         this._popupPortal.showModal();
@@ -1130,32 +1131,9 @@ class SoccerLiveTeamCard extends LitElement {
         .popup-event-list { margin: 0; padding-left: 18px; font-size: 13px; color: #cbd5e1; }
         .popup-event-list li { margin: 4px 0; }
         .popup-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
-        .popup-section-lineup { background: rgba(16,185,129,0.08); border-color: #10b981; }
-        .popup-section-timeline { background: rgba(251,191,36,0.08); border-color: #fbbf24; }
         .popup-section-h2h { background: rgba(99,102,241,0.08); border-color: var(--cl-accent, #6366f1); }
         .popup-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
-        .popup-section-title.lineup { color: #10b981; }
-        .popup-section-title.timeline { color: #fbbf24; }
         .popup-section-title.h2h { color: var(--cl-accent, #6366f1); }
-        .popup-lineup-team { margin-bottom: 8px; }
-        .popup-lineup-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-        .popup-lineup-header span:first-child { font-size: 12px; font-weight: 800; color: #fff; }
-        .popup-formation { font-size: 10px; font-weight: 700; color: var(--cl-accent, #6366f1); letter-spacing: 0.1em; }
-        .popup-lineup-players { font-size: 12px; color: #cbd5e1; line-height: 1.7; }
-        .popup-player { display: inline-block; padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 6px; margin: 2px; }
-        .popup-jersey { color: #fbbf24; }
-        .popup-timeline-list { margin: 0; padding: 0; list-style: none; }
-        .popup-timeline-item { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; color: #cbd5e1; }
-        .popup-timeline-item:last-child { border-bottom: none; }
-        .popup-tl-clock { min-width: 32px; text-align: right; font-size: 11px; font-weight: 700; color: #94a3b8; font-variant-numeric: tabular-nums; padding-top: 2px; flex-shrink: 0; }
-        .popup-tl-badge { display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; line-height: 15px; white-space: nowrap; margin-top: 1px; }
-        .popup-tl-badge.goal   { background: rgba(99,102,241,0.18); color: #6366f1; }
-        .popup-tl-badge.yellow { background: rgba(245,158,11,0.18); color: #f59e0b; }
-        .popup-tl-badge.red    { background: rgba(239,68,68,0.18); color: #ef4444; }
-        .popup-tl-badge.sub    { background: rgba(148,163,184,0.12); color: #94a3b8; }
-        .popup-tl-badge.meta   { background: transparent; color: #94a3b8; font-size: 14px; padding: 0 4px; letter-spacing: 0; }
-        .popup-tl-text strong { color: #fff; }
-        .popup-tl-team { color: #94a3b8; font-size: 11px; }
         .popup-h2h-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: #cbd5e1; }
         .popup-h2h-num { color: #fff; font-size: 18px; font-weight: 800; }
         .popup-h2h-draw { color: #94a3b8; }
@@ -1227,79 +1205,18 @@ class SoccerLiveTeamCard extends LitElement {
   }
 
   _renderPopupLineup(m) {
-    const lineupHome = m.lineup_home || [];
-    const lineupAway = m.lineup_away || [];
-    if (!lineupHome.length && !lineupAway.length) return '';
-    const pitch = renderPitch(m, { t: (k, v) => this._t(k, v) });
-    if (pitch) {
-      return html`
-        <div class="popup-section popup-section-lineup">
-          <h5 class="popup-section-title lineup">${this._t('popup.lineups')}</h5>
-          ${pitch}
-        </div>`;
-    }
-    const teamBlock = (players, formation, label) => {
-      const starters = (players || []).filter(p => p.starter);
-      if (!starters.length) return '';
-      return html`
-        <div class="popup-lineup-team">
-          <div class="popup-lineup-header">
-            <span>${label}</span>
-            ${formation ? html`<span class="popup-formation">${formation}</span>` : ''}
-          </div>
-          <div class="popup-lineup-players">
-            ${starters.map(p => html`<span class="popup-player">${p.jersey ? html`<strong class="popup-jersey">${p.jersey}</strong> ` : ''}${p.short_name || p.name}</span>`)}
-          </div>
-        </div>`;
-    };
-    return html`
-      <div class="popup-section popup-section-lineup">
-        <h5 class="popup-section-title lineup">${this._t('popup.lineups')}</h5>
-        ${teamBlock(lineupHome, m.formation_home, m.home_team)}
-        ${teamBlock(lineupAway, m.formation_away, m.away_team)}
-      </div>`;
+    return renderPopupLineup(m, {
+      translate: (key, vars) => this._t(key, vars),
+      prefix: 'popup',
+      startersOnly: true,
+    });
   }
 
   _renderPopupTimeline(m) {
-    const keyEvents = (m.key_events || []).filter(e => {
-      const txt = (e.type_text || '').toLowerCase();
-      return !SKIP.some(s => txt.includes(s));
+    return renderPopupTimeline(m, {
+      translate: (key, vars) => this._t(key, vars),
+      prefix: 'popup',
     });
-    if (!keyEvents.length) return '';
-    const getBadgeType = ev => {
-      const ty = (ev.type || '').toLowerCase(), txt = (ev.type_text || '').toLowerCase();
-      if (isGoalEvent(ev)) return 'goal';
-      if (txt.includes('yellow')) return 'yellow';
-      if (txt.includes('red card')) return 'red';
-      if (ty === 'substitution' || txt.includes('substitut')) return 'sub';
-      return 'meta';
-    };
-    const getText = ev => {
-      const athletes = (ev.athletes || []).filter(Boolean);
-      if (athletes.length) return athletes.join(', ');
-      const key = EVENT_I18N[(ev.type_text || '').toLowerCase()];
-      return key ? this._t(key) : (ev.type_text || ev.short_text || '');
-    };
-    const badge = btype => {
-      const labels = { goal: 'event.goal', yellow: 'event.yellow_card', red: 'event.red_card', sub: 'event.substitution' };
-      if (labels[btype]) return html`<span class="popup-tl-badge ${btype}">${this._t(labels[btype])}</span>`;
-      return html`<span class="popup-tl-badge meta">·</span>`;
-    };
-    return html`
-      <div class="popup-section popup-section-timeline">
-        <h5 class="popup-section-title timeline">${this._t('popup.timeline')}</h5>
-        <ul class="popup-timeline-list">
-          ${keyEvents.map(e => {
-            const btype = getBadgeType(e);
-            return html`
-              <li class="popup-timeline-item">
-                <span class="popup-tl-clock">${e.clock || ''}</span>
-                ${badge(btype)}
-                <span class="popup-tl-text"><strong>${getText(e)}</strong>${e.team ? html`<br><span class="popup-tl-team">${e.team}</span>` : ''}</span>
-              </li>`;
-          })}
-        </ul>
-      </div>`;
   }
 
   _renderPopupH2H(m) {
