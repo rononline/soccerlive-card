@@ -19,7 +19,7 @@ const match = overrides => ({
 test('matches fixtures across provider IDs and common club suffixes', () => {
   assert.equal(sameFixture(
     match(),
-    match({ event_id: 'fotmob-9', home_team: 'Sparta', away_team: 'Feyenoord Rotterdam' }),
+    match({ event_id: 'rich-9', home_team: 'Sparta', away_team: 'Feyenoord Rotterdam' }),
   ), true);
 });
 
@@ -27,9 +27,9 @@ test('enriches missing fields but keeps primary conflicts authoritative', () => 
   const result = blendAttributes(
     { provider: 'api_football', matches: [match({ venue: '' })] },
     {
-      provider: 'fotmob',
+      provider: 'rich_provider',
       matches: [match({
-        event_id: 'fotmob-9',
+        event_id: 'rich-9',
         venue: 'Het Kasteel',
         home_score: 2,
         lineup_home: [{ name: 'Keeper' }],
@@ -39,13 +39,13 @@ test('enriches missing fields but keeps primary conflicts authoritative', () => 
   assert.equal(result.matches[0].venue, 'Het Kasteel');
   assert.deepEqual(result.matches[0].lineup_home, [{ name: 'Keeper' }]);
   assert.equal(result.matches[0].home_score, 2);
-  assert.equal(result.matches[0].source_provenance.venue, 'fotmob');
+  assert.equal(result.matches[0].source_provenance.venue, 'rich_provider');
 });
 
 test('uses the supplementary live core when its clock has progressed further', () => {
   const result = blendAttributes(
     {
-      provider: 'fotmob_private',
+      provider: 'rich_private',
       matches: [match({
         state: 'in', status: 'Live', period: '1H', clock: '1',
         home_score: 1, away_score: 0,
@@ -105,7 +105,7 @@ test('hides a demonstrably stale primary clock when no enrichment is configured'
       'sensor.primary': {
         state: '1',
         attributes: {
-          provider: 'fotmob_private',
+          provider: 'rich_private',
           matches: [match({
             state: 'in', clock: '1', home_score: 1, away_score: 1,
             key_events: [{ minute: 11 }, { minute: 45 }],
@@ -132,8 +132,8 @@ test('does not append secondary-only previous-season fixtures', () => {
 test('keeps the primary detail service and payload as one provider contract', () => {
   const result = blendAttributes(
     {
-      provider: 'fotmob_private',
-      detail_service: 'soccer_live_fotmob_private.load_match_details',
+      provider: 'rich_private',
+      detail_service: 'private_scores.load_match_details',
       detail_service_data: { team_id: 10235 },
       matches: [match()],
     },
@@ -144,7 +144,7 @@ test('keeps the primary detail service and payload as one provider contract', ()
       matches: [match({ event_id: 'api-1', venue: 'De Kuip' })],
     },
   );
-  assert.equal(result.detail_service, 'soccer_live_fotmob_private.load_match_details');
+  assert.equal(result.detail_service, 'private_scores.load_match_details');
   assert.deepEqual(result.detail_service_data, { team_id: 10235 });
   assert.equal(result.matches[0].venue, 'De Kuip');
 });
@@ -169,7 +169,7 @@ test('creates a non-mutating hass view for the selected card', () => {
       'sensor.primary': { state: '1', attributes: { matches: [match()] } },
       'sensor.secondary': {
         state: '1',
-        attributes: { provider: 'fotmob', matches: [match({ event_id: 'other', venue: 'De Kuip' })] },
+        attributes: { provider: 'rich_provider', matches: [match({ event_id: 'other', venue: 'De Kuip' })] },
       },
     },
   };
@@ -216,15 +216,15 @@ test('automatically selects a richer overlapping provider', () => {
       },
       'sensor.unrelated': {
         attributes: {
-          provider: 'fotmob',
+          provider: 'rich_provider',
           matches: [match({ home_team: 'Ajax', away_team: 'PSV' })],
         },
       },
       'sensor.richer': {
         attributes: {
-          provider: 'fotmob',
+          provider: 'rich_provider',
           matches: [match({
-            event_id: 'fotmob-1',
+            event_id: 'rich-1',
             lineup_home: [{ name: 'Keeper' }],
             home_statistics: { shots: 10 },
           })],
@@ -241,6 +241,6 @@ test('automatically selects a richer overlapping provider', () => {
     auto_enrichment: true,
   });
   const enriched = blended.states['sensor.primary'].attributes.matches[0];
-  assert.equal(enriched.source_sections.lineup.provider, 'fotmob');
+  assert.equal(enriched.source_sections.lineup.provider, 'rich_provider');
   assert.equal(enriched.source_sections.schedule.provider, 'api_football');
 });

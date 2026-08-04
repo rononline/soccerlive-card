@@ -183,7 +183,10 @@ class SoccerLiveClubCard extends LitElement {
   }
 
   _renderDataQuality(attrs) {
-    const provider = attrs.provider === 'fotmob_private' ? 'FotMob' : (attrs.provider || 'Soccer Live');
+    const rawProvider = String(attrs.provider || '');
+    const provider = rawProvider.endsWith('_private')
+      ? this._t('source.private')
+      : (rawProvider || 'Soccer Live');
     const status = attrs.sync_status || 'ready';
     const state = this.hass?.states?.[this._config.entity];
     const updated = state?.last_updated ? new Date(state.last_updated) : null;

@@ -13,7 +13,7 @@ test('maps explicit section provenance, freshness and enrichment', () => {
       },
       lineup: {
         available: true,
-        provider: 'fotmob',
+        provider: 'rich_provider',
         updated_at: '2026-07-29T10:05:00Z',
         enriched: true,
       },
@@ -28,7 +28,7 @@ test('maps explicit section provenance, freshness and enrichment', () => {
     item.enriched,
   ]), [
     ['schedule', true, 'api_football', false],
-    ['lineup', true, 'fotmob', true],
+    ['lineup', true, 'rich_provider', true],
     ['review', false, '', false],
   ]);
 });

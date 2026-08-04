@@ -30,9 +30,9 @@ test('wrapper applies optional secondary-source enrichment', async ({ page }) =>
     hass.states['sensor.preview_enrichment'] = {
       state: 'ok',
       attributes: {
-        provider: 'fotmob',
+        provider: 'rich_provider',
         matches: [
-          { ...primary, event_id: 'fotmob-fixture', venue: 'De Kuip' },
+          { ...primary, event_id: 'rich-fixture', venue: 'De Kuip' },
           {
             event_id: 'previous-season-only',
             date_iso: '2025-05-01T12:00:00+00:00',
@@ -55,7 +55,7 @@ test('wrapper applies optional secondary-source enrichment', async ({ page }) =>
     target.appendChild(card);
   });
   await expect(target(page)).toContainText('Gecombineerde bronnen');
-  await expect(target(page)).toContainText('api_football + fotmob');
+  await expect(target(page)).toContainText('api_football + rich_provider');
   await expect(target(page)).toContainText('Aangevulde velden');
 });
 
@@ -407,11 +407,11 @@ for (const type of CARD_MATRIX) {
 }
 
 for (const type of ['team', 'matches', 'countdown', 'match-center', 'team-form', 'club']) {
-  test(`${type} — optional FotMob enrichment remains provider-neutral`, async ({ page }) => {
+  test(`${type} — optional rich-source enrichment remains provider-neutral`, async ({ page }) => {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.setViewportSize({ width: 360, height: 1100 });
-    await open(page, { mode: 'matrix', type, provider: 'fotmob', lang: 'nl' });
+    await open(page, { mode: 'matrix', type, provider: 'rich', lang: 'nl' });
     await expectHealthyCard(page, type);
     expect(errors).toEqual([]);
   });
@@ -504,7 +504,7 @@ test('team competitions replaces a provider clock placeholder with Live', async 
   await expect(target(page)).not.toContainText('N/A');
 });
 
-test('match hub translates the complete FotMob statistics vocabulary', async ({ page }) => {
+test('match hub translates the complete rich-provider statistics vocabulary', async ({ page }) => {
   await open(page, { mode: 'matrix', type: 'hub', phase: 'live', lang: 'nl' });
   await page.evaluate(() => {
     const card = document.querySelector('soccer-live-match-center');

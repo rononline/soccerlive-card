@@ -209,8 +209,8 @@
       attrs.club = { profile: attrs.club.profile };
       attrs.commentary = [];
     }
-    if (params.get("provider") === "fotmob") {
-      attrs.provider = "fotmob";
+    if (params.get("provider") === "rich") {
+      attrs.provider = "rich_provider";
       attrs.detail_capabilities = ["stats", "lineup", "h2h", "ratings"];
     }
     if (params.get("phase") === "live" && attrs.matches[0]) {

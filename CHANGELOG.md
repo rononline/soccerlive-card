@@ -1,8 +1,12 @@
 # Changelog
 
+## v3.43.2 (2026-08-04)
+
+- provider neutrality: remove source-specific names from public documentation, release notes and card labels; private integrations now appear as a translated generic private source
+
 ## v3.43.1 (2026-08-04)
 
-- source enrichment: keep each provider's detail service and service payload together so FotMob never receives Soccer Live-only fields such as `config_entry_id`
+- source enrichment: keep each provider's detail service and service payload together so private providers never receive fields belonging to another service contract
 
 ## v3.43.0 (2026-08-04)
 
@@ -33,7 +37,7 @@
 
 ## v3.40.2 (2026-08-02)
 
-- Match Center and Match Hub: translate the complete FotMob match-stat vocabulary instead of displaying fallback English labels
+- Match Center and Match Hub: translate the complete rich-provider match-stat vocabulary instead of displaying fallback English labels
 - statistics: normalize provider variants for saves, tackles, fouls, aerial duels, crosses, clearances, dribbles, passing zones, blocks and shot locations
 - i18n: add the new football-stat labels for all seven supported languages
 - tests: verify every statistic returned by the Feyenoord–Atalanta match payload and its rendered Dutch labels
@@ -208,10 +212,10 @@
 ## v3.31.3 (2026-07-23)
 - Exclude cancelled, disallowed and missed goals from derived match stories
 - Avoid declaring a prediction winner when the highest percentages are tied
-- Translate live Club matchday statuses and normalize common FotMob statistic keys
+- Translate live Club matchday statuses and normalize common rich-provider statistic keys
 - Use one consistent squad workload metric for selection-impact calculations
 - Improve Club player-popup and section-order accessibility and replace Dutch-only starter abbreviations
-- Add regressions for prediction ties, invalid goals, mixed workload data and FotMob stat aliases
+- Add regressions for prediction ties, invalid goals, mixed workload data and provider stat aliases
 
 ## v3.31.2 (2026-07-23)
 - Localize all Diagnostics metrics, visible provider statuses and recommended card names
@@ -235,7 +239,7 @@
 ## v3.30.2 (2026-07-23)
 - Add browser regression coverage for all 18 card types with rich desktop, partial mobile and empty standalone data
 - Verify page-level overflow, meaningful empty states and browser-exception safety for every card
-- Add provider-neutral FotMob enrichment scenarios for the six applicable team and match cards
+- Add provider-neutral enrichment scenarios for the six applicable team and match cards
 - Add synthetic live and full-time scenarios for Team, Matches, Countdown, Match Center, Lineup and Timeline
 - Expand the shared visual fixture with standings, scorers, news, bracket, lineup, statistics, events and diagnostics data
 

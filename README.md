@@ -544,7 +544,7 @@ Source enrichment is optional. Pick a sensor explicitly or let the card find
 the richest overlapping provider:
 
 ```yaml
-enrichment_entity: sensor.soccer_live_fotmob_all_mixed_10235
+enrichment_entity: sensor.optional_rich_match_source
 # or:
 auto_enrichment: true
 ```
@@ -568,7 +568,7 @@ compatible sensor every card continues to work standalone.
 type: custom:soccer-live-card
 card_type: matchday
 entity: sensor.soccer_live_all_mixed_feyenoord
-enrichment_entity: sensor.soccer_live_fotmob_all_mixed_10235  # optional
+enrichment_entity: sensor.optional_rich_match_source  # optional
 ```
 
 Shows the most relevant fixture day, live/upcoming counters and per-match

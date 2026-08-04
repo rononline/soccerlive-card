@@ -266,7 +266,7 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
   const merged = mergeObject(primary, secondary, '', {}, [], secondaryProvider);
   // A detail service and its payload form one provider-specific contract.
   // Merging detail_service_data field by field can create an invalid hybrid,
-  // for example FotMob's team_id combined with Soccer Live's config_entry_id.
+  // for example one provider's team_id combined with another service's entry ID.
   const detailOwner = present(primary.detail_service)
     ? primary
     : (present(secondary.detail_service) ? secondary : null);

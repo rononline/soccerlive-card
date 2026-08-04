@@ -924,7 +924,10 @@ class SoccerLiveMatchesCard extends LitElement {
 
   _renderCoverage(m) {
     const attrs = this.hass?.states?.[this._config.entity]?.attributes || {};
-    const provider = attrs.provider === 'fotmob_private' ? 'FotMob' : (attrs.provider || 'Soccer Live');
+    const rawProvider = String(attrs.provider || '');
+    const provider = rawProvider.endsWith('_private')
+      ? this._t('source.private')
+      : (rawProvider || 'Soccer Live');
     const capabilities = m.detail_capabilities || [];
     const state = this.hass?.states?.[this._config.entity];
     const age = state?.last_updated ? Math.max(0, Math.round((Date.now() - new Date(state.last_updated).getTime()) / 60000)) : null;

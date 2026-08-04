@@ -25,7 +25,7 @@ const labels = {
 };
 const translate = key => labels[key] || key;
 
-test('translateStatKey normalizes common FotMob snake_case aliases', () => {
+test('translateStatKey normalizes common rich-provider snake_case aliases', () => {
   assert.equal(translateStatKey('touches_opp_box', translate), labels['stat.touches_opposition_box']);
   assert.equal(translateStatKey('big_chance', translate), labels['stat.big_chances']);
   assert.equal(translateStatKey('big_chance_missed_title', translate), labels['stat.big_chances_missed']);
@@ -38,7 +38,7 @@ test('translateStatKey makes unknown snake_case keys human-readable', () => {
   assert.equal(translateStatKey('progressive_passes', translate), 'Progressive passes');
 });
 
-test('translateStatKey covers the complete FotMob match-stat vocabulary', () => {
+test('translateStatKey covers the complete rich-provider match-stat vocabulary', () => {
   const expected = {
     BallPossesion: 'team.possession',
     Offsides: 'stat.offsides',
