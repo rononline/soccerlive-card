@@ -129,6 +129,40 @@ test('does not append secondary-only previous-season fixtures', () => {
   assert.equal(result.matches[0].event_id, 'primary-1');
 });
 
+test('keeps the primary detail service and payload as one provider contract', () => {
+  const result = blendAttributes(
+    {
+      provider: 'fotmob_private',
+      detail_service: 'soccer_live_fotmob_private.load_match_details',
+      detail_service_data: { team_id: 10235 },
+      matches: [match()],
+    },
+    {
+      provider: 'api_football',
+      detail_service: 'soccer_live.get_match_details',
+      detail_service_data: { config_entry_id: 'entry-1' },
+      matches: [match({ event_id: 'api-1', venue: 'De Kuip' })],
+    },
+  );
+  assert.equal(result.detail_service, 'soccer_live_fotmob_private.load_match_details');
+  assert.deepEqual(result.detail_service_data, { team_id: 10235 });
+  assert.equal(result.matches[0].venue, 'De Kuip');
+});
+
+test('adopts a supplementary detail service with only its own payload', () => {
+  const result = blendAttributes(
+    { provider: 'espn', matches: [match()] },
+    {
+      provider: 'api_football',
+      detail_service: 'soccer_live.get_match_details',
+      detail_service_data: { config_entry_id: 'entry-1' },
+      matches: [match({ event_id: 'api-1' })],
+    },
+  );
+  assert.equal(result.detail_service, 'soccer_live.get_match_details');
+  assert.deepEqual(result.detail_service_data, { config_entry_id: 'entry-1' });
+});
+
 test('creates a non-mutating hass view for the selected card', () => {
   const hass = {
     states: {

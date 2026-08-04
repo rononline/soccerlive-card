@@ -264,6 +264,20 @@ export function blendAttributes(primaryAttrs, secondaryAttrs) {
     };
   });
   const merged = mergeObject(primary, secondary, '', {}, [], secondaryProvider);
+  // A detail service and its payload form one provider-specific contract.
+  // Merging detail_service_data field by field can create an invalid hybrid,
+  // for example FotMob's team_id combined with Soccer Live's config_entry_id.
+  const detailOwner = present(primary.detail_service)
+    ? primary
+    : (present(secondary.detail_service) ? secondary : null);
+  if (detailOwner) {
+    merged.detail_service = detailOwner.detail_service;
+    if (Object.prototype.hasOwnProperty.call(detailOwner, 'detail_service_data')) {
+      merged.detail_service_data = detailOwner.detail_service_data;
+    } else {
+      delete merged.detail_service_data;
+    }
+  }
   if (primary.matches) merged.matches = matches;
   for (const key of ['next_match', 'current_match']) {
     if (!primary[key]) continue;

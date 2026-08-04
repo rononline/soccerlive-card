@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.43.1 (2026-08-04)
+
+- source enrichment: keep each provider's detail service and service payload together so FotMob never receives Soccer Live-only fields such as `config_entry_id`
+
 ## v3.43.0 (2026-08-04)
 
 - editor: add six translated quick profiles for simple, matchday, live, analysis, club-dashboard and compact-mobile starting points while preserving entities, sources and appearance
