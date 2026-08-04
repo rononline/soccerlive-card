@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.43.0 (2026-08-04)
+
+- editor: add six translated quick profiles for simple, matchday, live, analysis, club-dashboard and compact-mobile starting points while preserving entities, sources and appearance
+- match details: consume Soccer Live's response-enabled on-demand detail service and update the opened fixture immediately
+- compatibility: retain the fire-and-refresh detail contract for personal and third-party providers
+- bundle: remove dead card-loader registrations while keeping all direct-YAML card elements eagerly available; production output is 712.0 KiB / 173.8 KiB gzip
+- tests/docs: cover profile preservation and immediate service responses and document schema-v9 detail discovery
+
 ## v3.42.0 (2026-08-03)
 
 - card picker: group the 20 distinct cards by purpose instead of presenting one long flat list

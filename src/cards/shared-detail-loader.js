@@ -9,11 +9,29 @@ export async function requestMatchDetails(hass, attrs, match) {
   const service = attrs?.detail_service;
   if (!service || !match?.event_id || matchHasDetails(match)) return false;
   const [domain, name] = String(service).split('.', 2);
-  if (!domain || !name || typeof hass?.callService !== 'function') return false;
-  await hass.callService(domain, name, {
+  if (!domain || !name) return false;
+  const serviceData = {
     ...(attrs.detail_service_data || {}),
     match_id: String(match.event_id),
-  });
+  };
+  // Soccer Live's response-enabled service can return details immediately over
+  // HA's existing call_service WebSocket command. Third-party providers that
+  // only expose a fire-and-refresh service keep using the legacy fallback.
+  if (domain === 'soccer_live' && typeof hass?.callWS === 'function') {
+    const result = await hass.callWS({
+      type: 'call_service',
+      domain,
+      service: name,
+      service_data: serviceData,
+      return_response: true,
+    });
+    const response = result?.response ?? result?.service_response ?? result;
+    const loaded = response?.match;
+    if (loaded && typeof loaded === 'object') Object.assign(match, loaded);
+    return Boolean(loaded);
+  }
+  if (typeof hass?.callService !== 'function') return false;
+  await hass.callService(domain, name, serviceData);
   return true;
 }
 

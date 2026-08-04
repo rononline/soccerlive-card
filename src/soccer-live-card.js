@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { t, resolveLang } from './i18n.js';
 import { blendHassSources } from "./cards/shared-source-blend.js";
+import { applyEditorProfile, EDITOR_PROFILES } from './cards/editor-profiles.js';
 // Card elements stay eagerly registered for backwards-compatible direct YAML
 // (`custom:soccer-live-team`, etc.). Home Assistant may call setConfig
 // immediately after creating such an element, before an async import settles.
@@ -30,91 +31,69 @@ import './cards/Archive/soccer-live-archive.js';
 
 const CARD_MODULES = {
   team: {
-    card: () => import('./cards/Team/soccer-live-team.js'),
     editor: () => import('./cards/Team/soccer-live-team-editor.js'),
   },
   standings: {
-    card: () => import('./cards/Standings/soccer-live-standings.js'),
     editor: () => import('./cards/Standings/soccer-live-standings-editor.js'),
   },
   matches: {
-    card: () => import('./cards/Tutte/soccer-live-matches.js'),
     editor: () => import('./cards/Tutte/soccer-live-matches-editor.js'),
   },
   countdown: {
-    card: () => import('./cards/Countdown/soccer-live-countdown.js'),
     editor: () => import('./cards/Countdown/soccer-live-countdown-editor.js'),
   },
   news: {
-    card: () => import('./cards/News/soccer-live-news.js'),
     editor: () => import('./cards/News/soccer-live-news-editor.js'),
   },
   bracket: {
-    card: () => import('./cards/Bracket/soccer-live-bracket.js'),
     editor: () => import('./cards/Bracket/soccer-live-bracket-editor.js'),
   },
   'mini-standings': {
-    card: () => import('./cards/MiniStandings/soccer-live-mini-standings.js'),
     editor: () => import('./cards/MiniStandings/soccer-live-mini-standings-editor.js'),
   },
   scorers: {
-    card: () => import('./cards/Scorers/soccer-live-scorers.js'),
     editor: () => import('./cards/Scorers/soccer-live-scorers-editor.js'),
   },
   'multi-team': {
-    card: () => import('./cards/MultiTeam/soccer-live-multi-team.js'),
     editor: () => import('./cards/MultiTeam/soccer-live-multi-team-editor.js'),
   },
   'team-competitions': {
-    card: () => import('./cards/TeamCompetitions/soccer-live-team-competitions.js'),
     editor: () => import('./cards/TeamCompetitions/soccer-live-team-competitions-editor.js'),
   },
   'match-center': {
-    card: () => import('./cards/MatchCenter/soccer-live-match-center.js'),
     editor: () => import('./cards/MatchCenter/soccer-live-match-center-editor.js'),
   },
   hub: {
-    card: () => import('./cards/MatchCenter/soccer-live-match-center.js'),
     editor: () => import('./cards/MatchCenter/soccer-live-match-center-editor.js'),
   },
   race: {
-    card: () => import('./cards/Standings/soccer-live-standings.js'),
     editor: () => import('./cards/Standings/soccer-live-standings-editor.js'),
   },
   'team-form': {
-    card: () => import('./cards/TeamForm/soccer-live-team-form.js'),
     editor: () => import('./cards/TeamForm/soccer-live-team-form-editor.js'),
   },
   club: {
-    card: () => import('./cards/Club/soccer-live-club.js'),
     editor: () => import('./cards/Club/soccer-live-club-editor.js'),
   },
   diagnostics: {
-    card: () => import('./cards/Diagnostics/soccer-live-diagnostics.js'),
     editor: () => import('./cards/Diagnostics/soccer-live-diagnostics-editor.js'),
   },
   ticker: {
-    card: () => import('./cards/Ticker/soccer-live-ticker.js'),
     editor: () => import('./cards/Ticker/soccer-live-ticker-editor.js'),
   },
   lineup: {
-    card: () => import('./cards/Lineup/soccer-live-lineup.js'),
     editor: () => import('./cards/Lineup/soccer-live-lineup-editor.js'),
   },
   timeline: {
-    card: () => import('./cards/Timeline/soccer-live-timeline.js'),
     editor: () => import('./cards/Timeline/soccer-live-timeline-editor.js'),
   },
   minimal: {
-    card: () => import('./cards/Schedule/soccer-live-schedule.js'),
     editor: () => import('./cards/Schedule/soccer-live-schedule-editor.js'),
   },
   matchday: {
-    card: () => import('./cards/Matchday/soccer-live-matchday.js'),
     editor: () => import('./cards/Insights/soccer-live-insights-editor.js'),
   },
   archive: {
-    card: () => import('./cards/Archive/soccer-live-archive.js'),
     editor: () => import('./cards/Insights/soccer-live-insights-editor.js'),
   },
 };
@@ -197,7 +176,6 @@ class SoccerLiveCard extends HTMLElement {
     this._config = {};
     this._child = null;
     this._childType = null;
-    this._loadToken = 0;
   }
 
   set hass(hass) {
@@ -217,22 +195,12 @@ class SoccerLiveCard extends HTMLElement {
       return;
     }
 
-    const normalized = normalizeCardType(type);
     if (!customElements.get(element)) {
-      const token = ++this._loadToken;
       this._destroyChild();
       this.innerHTML = '';
-      this.appendChild(this._loadingCard());
-      loadCardModule(normalized, 'card').then(() => {
-        if (token === this._loadToken && resolveElement(this._config.card_type) === element) {
-          this.setConfig(this._config);
-        }
-      }).catch(error => {
-        if (token === this._loadToken) {
-          this.innerHTML = '';
-          this.appendChild(this._errorCard(String(error)));
-        }
-      });
+      // Card modules are eager for direct-YAML compatibility. A missing
+      // registration is a real load failure, not an async module to retry.
+      this.appendChild(this._errorCard(this._t('ui.unknown_card_type', { type })));
       return;
     }
 
@@ -265,13 +233,6 @@ class SoccerLiveCard extends HTMLElement {
     el.style.cssText = 'padding:24px;text-align:center;color:#94a3b8;font-size:13px;';
     const lang = this._hass ? (this._hass.language || 'en').split('-')[0] : 'en';
     el.textContent = t('ui.open_editor_to_configure', lang);
-    return el;
-  }
-
-  _loadingCard() {
-    const el = document.createElement('ha-card');
-    el.style.cssText = 'padding:24px;text-align:center;color:#94a3b8;font-size:13px;';
-    el.textContent = this._t('ui.loading');
     return el;
   }
 
@@ -420,6 +381,13 @@ class SoccerLiveCardEditor extends LitElement {
     }
   }
 
+  _profileChanged(e) {
+    const profile = e.target.value;
+    if (!EDITOR_PROFILES[profile]) return;
+    this._dispatch(applyEditorProfile(this._config, profile));
+    e.target.value = '';
+  }
+
   _dispatch(config) {
     const nextConfig = {
       ...config,
@@ -457,6 +425,14 @@ class SoccerLiveCardEditor extends LitElement {
     const legacySelected = LEGACY_VARIANT_TYPES.has(selected) ? meta : null;
     return html`
       <div class="picker-wrap">
+        <label class="picker-label">${this._t('editor.profile')}</label>
+        <select class="profile-picker" @change=${event => this._profileChanged(event)}>
+          <option value="">— ${this._t('editor.choose_profile')} —</option>
+          ${Object.keys(EDITOR_PROFILES).map(profile => html`
+            <option value=${profile}>${this._t(`editor.profile_${profile}`)}</option>
+          `)}
+        </select>
+        <p class="picker-desc profile-desc">${this._t('editor.profile_hint')}</p>
         <label class="picker-label">${this._t('editor.card_type')}</label>
         <select class="type-picker" @change=${event => this._typeChanged(event)}>
           <option value="" ?selected=${!selected}>— ${this._t('editor.choose_card_type')} —</option>
@@ -538,7 +514,8 @@ class SoccerLiveCardEditor extends LitElement {
         color: var(--secondary-text-color);
       }
       .picker-label { display:block; margin-bottom:6px; color:var(--secondary-text-color); font-size:12px; }
-      .type-picker { box-sizing:border-box; width:100%; padding:12px; border:1px solid var(--divider-color); border-radius:8px; background:var(--card-background-color); color:var(--primary-text-color); font-size:16px; }
+      .type-picker,.profile-picker { box-sizing:border-box; width:100%; padding:12px; border:1px solid var(--divider-color); border-radius:8px; background:var(--card-background-color); color:var(--primary-text-color); font-size:16px; }
+      .profile-desc { margin-bottom: 14px; }
       .enrichment-picker input{box-sizing:border-box;width:100%;padding:10px;border:1px solid var(--divider-color);border-radius:8px;background:var(--card-background-color);color:var(--primary-text-color)}
       .enrichment-auto{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin:10px 0}.enrichment-auto small{grid-column:1/3;color:var(--secondary-text-color);font-size:12px}
       .editor-info,

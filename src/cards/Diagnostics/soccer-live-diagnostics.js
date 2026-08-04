@@ -169,6 +169,12 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       [this._t("diag.upcoming"), attrs.schedule_upcoming_count ?? attrs.upcoming_matches_count],
       [this._t("diag.recent"), attrs.schedule_recent_count ?? attrs.finished_matches_count],
       [this._t("diag.requests"), attrs.request_count],
+      [
+        this._t("diag.polling"),
+        attrs.effective_poll_interval != null
+          ? `${attrs.effective_poll_interval}s · ${String(attrs.polling_reason || "normal").replaceAll("_", " ")}`
+          : null,
+      ],
       [this._t("diag.last_update"), lastUpdate],
       [this._t("diag.sensor_age"), this._age(lastUpdate)],
       [this._t("quality.completeness"), quality.average_completeness != null ? `${quality.average_completeness}%` : null],

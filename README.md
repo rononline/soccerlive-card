@@ -18,6 +18,11 @@ Companion for the [Soccer Live integration](https://github.com/rononline/soccerl
 4. Select your team's **`next_*`** entity (`soccer_live_next_{competition}_{team}`) — that's the sensor the Team, Countdown and Match Center cards use.
 5. Done — the Team card renders automatically. Switch the **card type** in the editor to explore the others.
 
+The editor also offers six **quick profiles**: Simple, Matchday, Live,
+Analysis, Club dashboard and Compact mobile. A profile chooses sensible card
+settings while retaining your entity, supplementary sources, language and
+appearance; the normal controls remain available afterwards.
+
 ![Team card](images/team.png)
 
 ---
@@ -86,6 +91,7 @@ a **phase-aware** mode that follows preview, live play and review automatically.
 - 🩺 **Actionable data alerts** — Match Center and Diagnostics explain stale live data, provider errors, conflicting sources and fixture changes when schema v5 data is available
 - 🏁 **Competition race** — actual schedule context, projections, virtual table impact and position history with schema-v7 standings data
 - 🧭 **Schema-v8 insights** — source capability reasons, season rollover state, structured post-match summaries and mathematical title/Europe/relegation milestones
+- 🪶 **Schema-v9 on-demand details** — compatible sensors fetch a fixture's heavy timeline, statistics and lineup sections only when you open it; standalone and third-party sensors keep their existing behavior
 
 ---
 
@@ -665,6 +671,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Competition race and standings history (schema v6) | v3.14.0 |
 | Race v2, club provenance, setup status and API-Football brackets (schema v7) | v3.15.0 |
 | Native match-state entities, unified enrichment, capability/season/summary contract and race milestones (schema v8) | v3.16.0 |
+| Adaptive polling and on-demand match-detail discovery (schema v9) | v3.43.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -704,7 +711,7 @@ evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. Shared popup sections and editor styles
 prevent the 20 distinct cards from carrying their own copies. `npm run build`
 reports both raw and gzip size and enforces a 735 KiB ceiling, with a preferred
-720 KiB target. The current bundle is 715 KiB (roughly 181 KiB gzip).
+720 KiB target. The current bundle is 712.0 KiB (173.8 KiB gzip).
 
 ---
 

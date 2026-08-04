@@ -70,6 +70,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._lastMatchState = null;
     this._selectedEventId = null;
     this._detailsLoading = false;
+    this._detailRequests = new Set();
     this._manualTab = false;
   }
 
@@ -109,10 +110,24 @@ class SoccerLiveMatchCenterCard extends LitElement {
   async _chooseMatch(eventId, attrs) {
     this._selectedEventId = String(eventId);
     const match = (attrs?.matches || []).find(item => String(item.event_id) === String(eventId));
-    if (!match || !attrs?.detail_service || matchHasDetails(match)) return;
+    await this._loadMatchDetails(match, attrs);
+  }
+
+  async _loadMatchDetails(match, attrs) {
+    const eventId = String(match?.event_id || '');
+    if (
+      !eventId || !attrs?.detail_service || matchHasDetails(match)
+      || this._detailRequests.has(eventId)
+    ) return;
+    this._detailRequests.add(eventId);
     this._detailsLoading = true;
-    try { await requestMatchDetails(this.hass, attrs, match); } catch (_) { /* optional enhancement */ }
-    this._detailsLoading = false;
+    try {
+      if (!await requestMatchDetails(this.hass, attrs, match)) this._detailRequests.delete(eventId);
+    } catch (_) {
+      this._detailRequests.delete(eventId);
+    } finally {
+      this._detailsLoading = false;
+    }
   }
 
   updated(changedProperties) {
@@ -150,6 +165,10 @@ class SoccerLiveMatchCenterCard extends LitElement {
     this._activeTab = id;
     if (manual) this._manualTab = true;
     this._tlFilter = 'all';
+    if (id !== 'overview') {
+      const attrs = this.hass?.states?.[this._config.entity]?.attributes;
+      this._loadMatchDetails(this._selectMatch(attrs), attrs);
+    }
     try { sessionStorage.setItem(`soccer-mc-tab:${this._config.entity}`, id); } catch (_) {}
   }
 

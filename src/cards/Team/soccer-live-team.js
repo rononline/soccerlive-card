@@ -328,6 +328,7 @@ class SoccerLiveTeamCard extends LitElement {
     const attrs = this.hass?.states?.[this._config.entity]?.attributes;
     if (attrs?.detail_service && !matchHasDetails(match)) {
       try { await requestMatchDetails(this.hass, attrs, match); } catch (_) { /* optional enhancement */ }
+      finally { this.requestUpdate(); }
     }
   }
   closePopup() { this.showPopup = false; }
