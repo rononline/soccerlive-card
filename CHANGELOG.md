@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.44.0 (2026-08-04)
+
+- schema v10: consume provider-neutral preview factors, five-minute momentum and factual post-match milestones in Match Center and Matches
+- match analysis: show standings context, absences, a supplied player to watch, turning points and observed review facts only when data exists
+- shared rendering: reuse one momentum model and renderer across match surfaces to reduce behavioral and bundle duplication
+- diagnostics: show the first-install checklist, coordinator refresh cycles and phase-aware request planner with allowed/deferred enrichment sections
+- standalone compatibility: every new block remains capability-based and disappears cleanly for older, standard or third-party sensors
+- i18n/tests: translate the new analysis and diagnostics UI in all seven languages and add unit, smoke and visual-regression coverage
+
 ## v3.43.2 (2026-08-04)
 
 - provider neutrality: remove source-specific names from public documentation, release notes and card labels; private integrations now appear as a translated generic private source

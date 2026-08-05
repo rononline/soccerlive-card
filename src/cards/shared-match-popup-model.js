@@ -26,8 +26,13 @@ export function formResults(value) {
 export function prematchContext(match) {
   const m = match || {};
   const preview = m.preview || {};
-  const homeForm = formResults(preview.home_form || m.home_form);
-  const awayForm = formResults(preview.away_form || m.away_form);
+  const factors = Array.isArray(m.preview_analysis?.factors) ? m.preview_analysis.factors : [];
+  const form = factors.find(item => item?.code === 'form') || {};
+  const standings = factors.find(item => item?.code === 'standings') || {};
+  const absences = factors.find(item => item?.code === 'absences') || null;
+  const featured = factors.find(item => item?.code === 'player_to_watch')?.value || null;
+  const homeForm = formResults(preview.home_form || m.home_form || form.home);
+  const awayForm = formResults(preview.away_form || m.away_form || form.away);
   const h2h = Array.isArray(m.head_to_head) ? m.head_to_head : [];
   const hasStandings = [m.home_rank, m.away_rank, m.home_standing_summary, m.away_standing_summary].some(value => value !== null && value !== undefined && value !== '' && value !== 'N/A');
   return {
@@ -35,7 +40,13 @@ export function prematchContext(match) {
     awayForm,
     h2h: h2h.slice(0, 5),
     h2hCount: h2h.length || Number(preview.h2h_count || 0),
-    hasStandings,
+    hasStandings: hasStandings || standings.home != null || standings.away != null,
+    standings: {
+      home: m.home_rank ?? standings.home ?? null,
+      away: m.away_rank ?? standings.away ?? null,
+    },
+    absences,
+    featured,
     competition: m.competition_name || m.league_name || '',
     round: m.week_number ?? m.round ?? '',
   };
@@ -44,6 +55,7 @@ export function prematchContext(match) {
 export function reviewContext(match) {
   const review = match?.review || {};
   const summary = match?.match_summary || {};
+  const analysis = match?.post_match_analysis || {};
   const scorers = Array.isArray(review.scorers)
     ? review.scorers
     : (summary.goal_scorers || []).map(player => ({ player }));
@@ -51,16 +63,19 @@ export function reviewContext(match) {
   const expectedGoals = review.expected_goals || (
     summary.home_xg != null || summary.away_xg != null
       ? { home: summary.home_xg, away: summary.away_xg }
-      : null
+      : (analysis.home_xg != null || analysis.away_xg != null
+        ? { home: analysis.home_xg, away: analysis.away_xg }
+        : null)
   );
-  const playerOfMatch = review.player_of_the_match || match?.player_of_the_match || summary.player_of_the_match || null;
+  const playerOfMatch = review.player_of_the_match || match?.player_of_the_match || summary.player_of_the_match || analysis.player_of_the_match || null;
   return {
     scorers,
     playerOfMatch,
     rated,
     expectedGoals,
     standout: review.standout_stat || null,
-    present: Boolean(scorers.length || playerOfMatch || rated.length || expectedGoals || review.standout_stat),
+    turningPoint: analysis.turning_point || null,
+    present: Boolean(scorers.length || playerOfMatch || rated.length || expectedGoals || review.standout_stat || analysis.turning_point),
   };
 }
 
@@ -98,6 +113,23 @@ export function predictionOutcome(match) {
 }
 
 export function derivedMatchStory(match) {
+  const analysed = Array.isArray(match?.post_match_analysis?.milestones)
+    ? match.post_match_analysis.milestones.map(item => ({
+      ...item,
+      type: item.code,
+    }))
+    : [];
+  const turning = match?.post_match_analysis?.turning_point;
+  if (analysed.length) {
+    if (turning?.code === 'decisive_goal') {
+      const index = analysed.findIndex(item => (
+        item.minute === turning.minute
+        && (item.player || '') === (turning.player || '')
+      ));
+      if (index >= 0) analysed[index] = { ...analysed[index], ...turning, type: 'decisive_goal' };
+    }
+    return analysed;
+  }
   const events = (Array.isArray(match?.key_events) ? match.key_events : [])
     .filter(event => event && (isGoalEvent(event) || /red/i.test(`${event.type || ''} ${event.type_text || ''}`)))
     .sort((a, b) => Number(a.minute ?? a.clock ?? 0) - Number(b.minute ?? b.clock ?? 0));
@@ -135,6 +167,19 @@ export function derivedMatchStory(match) {
   if (decisive && decisive !== goals[0]) story.push({ ...decisive, type: 'decisive_goal', minute: decisive.minute ?? decisive.clock });
   return [...new Map(story.map(item => [`${item.type}:${item.minute}:${item.player || item.athletes?.[0] || ''}`, item])).values()]
     .sort((a, b) => Number(a.minute || 0) - Number(b.minute || 0));
+}
+
+export function momentumPoints(match) {
+  const direct = Array.isArray(match?.momentum) ? match.momentum : [];
+  if (direct.length) return direct;
+  const points = match?.momentum_analysis?.points;
+  if (!Array.isArray(points)) return [];
+  return points.map(point => ({
+    minute: point.minute,
+    value: Number(point.net) || 0,
+    home: Number(point.home) || 0,
+    away: Number(point.away) || 0,
+  }));
 }
 
 export function matchNarrative(match) {

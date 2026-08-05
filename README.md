@@ -85,6 +85,7 @@ a **phase-aware** mode that follows preview, live play and review automatically.
 - 🗃️ **Season archive** — season, competition, opponent, result and home/away filters; trends, comparisons, import/export and optional external history
 - ⚡ **Lazy editor execution** — card elements remain immediately available for legacy direct YAML, while editors load only when opened; HACS still installs one bundle
 - 🏟️ **Phase-aware match details** — preview, live and review content can include form, standings, H2H, lineups, statistics, predictions, absentees and a derived match story
+- 📈 **Schema-v10 match analysis** — observed preview factors, five-minute event momentum and factual post-match turning points appear only when the sensor supplies enough real data
 - 👥 **Club dashboard** — optional records, selection analysis, availability, expected/official lineup, team news, player profiles, injuries, market values and transfer windows
 - ♿ **Accessible interaction** — translated controls, keyboard-operable rows and modal semantics for interactive Club details
 - 🧭 **Keyboard & motion preferences** — Match Center tabs support arrow/Home/End navigation, match rows open with Enter/Space, focus is visible and reduced-motion preferences disable decorative animation
@@ -92,6 +93,7 @@ a **phase-aware** mode that follows preview, live play and review automatically.
 - 🏁 **Competition race** — actual schedule context, projections, virtual table impact and position history with schema-v7 standings data
 - 🧭 **Schema-v8 insights** — source capability reasons, season rollover state, structured post-match summaries and mathematical title/Europe/relegation milestones
 - 🪶 **Schema-v9 on-demand details** — compatible sensors fetch a fixture's heavy timeline, statistics and lineup sections only when you open it; standalone and third-party sensors keep their existing behavior
+- 🧠 **Schema-v10 diagnostics** — Setup checklist, shared refresh-cycle counters and a phase-aware optional-request plan explain first-install and quota behavior
 
 ---
 
@@ -251,6 +253,9 @@ match and a compact match story. Missing blocks are omitted instead of rendered
 as empty placeholders.
 Match Center and the Matches popup can also show which provider supplied each
 section, how fresh it is, and a compact score/comeback/xG/attempts narrative.
+With schema v10 they prefer the integration's observed preview factors,
+five-minute momentum buckets and chronological post-match milestones. These
+blocks are optional, so older and standalone sensors keep the same card layout.
 
 ### 📰 News
 
@@ -420,6 +425,9 @@ The Overview tab is phase-aware: before kick-off it can show preview context;
 after full time it can compare the prediction with the result and show optional
 xG and match-story highlights. These blocks appear only when the sensor
 provides sufficient data.
+During live play the Stats tab can also show a shared five-minute momentum chart
+derived from supplied attacking events. The review can name an observed turning
+point without guessing when the event stream is incomplete.
 
 > Works best with a `next_*` or `all_mixed_*` sensor. ESPN sensors enrich the match through the ESPN summary endpoint; API-Football sensors expose fixture events, statistics and lineups when summary enrichment is enabled in the integration. Also shows a **weather badge** for the match venue.
 
@@ -535,6 +543,9 @@ Shows sensor type, API status, match counters, request counters and the last suc
 With schema v8 it also shows a capability matrix explaining whether each block
 is available, not published yet, unsupported by the provider or temporarily
 unavailable, plus season and external-archive synchronization status.
+With schema v10 it additionally renders the Setup sensor's first-install
+checklist, coordinator-cycle counters and the active request-priority plan. This
+makes quota-based deferrals distinguishable from unsupported or missing data.
 
 When `enrichment_entity` is configured, Diagnostics also shows the primary and
 supplementary providers, how many match fields were filled and how many
@@ -672,6 +683,7 @@ Some card features require a minimum version of the [Soccer Live integration](ht
 | Race v2, club provenance, setup status and API-Football brackets (schema v7) | v3.15.0 |
 | Native match-state entities, unified enrichment, capability/season/summary contract and race milestones (schema v8) | v3.16.0 |
 | Adaptive polling and on-demand match-detail discovery (schema v9) | v3.43.0 |
+| Preview/momentum/post-match analysis, setup checklist and request planner (schema v10) | v3.44.0 |
 
 Cards degrade gracefully when older integration versions are used — features simply won't appear if the data is absent.
 
@@ -709,9 +721,10 @@ HACS installs one production asset. The build therefore keeps all legacy card
 elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. Shared popup sections and editor styles
-prevent the 20 distinct cards from carrying their own copies. `npm run build`
+prevent the distinct cards from carrying their own copies. `npm run build`
 reports both raw and gzip size and enforces a 735 KiB ceiling, with a preferred
-720 KiB target. The current bundle is 712.0 KiB (173.8 KiB gzip).
+720 KiB target. The current bundle is measured during every release build and
+must remain below that enforced ceiling.
 
 ---
 

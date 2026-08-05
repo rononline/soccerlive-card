@@ -440,6 +440,8 @@ test('enriched post-match insights and selection impact stay capability based', 
   await open(page, { mode: 'matrix', type: 'match-center', phase: 'post', lang: 'nl' });
   await expect(target(page)).toContainText('Verwachting versus werkelijkheid');
   await expect(target(page)).toContainText('Thuiswinst');
+  await expect(target(page)).toContainText('Kantelpunt');
+  await expect(target(page)).toContainText('Middenvelder');
 
   await open(page, { mode: 'matrix', type: 'matches', phase: 'post', lang: 'nl' });
   await page.evaluate(() => document.querySelector('soccer-live-matches').shadowRoot.querySelector('.match-row').click());
@@ -490,6 +492,19 @@ test('data alerts and keyboard navigation remain accessible', async ({ page }) =
   await expect(row).toHaveAttribute('role', 'button');
   await row.press('Enter');
   await expect(page.locator('dialog.soccer-live-matches-popup-portal')).toBeVisible();
+});
+
+test('schema-v10 momentum and installation planning are visible when supplied', async ({ page }) => {
+  await open(page, { mode: 'matrix', type: 'match-center', phase: 'live', lang: 'nl' });
+  await target(page).getByRole('tab', { name: 'Stats' }).click();
+  await expect(target(page)).toContainText('Wedstrijdmomentum');
+  await expect(target(page).locator('.sl-analysis-chart')).toHaveCount(1);
+
+  await open(page, { mode: 'matrix', type: 'diagnostics', phase: 'live', lang: 'nl' });
+  await expect(target(page)).toContainText('Installatiecontrole');
+  await expect(target(page)).toContainText('100%');
+  await expect(target(page)).toContainText('Aanvraagplanning');
+  await expect(target(page)).toContainText('Voorspellingen');
 });
 
 test('team competitions replaces a provider clock placeholder with Live', async ({ page }) => {

@@ -13,6 +13,7 @@ import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '..
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { standingText } from '../shared-standing.js';
 import { kickoffMinutes, kickoffDurationParts, prematchContext, reviewContext, predictionOutcome, derivedMatchStory, matchNarrative } from '../shared-match-popup-model.js';
+import { analysisStyles, renderMomentumAnalysis } from '../shared-analysis.js';
 import { renderSourceSections, sourceStatusStyles } from '../shared-source-status.js';
 import { isFinishedMatch, matchTimestamp, sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
@@ -694,6 +695,7 @@ class SoccerLiveMatchesCard extends LitElement {
             ${prematchStyles.cssText}
             ${matchMetaStyles.cssText}
             ${sourceStatusStyles.cssText}
+            ${analysisStyles.cssText}
         .soccer-live-matches-popup-portal {
           border: 0;
           padding: 0;
@@ -771,9 +773,6 @@ class SoccerLiveMatchesCard extends LitElement {
         /* Lineup & Timeline sections */
         .mp-section { margin-bottom: 14px; padding: 14px; border-radius: 10px; border-left: 3px solid; }
         .mp-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; }
-        .mp-momentum { width:100%; height:90px; overflow:visible; }
-        .mp-momentum line { stroke:rgba(148,163,184,.3); stroke-width:1; }
-        .mp-momentum path { fill:none; stroke:var(--cl-accent,#6366f1); stroke-width:3; vector-effect:non-scaling-stroke; }
         .mp-shotmap { position:relative; height:190px; border:1px solid rgba(255,255,255,.3); border-radius:8px; background:linear-gradient(90deg,rgba(16,185,129,.12),rgba(16,185,129,.05)); }
         .mp-shotmap::after { content:''; position:absolute; left:50%; top:0; bottom:0; border-left:1px solid rgba(255,255,255,.25); }
         .mp-shot { position:absolute; width:9px; height:9px; border-radius:50%; background:#f8fafc; border:2px solid #64748b; transform:translate(-50%,-50%); z-index:1; }
@@ -941,6 +940,7 @@ class SoccerLiveMatchesCard extends LitElement {
       ${review.playerOfMatch ? html`<div><small>${this._t('popup.player_of_match')}</small><strong>${review.playerOfMatch.name || review.playerOfMatch.player}</strong></div>` : ''}
       ${review.expectedGoals ? html`<div><small>xG</small><strong>${review.expectedGoals.home ?? '–'} – ${review.expectedGoals.away ?? '–'}</strong></div>` : ''}
       ${review.standout ? html`<div><small>${review.standout.key}</small><strong>${review.standout.home} – ${review.standout.away}</strong></div>` : ''}
+      ${review.turningPoint ? html`<div><small>${this._t('story.turning_point')}</small><strong>${review.turningPoint.player || review.turningPoint.team || '–'}${review.turningPoint.minute != null ? ` · ${review.turningPoint.minute}'` : ''}</strong></div>` : ''}
       ${review.scorers.length ? html`<div><small>${this._t('event.goal')}</small><strong>${review.scorers.map(item => `${item.player}${item.minute != null ? ` ${item.minute}'` : ''}`).join(' · ')}</strong></div>` : ''}
     </div></div>`;
   }
@@ -973,19 +973,7 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _renderMomentum(m) {
-    const points = m.momentum || [];
-    if (!points.length) return '';
-    const width = 300, height = 90, mid = height / 2;
-    const max = Math.max(1, ...points.map(point => Math.abs(Number(point.value) || 0)));
-    const path = points.map((point, index) => {
-      const x = points.length === 1 ? 0 : index * width / (points.length - 1);
-      const y = mid - ((Number(point.value) || 0) / max) * (mid - 8);
-      return `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
-    }).join(' ');
-    return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.momentum')}</h5>
-      <svg class="mp-momentum" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
-        <line x1="0" y1="${mid}" x2="${width}" y2="${mid}"></line><path d="${path}"></path>
-      </svg></div>`;
+    return renderMomentumAnalysis(m, { t: key => this._t(key) });
   }
 
   _renderShotmap(m) {

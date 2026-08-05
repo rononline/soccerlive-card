@@ -107,6 +107,13 @@
       sensor_type: "team_match",
       provider: "api_football",
       config_entry_id: "preview-feyenoord",
+      data_schema_version: 10,
+      request_priority_plan: {
+        phase: "prematch", quota_level: "normal",
+        priority: ["lineup", "prematch", "h2h", "club", "timeline", "statistics"],
+        allowed: ["lineup", "prematch", "h2h", "club", "timeline", "statistics"],
+        deferred: [],
+      },
       data_quality: { provider: "api_football", average_completeness: 82, level: "good", issues: [], conflicts: [] },
       standings_history: [
         { captured_at: "2026-07-10T12:00:00Z", groups: [{ standings: [
@@ -217,11 +224,35 @@
       Object.assign(attrs.matches[0], {
         state: "in", status: "In Progress", period: "2H", clock: "67",
         home_score: "2", away_score: "1",
+        momentum_analysis: {
+          method: "event_pressure", bucket_minutes: 5, signal_count: 4,
+          points: [
+            { minute: 10, home: 5, away: 0, net: 5 },
+            { minute: 35, home: 1, away: 3, net: -2 },
+            { minute: 65, home: 3, away: 1, net: 2 },
+          ],
+        },
       });
+      attrs.request_priority_plan = {
+        phase: "live", quota_level: "constrained",
+        priority: ["timeline", "lineup", "statistics", "prematch", "h2h", "club"],
+        allowed: ["timeline", "lineup", "statistics"],
+        deferred: ["prematch", "h2h", "club"],
+      };
     } else if (params.get("phase") === "post" && attrs.matches[0]) {
       Object.assign(attrs.matches[0], {
         state: "post", status: "Full Time", period: "FT", clock: "",
         home_score: "3", away_score: "1",
+        post_match_analysis: {
+          score: "3-1", winner: "home",
+          milestones: [
+            { code: "opening_goal", minute: 11, team: "Feyenoord", player: "Calvin Stengs", score: "1-0" },
+            { code: "equalizer", minute: 45, team: "Rayo Vallecano", player: "Raul de Tomas", score: "1-1" },
+            { code: "decisive_goal", minute: 61, team: "Feyenoord", player: "Middenvelder", score: "2-1" },
+          ],
+          turning_point: { code: "decisive_goal", minute: 61, team: "Feyenoord", player: "Middenvelder", score: "2-1" },
+          player_of_the_match: "Middenvelder", home_xg: 2.1, away_xg: 0.8,
+        },
       });
     }
 
@@ -261,6 +292,27 @@
       language: params.get("lang") || "en",
       locale: { language: params.get("lang") || "en" },
     };
+    hass.states["sensor.preview_setup"] = {
+      state: "ready",
+      attributes: {
+        config_entry_id: "preview-feyenoord",
+        configured_entities: 4,
+        coordinator_cycle_count: 12,
+        scheduled_refreshes: 2,
+        capability_matrix: { fixtures: { available: true }, analysis: { available: true } },
+        installation_check: {
+          status: "ready", score: 100,
+          checks: [
+            { code: "configuration", status: "pass" },
+            { code: "authentication", status: "pass" },
+            { code: "provider_data", status: "pass" },
+            { code: "fixtures", status: "pass" },
+            { code: "season", status: "pass" },
+            { code: "quota", status: "pass" },
+          ],
+        },
+      },
+    };
     window.__previewHass = hass;
 
     // Build the config from URL params (only set the axes that are provided).
@@ -292,6 +344,15 @@
         injuries_home: [{ player: "Spits", reason: "Knee" }],
         broadcasts: ["ESPN"],
         detail_capabilities: ["form", "h2h", "lineups"],
+        preview_analysis: {
+          factor_count: 4,
+          factors: [
+            { code: "form", home: ["W", "W", "D", "W", "W"], away: ["L", "D", "W", "L", "L"] },
+            { code: "standings", home: 2, away: 11 },
+            { code: "absences", home: 1, away: 0 },
+            { code: "player_to_watch", value: "Middenvelder" },
+          ],
+        },
       });
     }
     document.getElementById("target").className = mode === "multiteam" ? "card" : mode;

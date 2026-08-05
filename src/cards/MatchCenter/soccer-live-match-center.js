@@ -16,7 +16,7 @@ import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
 import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
 import { renderPitch, pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails } from '../shared-detail-loader.js';
-import { predictionOutcome, derivedMatchStory, matchNarrative } from '../shared-match-popup-model.js';
+import { predictionOutcome, derivedMatchStory, matchNarrative, prematchContext, reviewContext } from '../shared-match-popup-model.js';
 import { sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { h2hResult } from '../shared-h2h-model.js';
 import { readinessStyles, renderReadiness } from '../shared-readiness.js';
@@ -24,6 +24,7 @@ import { renderSourceSections, sourceStatusStyles } from '../shared-source-statu
 import { alertsForMatch, dataAlertStyles, renderDataAlerts } from '../shared-data-alerts.js';
 import { archiveMatchesFromState, historicalH2H } from '../shared-archive-model.js';
 import { standingsForMatch, virtualStandingsImpact } from '../shared-race-model.js';
+import { analysisStyles, renderMomentumAnalysis } from '../shared-analysis.js';
 
 const TAB_IDS = ['overview', 'stats', 'timeline', 'lineup', 'h2h'];
 const PREVIEW_COVERAGE_KEYS = {
@@ -361,12 +362,12 @@ class SoccerLiveMatchCenterCard extends LitElement {
         ` : ''}
         ${match.week_label ? html`<div class="ov-meta"><span class="ov-cal">◈</span> ${match.week_label}</div>` : ''}
       </div>
-      ${this._renderPreview(match.preview)}
+      ${this._renderPreview(match)}
       ${impact ? html`<section class="brief-card impact">
         <h4>${this._t('race.standings_impact')}</h4>
         <div class="impact-row"><strong>${impact.team}</strong><b>${impact.previous_rank} → ${impact.rank}</b><span>${impact.change > 0 ? `▲ ${impact.change}` : impact.change < 0 ? `▼ ${Math.abs(impact.change)}` : '–'} · ${impact.points} ${this._t('col.points')}</span></div>
       </section>` : ''}
-      ${this._renderReview(match.review)}
+      ${this._renderReview(match)}
       ${this._renderStructuredSummary(
         match.review && Object.keys(match.review).length ? null : match.match_summary
       )}
@@ -385,28 +386,35 @@ class SoccerLiveMatchCenterCard extends LitElement {
     `;
   }
 
-  _renderPreview(preview) {
-    if (!preview || (!preview.home_form && !preview.away_form && !Number(preview.h2h_count))) return '';
+  _renderPreview(match) {
+    const preview = match?.preview || {};
+    const context = prematchContext(match);
+    if (!context.homeForm.length && !context.awayForm.length && !context.h2hCount && !context.hasStandings && !context.absences && !context.featured) return '';
     const form = value => value ? html`<div class="brief-form">${String(value).split('').map(result => html`<b class=${result.toLowerCase()}>${result}</b>`)}</div>` : html`<span>—</span>`;
     return html`<section class="brief-card preview">
       <h4>${this._t('match.preview')}</h4>
-      <div class="brief-form-row">${form(preview.home_form)}<span>${this._t('team.form')}</span>${form(preview.away_form)}</div>
-      ${preview.h2h_count ? html`<p>${this._t('match.h2h_available', { n: preview.h2h_count })}</p>` : ''}
+      ${(context.homeForm.length || context.awayForm.length) ? html`<div class="brief-form-row">${form(context.homeForm.join(''))}<span>${this._t('team.form')}</span>${form(context.awayForm.join(''))}</div>` : ''}
+      ${context.h2hCount ? html`<p>${this._t('match.h2h_available', { n: context.h2hCount })}</p>` : ''}
+      ${context.hasStandings ? html`<p>${this._t('match.standings_context')}: <strong>${context.standings.home ?? '—'} – ${context.standings.away ?? '—'}</strong></p>` : ''}
+      ${context.absences ? html`<p>${this._t('match.absence_context')}: <strong>${context.absences.home ?? 0} – ${context.absences.away ?? 0}</strong></p>` : ''}
+      ${context.featured ? html`<p>⭐ ${this._t('match.player_to_watch')}: <strong>${context.featured.name || context.featured}</strong></p>` : ''}
       ${preview.coverage?.length ? html`<div class="brief-chips">${preview.coverage.map(item => html`<span>${formatPreviewCoverage(item, key => this._t(key))}</span>`)}</div>` : ''}
     </section>`;
   }
 
-  _renderReview(review) {
-    if (!review) return '';
-    const xg = review.expected_goals || {};
-    const standout = review.standout_stat;
+  _renderReview(match) {
+    const review = reviewContext(match);
+    if (!review.present) return '';
+    const xg = review.expectedGoals || {};
+    const standout = review.standout;
     return html`<section class="brief-card review">
       <h4>${this._t('match.review')}</h4>
-      ${review.scorers?.length ? html`<div class="brief-scorers">${review.scorers.map(item => html`<span>⚽ ${item.player || '?'} ${item.minute ? `${item.minute}'` : ''}</span>`)}</div>` : ''}
-      ${review.player_of_the_match?.name ? html`<p>⭐ <strong>${review.player_of_the_match.name}</strong>${review.player_of_the_match.rating ? ` · ${review.player_of_the_match.rating}` : ''}</p>` : ''}
+      ${review.scorers.length ? html`<div class="brief-scorers">${review.scorers.map(item => html`<span>⚽ ${item.player || '?'} ${item.minute ? `${item.minute}'` : ''}</span>`)}</div>` : ''}
+      ${review.playerOfMatch ? html`<p>⭐ <strong>${review.playerOfMatch.name || review.playerOfMatch.player || review.playerOfMatch}</strong>${review.playerOfMatch.rating ? ` · ${review.playerOfMatch.rating}` : ''}</p>` : ''}
       ${(xg.home != null || xg.away != null) ? html`<p>xG <strong>${xg.home ?? '—'} – ${xg.away ?? '—'}</strong></p>` : ''}
       ${standout ? html`<p>${translateStatKey(standout.key, key => this._t(key))}: <strong>${standout.home} – ${standout.away}</strong></p>` : ''}
-      ${review.top_rated_players?.length ? html`<div class="brief-ratings">${review.top_rated_players.map(player => html`<span>${player.name}<b>${player.rating}</b></span>`)}</div>` : ''}
+      ${review.turningPoint ? html`<p>${this._t('story.turning_point')}: <strong>${review.turningPoint.player || review.turningPoint.team || '—'}${review.turningPoint.minute != null ? ` · ${review.turningPoint.minute}'` : ''}</strong></p>` : ''}
+      ${review.rated.length ? html`<div class="brief-ratings">${review.rated.map(player => html`<span>${player.name}<b>${player.rating}</b></span>`)}</div>` : ''}
     </section>`;
   }
 
@@ -456,7 +464,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   _renderStats(match) {
     const stats = matchStatRows(match.home_statistics, match.away_statistics)
       .map(row => ({ ...row, label: translateStatKey(row.key, key => this._t(key)) }));
-    if (!stats.length) return html`<p class="empty">${this._t('ui.no_stats_yet')}</p>`;
+    const momentum = renderMomentumAnalysis(match, { t: key => this._t(key) });
+    if (!stats.length && !momentum) return html`<p class="empty">${this._t('ui.no_stats_yet')}</p>`;
     return html`
       <div class="stats-list">
         ${stats.map(s => {
@@ -482,6 +491,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
           `;
         })}
       </div>
+      ${momentum}
     `;
   }
 
@@ -632,7 +642,7 @@ class SoccerLiveMatchCenterCard extends LitElement {
   static getStubConfig()    { return { entity: '' }; }
 
   static get styles() {
-    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, sourceStatusStyles, dataAlertStyles, css`
+    return [skinStyles, soccerCardShellStyles, soccerHeaderStyles, matchMetaStyles, weatherBadgeStyles, pitchStyles, prematchStyles, readinessStyles, sourceStatusStyles, dataAlertStyles, analysisStyles, css`
       ha-card { background: var(--cl-bg); color: var(--cl-text); border-radius: 20px; overflow: hidden; padding: 0; }
       /* Hero wrapper: scopes bg-logos to the header+scoreboard area only */
       .mc-hero-section { position: relative; overflow: hidden; }

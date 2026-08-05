@@ -93,6 +93,10 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       .capability { display:flex; align-items:center; gap:7px; min-width:0; padding:7px 8px; border:1px solid var(--cl-divider); border-radius:9px; background:var(--cl-surface); font-size:10px; }
       .capability b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
       .capability.available i { color:var(--cl-green); }.capability.pending i { color:var(--cl-warning); }.capability.error i,.capability.unavailable i { color:var(--cl-text-2); }
+      .checklist { display:grid; gap:6px; margin-top:8px; }
+      .check { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 8px; border:1px solid var(--cl-divider); border-radius:9px; background:var(--cl-surface); font-size:11px; }
+      .check b { text-transform:uppercase; font-size:9px; letter-spacing:.05em; }
+      .check.pass b { color:var(--cl-green); }.check.warning b,.check.pending b { color:var(--cl-warning); }.check.fail b { color:var(--cl-live); }
       @media (max-width: 420px) {
         .grid, .capabilities { grid-template-columns: 1fr; }
       }
@@ -157,6 +161,9 @@ class SoccerLiveDiagnosticsCard extends LitElement {
     const quality = attrs.data_quality || {};
     const blend = attrs.source_blend || {};
     const setup = this._setupState(attrs.config_entry_id);
+    const installation = setup?.attributes?.installation_check || {};
+    const requestPlan = attrs.request_priority_plan || {};
+    const planCapability = item => ({ lineup: 'lineups', prematch: 'predictions' }[item] || item);
     const clubConflicts = attrs.club?.source_conflicts?.length || 0;
     const capabilityMatrix = attrs.capability_matrix || setup?.attributes?.capability_matrix || {};
     const season = attrs.season_transition || {};
@@ -182,6 +189,8 @@ class SoccerLiveDiagnosticsCard extends LitElement {
       [this._t("diag.club_source_conflicts"), clubConflicts || null],
       [this._t("diag.season_status"), season.status],
       [this._t("diag.archive_sync"), setup?.attributes?.archive_sync_status],
+      [this._t("diag.coordinator_cycles"), setup?.attributes?.coordinator_cycle_count],
+      [this._t("diag.scheduled_refreshes"), setup?.attributes?.scheduled_refreshes],
       ...(blend.secondary ? [
         [this._t("diag.source_blend"), `${blend.primary} + ${blend.secondary}`],
         [this._t("diag.enriched_fields"), blend.enriched_fields],
@@ -213,6 +222,26 @@ class SoccerLiveDiagnosticsCard extends LitElement {
               </div>
             </div>
           ` : ""}
+          ${installation.checks?.length ? html`
+            <div class="recommendations">
+              <div class="label">${this._t('diag.installation_check')} · ${installation.score ?? 0}%</div>
+              <div class="checklist">${installation.checks.map(check => html`
+                <div class="check ${check.status}">
+                  <span>${this._t(`setup.${check.code}`)}</span>
+                  <b>${this._t(`setup.status_${check.status}`)}</b>
+                </div>
+              `)}</div>
+            </div>
+          ` : ''}
+          ${requestPlan.priority?.length ? html`
+            <div class="recommendations">
+              <div class="label">${this._t('diag.request_plan')} · ${this._t(`quota.${requestPlan.quota_level || 'normal'}`)}</div>
+              <div class="chips">
+                ${requestPlan.allowed.map(item => html`<span class="chip">✓ ${this._t(`capability.${planCapability(item)}`)}</span>`)}
+                ${requestPlan.deferred.map(item => html`<span class="chip">⏸ ${this._t(`capability.${planCapability(item)}`)}</span>`)}
+              </div>
+            </div>
+          ` : ''}
           ${quality.average_completeness != null ? html`
             <div class="recommendations">
               <div class="label">${this._t("quality.coverage")} · ${this._t(`quality.${quality.level || 'limited'}`)}</div>

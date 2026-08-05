@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext, predictionOutcome, derivedMatchStory, matchNarrative } from '../../src/cards/shared-match-popup-model.js';
+import { kickoffMinutes, kickoffDurationParts, formResults, prematchContext, reviewContext, predictionOutcome, derivedMatchStory, matchNarrative, momentumPoints } from '../../src/cards/shared-match-popup-model.js';
 
 test('kickoffMinutes uses ISO time and remains null without a valid date', () => {
   const now = new Date('2026-07-23T12:00:00Z').getTime();
@@ -33,6 +33,19 @@ test('prematchContext normalizes form, standings and h2h capability', () => {
   assert.equal(context.round, 3);
 });
 
+test('prematchContext consumes schema-v10 analysis factors', () => {
+  const context = prematchContext({ preview_analysis: { factors: [
+    { code: 'form', home: ['W', 'D'], away: ['L', 'W'] },
+    { code: 'standings', home: 2, away: 9 },
+    { code: 'absences', home: 1, away: 3 },
+    { code: 'player_to_watch', value: 'A. Player' },
+  ] } });
+  assert.deepEqual(context.homeForm, ['W', 'D']);
+  assert.deepEqual(context.standings, { home: 2, away: 9 });
+  assert.deepEqual(context.absences, { code: 'absences', home: 1, away: 3 });
+  assert.equal(context.featured, 'A. Player');
+});
+
 test('reviewContext stays hidden without content and maps provider review', () => {
   assert.equal(reviewContext({}).present, false);
   const review = reviewContext({ review: {
@@ -57,6 +70,29 @@ test('reviewContext uses the schema-v8 structured summary as fallback', () => {
   assert.equal(review.present, true);
   assert.equal(review.scorers[0].player, 'A. Player');
   assert.deepEqual(review.expectedGoals, { home: 1.7, away: 0.8 });
+});
+
+test('reviewContext and story consume schema-v10 post-match analysis', () => {
+  const match = { post_match_analysis: {
+    home_xg: 1.8,
+    away_xg: 0.7,
+    player_of_the_match: { name: 'A. Player' },
+    milestones: [
+      { code: 'opening_goal', minute: 11, player: 'A. Player' },
+      { code: 'goal', minute: 81, player: 'B. Player' },
+    ],
+    turning_point: { code: 'decisive_goal', minute: 81, player: 'B. Player' },
+  } };
+  const review = reviewContext(match);
+  assert.deepEqual(review.expectedGoals, { home: 1.8, away: 0.7 });
+  assert.equal(review.turningPoint.player, 'B. Player');
+  assert.deepEqual(derivedMatchStory(match).map(item => item.type), ['opening_goal', 'decisive_goal']);
+});
+
+test('momentumPoints falls back to event-pressure analysis', () => {
+  assert.deepEqual(momentumPoints({ momentum_analysis: { points: [
+    { minute: 10, home: 3, away: 1, net: 2 },
+  ] } }), [{ minute: 10, home: 3, away: 1, value: 2 }]);
 });
 
 test('predictionOutcome compares the forecast with the final result', () => {
