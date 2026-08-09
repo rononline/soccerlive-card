@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.44.0 (2026-08-04)
+## v3.44.1 (2026-08-09)
+
+- team card: fix a match being labelled "Club Friendlies" / "Oefenwedstrijd" with a generic FIFA logo when the team's `league_info` listed a friendly ahead of the real competition. The card now picks the `league_info` entry that matches the match and prefers the match's own competition name and logo, so an Eredivisie duel is shown as Eredivisie
+- match details: hide the "expected lineup" once a match is live or finished — some providers keep the predicted lineup populated during play, where it's superseded by the actual lineup
+- tests: pure `pickLeagueInfo` and `isPrematchState` unit coverage for both fixes
 
 - schema v10: consume provider-neutral preview factors, five-minute momentum and factual post-match milestones in Match Center and Matches
 - match analysis: show standings context, absences, a supplied player to watch, turning points and observed review facts only when data exists

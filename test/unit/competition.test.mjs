@@ -1,6 +1,30 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { isFriendlyCompetition, displayCompetitionName, resolveCompetitionLogo } from '../../src/cards/shared-competition.js';
+import { isFriendlyCompetition, displayCompetitionName, resolveCompetitionLogo, pickLeagueInfo } from '../../src/cards/shared-competition.js';
+
+test('pickLeagueInfo: matches by name instead of taking the first entry', () => {
+  // Regression: a team's league_info listed a friendly at index 0 while the
+  // live match was an Eredivisie duel, so the card showed the FIFA logo and
+  // "Oefenwedstrijd" instead of the league.
+  const list = [
+    { name: 'Friendlies Clubs', abbreviation: 'Friendlies Clubs', logo_href: 'friendly.png' },
+    { name: 'Eredivisie', abbreviation: 'Netherlands', logo_href: 'eredivisie.png' },
+  ];
+  assert.equal(pickLeagueInfo(list, 'Eredivisie').logo_href, 'eredivisie.png');
+  assert.equal(pickLeagueInfo(list, 'eredivisie').name, 'Eredivisie'); // case-insensitive
+});
+
+test('pickLeagueInfo: no name match with multiple entries -> null (never a wrong guess)', () => {
+  const list = [{ name: 'Friendlies Clubs' }, { name: 'Eredivisie' }];
+  assert.equal(pickLeagueInfo(list, 'La Liga'), null);
+});
+
+test('pickLeagueInfo: falls back to the sole entry, and tolerates junk input', () => {
+  assert.equal(pickLeagueInfo([{ name: 'Premier League' }], 'N/A').name, 'Premier League');
+  assert.equal(pickLeagueInfo([{ name: 'Premier League' }], '').name, 'Premier League');
+  assert.equal(pickLeagueInfo(null, 'Eredivisie'), null);
+  assert.equal(pickLeagueInfo([], 'Eredivisie'), null);
+});
 
 test('isFriendlyCompetition: true for club/generic friendly names (any casing/separators)', () => {
   for (const n of ['Club Friendlies', 'club friendly', 'Friendlies Clubs',

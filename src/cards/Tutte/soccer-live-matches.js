@@ -17,7 +17,7 @@ import { analysisStyles, renderMomentumAnalysis } from '../shared-analysis.js';
 import { renderSourceSections, sourceStatusStyles } from '../shared-source-status.js';
 import { isFinishedMatch, matchTimestamp, sortMatchesByStateAndDate } from '../shared-match-order.js';
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
-import { renderPopupLineup, renderPopupSectionStyles, renderPopupTimeline } from '../shared-match-sections.js';
+import { isPrematchState, renderPopupLineup, renderPopupSectionStyles, renderPopupTimeline } from '../shared-match-sections.js';
 
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
@@ -914,6 +914,9 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _renderExpectedLineup(m) {
+    // Only meaningful before kickoff; hide it once the match is live/finished
+    // even when a provider keeps the predicted fields populated.
+    if (!isPrematchState(m.state)) return '';
     const home = m.predicted_lineup_home || m.expected_lineup_home || [];
     const away = m.predicted_lineup_away || m.expected_lineup_away || [];
     if (!home.length && !away.length) return '';

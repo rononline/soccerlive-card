@@ -90,6 +90,14 @@ export function renderPopupTimeline(match, { translate, prefix = 'mp' }) {
     </div>`;
 }
 
+// The expected/predicted lineup is only meaningful before kickoff; once a match
+// is live or finished the actual lineup supersedes it, yet some providers keep
+// the predicted fields populated. Unknown/empty state counts as pre-match so a
+// genuine pre-match preview is never hidden.
+export function isPrematchState(state) {
+  return !state || state === 'pre';
+}
+
 export function splitLineup(players, startersOnly = false) {
   const list = Array.isArray(players) ? players : [];
   const hasFlags = list.some(player => player.starter === true || player.starter === false);

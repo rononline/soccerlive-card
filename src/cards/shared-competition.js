@@ -60,6 +60,21 @@ export function resolveCompetitionLogo({ competitionName, competitionLogo, fallb
   return logo || fallbackLogo;
 }
 
+// Pick the league_info entry that belongs to a given competition name.
+// `league_info` can list several of a team's competitions (e.g. a friendly
+// alongside the league), so naively taking the first entry can grab an
+// unrelated one and mislabel the match. Match by name; only fall back to the
+// sole entry when there's exactly one, so a multi-entry list never silently
+// resolves to the wrong competition.
+export function pickLeagueInfo(leagueList, leagueName) {
+  const list = Array.isArray(leagueList) ? leagueList : [];
+  const name = leagueName && leagueName !== 'N/A' ? String(leagueName).toLowerCase() : '';
+  const matched = name
+    ? list.find(l => l && l.name && String(l.name).toLowerCase() === name)
+    : null;
+  return matched || (list.length === 1 ? list[0] : null);
+}
+
 export function displayCompetitionName(name, lang = 'en') {
   const raw = String(name || '').trim();
   if (!raw || raw === 'N/A') return '';

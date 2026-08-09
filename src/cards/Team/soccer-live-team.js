@@ -13,7 +13,7 @@ import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, translateMatchStatus } from '../shared-event-i18n.js';
-import { displayCompetitionName, resolveCompetitionLogo } from '../shared-competition.js';
+import { displayCompetitionName, resolveCompetitionLogo, pickLeagueInfo } from '../shared-competition.js';
 import { pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
@@ -566,11 +566,16 @@ class SoccerLiveTeamCard extends LitElement {
     }
 
     const match = attributes.matches[0];
-    const leagueInfo = attributes.league_info ? attributes.league_info[0] : null;
-    const _leagueName = (match.league_name && match.league_name !== 'N/A' ? match.league_name : (leagueInfo && leagueInfo.name)) || '';
+    const _leagueName = (match.league_name && match.league_name !== 'N/A' ? match.league_name : '') || '';
+    // league_info can list several of the team's competitions; pick the one that
+    // matches THIS match rather than blindly taking the first entry (which may
+    // be an unrelated friendly and would mislabel the card).
+    const leagueInfo = pickLeagueInfo(attributes.league_info, _leagueName);
     const leagueLogo = resolveCompetitionLogo({
-      competitionName: _leagueName,
-      competitionLogo: leagueInfo && leagueInfo.logo_href,
+      competitionName: _leagueName || (leagueInfo && leagueInfo.name) || '',
+      competitionLogo: (match.league_logo && match.league_logo !== 'N/A')
+        ? match.league_logo
+        : (leagueInfo && leagueInfo.logo_href),
       fallbackLogo: null,
       isFriendly: match.is_friendly,
     });
@@ -578,10 +583,13 @@ class SoccerLiveTeamCard extends LitElement {
     const isFinished = match.state === 'post';
     const showScore = isLive || isFinished;
     const lang = resolveLang(this.hass, this._config);
-    const competitionLabelRaw = (leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'N/A')
-      ? leagueInfo.abbreviation
-      : (match.league_name && match.league_name !== 'N/A'
-          ? match.league_name
+    // Prefer the match's own competition name (authoritative per match, like the
+    // Matches card) over league_info.abbreviation, which some providers fill with
+    // the country ("Netherlands") or a stale first-entry value.
+    const competitionLabelRaw = (match.league_name && match.league_name !== 'N/A')
+      ? match.league_name
+      : ((leagueInfo && leagueInfo.abbreviation && leagueInfo.abbreviation !== 'N/A')
+          ? leagueInfo.abbreviation
           : (match.season_info && match.season_info !== 'N/A' && this._shouldShowPhase(match.season_info)
               ? this._translatePhase(match.season_info)
               : ''));

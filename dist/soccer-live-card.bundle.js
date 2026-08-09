@@ -1530,13 +1530,13 @@
             </div>
           `})}
       </div>
-    `}render(){if(A(this,this._config),!this.hass||!this._config)return H(this._t("ui.loading"));const e=this._config.entity,t=this.hass.states[e];if(this.compact=(0,q.Oc)(this._config,t?.attributes?.card_defaults),!t){const t=Z.get(e);if(!t||!t.data.matches)return W("⚠️",this._t("ui.entity_not_found"),`${this._t("ui.entity_not_found")}: ${e}`,this._t("ui.check_entity_config"));this._cachedData=t.data}if(t&&"unavailable"===t.state){const t=Z.get(e);if(!t||!t.data.matches)return W("📡",this._t("ui.sensor_unavailable"),this._t("ui.sensor_unavailable_hint"),this._t("ui.restart_ha"));this._cachedData=t.data}if(t&&this._isLoading)return Date.now()-this._loadingStarted>1e4?W("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):H(this._t("ui.loading"));const a=t&&"unavailable"!==t.state?t.attributes:this._cachedData;if(!a||!a.matches||0===a.matches.length)return K(a,e=>this._t(e),()=>{const e=this._config.entity||"";return e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed")||e.includes("soccer_live_next")||e.includes("soccer_live_all_mixed")?U("📅",this._t("ui.off_season"),this._t("team.off_season")):W("⚠️",this._t("ui.wrong_entity_type"),e,this._t("ui.wrong_entity_type_hint"))});const n=a.matches[0],r=a.league_info?a.league_info[0]:null,o=ke({competitionName:(n.league_name&&"N/A"!==n.league_name?n.league_name:r&&r.name)||"",competitionLogo:r&&r.logo_href,fallbackLogo:null,isFriendly:n.is_friendly}),l="in"===n.state,c="post"===n.state,d=l||c,p=(0,s.$c)(this.hass,this._config),h=Se(r&&r.abbreviation&&"N/A"!==r.abbreviation?r.abbreviation:n.league_name&&"N/A"!==n.league_name?n.league_name:n.season_info&&"N/A"!==n.season_info&&this._shouldShowPhase(n.season_info)?this._translatePhase(n.season_info):"",p),u=this._hexToRgb(n.home_color),g=this._hexToRgb(n.away_color),m=u||g?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${u||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${g||"236,72,153"},0.18), transparent 55%)`:"",_=this.myTeam||(a.team_name||"").toLowerCase(),f=_&&n.home_team&&n.home_team.toLowerCase().includes(_),v=_&&n.away_team&&n.away_team.toLowerCase().includes(_);return i.qy`
-      <ha-card class="${l?"live":""} ${this.compact?"compact":""}">
+    `}render(){if(A(this,this._config),!this.hass||!this._config)return H(this._t("ui.loading"));const e=this._config.entity,t=this.hass.states[e];if(this.compact=(0,q.Oc)(this._config,t?.attributes?.card_defaults),!t){const t=Z.get(e);if(!t||!t.data.matches)return W("⚠️",this._t("ui.entity_not_found"),`${this._t("ui.entity_not_found")}: ${e}`,this._t("ui.check_entity_config"));this._cachedData=t.data}if(t&&"unavailable"===t.state){const t=Z.get(e);if(!t||!t.data.matches)return W("📡",this._t("ui.sensor_unavailable"),this._t("ui.sensor_unavailable_hint"),this._t("ui.restart_ha"));this._cachedData=t.data}if(t&&this._isLoading)return Date.now()-this._loadingStarted>1e4?W("⏱",this._t("ui.loading_timeout"),`${this._t("ui.entity_not_responding")}: ${this._config.entity}`,this._t("ui.check_integration")):H(this._t("ui.loading"));const a=t&&"unavailable"!==t.state?t.attributes:this._cachedData;if(!a||!a.matches||0===a.matches.length)return K(a,e=>this._t(e),()=>{const e=this._config.entity||"";return e.includes("soccerlive_next")||e.includes("soccerlive_all_mixed")||e.includes("soccer_live_next")||e.includes("soccer_live_all_mixed")?U("📅",this._t("ui.off_season"),this._t("team.off_season")):W("⚠️",this._t("ui.wrong_entity_type"),e,this._t("ui.wrong_entity_type_hint"))});const n=a.matches[0],r=(n.league_name&&"N/A"!==n.league_name?n.league_name:"")||"",o=function(e,t){const a=Array.isArray(e)?e:[],i=t&&"N/A"!==t?String(t).toLowerCase():"";return(i?a.find(e=>e&&e.name&&String(e.name).toLowerCase()===i):null)||(1===a.length?a[0]:null)}(a.league_info,r),l=ke({competitionName:r||o&&o.name||"",competitionLogo:n.league_logo&&"N/A"!==n.league_logo?n.league_logo:o&&o.logo_href,fallbackLogo:null,isFriendly:n.is_friendly}),c="in"===n.state,d="post"===n.state,p=c||d,h=(0,s.$c)(this.hass,this._config),u=Se(n.league_name&&"N/A"!==n.league_name?n.league_name:o&&o.abbreviation&&"N/A"!==o.abbreviation?o.abbreviation:n.season_info&&"N/A"!==n.season_info&&this._shouldShowPhase(n.season_info)?this._translatePhase(n.season_info):"",h),g=this._hexToRgb(n.home_color),m=this._hexToRgb(n.away_color),_=g||m?`background:\n      radial-gradient(ellipse at 0% 0%, rgba(${g||"99,102,241"},0.18), transparent 55%),\n      radial-gradient(ellipse at 100% 100%, rgba(${m||"236,72,153"},0.18), transparent 55%)`:"",f=this.myTeam||(a.team_name||"").toLowerCase(),v=f&&n.home_team&&n.home_team.toLowerCase().includes(f),b=f&&n.away_team&&n.away_team.toLowerCase().includes(f);return i.qy`
+      <ha-card class="${c?"live":""} ${this.compact?"compact":""}">
         <div class="bg-logos">
           ${n.home_logo?i.qy`<div class="bg-logo home"><img src="${n.home_logo}" alt="" loading="lazy"></div>`:""}
           ${n.away_logo?i.qy`<div class="bg-logo away"><img src="${n.away_logo}" alt="" loading="lazy"></div>`:""}
         </div>
-        <div class="hero-bg" style="${m}"></div>
+        <div class="hero-bg" style="${_}"></div>
 
         ${this.showEventToasts&&this._toastVisible?i.qy`
           <div class="event-toast variant-${this._toastVariant}" .textContent=${this._toastMessage}></div>
@@ -1545,9 +1545,9 @@
         <div class="top-bar">
           <div class="competition">
             <span class="comp-icon">
-              ${o?i.qy`<img src="${o}" alt="" />`:"⚽"}
+              ${l?i.qy`<img src="${l}" alt="" />`:"⚽"}
             </span>
-            <span class="comp-name">${h||" "}</span>
+            <span class="comp-name">${u||" "}</span>
           </div>
           ${this._renderStatusBadge(n)}
         </div>
@@ -1557,15 +1557,15 @@
             <div class="team-logo-wrap">
               ${n.home_logo?i.qy`<img class="team-logo-big" src="${n.home_logo}" alt="${n.home_team}" />`:i.qy`<div class="team-logo-fallback">${n.home_abbrev||"?"}</div>`}
             </div>
-            <div class="team-name-big ${f?"my-team":""}">${n.home_team}</div>
-            ${l?"":this._renderStandingSummary(n,"home")}
+            <div class="team-name-big ${v?"my-team":""}">${n.home_team}</div>
+            ${c?"":this._renderStandingSummary(n,"home")}
             ${this._renderRecord(n.home_record)}
-            ${l?this._renderForm(n.home_form):this._renderForm(n.last_five_home)||this._renderForm(n.home_form)}
-            ${l?"":this._renderTopScorer(n.home_top_scorer)}
+            ${c?this._renderForm(n.home_form):this._renderForm(n.last_five_home)||this._renderForm(n.home_form)}
+            ${c?"":this._renderTopScorer(n.home_top_scorer)}
           </div>
 
           <div class="score-center">
-            ${d?i.qy`<div class="score-numbers">${S(n.home_score)} <span class="dash">-</span> ${S(n.away_score)}</div>`:i.qy`<div class="score-vs">${this._t("match.vs")}</div>`}
+            ${p?i.qy`<div class="score-numbers">${S(n.home_score)} <span class="dash">-</span> ${S(n.away_score)}</div>`:i.qy`<div class="score-vs">${this._t("match.vs")}</div>`}
             ${this._renderClock(n)}
           </div>
 
@@ -1573,18 +1573,18 @@
             <div class="team-logo-wrap">
               ${n.away_logo?i.qy`<img class="team-logo-big" src="${n.away_logo}" alt="${n.away_team}" />`:i.qy`<div class="team-logo-fallback">${n.away_abbrev||"?"}</div>`}
             </div>
-            <div class="team-name-big ${v?"my-team":""}">${n.away_team}</div>
-            ${l?"":this._renderStandingSummary(n,"away")}
+            <div class="team-name-big ${b?"my-team":""}">${n.away_team}</div>
+            ${c?"":this._renderStandingSummary(n,"away")}
             ${this._renderRecord(n.away_record)}
-            ${l?this._renderForm(n.away_form):this._renderForm(n.last_five_away)||this._renderForm(n.away_form)}
-            ${l?"":this._renderTopScorer(n.away_top_scorer)}
+            ${c?this._renderForm(n.away_form):this._renderForm(n.last_five_away)||this._renderForm(n.away_form)}
+            ${c?"":this._renderTopScorer(n.away_top_scorer)}
           </div>
         </div>
 
-        ${l?this._renderStatsRow(n):""}
+        ${c?this._renderStatsRow(n):""}
 
-        ${ae(n,{lang:(0,s.$c)(this.hass,this._config),t:e=>this._t(e),weatherBadge:0!=this._config.show_weather&&this._weatherBadge||null,showDate:!d,hideBroadcasts:1==this._config.hide_broadcasts})}
-        ${d?i.qy`
+        ${ae(n,{lang:(0,s.$c)(this.hass,this._config),t:e=>this._t(e),weatherBadge:0!=this._config.show_weather&&this._weatherBadge||null,showDate:!p,hideBroadcasts:1==this._config.hide_broadcasts})}
+        ${p?i.qy`
           <div class="meta-row details-row">
             <button class="info-btn" @click="${()=>this.showDetails(n)}">${this._t("team.details")} ›</button>
           </div>
@@ -2282,7 +2282,7 @@
       <div><strong>${e.away_team}</strong><span>${this._t("popup.goals_for")} ${n??"–"} · ${this._t("popup.goals_against")} ${r??"–"}</span></div>
     </div></div>`}_renderPopupH2H(e,t=Qe(e)){return t.h2h.length||t.h2hCount?i.qy`<div class="mp-section"><h5 class="mp-section-title">${this._t("popup.h2h")}</h5>
       ${t.h2h.length?i.qy`<div class="mp-h2h-list">${t.h2h.map(e=>i.qy`<div><span>${e.home_team||e.home}</span><b>${S(e.home_score,"–")} – ${S(e.away_score,"–")}</b><span>${e.away_team||e.away}</span></div>`)}</div>`:i.qy`<p class="mp-no-events">${this._t("popup.h2h_available",{n:t.h2hCount})}</p>`}
-    </div>`:""}_renderExpectedLineup(e){const t=e.predicted_lineup_home||e.expected_lineup_home||[],a=e.predicted_lineup_away||e.expected_lineup_away||[];if(!t.length&&!a.length)return"";const s=(e,t)=>t.length?i.qy`<div class="mp-lineup-team"><div class="mp-lineup-header"><span>${e}</span></div><div class="mp-lineup-players">${t.map(e=>i.qy`<span class="mp-player">${e.name||e}</span>`)}</div></div>`:"";return i.qy`<div class="mp-section mp-section-lineup"><h5 class="mp-section-title lineup">${this._t("popup.expected_lineup")}</h5><p class="mp-no-events">${this._t("popup.expected_lineup_note")}</p>${s(e.home_team,t)}${s(e.away_team,a)}</div>`}_renderCoverage(e){const t=this.hass?.states?.[this._config.entity]?.attributes||{},a=String(t.provider||""),s=a.endsWith("_private")?this._t("source.private"):a||"Soccer Live",n=e.detail_capabilities||[],r=this.hass?.states?.[this._config.entity],o=r?.last_updated?Math.max(0,Math.round((Date.now()-new Date(r.last_updated).getTime())/6e4)):null;return i.qy`<div class="mp-coverage"><span>${this._t("popup.data_source")}${null!=o?` · ${this._t("popup.updated_minutes",{n:o})}`:""}</span><b>${s}${n.length?` · ${n.length} ${this._t("popup.parts")}`:""}</b></div>`}_renderPopupReview(e){const t=Ze(e);return t.present?i.qy`<div class="mp-section"><h5 class="mp-section-title">${this._t("popup.review")}</h5><div class="mp-review-grid">
+    </div>`:""}_renderExpectedLineup(e){if((t=e.state)&&"pre"!==t)return"";var t;const a=e.predicted_lineup_home||e.expected_lineup_home||[],s=e.predicted_lineup_away||e.expected_lineup_away||[];if(!a.length&&!s.length)return"";const n=(e,t)=>t.length?i.qy`<div class="mp-lineup-team"><div class="mp-lineup-header"><span>${e}</span></div><div class="mp-lineup-players">${t.map(e=>i.qy`<span class="mp-player">${e.name||e}</span>`)}</div></div>`:"";return i.qy`<div class="mp-section mp-section-lineup"><h5 class="mp-section-title lineup">${this._t("popup.expected_lineup")}</h5><p class="mp-no-events">${this._t("popup.expected_lineup_note")}</p>${n(e.home_team,a)}${n(e.away_team,s)}</div>`}_renderCoverage(e){const t=this.hass?.states?.[this._config.entity]?.attributes||{},a=String(t.provider||""),s=a.endsWith("_private")?this._t("source.private"):a||"Soccer Live",n=e.detail_capabilities||[],r=this.hass?.states?.[this._config.entity],o=r?.last_updated?Math.max(0,Math.round((Date.now()-new Date(r.last_updated).getTime())/6e4)):null;return i.qy`<div class="mp-coverage"><span>${this._t("popup.data_source")}${null!=o?` · ${this._t("popup.updated_minutes",{n:o})}`:""}</span><b>${s}${n.length?` · ${n.length} ${this._t("popup.parts")}`:""}</b></div>`}_renderPopupReview(e){const t=Ze(e);return t.present?i.qy`<div class="mp-section"><h5 class="mp-section-title">${this._t("popup.review")}</h5><div class="mp-review-grid">
       ${t.playerOfMatch?i.qy`<div><small>${this._t("popup.player_of_match")}</small><strong>${t.playerOfMatch.name||t.playerOfMatch.player}</strong></div>`:""}
       ${t.expectedGoals?i.qy`<div><small>xG</small><strong>${t.expectedGoals.home??"–"} – ${t.expectedGoals.away??"–"}</strong></div>`:""}
       ${t.standout?i.qy`<div><small>${t.standout.key}</small><strong>${t.standout.home} – ${t.standout.away}</strong></div>`:""}

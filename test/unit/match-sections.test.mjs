@@ -1,11 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  isPrematchState,
   splitLineup,
   timelineEventKind,
   timelineEventText,
   visibleTimelineEvents,
 } from '../../src/cards/shared-match-sections.js';
+
+test('isPrematchState: only pre-match (or unknown) shows the expected lineup', () => {
+  assert.equal(isPrematchState('pre'), true);
+  assert.equal(isPrematchState(undefined), true); // unknown -> treat as pre-match
+  assert.equal(isPrematchState(''), true);
+  assert.equal(isPrematchState('in'), false);     // live -> hide expected lineup
+  assert.equal(isPrematchState('post'), false);   // finished -> hide expected lineup
+});
 
 test('timeline section classifies provider-neutral event variants', () => {
   assert.equal(timelineEventKind({ type: 'Goal' }), 'goal');
