@@ -40,6 +40,36 @@ test('timeline text prefers athletes and otherwise translates known event text',
   assert.equal(timelineEventText({ type_text: 'Corner' }, translate), 'Corner');
 });
 
+test('timeline text shows substitution direction (in ▲ / out ▼)', () => {
+  const t = key => key;
+  // Providers set player=out, assist=in.
+  assert.equal(
+    timelineEventText({ type: 'subst', type_text: 'Substitution', player: 'Terho', assist: 'van Cruijsen', athletes: ['Terho', 'van Cruijsen'] }, t),
+    '▲ van Cruijsen ▼ Terho',
+  );
+  // Falls back to the athletes pair [out, in] when player/assist are absent.
+  assert.equal(
+    timelineEventText({ type: 'subst', type_text: 'Substitution', athletes: ['out', 'in'] }, t),
+    '▲ in ▼ out',
+  );
+});
+
+test('timeline text marks penalties and own goals, but not normal goals', () => {
+  const t = key => `t:${key}`;
+  assert.equal(
+    timelineEventText({ type: 'goal', type_text: 'Penalty', scoring_play: true, athletes: ['Ueda'] }, t),
+    'Ueda (t:event.penalty)',
+  );
+  assert.equal(
+    timelineEventText({ type: 'goal', type_text: 'Own Goal', scoring_play: true, athletes: ['Defender'] }, t),
+    'Defender (t:event.own_goal)',
+  );
+  assert.equal(
+    timelineEventText({ type: 'goal', type_text: 'Goal', athletes: ['Valente', 'Zechiel'] }, t),
+    'Valente, Zechiel',
+  );
+});
+
 test('lineup splitting handles starter flags and provider lists without flags', () => {
   const flagged = [{ name: 'Starter', starter: true }, { name: 'Sub', starter: false }];
   assert.deepEqual(splitLineup(flagged), {

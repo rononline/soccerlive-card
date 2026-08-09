@@ -50,9 +50,32 @@ export function visibleTimelineEvents(match) {
 
 export function timelineEventText(event, translate) {
   const athletes = (event?.athletes || []).filter(Boolean);
-  if (athletes.length) return athletes.join(', ');
-  const key = EVENT_I18N[String(event?.type_text || '').toLowerCase()];
-  return key ? translate(key) : (event?.type_text || event?.short_text || '');
+  const kind = timelineEventKind(event);
+
+  // Substitution: show direction rather than two ambiguous names. Providers set
+  // player=out and assist=in (athletes=[out, in]); fall back to the pair.
+  if (kind === 'sub') {
+    const playerIn = event?.assist || athletes[1] || '';
+    const playerOut = event?.player || athletes[0] || '';
+    if (playerIn && playerOut) return `▲ ${playerIn} ▼ ${playerOut}`;
+  }
+
+  let text = athletes.length
+    ? athletes.join(', ')
+    : (EVENT_I18N[String(event?.type_text || '').toLowerCase()]
+        ? translate(EVENT_I18N[String(event?.type_text || '').toLowerCase()])
+        : (event?.type_text || event?.short_text || ''));
+
+  // Goal: append a marker for own goals and penalties so they're distinguishable.
+  if (kind === 'goal') {
+    const type_text = String(event?.type_text || '').toLowerCase();
+    if (type_text.includes('own goal') || type_text.includes('own-goal')) {
+      text += ` (${translate('event.own_goal')})`;
+    } else if (type_text.includes('penalty')) {
+      text += ` (${translate('event.penalty')})`;
+    }
+  }
+  return text;
 }
 
 function eventBadge(kind, translate, prefix) {

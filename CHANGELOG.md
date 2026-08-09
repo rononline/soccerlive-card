@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.44.2 (2026-08-09)
+
+- timeline: substitutions now show direction — `▲ player in ▼ player out` — instead of two names joined by a comma, so it's clear who came on and who went off
+- timeline: goals from a penalty or an own goal are marked as such (e.g. "Scorer (Penalty)", "Scorer (Own goal)"), localised in all supported languages
+- tests: unit coverage for the substitution-direction and penalty/own-goal goal markers
+
 ## v3.44.1 (2026-08-09)
 
 - team card: fix a match being labelled "Club Friendlies" / "Oefenwedstrijd" with a generic FIFA logo when the team's `league_info` listed a friendly ahead of the real competition. The card now picks the `league_info` entry that matches the match and prefers the match's own competition name and logo, so an Eredivisie duel is shown as Eredivisie
