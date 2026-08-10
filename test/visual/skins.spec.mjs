@@ -86,7 +86,7 @@ test('wrapper editor groups distinct cards and keeps legacy variants editable', 
       legacyValue: legacy?.querySelector('option')?.value,
     };
   });
-  expect(result.distinctCount).toBe(20);
+  expect(result.distinctCount).toBe(21);
   expect(result.newPickerHasLegacy).toBe(false);
   expect(result.groupLabels).toEqual([
     'Belangrijkste kaarten', 'Compacte widgets', 'Competitie en inhoud', 'Geavanceerd',
