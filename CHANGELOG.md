@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.47.0 (2026-08-10)
+
+- refactor: the Lineup and Timeline cards are now thin modes of Match Center (they were standalone re-implementations of its Lineup/Timeline tabs — Timeline even duplicated the timeline logic). Both `card_type: lineup`/`timeline` and the legacy `custom:soccer-live-lineup`/`-timeline` types are unchanged for users; internally ~580 lines and a duplicate timeline implementation are removed and the bundle shrinks ~15 KiB. The Timeline card now also shares the provider-neutral event handling (correct substitution direction, penalty/own-goal markers)
+
 ## v3.46.0 (2026-08-10)
 
 - Last Match card: now themed by the skin palette like the other cards (uses the `--cl-*` skin variables for background, text and accent, so the selected palette tints the card)

@@ -515,7 +515,7 @@ card_type: lineup
 entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
-Starting eleven for both teams rendered on a football pitch with jersey-number circles positioned by formation. Includes a bench list below. Falls back to a two-column list when no formation data is available.
+Starting eleven for both teams rendered on a football pitch with jersey-number circles positioned by formation. Includes a bench list below. Falls back to a two-column list when no formation data is available. (Internally this is Match Center pinned to its Lineup tab; the `lineup` card type is unchanged.)
 
 ### ⏱️ Timeline
 
@@ -525,7 +525,7 @@ card_type: timeline
 entity: sensor.soccer_live_next_ned_1_ajax
 ```
 
-Minute-by-minute match events (goals, cards, substitutions, half-time, full-time) in chronological order.
+Minute-by-minute match events (goals, cards, substitutions, half-time, full-time) in chronological order. (Internally this is Match Center pinned to its Timeline tab, so it shares the same provider-neutral event handling; the `timeline` card type is unchanged.)
 
 ### ✨ Minimal
 
