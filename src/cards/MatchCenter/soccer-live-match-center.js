@@ -47,7 +47,7 @@ function formatPreviewCoverage(item, t) {
     .replace(/\b\w/g, ch => ch.toUpperCase());
 }
 
-class SoccerLiveMatchCenterCard extends LitElement {
+export class SoccerLiveMatchCenterCard extends LitElement {
   static get properties() {
     return {
       hass:          {},
@@ -141,7 +141,9 @@ class SoccerLiveMatchCenterCard extends LitElement {
         if (match?.venue && match.venue !== this._lastWeatherVenue) {
           this._loadWeather(match.venue, match.venue_lat, match.venue_lon, match.date_iso);
         }
-        if ((this._config.card_type === 'hub' || this._config.phase_aware === true) && !this._manualTab) {
+        if (this._pinnedTab) {
+          this._activeTab = this._pinnedTab;
+        } else if ((this._config.card_type === 'hub' || this._config.phase_aware === true) && !this._manualTab) {
           this._activeTab = match?.state === 'in' ? 'timeline' : 'overview';
         } else if (this._lastMatchState === 'pre' && match?.state === 'in' && this._activeTab === 'overview') {
           this._activeTab = 'timeline';
@@ -161,6 +163,14 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _t(key, vars) { return t(key, resolveLang(this.hass, this._config), vars); }
+
+  // When used as the consolidated `timeline` / `lineup` card, Match Center pins
+  // itself to that single tab and hides the tab bar (the legacy standalone
+  // cards were exactly these tabs).
+  get _pinnedTab() {
+    const type = this._config?.card_type;
+    return (type === 'timeline' || type === 'lineup') ? type : null;
+  }
 
   _selectTab(id, manual = true) {
     this._activeTab = id;
@@ -227,6 +237,8 @@ class SoccerLiveMatchCenterCard extends LitElement {
   }
 
   _renderCard(match, attrs) {
+    const pinned = this._pinnedTab;
+    const activeTab = pinned || this._activeTab;
     const tabs = TAB_IDS.map(id => ({ id, label: this._t('tab.' + id) }));
     const ordered = this._orderedMatches(attrs);
 
@@ -244,27 +256,28 @@ class SoccerLiveMatchCenterCard extends LitElement {
             ${this._config.hide_header !== true ? this._renderHero(match) : ''}
           </div>
         </div>
+        ${pinned ? '' : html`
         <div class="tab-bar" role="tablist" aria-label=${this._t('card.match_center')}>
           ${tabs.map(tab => html`
-            <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
+            <button class="tab ${activeTab === tab.id ? 'active' : ''}"
               id="mc-tab-${tab.id}" role="tab"
-              aria-selected=${this._activeTab === tab.id ? 'true' : 'false'}
+              aria-selected=${activeTab === tab.id ? 'true' : 'false'}
               aria-controls="mc-panel-${tab.id}"
-              tabindex=${this._activeTab === tab.id ? '0' : '-1'}
+              tabindex=${activeTab === tab.id ? '0' : '-1'}
               @keydown=${event => this._onTabKeydown(event, tab.id)}
               @click=${() => this._selectTab(tab.id)}>
               ${tab.label}
             </button>
           `)}
-        </div>
-        <div class="tab-content${this._activeTab === 'lineup' ? ' lineup' : ''}"
-          id="mc-panel-${this._activeTab}" role="tabpanel"
-          aria-labelledby="mc-tab-${this._activeTab}">
-          ${this._activeTab === 'overview'  ? this._renderOverview(match, attrs) : ''}
-          ${this._activeTab === 'stats'     ? this._renderStats(match)    : ''}
-          ${this._activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
-          ${this._activeTab === 'lineup'    ? this._renderLineup(match)   : ''}
-          ${this._activeTab === 'h2h'       ? this._renderH2H(match, attrs) : ''}
+        </div>`}
+        <div class="tab-content${activeTab === 'lineup' ? ' lineup' : ''}"
+          id="mc-panel-${activeTab}" role="tabpanel"
+          aria-labelledby="mc-tab-${activeTab}">
+          ${activeTab === 'overview'  ? this._renderOverview(match, attrs) : ''}
+          ${activeTab === 'stats'     ? this._renderStats(match)    : ''}
+          ${activeTab === 'timeline'  ? this._renderTimeline(match) : ''}
+          ${activeTab === 'lineup'    ? this._renderLineup(match)   : ''}
+          ${activeTab === 'h2h'       ? this._renderH2H(match, attrs) : ''}
         </div>
       </ha-card>
     `;
