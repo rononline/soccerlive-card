@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.44.5 (2026-08-10)
+
+- stats: map the clean `tackles` key to the "Tackles" label. Paired with a FotMob parser fix that stops leaking the raw `matchstats.headers.tackles` localization id; the previous raw-key workaround is kept for cached/older data
+
 ## v3.44.4 (2026-08-10)
 
 - prediction: the win-probability and comparison section is now hidden once a match is live or finished. Providers degrade the prediction after kickoff (e.g. 0% home, empty form bars), so it's hidden rather than shown with misleading zeros — it stays visible pre-match

@@ -74,7 +74,8 @@ Object.assign(NORMALIZED_STAT_KEYS, {
   interceptions: 'interceptions',
   keepersaves: 'saves',
   longballsaccurate: 'accurateLongBalls',
-  matchstatsheaderstackles: 'tacklesTotal',
+  tackles: 'tacklesTotal',
+  matchstatsheaderstackles: 'tacklesTotal',  // legacy: pre-fix FotMob leaked this raw key
   oppositionhalfpasses: 'oppositionHalfPasses',
   ownhalfpasses: 'ownHalfPasses',
   playerthrows: 'throws',

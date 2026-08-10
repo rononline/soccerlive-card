@@ -59,7 +59,8 @@ test('translateStatKey covers the complete rich-provider match-stat vocabulary',
     interceptions: 'stat.interceptions',
     keeper_saves: 'stat.saves',
     long_balls_accurate: 'stat.accurate_long_balls',
-    'matchstats.headers.tackles': 'stat.tackles',
+    tackles: 'stat.tackles',                        // clean key from the fixed FotMob parser
+    'matchstats.headers.tackles': 'stat.tackles',   // legacy leaked key (still mapped)
     opposition_half_passes: 'stat.opposition_half_passes',
     own_half_passes: 'stat.own_half_passes',
     player_throws: 'stat.throws',
