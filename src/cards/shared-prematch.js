@@ -21,7 +21,10 @@ function sectionStatus(match, t) {
 
 export function renderPrediction(match, { t, lang, showDetails = true }) {
   const p = match.prediction;
-  if (!p || match.state === 'post') return '';
+  // A prediction is only meaningful before kickoff; once the match is live or
+  // finished the provider degrades it (e.g. 0% home, empty comparison), so hide
+  // it rather than show misleading zeros.
+  if (!p || match.state === 'in' || match.state === 'post') return '';
   const m = predictionModel(p);
   const rawAdvice = (p.advice && p.advice !== 'N/A') ? p.advice : '';
   const advice = translateAdvice(rawAdvice, lang);

@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.44.4 (2026-08-10)
+
+- prediction: the win-probability and comparison section is now hidden once a match is live or finished. Providers degrade the prediction after kickoff (e.g. 0% home, empty form bars), so it's hidden rather than shown with misleading zeros — it stays visible pre-match
+- maintenance: exclude @playwright/test from Dependabot, since bumping it also needs the pinned Playwright container image and visual snapshots updated by hand
+
 ## v3.44.3 (2026-08-10)
 
 - maintenance: update dependencies — lit 3.3.3, plus build tooling (webpack 5.109.2, webpack-cli 7, acorn 8.18). No functional changes; Playwright is held at 1.61.1 to keep the visual-test baseline stable

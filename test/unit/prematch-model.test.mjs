@@ -1,6 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { predictionModel, oddsModel, capList, comparisonModel, expectedGoals, formatGoalLine } from '../../src/cards/shared-prematch-model.js';
+import { renderPrediction } from '../../src/cards/shared-prematch.js';
+
+test('renderPrediction: shown pre-match, hidden once live or finished', () => {
+  const opts = { t: k => k, lang: 'en' };
+  const pred = { prediction: { percent_home: 60, percent_draw: 20, percent_away: 20 } };
+  // Pre-match (and unknown state) render something; live/finished return ''.
+  assert.notEqual(renderPrediction({ ...pred, state: 'pre' }, opts), '');
+  assert.equal(renderPrediction({ ...pred, state: 'in' }, opts), '');
+  assert.equal(renderPrediction({ ...pred, state: 'post' }, opts), '');
+});
 
 test('capList: caps the list and reports the hidden count', () => {
   const list = Array.from({ length: 11 }, (_, i) => i);

@@ -19,3 +19,9 @@ updates:
       npm-dependencies:
         patterns:
           - "*"
+    ignore:
+      # Bumping @playwright/test also requires bumping the pinned Playwright
+      # container image in visual.yml (enforced by check:playwright-sync) and
+      # usually regenerating the visual snapshots. That coordination can't be
+      # automated, so keep it out of Dependabot and bump it by hand when needed.
+      - dependency-name: "@playwright/test"
