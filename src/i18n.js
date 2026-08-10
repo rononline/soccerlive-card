@@ -246,6 +246,10 @@ const TRANSLATIONS = {
     'event.yellow_card': 'Yellow Card',
     'event.red_card': 'Red Card',
     'event.substitution': 'Substitution',
+    'last_match.label': 'Last result',
+    'last_match.none': 'No recent match',
+    'last_match.none_hint': 'The most recent finished match will appear here.',
+    'last_match.editor_hint': 'Shows the most recent finished match for this team.',
     'event.var': 'VAR',
 
     'event.header': 'Header',
@@ -1175,6 +1179,10 @@ const TRANSLATIONS = {
     'event.yellow_card': 'Gele kaart',
     'event.red_card': 'Rode kaart',
     'event.substitution': 'Wissel',
+    'last_match.label': 'Laatste uitslag',
+    'last_match.none': 'Nog geen recente wedstrijd',
+    'last_match.none_hint': 'De laatst gespeelde wedstrijd verschijnt hier.',
+    'last_match.editor_hint': 'Toont de laatst gespeelde wedstrijd van dit team.',
     'event.var': 'VAR',
 
     'event.header': 'Kopbal',

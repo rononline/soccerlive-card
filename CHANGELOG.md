@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.45.0 (2026-08-10)
+
+- new **Last Match** card (`last-match`): shows a team's most recent finished match — competition, teams, final score with the winner emphasised, date and goalscorers. Reads the same `team_match` sensor as the Team card; prefers the just-finished match (with scorers) and falls back to the compact `previous_matches` history. Keeps a result visible after it rolls out of the "next match" slot
+- tests: pure `pickLastMatch` / `lastMatchGoals` unit coverage
+
 ## v3.44.5 (2026-08-10)
 
 - stats: map the clean `tackles` key to the "Tackles" label. Paired with a FotMob parser fix that stops leaking the raw `matchstats.headers.tackles` localization id; the previous raw-key workaround is kept for cached/older data

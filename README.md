@@ -43,6 +43,7 @@ aliases, so existing dashboards do not need a migration.
 | Bracket | `bracket` | Knockout bracket: collapsible list view or tournament tree with trophy and champion banner |
 | Top Scorers | `scorers` | Top scorers list with photo, team logo and goal tally |
 | Countdown | `countdown` | Countdown timer to next match; compact strip when live/finished, optional hide |
+| Last Match | `last-match` | Most recent finished match: competition, teams, final score and goalscorers |
 | Mini Standings | `mini-standings` | Compact standings table with configurable rows, groups, zone-colour indicators and team highlight |
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
@@ -349,6 +350,16 @@ competition_filter: "World Cup"
 Shows a countdown timer to the next match. Under each team logo, the last 5 form dots (green/grey/red) are shown, and the most recent head-to-head result appears below the countdown. When the match starts, the card collapses to a compact one-line strip showing `● LIVE · Home – Away · 2–1 62'`; when finished it shows `✓ FT · Home – Away · 1–3`. Set `hide_when_live: true` to remove the card entirely during and after the match. Also shows a **weather badge** for the match venue.
 
 With `compact: true`, the card uses a smaller layout and hides the form dots and H2H snippet.
+
+### 🏁 Last Match
+
+```yaml
+type: custom:soccer-live-card
+card_type: last-match
+entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
+```
+
+Shows the team's **most recent finished match** at a glance: competition (with logo), both teams, the final score with the winner emphasised, the date and the goalscorers. It reads the same `team_match` sensor as the Team card — it prefers the just-finished match while the integration still keeps its full detail (so scorers appear), and otherwise falls back to the compact `previous_matches` history (score and teams, without scorers). Useful as a small companion to the Countdown/Team card so a result stays visible after the match rolls out of the "next match" slot.
 
 ### 🏆 Mini Standings
 

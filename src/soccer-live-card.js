@@ -26,6 +26,7 @@ import './cards/Timeline/soccer-live-timeline.js';
 import './cards/Schedule/soccer-live-schedule.js';
 import './cards/Matchday/soccer-live-matchday.js';
 import './cards/Archive/soccer-live-archive.js';
+import './cards/LastMatch/soccer-live-last-match.js';
 
 // ─── Card type registry (single source of truth) ─────────────────────────────
 
@@ -96,6 +97,9 @@ const CARD_MODULES = {
   archive: {
     editor: () => import('./cards/Insights/soccer-live-insights-editor.js'),
   },
+  'last-match': {
+    editor: () => import('./cards/LastMatch/soccer-live-last-match-editor.js'),
+  },
 };
 
 const MODULE_PROMISES = new Map();
@@ -131,6 +135,7 @@ const CARD_REGISTRY = [
   { value: 'minimal',           element: 'soccer-live-schedule',          editor: 'soccer-live-schedule-editor',          label: 'Minimal',           description: 'Minimalist text views: fixtures, next match, standings or form', sensorTypes: ['team_matches', 'team_matches_mixed', 'team_match', 'all_matches_today', 'standings'] },
   { value: 'matchday',          element: 'soccer-live-matchday',          editor: 'soccer-live-insights-editor',          label: 'Matchday',          description: 'One matchday with status, fixtures and data completeness', sensorTypes: ['team_matches', 'team_matches_mixed', 'match_day', 'all_matches_today'] },
   { value: 'archive',           element: 'soccer-live-archive',           editor: 'soccer-live-insights-editor',          label: 'Archive',           description: 'Personal locally stored history of finished matches', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
+  { value: 'last-match',        element: 'soccer-live-last-match',         editor: 'soccer-live-last-match-editor',        label: 'Last Match',        description: 'Most recent finished match: teams, final score and scorers', sensorTypes: ['team_match', 'team_matches', 'team_matches_mixed'] },
 ];
 
 // Hub and Race remain accepted for existing YAML, but new configurations use
@@ -139,7 +144,7 @@ const CARD_REGISTRY = [
 const LEGACY_VARIANT_TYPES = new Set(['hub', 'race']);
 const CARD_CATEGORIES = [
   ['editor.category_primary', ['team', 'matches', 'match-center', 'standings', 'club']],
-  ['editor.category_compact', ['countdown', 'mini-standings', 'multi-team', 'ticker', 'minimal']],
+  ['editor.category_compact', ['countdown', 'last-match', 'mini-standings', 'multi-team', 'ticker', 'minimal']],
   ['editor.category_content', ['news', 'bracket', 'scorers', 'team-competitions']],
   ['editor.category_advanced', ['team-form', 'lineup', 'timeline', 'diagnostics', 'matchday', 'archive']],
 ];
