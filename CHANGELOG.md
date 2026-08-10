@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.46.0 (2026-08-10)
+
+- Last Match card: now themed by the skin palette like the other cards (uses the `--cl-*` skin variables for background, text and accent, so the selected palette tints the card)
+- Last Match card: added a **Details** button that opens a popup with the full available detail for the match — statistics, timeline (goals/cards/substitutions), lineups and head-to-head — reusing the shared popup renderers. The button only appears when the match carries that detail
+
 ## v3.45.0 (2026-08-10)
 
 - new **Last Match** card (`last-match`): shows a team's most recent finished match — competition, teams, final score with the winner emphasised, date and goalscorers. Reads the same `team_match` sensor as the Team card; prefers the just-finished match (with scorers) and falls back to the compact `previous_matches` history. Keeps a result visible after it rolls out of the "next match" slot
