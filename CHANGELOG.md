@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.44.3 (2026-08-10)
+
+- maintenance: update dependencies — lit 3.3.3, plus build tooling (webpack 5.109.2, webpack-cli 7, acorn 8.18). No functional changes; Playwright is held at 1.61.1 to keep the visual-test baseline stable
+
 ## v3.44.2 (2026-08-09)
 
 - timeline: substitutions now show direction — `▲ player in ▼ player out` — instead of two names joined by a comma, so it's clear who came on and who went off
