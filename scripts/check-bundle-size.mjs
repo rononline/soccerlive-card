@@ -6,7 +6,7 @@ const bundlePath = new URL("../dist/soccer-live-card.bundle.js", import.meta.url
 // raw thresholds are a conservative proxy. `preferred` stays as a discipline
 // nudge, `maximum` is the hard CI gate and grows only as real features land.
 const preferredBytes = 720 * 1024;
-const maximumBytes = 745 * 1024;
+const maximumBytes = 760 * 1024;
 const { size } = await stat(bundlePath);
 const gzipBytes = gzipSync(await readFile(bundlePath), { level: 9 }).byteLength;
 const distFiles = await readdir(new URL("../dist/", import.meta.url));

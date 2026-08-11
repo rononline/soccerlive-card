@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.48.0 (2026-08-11)
+
+- i18n: complete the Italian, French, Spanish, German and Portuguese translations. 331 UI strings (club dashboard, skin editor, diagnostics, match popup, stats, alerts, sync status, …) were previously only translated in English and Dutch and fell back to English; all 893 keys are now present in every one of the 7 supported languages
+- build: raise the bundle-size gate to 760 KiB to accommodate the full localisation payload (gzip stays ~188 KiB, the actual download cost)
+
 ## v3.47.2 (2026-08-11)
 
 - stats: translate the match-statistics labels that were falling back to English in the details popup and Match Center Stats tab — FotMob's xG breakdowns (open play / set play / non-penalty / on target) and total passes now have localised labels

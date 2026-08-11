@@ -53,6 +53,8 @@ test('packed production translations preserve localization and English fallback'
   );
   assert.deepEqual(
     Array.from(context.results),
-    ['Wissen', 'Löschen', 'Effacer', 'Club data refreshes about once a day', 'missing.key'],
+    // club.cache_note is now fully localized (all 7 languages); an entirely
+    // unknown key still falls back to the key itself.
+    ['Wissen', 'Löschen', 'Effacer', 'I dati del club si aggiornano circa una volta al giorno', 'missing.key'],
   );
 });
