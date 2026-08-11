@@ -80,6 +80,25 @@ test('translateStatKey covers the complete rich-provider match-stat vocabulary',
   }
 });
 
+test('translateStatKey covers FotMob xG breakdowns and total passes', () => {
+  const t = key => `translated:${key}`;
+  assert.equal(translateStatKey('expected_goals_open_play', t), 'translated:stat.expected_goals_open_play');
+  assert.equal(translateStatKey('expected_goals_set_play', t), 'translated:stat.expected_goals_set_play');
+  assert.equal(translateStatKey('expected_goals_non_penalty', t), 'translated:stat.expected_goals_non_penalty');
+  assert.equal(translateStatKey('expected_goals_on_target', t), 'translated:stat.expected_goals_on_target');
+  assert.equal(translateStatKey('passes', t), 'translated:stat.total_passes');
+});
+
+test('matchStatRows dedupes API-Football spelled-out names against normalized keys', () => {
+  // The provider emits both "Ball Possession" and "possessionPct" etc.; they
+  // must collapse to one translated row, not a duplicate + an English one.
+  const rows = matchStatRows(
+    { 'Ball Possession': '34%', possessionPct: '34', 'Corner Kicks': 2, cornerKicks: 2 },
+    {},
+  );
+  assert.deepEqual(rows.map(r => r.key), ['possessionPct', 'wonCorners']);
+});
+
 test('matchStatRows deduplicates provider aliases and matches away aliases', () => {
   const rows = matchStatRows(
     { foulsCommitted: 12, fouls: 12, saves: 2, appearances: 11 },

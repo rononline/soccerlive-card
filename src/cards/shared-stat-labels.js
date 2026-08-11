@@ -20,6 +20,10 @@ const STAT_KEY_MAP = {
   blockedShots:     'stat.blocked_shots',
   shotsOffTarget:   'stat.shots_off_target',
   expectedGoals:    'stat.expected_goals',
+  expectedGoalsOpenPlay:   'stat.expected_goals_open_play',
+  expectedGoalsSetPlay:    'stat.expected_goals_set_play',
+  expectedGoalsNonPenalty: 'stat.expected_goals_non_penalty',
+  expectedGoalsOnTarget:   'stat.expected_goals_on_target',
   touchesInOppositionBox: 'stat.touches_opposition_box',
   bigChances:       'stat.big_chances',
   bigChancesMissed: 'stat.big_chances_missed',
@@ -76,6 +80,16 @@ Object.assign(NORMALIZED_STAT_KEYS, {
   longballsaccurate: 'accurateLongBalls',
   tackles: 'tacklesTotal',
   matchstatsheaderstackles: 'tacklesTotal',  // legacy: pre-fix FotMob leaked this raw key
+  passes: 'totalPasses',                     // FotMob "passes" = total passes attempted
+  // API-Football spells several stats out ("Ball Possession", "Corner Kicks", …);
+  // alias them to the same canonical key as the normalized variants so they
+  // dedupe against them and pick up a translated label.
+  ballpossession: 'possessionPct',
+  shotsongoal: 'shotsOnTarget',
+  shotsoffgoal: 'shotsOffTarget',
+  cornerkicks: 'wonCorners',
+  goalkeepersaves: 'saves',
+  passesaccurate: 'accuratePasses',
   oppositionhalfpasses: 'oppositionHalfPasses',
   ownhalfpasses: 'ownHalfPasses',
   playerthrows: 'throws',

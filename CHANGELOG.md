@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.47.2 (2026-08-11)
+
+- stats: translate the match-statistics labels that were falling back to English in the details popup and Match Center Stats tab — FotMob's xG breakdowns (open play / set play / non-penalty / on target) and total passes now have localised labels
+- stats: dedupe API-Football's spelled-out stat names (e.g. "Ball Possession", "Corner Kicks", "Goalkeeper Saves") against their normalized keys, so they collapse to one translated row instead of a duplicate untranslated one
+
 ## v3.47.1 (2026-08-11)
 
 - Last Match card: the two score numbers now sit together next to the "–" separator (a centred scoreline) instead of hugging the team names, so the result reads at a glance
