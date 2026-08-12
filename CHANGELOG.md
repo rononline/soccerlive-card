@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.49.2 (2026-08-12)
+
+- Last Match card: give each details-popup section (stats, ratings, timeline, lineup, head-to-head) its own panel — a subtle background and accent left border — so the ratings block no longer runs into the stats above it
+
 ## v3.49.1 (2026-08-12)
 
 - Last Match card: the player-rating badges are now colour-graded by value (green 8+/7+, amber 6+, red below), FotMob-style, instead of a flat accent-coloured block that clashed with red palettes

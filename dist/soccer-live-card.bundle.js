@@ -3740,6 +3740,8 @@
         </div>
       </div>`}_portalStyles(){return i.qy`<style>
       ${Te.cssText}
+      .mp-section { margin: 12px 0 0; padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.045); border-left: 3px solid var(--cl-accent, #6366f1); }
+      .mp-section-title { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; color: var(--cl-text, #f8fafc); }
       .soccer-live-last-match-portal {
         border: 0; padding: 0; margin: auto; max-width: none; max-height: none;
         width: 100vw; height: 100vh; background: transparent; overflow: auto;
