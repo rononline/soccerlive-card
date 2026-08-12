@@ -216,6 +216,7 @@ class SoccerLiveLastMatchCard extends LitElement {
         ${competition || dateStr ? html`<p class="lmp-meta">${[competition, dateStr].filter(Boolean).join(" · ")}${match.venue && match.venue !== "N/A" ? ` · ${match.venue}` : ""}</p>` : ""}
 
         ${this._renderStats(match, translate)}
+        ${this._renderRatings(match)}
         ${renderPopupTimeline(match, { translate })}
         ${renderPopupLineup(match, { translate })}
         ${this._renderH2H(match, translate)}
@@ -249,6 +250,32 @@ class SoccerLiveLastMatchCard extends LitElement {
               <div class="lmp-bar"><div class="lmp-bar-h" style="width:${hp}%"></div><div class="lmp-bar-a" style="width:${100 - hp}%"></div></div>`;
           })}
         </div>
+      </div>`;
+  }
+
+  _renderRatings(match) {
+    const potm = match.player_of_the_match;
+    const rated = Array.isArray(match.top_rated_players) ? match.top_rated_players : [];
+    if (!potm && !rated.length) return "";
+    return html`
+      <div class="mp-section">
+        <h5 class="mp-section-title">${this._t("popup.ratings")}</h5>
+        ${potm && (potm.name || potm.player) ? html`
+          <div class="lmp-potm">
+            <span class="lmp-potm-label">⭐ ${this._t("popup.player_of_match")}</span>
+            <span class="lmp-potm-name">${potm.name || potm.player}</span>
+            ${potm.rating ? html`<span class="lmp-rating">${potm.rating}</span>` : ""}
+          </div>` : ""}
+        ${rated.length ? html`
+          <div class="lmp-ratings">
+            ${rated.slice(0, 6).map(p => html`
+              <div class="lmp-rated">
+                ${p.photo ? html`<img src="${p.photo}" alt="" loading="lazy" @error=${e => e.target.style.display = "none"}>` : ""}
+                <span class="lmp-rated-name">${p.short_name || p.name}</span>
+                ${p.position ? html`<small class="lmp-rated-pos">${p.position}</small>` : ""}
+                <span class="lmp-rating">${p.rating}</span>
+              </div>`)}
+          </div>` : ""}
       </div>`;
   }
 
@@ -314,6 +341,15 @@ class SoccerLiveLastMatchCard extends LitElement {
       .lmp-bar { display: flex; height: 5px; border-radius: 3px; overflow: hidden; background: var(--cl-divider, rgba(127,127,127,0.2)); }
       .lmp-bar-h { background: var(--cl-accent, #3b82f6); }
       .lmp-bar-a { background: var(--cl-text-2, #9aa0a6); opacity: 0.6; }
+      .lmp-potm { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+      .lmp-potm-label { font-size: 0.78rem; color: var(--cl-text-2, var(--secondary-text-color)); white-space: nowrap; }
+      .lmp-potm-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .lmp-rating { margin-left: auto; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; background: var(--cl-accent, #6366f1); border-radius: 6px; padding: 1px 7px; font-size: 0.82rem; }
+      .lmp-ratings { display: flex; flex-direction: column; gap: 4px; }
+      .lmp-rated { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+      .lmp-rated img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+      .lmp-rated-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .lmp-rated-pos { color: var(--cl-text-2, var(--secondary-text-color)); }
       .lmp-h2h > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; font-size: 0.85rem; padding: 3px 0; align-items: center; }
       .lmp-h2h > div > span:last-child { text-align: right; }
       .lmp-h2h b { font-variant-numeric: tabular-nums; }

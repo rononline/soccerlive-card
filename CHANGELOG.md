@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.49.0 (2026-08-12)
+
+- Last Match card: the details popup now shows player ratings when the provider supplies them — the player of the match (with rating) plus a top-rated list with photo, position and rating
+
 ## v3.48.2 (2026-08-12)
 
 - Last Match card: colour the head-to-head results in the details popup from the followed team's perspective — green for a win, red for a loss, grey for a draw (uses the skin's win/draw/loss colours)
