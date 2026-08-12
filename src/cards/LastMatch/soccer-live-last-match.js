@@ -253,6 +253,14 @@ class SoccerLiveLastMatchCard extends LitElement {
       </div>`;
   }
 
+  // FotMob-style rating colour: strong green (8+), green (7+), amber (6+), red.
+  _ratingChip(rating) {
+    const n = parseFloat(rating);
+    if (!Number.isFinite(n)) return "";
+    const bg = n >= 8 ? "#1f9d55" : n >= 7 ? "#4a9e2f" : n >= 6 ? "#c98a00" : "#c0392b";
+    return html`<span class="lmp-rating" style="background:${bg}">${n.toFixed(1)}</span>`;
+  }
+
   _renderRatings(match) {
     const potm = match.player_of_the_match;
     const rated = Array.isArray(match.top_rated_players) ? match.top_rated_players : [];
@@ -264,7 +272,7 @@ class SoccerLiveLastMatchCard extends LitElement {
           <div class="lmp-potm">
             <span class="lmp-potm-label">⭐ ${this._t("popup.player_of_match")}</span>
             <span class="lmp-potm-name">${potm.name || potm.player}</span>
-            ${potm.rating ? html`<span class="lmp-rating">${potm.rating}</span>` : ""}
+            ${this._ratingChip(potm.rating)}
           </div>` : ""}
         ${rated.length ? html`
           <div class="lmp-ratings">
@@ -273,7 +281,7 @@ class SoccerLiveLastMatchCard extends LitElement {
                 ${p.photo ? html`<img src="${p.photo}" alt="" loading="lazy" @error=${e => e.target.style.display = "none"}>` : ""}
                 <span class="lmp-rated-name">${p.short_name || p.name}</span>
                 ${p.position ? html`<small class="lmp-rated-pos">${p.position}</small>` : ""}
-                <span class="lmp-rating">${p.rating}</span>
+                ${this._ratingChip(p.rating)}
               </div>`)}
           </div>` : ""}
       </div>`;
@@ -344,8 +352,8 @@ class SoccerLiveLastMatchCard extends LitElement {
       .lmp-potm { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
       .lmp-potm-label { font-size: 0.78rem; color: var(--cl-text-2, var(--secondary-text-color)); white-space: nowrap; }
       .lmp-potm-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .lmp-rating { margin-left: auto; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; background: var(--cl-accent, #6366f1); border-radius: 6px; padding: 1px 7px; font-size: 0.82rem; }
-      .lmp-ratings { display: flex; flex-direction: column; gap: 4px; }
+      .lmp-rating { margin-left: auto; flex: 0 0 auto; min-width: 34px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; color: #fff; border-radius: 5px; padding: 2px 6px; font-size: 0.8rem; }
+      .lmp-ratings { display: flex; flex-direction: column; gap: 6px; }
       .lmp-rated { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
       .lmp-rated img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
       .lmp-rated-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -3712,14 +3712,14 @@
               </div>
               <div class="lmp-bar"><div class="lmp-bar-h" style="width:${o}%"></div><div class="lmp-bar-a" style="width:${100-o}%"></div></div>`})}
         </div>
-      </div>`}_renderRatings(e){const t=e.player_of_the_match,a=Array.isArray(e.top_rated_players)?e.top_rated_players:[];return t||a.length?i.qy`
+      </div>`}_ratingChip(e){const t=parseFloat(e);if(!Number.isFinite(t))return"";const a=t>=8?"#1f9d55":t>=7?"#4a9e2f":t>=6?"#c98a00":"#c0392b";return i.qy`<span class="lmp-rating" style="background:${a}">${t.toFixed(1)}</span>`}_renderRatings(e){const t=e.player_of_the_match,a=Array.isArray(e.top_rated_players)?e.top_rated_players:[];return t||a.length?i.qy`
       <div class="mp-section">
         <h5 class="mp-section-title">${this._t("popup.ratings")}</h5>
         ${t&&(t.name||t.player)?i.qy`
           <div class="lmp-potm">
             <span class="lmp-potm-label">⭐ ${this._t("popup.player_of_match")}</span>
             <span class="lmp-potm-name">${t.name||t.player}</span>
-            ${t.rating?i.qy`<span class="lmp-rating">${t.rating}</span>`:""}
+            ${this._ratingChip(t.rating)}
           </div>`:""}
         ${a.length?i.qy`
           <div class="lmp-ratings">
@@ -3728,7 +3728,7 @@
                 ${e.photo?i.qy`<img src="${e.photo}" alt="" loading="lazy" @error=${e=>e.target.style.display="none"}>`:""}
                 <span class="lmp-rated-name">${e.short_name||e.name}</span>
                 ${e.position?i.qy`<small class="lmp-rated-pos">${e.position}</small>`:""}
-                <span class="lmp-rating">${e.rating}</span>
+                ${this._ratingChip(e.rating)}
               </div>`)}
           </div>`:""}
       </div>`:""}_renderH2H(e,t){const a=Array.isArray(e.head_to_head)?e.head_to_head:[];if(!a.length)return"";const s=this._attrs()||{},r=(this._config.my_team||this._config.team_name||s.team_name||e.home_team||"").toLowerCase();return i.qy`
@@ -3776,8 +3776,8 @@
       .lmp-potm { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
       .lmp-potm-label { font-size: 0.78rem; color: var(--cl-text-2, var(--secondary-text-color)); white-space: nowrap; }
       .lmp-potm-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .lmp-rating { margin-left: auto; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; background: var(--cl-accent, #6366f1); border-radius: 6px; padding: 1px 7px; font-size: 0.82rem; }
-      .lmp-ratings { display: flex; flex-direction: column; gap: 4px; }
+      .lmp-rating { margin-left: auto; flex: 0 0 auto; min-width: 34px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; color: #fff; border-radius: 5px; padding: 2px 6px; font-size: 0.8rem; }
+      .lmp-ratings { display: flex; flex-direction: column; gap: 6px; }
       .lmp-rated { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
       .lmp-rated img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
       .lmp-rated-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

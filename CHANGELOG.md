@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.49.1 (2026-08-12)
+
+- Last Match card: the player-rating badges are now colour-graded by value (green 8+/7+, amber 6+, red below), FotMob-style, instead of a flat accent-coloured block that clashed with red palettes
+
 ## v3.49.0 (2026-08-12)
 
 - Last Match card: the details popup now shows player ratings when the provider supplies them — the player of the match (with rating) plus a top-rated list with photo, position and rating
