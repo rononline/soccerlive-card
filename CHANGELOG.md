@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.48.1 (2026-08-12)
+
+- Last Match card: add a full-width Close button at the bottom of the details popup, matching the other match popups (the corner × remains as well)
+
 ## v3.48.0 (2026-08-11)
 
 - i18n: complete the Italian, French, Spanish, German and Portuguese translations. 331 UI strings (club dashboard, skin editor, diagnostics, match popup, stats, alerts, sync status, …) were previously only translated in English and Dutch and fell back to English; all 893 keys are now present in every one of the 7 supported languages

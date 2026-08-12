@@ -218,6 +218,8 @@ class SoccerLiveLastMatchCard extends LitElement {
         ${renderPopupTimeline(match, { translate })}
         ${renderPopupLineup(match, { translate })}
         ${this._renderH2H(match, translate)}
+
+        <button class="lmp-done" @click=${() => { this._showDetails = false; }}>${this._t("last_match.close")}</button>
       </div>
     `;
   }
@@ -301,6 +303,12 @@ class SoccerLiveLastMatchCard extends LitElement {
       .lmp-h2h > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; font-size: 0.85rem; padding: 3px 0; align-items: center; }
       .lmp-h2h > div > span:last-child { text-align: right; }
       .lmp-h2h b { font-variant-numeric: tabular-nums; }
+      .lmp-done {
+        margin-top: 20px; width: 100%; padding: 12px 20px; border: 0; border-radius: 12px;
+        cursor: pointer; font-weight: 800; font-size: 14px; color: #fff;
+        background: linear-gradient(135deg, var(--cl-accent, #6366f1), var(--cl-accent-2, var(--cl-accent, #ec4899)));
+      }
+      .lmp-done:hover { filter: brightness(1.08); }
     </style>`;
   }
 
