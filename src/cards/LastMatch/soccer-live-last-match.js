@@ -184,7 +184,8 @@ class SoccerLiveLastMatchCard extends LitElement {
   _copyThemeVars(target) {
     const computed = getComputedStyle(this);
     ["--cl-bg", "--cl-text", "--cl-text-2", "--cl-divider", "--cl-accent",
-     "--cl-accent-2", "--cl-accent-rgb", "--cl-green", "--cl-loss", "--cl-live"]
+     "--cl-accent-2", "--cl-accent-rgb", "--cl-green", "--cl-live",
+     "--cl-win", "--cl-draw", "--cl-loss"]
       .forEach(name => {
         const v = computed.getPropertyValue(name);
         if (v) target.style.setProperty(name, v);
@@ -254,12 +255,25 @@ class SoccerLiveLastMatchCard extends LitElement {
   _renderH2H(match, translate) {
     const h2h = Array.isArray(match.head_to_head) ? match.head_to_head : [];
     if (!h2h.length) return "";
+    // Colour each result from the followed team's perspective (win/draw/loss).
+    const attrs = this._attrs() || {};
+    const tracked = (this._config.my_team || this._config.team_name || attrs.team_name
+      || match.home_team || "").toLowerCase();
+    const outcome = (g) => {
+      const hs = parseInt(g.home_score, 10), as_ = parseInt(g.away_score, 10);
+      if (!tracked || Number.isNaN(hs) || Number.isNaN(as_)) return "";
+      const isHome = (g.home_team || g.home || "").toLowerCase().includes(tracked);
+      const isAway = (g.away_team || g.away || "").toLowerCase().includes(tracked);
+      if (!isHome && !isAway) return "";
+      if (hs === as_) return "draw";
+      return ((isHome && hs > as_) || (isAway && as_ > hs)) ? "win" : "loss";
+    };
     return html`
       <div class="mp-section">
         <h5 class="mp-section-title">${translate("popup.h2h")}</h5>
         <div class="lmp-h2h">
           ${h2h.slice(0, 6).map(g => html`
-            <div><span>${g.home_team || g.home}</span><b>${scoreText(g.home_score, "-")} – ${scoreText(g.away_score, "-")}</b><span>${g.away_team || g.away}</span></div>`)}
+            <div><span>${g.home_team || g.home}</span><b class="lmp-h2h-score ${outcome(g)}">${scoreText(g.home_score, "-")} – ${scoreText(g.away_score, "-")}</b><span>${g.away_team || g.away}</span></div>`)}
         </div>
       </div>`;
   }
@@ -303,6 +317,10 @@ class SoccerLiveLastMatchCard extends LitElement {
       .lmp-h2h > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; font-size: 0.85rem; padding: 3px 0; align-items: center; }
       .lmp-h2h > div > span:last-child { text-align: right; }
       .lmp-h2h b { font-variant-numeric: tabular-nums; }
+      .lmp-h2h-score { padding: 1px 8px; border-radius: 6px; }
+      .lmp-h2h-score.win  { color: #fff; background: var(--cl-win, #22c55e); }
+      .lmp-h2h-score.loss { color: #fff; background: var(--cl-loss, #ef4444); }
+      .lmp-h2h-score.draw { color: var(--cl-text, #f8fafc); background: var(--cl-divider, rgba(127,127,127,0.28)); }
       .lmp-done {
         margin-top: 20px; width: 100%; padding: 12px 20px; border: 0; border-radius: 12px;
         cursor: pointer; font-weight: 800; font-size: 14px; color: #fff;

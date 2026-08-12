@@ -3678,7 +3678,7 @@
             ${this._t("last_match.details")} ›
           </button>
         </div>`:""}
-    `}_renderDetailsPortal(){const e=aa(this._attrs());if(e){if(this._portal||(this._portal=document.createElement("dialog"),this._portal.className="soccer-live-last-match-portal",this._cancel=e=>{e.preventDefault(),this._showDetails=0},this._backdrop=e=>{e.target===this._portal&&(this._showDetails=0)},this._portal.addEventListener("cancel",this._cancel),this._portal.addEventListener("click",this._backdrop),document.body.appendChild(this._portal)),this._copyThemeVars(this._portal),(0,i.XX)(i.qy`${this._portalStyles()}${Le("mp")}${this._renderDetails(e)}`,this._portal),!this._portal.open)try{this._portal.showModal()}catch{this._portal.setAttribute("open","")}}else this._showDetails=0}_removeDetailsPortal(){this._portal&&(this._portal.open&&this._portal.close(),this._portal.removeEventListener("cancel",this._cancel),this._portal.removeEventListener("click",this._backdrop),(0,i.XX)(i.qy``,this._portal),this._portal.remove(),this._portal=null)}_copyThemeVars(e){const t=getComputedStyle(this);["--cl-bg","--cl-text","--cl-text-2","--cl-divider","--cl-accent","--cl-accent-2","--cl-accent-rgb","--cl-green","--cl-loss","--cl-live"].forEach(a=>{const i=t.getPropertyValue(a);i&&e.style.setProperty(a,i)})}_renderDetails(e){const t=(0,s.$c)(this.hass,this._config),a=(e,t)=>this._t(e,t),r=(0,s.n1)(e.date_iso||e.date),o=r?r.toLocaleDateString(t,{weekday:"short",day:"numeric",month:"short"}):"",n=Se(e.league_name,t);return i.qy`
+    `}_renderDetailsPortal(){const e=aa(this._attrs());if(e){if(this._portal||(this._portal=document.createElement("dialog"),this._portal.className="soccer-live-last-match-portal",this._cancel=e=>{e.preventDefault(),this._showDetails=0},this._backdrop=e=>{e.target===this._portal&&(this._showDetails=0)},this._portal.addEventListener("cancel",this._cancel),this._portal.addEventListener("click",this._backdrop),document.body.appendChild(this._portal)),this._copyThemeVars(this._portal),(0,i.XX)(i.qy`${this._portalStyles()}${Le("mp")}${this._renderDetails(e)}`,this._portal),!this._portal.open)try{this._portal.showModal()}catch{this._portal.setAttribute("open","")}}else this._showDetails=0}_removeDetailsPortal(){this._portal&&(this._portal.open&&this._portal.close(),this._portal.removeEventListener("cancel",this._cancel),this._portal.removeEventListener("click",this._backdrop),(0,i.XX)(i.qy``,this._portal),this._portal.remove(),this._portal=null)}_copyThemeVars(e){const t=getComputedStyle(this);["--cl-bg","--cl-text","--cl-text-2","--cl-divider","--cl-accent","--cl-accent-2","--cl-accent-rgb","--cl-green","--cl-live","--cl-win","--cl-draw","--cl-loss"].forEach(a=>{const i=t.getPropertyValue(a);i&&e.style.setProperty(a,i)})}_renderDetails(e){const t=(0,s.$c)(this.hass,this._config),a=(e,t)=>this._t(e,t),r=(0,s.n1)(e.date_iso||e.date),o=r?r.toLocaleDateString(t,{weekday:"short",day:"numeric",month:"short"}):"",n=Se(e.league_name,t);return i.qy`
       <div class="lmp-box">
         <button class="lmp-close" aria-label="${this._t("last_match.close")}" @click=${()=>{this._showDetails=0}}>×</button>
         <div class="lmp-score-row">
@@ -3711,14 +3711,14 @@
               </div>
               <div class="lmp-bar"><div class="lmp-bar-h" style="width:${o}%"></div><div class="lmp-bar-a" style="width:${100-o}%"></div></div>`})}
         </div>
-      </div>`}_renderH2H(e,t){const a=Array.isArray(e.head_to_head)?e.head_to_head:[];return a.length?i.qy`
+      </div>`}_renderH2H(e,t){const a=Array.isArray(e.head_to_head)?e.head_to_head:[];if(!a.length)return"";const s=this._attrs()||{},r=(this._config.my_team||this._config.team_name||s.team_name||e.home_team||"").toLowerCase();return i.qy`
       <div class="mp-section">
         <h5 class="mp-section-title">${t("popup.h2h")}</h5>
         <div class="lmp-h2h">
           ${a.slice(0,6).map(e=>i.qy`
-            <div><span>${e.home_team||e.home}</span><b>${S(e.home_score,"-")} – ${S(e.away_score,"-")}</b><span>${e.away_team||e.away}</span></div>`)}
+            <div><span>${e.home_team||e.home}</span><b class="lmp-h2h-score ${(e=>{const t=parseInt(e.home_score,10),a=parseInt(e.away_score,10);if(!r||Number.isNaN(t)||Number.isNaN(a))return"";const i=(e.home_team||e.home||"").toLowerCase().includes(r),s=(e.away_team||e.away||"").toLowerCase().includes(r);return i||s?t===a?"draw":i&&t>a||s&&a>t?"win":"loss":""})(e)}">${S(e.home_score,"-")} – ${S(e.away_score,"-")}</b><span>${e.away_team||e.away}</span></div>`)}
         </div>
-      </div>`:""}_portalStyles(){return i.qy`<style>
+      </div>`}_portalStyles(){return i.qy`<style>
       ${Te.cssText}
       .soccer-live-last-match-portal {
         border: 0; padding: 0; margin: auto; max-width: none; max-height: none;
@@ -3756,6 +3756,10 @@
       .lmp-h2h > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; font-size: 0.85rem; padding: 3px 0; align-items: center; }
       .lmp-h2h > div > span:last-child { text-align: right; }
       .lmp-h2h b { font-variant-numeric: tabular-nums; }
+      .lmp-h2h-score { padding: 1px 8px; border-radius: 6px; }
+      .lmp-h2h-score.win  { color: #fff; background: var(--cl-win, #22c55e); }
+      .lmp-h2h-score.loss { color: #fff; background: var(--cl-loss, #ef4444); }
+      .lmp-h2h-score.draw { color: var(--cl-text, #f8fafc); background: var(--cl-divider, rgba(127,127,127,0.28)); }
       .lmp-done {
         margin-top: 20px; width: 100%; padding: 12px 20px; border: 0; border-radius: 12px;
         cursor: pointer; font-weight: 800; font-size: 14px; color: #fff;

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.48.2 (2026-08-12)
+
+- Last Match card: colour the head-to-head results in the details popup from the followed team's perspective — green for a win, red for a loss, grey for a draw (uses the skin's win/draw/loss colours)
+
 ## v3.48.1 (2026-08-12)
 
 - Last Match card: add a full-width Close button at the bottom of the details popup, matching the other match popups (the corner × remains as well)
