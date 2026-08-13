@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.49.4 (2026-08-13)
+
+- Matches card: don't show a confirmed pitch lineup in the match popup for an upcoming match. Before kickoff the provider fills the lineup fields with the probable squad, which was shown as a full "Lineups" pitch even days ahead; the popup now shows only the "expected lineup" section pre-match and the confirmed pitch once the match is live or finished
+
 ## v3.49.3 (2026-08-13)
 
 - Last Match card: the details popup now closes with the Escape key, matching the other match popups (added a document-level Escape handler instead of relying only on the dialog's cancel event)

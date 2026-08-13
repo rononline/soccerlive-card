@@ -1000,6 +1000,11 @@ class SoccerLiveMatchesCard extends LitElement {
   }
 
   _renderPopupLineup(m) {
+    // The pitch lineup is a confirmed starting XI, which doesn't exist before
+    // kickoff — pre-match the provider fills lineup_home/away with the probable
+    // squad. Show only the "expected lineup" section pre-match; render the
+    // confirmed pitch once the match is live or finished.
+    if (isPrematchState(m.state)) return '';
     return renderPopupLineup(m, {
       translate: (key, vars) => this._t(key, vars),
       prefix: 'mp',
