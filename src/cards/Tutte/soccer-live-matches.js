@@ -64,6 +64,7 @@ class SoccerLiveMatchesCard extends LitElement {
     this.showEventToasts = config.show_event_toasts === true;
     this.myTeam = (config.my_team || '').toLowerCase();
     this.showLiveTicker = config.show_live_ticker !== false;
+    this.compact = config.compact === true;
     this.activeMatch = null;
     this.showPopup = false;
   }
@@ -266,6 +267,49 @@ class SoccerLiveMatchesCard extends LitElement {
     const score = match[side === 'home' ? 'home_score' : 'away_score'];
     if (score === null || score === undefined || score === 'N/A') return '-';
     return score;
+  }
+
+  // Compact (minimal-style) date/result labels, reusing the rich-row helpers.
+  _compactDate(match) {
+    const parsed = this._parsedMatchDate(match);
+    if (parsed) {
+      return new Intl.DateTimeFormat(resolveLang(this.hass, this._config), {
+        weekday: 'short', day: '2-digit', month: 'short',
+      }).format(parsed).replace(/\.$/, '');
+    }
+    const raw = this._matchDateValue(match);
+    return raw ? String(raw).split(' ')[0] : '';
+  }
+
+  _compactWhen(match) {
+    if (match.state === 'post') {
+      const hs = match.home_score, as = match.away_score;
+      if (hs != null && as != null && hs !== 'N/A' && as !== 'N/A') return `${hs}-${as}`;
+    }
+    return this._matchTimeLabel(match);
+  }
+
+  // A dense single-line row that mirrors the Minimal card, but keeps the
+  // Matches card's click/keyboard → detail popup behaviour.
+  _renderCompactRow(match, i, isMultiLeague) {
+    const isLive = match.state === 'in';
+    const homeMy = this.myTeam && match.home_team && match.home_team.toLowerCase().includes(this.myTeam);
+    const awayMy = this.myTeam && match.away_team && match.away_team.toLowerCase().includes(this.myTeam);
+    const comp = isMultiLeague && match.league_name && match.league_name !== 'N/A'
+      ? this._displayCompetitionName(match.league_name) : '';
+    return html`
+      <div class="cmp-row ${i % 2 ? 'odd' : ''} ${isLive ? 'live' : ''}"
+           role="button" tabindex="0"
+           aria-label="${match.home_team} – ${match.away_team}"
+           @keydown="${event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.showDetails(match); } }}"
+           @click="${() => this.showDetails(match)}">
+        <span class="cmp-date">${this._compactDate(match)}</span>
+        <span class="cmp-when ${isLive ? 'live' : ''}">${this._compactWhen(match)}</span>
+        <span class="cmp-home ${homeMy ? 'mine' : ''}">${match.home_team}</span>
+        <span class="cmp-sep">-</span>
+        <span class="cmp-away ${awayMy ? 'mine' : ''}">${match.away_team}</span>
+        ${comp ? html`<span class="cmp-comp">${comp}</span>` : ''}
+      </div>`;
   }
 
   _displayCompetitionName(name) {
@@ -522,7 +566,9 @@ class SoccerLiveMatchesCard extends LitElement {
         })() : ''}
 
         <div class="scroll-content" style="max-height: ${scrollHeight}px;">
-          ${grouped.map(group => html`
+          ${this.compact
+            ? html`<div class="cmp-list">${grouped.flatMap(group => group.matches).map((match, i) => this._renderCompactRow(match, i, isMultiLeague))}</div>`
+            : grouped.map(group => html`
             ${group.seasonBreak ? html`<div class="season-divider">${group.season}</div>` : ''}
             <div class="day-divider ${groupBy === 'competition' ? 'comp' : (group.dayDiff === 0 ? 'today' : group.dayDiff === -1 ? 'yesterday' : group.dayDiff === 1 ? 'tomorrow' : '')}">
               ${groupBy === 'competition' && group.logo ? html`<img class="comp-divider-logo" src="${group.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
@@ -1162,6 +1208,26 @@ class SoccerLiveMatchesCard extends LitElement {
         0%   { transform: translate(-50%, 0) rotate(0deg); opacity: 1; }
         100% { transform: translate(calc(-50% + var(--dx)), var(--dy)) rotate(720deg); opacity: 0; }
       }
+
+      /* Compact (Minimal-style) layout — a dense clickable list that still
+         opens the detail popup. */
+      .cmp-list { font-variant-numeric: tabular-nums; }
+      .cmp-row {
+        display: grid;
+        grid-template-columns: minmax(72px, auto) minmax(48px, auto) 1fr auto 1fr auto;
+        align-items: baseline; gap: 10px; padding: 7px 14px; cursor: pointer;
+        font-size: 14px;
+      }
+      .cmp-row.odd { background: var(--cl-surface, rgba(255,255,255,0.04)); }
+      .cmp-row:hover, .cmp-row:focus-visible { background: var(--cl-surface, rgba(255,255,255,0.08)); outline: none; }
+      .cmp-date { color: var(--cl-text-2, #94a3b8); white-space: nowrap; }
+      .cmp-when { color: var(--cl-text-2, #94a3b8); white-space: nowrap; }
+      .cmp-when.live { color: var(--cl-live, #ef4444); font-weight: 700; }
+      .cmp-home { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .cmp-away { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .cmp-sep { color: var(--cl-text-2, #94a3b8); }
+      .cmp-home.mine, .cmp-away.mine { font-weight: 800; }
+      .cmp-comp { color: var(--cl-text-2, #94a3b8); text-align: right; white-space: nowrap; min-width: 14px; }
 
       .match-row {
         display: grid;

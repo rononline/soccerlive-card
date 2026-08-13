@@ -238,7 +238,10 @@ filter_season: ""
 filter_state: ""       # in / pre / post
 filter_venue: ""       # home / away
 show_event_toasts: false
+compact: false         # dense single-line list (like the Minimal card) that still opens the detail popup
 ```
+
+With `compact: true` the card renders a dense single-line list per match (date · time/score · home – away · competition), like the Minimal card, but each row still opens the full detail popup on click.
 
 `smart_order: true` puts live matches first, upcoming matches oldest-first and
 finished matches newest-first. It is especially useful with mixed competitions

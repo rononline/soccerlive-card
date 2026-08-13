@@ -151,6 +151,12 @@ class SoccerLiveMatchesEditor extends LitElement {
         </div>
 
         <div class="option">
+          <label>${this._t('editor.compact_list')}</label>
+          <ha-switch .checked=${this._config.compact === true}
+            data-config-value="compact" @change=${this._switchChanged}></ha-switch>
+        </div>
+
+        <div class="option">
           <label>${this._t('editor.show_live_ticker')}</label>
           <ha-switch .checked=${this._config.show_live_ticker !== false}
             data-config-value="show_live_ticker" @change=${this._switchChanged}></ha-switch>

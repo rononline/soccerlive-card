@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.0 (2026-08-13)
+
+- Matches card: new `compact` option — a dense single-line list per match (date · time/score · home – away · competition), like the Minimal card, while keeping the Matches card's detail popup on click. Toggle it in the editor ("Compact list")
+
 ## v3.49.4 (2026-08-13)
 
 - Matches card: don't show a confirmed pitch lineup in the match popup for an upcoming match. Before kickoff the provider fills the lineup fields with the probable squad, which was shown as a full "Lineups" pitch even days ahead; the popup now shows only the "expected lineup" section pre-match and the confirmed pitch once the match is live or finished
