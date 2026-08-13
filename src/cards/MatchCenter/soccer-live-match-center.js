@@ -9,7 +9,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '../shared-prematch.js';
 import { standingText } from '../shared-standing.js';
-import { timelineEventKind, timelineEventText, visibleTimelineEvents } from '../shared-match-sections.js';
+import { isPrematchState, timelineEventKind, timelineEventText, visibleTimelineEvents } from '../shared-match-sections.js';
 import { matchStatRows, translateStatKey } from '../shared-stat-labels.js';
 import { soccerCardShellStyles, renderCardHero } from '../card-shell.js';
 import { renderWeatherBadge, weatherBadgeStyles } from '../weather-badge.js';
@@ -554,8 +554,17 @@ export class SoccerLiveMatchCenterCard extends LitElement {
     const away = match.lineup_away || [];
     if (!home.length && !away.length) return html`<p class="empty">${this._t('ui.no_lineup_yet')}</p>`;
 
+    // Before kickoff a "lineup" is only a probable one — the provider fills the
+    // fields with the expected squad. Label it as such so it isn't mistaken for
+    // a confirmed starting XI (which doesn't exist until the match starts).
+    const expectedNote = isPrematchState(match.state) ? html`
+      <div class="lineup-expected-note">
+        <strong>${this._t('popup.expected_lineup')}</strong>
+        <small>${this._t('popup.expected_lineup_note')}</small>
+      </div>` : '';
+
     const pitch = renderPitch(match, { t: (k, v) => this._t(k, v) });
-    if (pitch) return pitch;
+    if (pitch) return html`${expectedNote}${pitch}`;
 
     // No formation available — fall back to the plain list.
     const hasFlags = arr => arr.some(p => p.starter === true || p.starter === false);
@@ -563,7 +572,7 @@ export class SoccerLiveMatchCenterCard extends LitElement {
     const homeBench = hasFlags(home) ? home.filter(p => p.starter === false) : [];
     const awayStart = hasFlags(away) ? away.filter(p => p.starter === true)  : away;
     const awayBench = hasFlags(away) ? away.filter(p => p.starter === false) : [];
-    return this._renderLineupList(match, homeStart, homeBench, awayStart, awayBench);
+    return html`${expectedNote}${this._renderLineupList(match, homeStart, homeBench, awayStart, awayBench)}`;
   }
 
   _renderLineupList(match, homeStart, homeBench, awayStart, awayBench) {
@@ -768,6 +777,9 @@ export class SoccerLiveMatchCenterCard extends LitElement {
       .h2h-source{margin:5px 0 8px;color:var(--cl-text-2);font-size:9px}
       /* Shared */
       .empty { text-align: center; color: var(--cl-text-2, #94a3b8); font-size: 12px; padding: 24px 16px; margin: 0; }
+      .lineup-expected-note { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; margin-bottom: 8px; border-radius: 8px; background: rgba(16,185,129,0.08); border-left: 3px solid #10b981; }
+      .lineup-expected-note strong { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #10b981; }
+      .lineup-expected-note small { font-size: 10px; color: var(--cl-text-2, #94a3b8); }
     `];
   }
 }

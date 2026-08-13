@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.3 (2026-08-13)
+
+- Match Center: the Lineup tab now labels a pre-match lineup as "Expected lineup" (with the provider-estimate note). Before kickoff the pitch shows the probable squad, not a confirmed starting XI; once the match is live or finished it's shown as the actual lineup without the note. Also applies to the standalone Lineup card
+
 ## v3.50.2 (2026-08-13)
 
 - match popups: move the diagnostic "Data per section" (source provenance) block to the bottom, below the match content, in both the Matches card popup and the Match Center overview — it was taking prominent space near the top
