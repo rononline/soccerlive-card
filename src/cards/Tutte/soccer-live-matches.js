@@ -19,6 +19,10 @@ import { isFinishedMatch, matchTimestamp, sortMatchesByStateAndDate } from '../s
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
 import { isPrematchState, renderPopupLineup, renderPopupSectionStyles, renderPopupTimeline } from '../shared-match-sections.js';
 
+// Text-size presets for the compact list: [font-size px, row padding px].
+// Mirrors the Minimal card so the compact layout matches it.
+const COMPACT_TEXT_SIZES = { xs: [11, 3], small: [12.5, 5], normal: [14, 7], large: [16, 9] };
+
 class SoccerLiveMatchesCard extends LitElement {
   static get properties() {
     return {
@@ -567,7 +571,13 @@ class SoccerLiveMatchesCard extends LitElement {
 
         <div class="scroll-content" style="max-height: ${scrollHeight}px;">
           ${this.compact
-            ? html`<div class="cmp-list">${grouped.flatMap(group => group.matches).map((match, i) => this._renderCompactRow(match, i, isMultiLeague))}</div>`
+            ? (() => {
+                const ts = this._config.text_size;
+                const [fs, pad] = typeof ts === 'number'
+                  ? [ts, Math.max(2, Math.round(ts * 0.42))]
+                  : (COMPACT_TEXT_SIZES[ts] || COMPACT_TEXT_SIZES.normal);
+                return html`<div class="cmp-list" style="--cmp-fs:${fs}px;--cmp-pad:${pad}px">${grouped.flatMap(group => group.matches).map((match, i) => this._renderCompactRow(match, i, isMultiLeague))}</div>`;
+              })()
             : grouped.map(group => html`
             ${group.seasonBreak ? html`<div class="season-divider">${group.season}</div>` : ''}
             <div class="day-divider ${groupBy === 'competition' ? 'comp' : (group.dayDiff === 0 ? 'today' : group.dayDiff === -1 ? 'yesterday' : group.dayDiff === 1 ? 'tomorrow' : '')}">
@@ -1215,8 +1225,8 @@ class SoccerLiveMatchesCard extends LitElement {
       .cmp-row {
         display: grid;
         grid-template-columns: minmax(72px, auto) minmax(48px, auto) 1fr auto 1fr auto;
-        align-items: baseline; gap: 10px; padding: 7px 14px; cursor: pointer;
-        font-size: 14px;
+        align-items: baseline; gap: 10px; cursor: pointer;
+        padding: var(--cmp-pad, 7px) 14px; font-size: var(--cmp-fs, 14px);
       }
       .cmp-row.odd { background: var(--cl-surface, rgba(255,255,255,0.04)); }
       .cmp-row:hover, .cmp-row:focus-visible { background: var(--cl-surface, rgba(255,255,255,0.08)); outline: none; }

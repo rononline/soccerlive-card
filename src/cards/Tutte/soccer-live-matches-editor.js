@@ -156,6 +156,15 @@ class SoccerLiveMatchesEditor extends LitElement {
             data-config-value="compact" @change=${this._switchChanged}></ha-switch>
         </div>
 
+        ${this._config.compact === true ? html`
+        <div>
+          <label class="field-label">${this._t('editor.text_size')}</label>
+          <select data-config-value="text_size" @change=${this._selectChanged}>
+            ${['xs', 'small', 'normal', 'large'].map((s) => html`
+              <option value="${s}" ?selected=${(this._config.text_size || 'normal') === s}>${this._t('schedule.size_' + s)}</option>`)}
+          </select>
+        </div>` : ''}
+
         <div class="option">
           <label>${this._t('editor.show_live_ticker')}</label>
           <ha-switch .checked=${this._config.show_live_ticker !== false}

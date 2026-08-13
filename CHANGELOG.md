@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.1 (2026-08-13)
+
+- Matches card: the compact list now supports a text size (xs / small / normal / large), like the Minimal card. The size selector appears in the editor only when the compact layout is enabled
+
 ## v3.50.0 (2026-08-13)
 
 - Matches card: new `compact` option — a dense single-line list per match (date · time/score · home – away · competition), like the Minimal card, while keeping the Matches card's detail popup on click. Toggle it in the editor ("Compact list")
