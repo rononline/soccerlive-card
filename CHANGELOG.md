@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.2 (2026-08-13)
+
+- match popups: move the diagnostic "Data per section" (source provenance) block to the bottom, below the match content, in both the Matches card popup and the Match Center overview — it was taking prominent space near the top
+
 ## v3.50.1 (2026-08-13)
 
 - Matches card: the compact list now supports a text size (xs / small / normal / large), like the Minimal card. The size selector appears in the editor only when the compact layout is enabled

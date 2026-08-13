@@ -343,11 +343,6 @@ export class SoccerLiveMatchCenterCard extends LitElement {
         t: (key, vars) => this._t(key, vars),
       })}
       ${renderReadiness(match, key => this._t(key))}
-      ${renderSourceSections(match, {
-        t: (key, vars) => this._t(key, vars),
-        provider: this.hass?.states?.[this._config.entity]?.attributes?.provider,
-        updatedAt: this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update,
-      })}
       <div class="ov-section">
         ${(homeForm || awayForm) ? html`
           <div class="ov-row">
@@ -396,6 +391,11 @@ export class SoccerLiveMatchCenterCard extends LitElement {
       ${this._config.show_prediction !== false ? renderPrediction(match, { t: k => this._t(k), lang: resolveLang(this.hass, this._config), showDetails: this._config.show_prediction_details !== false }) : ''}
       ${this._config.show_odds !== false ? renderOdds(match, { t: (k, v) => this._t(k, v) }) : ''}
       ${this._config.show_injuries !== false ? renderInjuries(match, { t: (k, v) => this._t(k, v) }) : ''}
+      ${renderSourceSections(match, {
+        t: (key, vars) => this._t(key, vars),
+        provider: this.hass?.states?.[this._config.entity]?.attributes?.provider,
+        updatedAt: this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update,
+      })}
     `;
   }
 

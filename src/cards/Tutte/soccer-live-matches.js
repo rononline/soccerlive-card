@@ -885,11 +885,6 @@ class SoccerLiveMatchesCard extends LitElement {
           ${this._detailsLoading ? html`<p class="mp-detail-state">${this._t('ui.loading')}</p>` : ''}
           ${this._detailsError ? html`<p class="mp-detail-state error">${this._t('ui.provider_unavailable')}</p>` : ''}
           ${this._renderDetailCapabilities(m)}
-          ${renderSourceSections(m, {
-            t: (key, vars) => this._t(key, vars),
-            provider: this.hass?.states?.[this._config.entity]?.attributes?.provider,
-            updatedAt: this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update,
-          })}
           ${isPre || isLive ? this._renderPopupPrematch(m) : ''}
           ${!isPre ? html`
             ${group(this._t('event.goal'), goals, 'goal')}
@@ -905,6 +900,11 @@ class SoccerLiveMatchesCard extends LitElement {
           ${isLive || isFt ? this._renderPopupStory(m) : ''}
           ${isFt ? this._renderPopupOutcome(m) : ''}
           ${isFt ? this._renderPopupReview(m) : ''}
+          ${renderSourceSections(m, {
+            t: (key, vars) => this._t(key, vars),
+            provider: this.hass?.states?.[this._config.entity]?.attributes?.provider,
+            updatedAt: this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update,
+          })}
           <button class="mp-close" @click="${() => this.showPopup = false}">${this._t('generic.close')}</button>
         </div>
       </div>

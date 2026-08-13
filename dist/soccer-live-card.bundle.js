@@ -2290,7 +2290,6 @@
           ${this._detailsLoading?i.qy`<p class="mp-detail-state">${this._t("ui.loading")}</p>`:""}
           ${this._detailsError?i.qy`<p class="mp-detail-state error">${this._t("ui.provider_unavailable")}</p>`:""}
           ${this._renderDetailCapabilities(e)}
-          ${nt(e,{t:(e,t)=>this._t(e,t),provider:this.hass?.states?.[this._config.entity]?.attributes?.provider,updatedAt:this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update})}
           ${t||a?this._renderPopupPrematch(e):""}
           ${t?"":i.qy`
             ${h(this._t("event.goal"),c,"goal")}
@@ -2306,6 +2305,7 @@
           ${a||r?this._renderPopupStory(e):""}
           ${r?this._renderPopupOutcome(e):""}
           ${r?this._renderPopupReview(e):""}
+          ${nt(e,{t:(e,t)=>this._t(e,t),provider:this.hass?.states?.[this._config.entity]?.attributes?.provider,updatedAt:this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update})}
           <button class="mp-close" @click="${()=>this.showPopup=0}">${this._t("generic.close")}</button>
         </div>
       </div>
@@ -2966,7 +2966,6 @@
     `}_renderOverview(e,t){const a=e=>e&&"N/A"!==e?e:"",r=a(e.home_record_summary||e.home_record),o=a(e.away_record_summary||e.away_record),n=me(e,"home",e=>this._t(e)),l=me(e,"away",e=>this._t(e)),c=a(e.home_form||e.last_five_home),d=a(e.away_form||e.last_five_away),p=function(e,t,a){if(!e?.states)return null;if(t?.standings_entity&&e.states[t.standings_entity])return e.states[t.standings_entity].attributes;const i=String(a?.competition_name||a?.league_name||"").toLowerCase();return Object.values(e.states).find(e=>{const t=e?.attributes||{};if(!t.standings_groups)return 0;const a=String(t.league_name||t.competition_name||"").toLowerCase();return i&&a&&(i.includes(a)||a.includes(i))})?.attributes||null}(this.hass,this._config,e),h=function(e,t,a=""){const i=e?.standings_groups?.[0]?.standings,s=String(t?.state||"").toLowerCase();if(!i?.length||!t||!["in","live"].includes(s))return null;const r=String(t.home_team||"").toLowerCase(),o=String(t.away_team||"").toLowerCase(),n=i.map(e=>({...e,points:Re(e.points),rank:Re(e.rank,999)})),l=e=>n.find(t=>{const a=String(t.team_name||"").toLowerCase();return a&&e&&(a.includes(e)||e.includes(a))}),c=l(r),d=l(o);if(!c||!d)return null;const p=Re(t.home_score),h=Re(t.away_score);p>h?c.points+=3:p<h?d.points+=3:(c.points+=1,d.points+=1),n.sort((e,t)=>t.points-e.points||Re(t.goal_difference)-Re(e.goal_difference)),n.forEach((e,t)=>{e.virtual_rank=t+1});const u=String(a||"").toLowerCase(),g=l(u)||(r.includes(u)?c:d);return g?{previous_rank:g.rank,rank:g.virtual_rank,change:g.rank-g.virtual_rank,points:g.points,team:g.team_name}:null}(p,e,this._config.team_name||t.team_name||"");return i.qy`
       ${Nt(function(e,t){if(!Array.isArray(e))return[];const a=String(t?.event_id||""),i=String(t?.canonical_id||""),s=Boolean(t?.lineup_home?.length&&t?.lineup_away?.length);return e.filter(e=>e&&"object"==typeof e?"live_lineup_missing"===e.code&&s?0:e.event_id||e.canonical_id?a&&String(e.event_id)===a||i&&String(e.canonical_id)===i:1:0)}(t?.data_alerts,e),{t:(e,t)=>this._t(e,t)})}
       ${Pt(e,e=>this._t(e))}
-      ${nt(e,{t:(e,t)=>this._t(e,t),provider:this.hass?.states?.[this._config.entity]?.attributes?.provider,updatedAt:this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update})}
       <div class="ov-section">
         ${c||d?i.qy`
           <div class="ov-row">
@@ -3005,6 +3004,7 @@
       ${0!=this._config.show_prediction?pe(e,{t:e=>this._t(e),lang:(0,s.$c)(this.hass,this._config),showDetails:0!=this._config.show_prediction_details}):""}
       ${0!=this._config.show_odds?he(e,{t:(e,t)=>this._t(e,t)}):""}
       ${0!=this._config.show_injuries?ue(e,{t:(e,t)=>this._t(e,t)}):""}
+      ${nt(e,{t:(e,t)=>this._t(e,t),provider:this.hass?.states?.[this._config.entity]?.attributes?.provider,updatedAt:this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update})}
     `;var u}_renderPreview(e){const t=e?.preview||{},a=Ze(e);if(!(a.homeForm.length||a.awayForm.length||a.h2hCount||a.hasStandings||a.absences||a.featured))return"";const s=e=>e?i.qy`<div class="brief-form">${String(e).split("").map(e=>i.qy`<b class=${e.toLowerCase()}>${e}</b>`)}</div>`:i.qy`<span>—</span>`;return i.qy`<section class="brief-card preview">
       <h4>${this._t("match.preview")}</h4>
       ${a.homeForm.length||a.awayForm.length?i.qy`<div class="brief-form-row">${s(a.homeForm.join(""))}<span>${this._t("team.form")}</span>${s(a.awayForm.join(""))}</div>`:""}
