@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.49.3 (2026-08-13)
+
+- Last Match card: the details popup now closes with the Escape key, matching the other match popups (added a document-level Escape handler instead of relying only on the dialog's cancel event)
+
 ## v3.49.2 (2026-08-12)
 
 - Last Match card: give each details-popup section (stats, ratings, timeline, lineup, head-to-head) its own panel — a subtle background and accent left border — so the ratings block no longer runs into the stats above it

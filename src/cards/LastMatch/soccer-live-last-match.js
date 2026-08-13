@@ -160,8 +160,13 @@ class SoccerLiveLastMatchCard extends LitElement {
       this._portal.className = "soccer-live-last-match-portal";
       this._cancel = (e) => { e.preventDefault(); this._showDetails = false; };
       this._backdrop = (e) => { if (e.target === this._portal) this._showDetails = false; };
+      // A document-level Escape handler as well, so ESC closes the popup even
+      // when focus isn't inside the dialog (and if showModal fell back to a
+      // non-modal open, where the dialog's own cancel event never fires).
+      this._escape = (e) => { if (e.key === "Escape") this._showDetails = false; };
       this._portal.addEventListener("cancel", this._cancel);
       this._portal.addEventListener("click", this._backdrop);
+      document.addEventListener("keydown", this._escape);
       document.body.appendChild(this._portal);
     }
     this._copyThemeVars(this._portal);
@@ -176,6 +181,7 @@ class SoccerLiveLastMatchCard extends LitElement {
     if (this._portal.open) this._portal.close();
     this._portal.removeEventListener("cancel", this._cancel);
     this._portal.removeEventListener("click", this._backdrop);
+    document.removeEventListener("keydown", this._escape);
     render(html``, this._portal);
     this._portal.remove();
     this._portal = null;
