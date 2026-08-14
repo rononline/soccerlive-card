@@ -827,6 +827,7 @@ class SoccerLiveMatchesCard extends LitElement {
         .mp-standing-grid span { color:var(--cl-accent,#6366f1); font-size:12px; font-weight:800; }
         .mp-h2h-list { display:grid; gap:5px; }.mp-h2h-list>div { display:grid; grid-template-columns:1fr auto 1fr; gap:7px; padding:6px 8px; border-radius:7px; background:rgba(255,255,255,.035); color:var(--cl-text-2,#94a3b8); font-size:10px; align-items:center; }.mp-h2h-list span:last-child{text-align:right}.mp-h2h-list b{color:var(--cl-text,#f8fafc)}
         .mp-h2h-list b.win{color:#fff;background:var(--cl-win,#22c55e);padding:1px 6px;border-radius:5px}.mp-h2h-list b.loss{color:#fff;background:var(--cl-loss,#ef4444);padding:1px 6px;border-radius:5px}.mp-h2h-list b.draw{color:var(--cl-text,#f8fafc);background:var(--cl-divider,rgba(127,127,127,.28));padding:1px 6px;border-radius:5px}
+        .mp-h2h-mid{display:flex;flex-direction:column;align-items:center;gap:2px}.mp-h2h-date{color:var(--cl-text-2,#94a3b8);font-size:8px;white-space:nowrap}
         .mp-coverage { display:flex; justify-content:space-between; align-items:center; padding:7px 9px; border-radius:8px; background:rgba(148,163,184,.08); color:var(--cl-text-2,#94a3b8); font-size:9px; }.mp-coverage b{color:var(--cl-text,#f8fafc)}
         .mp-review-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }.mp-review-grid>div { padding:9px; border-radius:8px; background:rgba(255,255,255,.04); }.mp-review-grid small{display:block;color:var(--cl-text-2,#94a3b8);font-size:9px}.mp-review-grid strong{color:var(--cl-text,#f8fafc);font-size:12px}
         .mp-box .pred,.mp-box .odds,.mp-box .inj { margin:0; }
@@ -978,11 +979,19 @@ class SoccerLiveMatchesCard extends LitElement {
     return ((isHome && hs > as) || (isAway && as > hs)) ? 'win' : 'loss';
   }
 
+  _h2hDate(g) {
+    const d = parseMatchDate(g.date_iso || g.date);
+    if (!d) return '';
+    return d.toLocaleDateString(resolveLang(this.hass, this._config), {
+      day: '2-digit', month: 'short', year: 'numeric',
+    }).replace(/\.$/, '');
+  }
+
   _renderPopupH2H(m, context = prematchContext(m)) {
     if (!context.h2h.length && !context.h2hCount) return '';
     const tracked = this.myTeam || (m.home_team || '').toLowerCase();
     return html`<div class="mp-section"><h5 class="mp-section-title">${this._t('popup.h2h')}</h5>
-      ${context.h2h.length ? html`<div class="mp-h2h-list">${context.h2h.map(match => html`<div><span>${match.home_team || match.home}</span><b class="${this._h2hOutcome(match, tracked)}">${scoreText(match.home_score, '–')} – ${scoreText(match.away_score, '–')}</b><span>${match.away_team || match.away}</span></div>`)}</div>` : html`<p class="mp-no-events">${this._t('popup.h2h_available', { n: context.h2hCount })}</p>`}
+      ${context.h2h.length ? html`<div class="mp-h2h-list">${context.h2h.map(match => html`<div><span>${match.home_team || match.home}</span><div class="mp-h2h-mid"><b class="${this._h2hOutcome(match, tracked)}">${scoreText(match.home_score, '–')} – ${scoreText(match.away_score, '–')}</b>${this._h2hDate(match) ? html`<small class="mp-h2h-date">${this._h2hDate(match)}</small>` : ''}</div><span>${match.away_team || match.away}</span></div>`)}</div>` : html`<p class="mp-no-events">${this._t('popup.h2h_available', { n: context.h2hCount })}</p>`}
     </div>`;
   }
 

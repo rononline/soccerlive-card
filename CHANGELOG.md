@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.5 (2026-08-14)
+
+- Matches card: show the date of each head-to-head match (under the score) in the popup
+
 ## v3.50.4 (2026-08-14)
 
 - Matches card: colour the head-to-head results in the match popup from the followed team's perspective — green win, red loss, grey draw — matching the Last Match card
