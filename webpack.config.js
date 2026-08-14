@@ -34,7 +34,10 @@ module.exports = {
         ecma: 2022,
         compress: {
           passes: 5,
-          booleans_as_integers: true,
+          // NOT booleans_as_integers: it rewrites `true`/`false` to `1`/`0`,
+          // which breaks booleans sent to strictly-typed Home Assistant APIs
+          // (e.g. `return_response: true` on the call_service WebSocket command,
+          // validated as a real bool — `1` is rejected).
           drop_debugger: true,
         },
         format: { comments: false },
