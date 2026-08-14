@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.4 (2026-08-14)
+
+- Matches card: colour the head-to-head results in the match popup from the followed team's perspective — green win, red loss, grey draw — matching the Last Match card
+
 ## v3.50.3 (2026-08-13)
 
 - Match Center: the Lineup tab now labels a pre-match lineup as "Expected lineup" (with the provider-estimate note). Before kickoff the pitch shows the probable squad, not a confirmed starting XI; once the match is live or finished it's shown as the actual lineup without the note. Also applies to the standalone Lineup card
