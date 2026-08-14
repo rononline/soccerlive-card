@@ -682,7 +682,7 @@ class SoccerLiveTeamCard extends LitElement {
         ${!this.compact && this._config.show_injuries !== false ? this._renderInjuries(match) : ''}
         ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
         ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
-        ${!this.compact ? this._renderH2H(match.head_to_head, match.home_team) : ''}
+        ${!this.compact ? this._renderH2H(match.head_to_head, this.myTeam || attributes.team_name || match.home_team) : ''}
         ${!this.compact ? this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
       </ha-card>
     `;
@@ -886,11 +886,23 @@ class SoccerLiveTeamCard extends LitElement {
           const dateLabel = formatDateOnly(g.date, resolveLang(this.hass, this._config));
           const homeWon = parseInt(g.home_score) > parseInt(g.away_score);
           const awayWon = parseInt(g.away_score) > parseInt(g.home_score);
+          // Colour the score from the followed team's perspective (same fuzzy
+          // team match as the summary above).
+          const isOurs = name => {
+            const n = (name || '').toLowerCase();
+            return n.includes(homeName) || homeName.includes(n.split(' ')[0]);
+          };
+          const hs = parseInt(g.home_score, 10), as = parseInt(g.away_score, 10);
+          let outcome = '';
+          if (!Number.isNaN(hs) && !Number.isNaN(as)) {
+            const H = isOurs(g.home_team), A = isOurs(g.away_team);
+            if (H || A) outcome = hs === as ? 'draw' : ((H && hs > as) || (A && as > hs)) ? 'win' : 'loss';
+          }
           return html`
             <div class="h2h-row">
               <span class="h2h-date">${dateLabel}</span>
               <span class="h2h-team ${homeWon ? 'winner' : ''}">${g.home_team || ''}</span>
-              <span class="h2h-score">${scoreText(g.home_score, '-')} - ${scoreText(g.away_score, '-')}</span>
+              <span class="h2h-score ${outcome}">${scoreText(g.home_score, '-')} - ${scoreText(g.away_score, '-')}</span>
               <span class="h2h-team away ${awayWon ? 'winner' : ''}">${g.away_team || ''}</span>
             </div>
           `;
@@ -1907,6 +1919,9 @@ class SoccerLiveTeamCard extends LitElement {
         flex-shrink: 0; text-align: center; min-width: 36px;
         font-variant-numeric: tabular-nums;
       }
+      .h2h-score.win { color: #fff; background: var(--cl-win, #22c55e); border-radius: 5px; padding: 1px 6px; }
+      .h2h-score.loss { color: #fff; background: var(--cl-loss, #ef4444); border-radius: 5px; padding: 1px 6px; }
+      .h2h-score.draw { color: var(--cl-text); background: var(--cl-divider, rgba(127,127,127,0.28)); border-radius: 5px; padding: 1px 6px; }
 
       /* Goal celebration */
       ha-card.goal-flash {
