@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.6 (2026-08-14)
+
+- Last Match card: show the date of each head-to-head match (under the score) in the details popup, matching the Matches card
+
 ## v3.50.5 (2026-08-14)
 
 - Matches card: show the date of each head-to-head match (under the score) in the popup

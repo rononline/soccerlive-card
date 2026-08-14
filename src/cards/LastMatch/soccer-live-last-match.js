@@ -309,12 +309,17 @@ class SoccerLiveLastMatchCard extends LitElement {
       if (hs === as_) return "draw";
       return ((isHome && hs > as_) || (isAway && as_ > hs)) ? "win" : "loss";
     };
+    const lang = resolveLang(this.hass, this._config);
+    const dateOf = (g) => {
+      const d = parseMatchDate(g.date_iso || g.date);
+      return d ? d.toLocaleDateString(lang, { day: "2-digit", month: "short", year: "numeric" }).replace(/\.$/, "") : "";
+    };
     return html`
       <div class="mp-section">
         <h5 class="mp-section-title">${translate("popup.h2h")}</h5>
         <div class="lmp-h2h">
           ${h2h.slice(0, 6).map(g => html`
-            <div><span>${g.home_team || g.home}</span><b class="lmp-h2h-score ${outcome(g)}">${scoreText(g.home_score, "-")} – ${scoreText(g.away_score, "-")}</b><span>${g.away_team || g.away}</span></div>`)}
+            <div><span>${g.home_team || g.home}</span><div class="lmp-h2h-mid"><b class="lmp-h2h-score ${outcome(g)}">${scoreText(g.home_score, "-")} – ${scoreText(g.away_score, "-")}</b>${dateOf(g) ? html`<small class="lmp-h2h-date">${dateOf(g)}</small>` : ""}</div><span>${g.away_team || g.away}</span></div>`)}
         </div>
       </div>`;
   }
@@ -369,6 +374,8 @@ class SoccerLiveLastMatchCard extends LitElement {
       .lmp-h2h > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; font-size: 0.85rem; padding: 3px 0; align-items: center; }
       .lmp-h2h > div > span:last-child { text-align: right; }
       .lmp-h2h b { font-variant-numeric: tabular-nums; }
+      .lmp-h2h-mid { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+      .lmp-h2h-date { color: var(--cl-text-2, var(--secondary-text-color)); font-size: 0.62rem; white-space: nowrap; }
       .lmp-h2h-score { padding: 1px 8px; border-radius: 6px; }
       .lmp-h2h-score.win  { color: #fff; background: var(--cl-win, #22c55e); }
       .lmp-h2h-score.loss { color: #fff; background: var(--cl-loss, #ef4444); }

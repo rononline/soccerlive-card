@@ -3764,12 +3764,12 @@
                 ${this._ratingChip(e.rating)}
               </div>`)}
           </div>`:""}
-      </div>`:""}_renderH2H(e,t){const a=Array.isArray(e.head_to_head)?e.head_to_head:[];if(!a.length)return"";const s=this._attrs()||{},r=(this._config.my_team||this._config.team_name||s.team_name||e.home_team||"").toLowerCase();return i.qy`
+      </div>`:""}_renderH2H(e,t){const a=Array.isArray(e.head_to_head)?e.head_to_head:[];if(!a.length)return"";const r=this._attrs()||{},o=(this._config.my_team||this._config.team_name||r.team_name||e.home_team||"").toLowerCase(),n=(0,s.$c)(this.hass,this._config),l=e=>{const t=(0,s.n1)(e.date_iso||e.date);return t?t.toLocaleDateString(n,{day:"2-digit",month:"short",year:"numeric"}).replace(/\.$/,""):""};return i.qy`
       <div class="mp-section">
         <h5 class="mp-section-title">${t("popup.h2h")}</h5>
         <div class="lmp-h2h">
           ${a.slice(0,6).map(e=>i.qy`
-            <div><span>${e.home_team||e.home}</span><b class="lmp-h2h-score ${(e=>{const t=parseInt(e.home_score,10),a=parseInt(e.away_score,10);if(!r||Number.isNaN(t)||Number.isNaN(a))return"";const i=(e.home_team||e.home||"").toLowerCase().includes(r),s=(e.away_team||e.away||"").toLowerCase().includes(r);return i||s?t===a?"draw":i&&t>a||s&&a>t?"win":"loss":""})(e)}">${C(e.home_score,"-")} – ${C(e.away_score,"-")}</b><span>${e.away_team||e.away}</span></div>`)}
+            <div><span>${e.home_team||e.home}</span><div class="lmp-h2h-mid"><b class="lmp-h2h-score ${(e=>{const t=parseInt(e.home_score,10),a=parseInt(e.away_score,10);if(!o||Number.isNaN(t)||Number.isNaN(a))return"";const i=(e.home_team||e.home||"").toLowerCase().includes(o),s=(e.away_team||e.away||"").toLowerCase().includes(o);return i||s?t===a?"draw":i&&t>a||s&&a>t?"win":"loss":""})(e)}">${C(e.home_score,"-")} – ${C(e.away_score,"-")}</b>${l(e)?i.qy`<small class="lmp-h2h-date">${l(e)}</small>`:""}</div><span>${e.away_team||e.away}</span></div>`)}
         </div>
       </div>`}_portalStyles(){return i.qy`<style>
       ${Te.cssText}
@@ -3820,6 +3820,8 @@
       .lmp-h2h > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; font-size: 0.85rem; padding: 3px 0; align-items: center; }
       .lmp-h2h > div > span:last-child { text-align: right; }
       .lmp-h2h b { font-variant-numeric: tabular-nums; }
+      .lmp-h2h-mid { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+      .lmp-h2h-date { color: var(--cl-text-2, var(--secondary-text-color)); font-size: 0.62rem; white-space: nowrap; }
       .lmp-h2h-score { padding: 1px 8px; border-radius: 6px; }
       .lmp-h2h-score.win  { color: #fff; background: var(--cl-win, #22c55e); }
       .lmp-h2h-score.loss { color: #fff; background: var(--cl-loss, #ef4444); }
