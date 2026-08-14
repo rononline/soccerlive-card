@@ -14,6 +14,7 @@ import { renderPrediction, renderOdds, renderInjuries, prematchStyles } from '..
 import { standingText } from '../shared-standing.js';
 import { EVENT_I18N, translateMatchStatus } from '../shared-event-i18n.js';
 import { displayCompetitionName, resolveCompetitionLogo, pickLeagueInfo } from '../shared-competition.js';
+import { kickoffDurationParts } from '../shared-match-popup-model.js';
 import { pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
@@ -314,8 +315,16 @@ class SoccerLiveTeamCard extends LitElement {
     const totalMin = Math.floor(diffMs / 60000);
     if (totalMin < 1) return this._t('time.now');
     if (totalMin < 60) return this._t('time.in_n_min', { n: totalMin });
-    const h = Math.floor(totalMin / 60);
-    return this._t('time.in_n_h', { n: h });
+    if (totalMin < 1440) return this._t('time.in_n_h', { n: Math.floor(totalMin / 60) });
+    // A day or more away: show days + hours ("in 1 day and 23 hours") rather
+    // than a large hour count ("in 47 hours").
+    const parts = kickoffDurationParts(totalMin, 2).map(
+      ({ unit, value }) => this._t(`popup.duration_${unit}${value === 1 ? '' : 's'}`, { n: value }),
+    );
+    const value = parts.length > 1
+      ? `${parts.slice(0, -1).join(', ')} ${this._t('popup.duration_and')} ${parts.at(-1)}`
+      : parts[0];
+    return this._t('time.in_duration', { value });
   }
 
   getCardSize() { return 4; }

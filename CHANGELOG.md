@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.8 (2026-08-14)
+
+- Team card: the pre-match countdown now shows days + hours ("in 1 day and 23 hours") instead of a large hour count ("in 47 hours"), once the match is a day or more away
+
 ## v3.50.7 (2026-08-14)
 
 - Team card: colour the head-to-head results from the followed team's perspective — green win, red loss, grey draw — matching the Matches and Last Match popups
