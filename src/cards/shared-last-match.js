@@ -29,19 +29,3 @@ export function pickLastMatch(attributes) {
   if (!pool.length) return null;
   return [...pool].sort((a, b) => _dateKey(b) - _dateKey(a))[0];
 }
-
-/**
- * Goalscorers for a match as `{ player, minute, team }`, from its key events.
- * Empty when the (compact) match carries no event detail.
- */
-export function lastMatchGoals(match) {
-  const events = Array.isArray(match?.key_events) ? match.key_events : [];
-  return events
-    .filter(e => e && (e.scoring_play === true || String(e.type || '').toLowerCase() === 'goal'))
-    .map(e => ({
-      player: (Array.isArray(e.athletes) && e.athletes[0]) || e.player || '',
-      minute: String(e.clock || e.minute || '').replace(/'+$/, ''),
-      team: e.team || '',
-    }))
-    .filter(g => g.player);
-}

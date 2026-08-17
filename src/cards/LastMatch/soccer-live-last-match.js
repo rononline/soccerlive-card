@@ -5,7 +5,7 @@ import { renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { displayCompetitionName, resolveCompetitionLogo } from "../shared-competition.js";
 import { scoreText } from "../shared-score.js";
-import { pickLastMatch, lastMatchGoals } from "../shared-last-match.js";
+import { pickLastMatch } from "../shared-last-match.js";
 import { renderPopupTimeline, renderPopupLineup, renderPopupSectionStyles } from "../shared-match-sections.js";
 import { pitchStyles } from "../shared-pitch.js";
 import { matchStatRows, translateStatKey } from "../shared-stat-labels.js";
@@ -102,8 +102,6 @@ class SoccerLiveLastMatchCard extends LitElement {
     const homeWin = Number.isFinite(homeGoals) && Number.isFinite(awayGoals) && homeGoals > awayGoals;
     const awayWin = Number.isFinite(homeGoals) && Number.isFinite(awayGoals) && awayGoals > homeGoals;
 
-    const goals = lastMatchGoals(match);
-
     const logoEl = (logo) => logo
       ? html`<img class="lm-logo" src="${logo}" alt="" loading="lazy">`
       : html`<div class="lm-logo placeholder">⚽</div>`;
@@ -134,11 +132,6 @@ class SoccerLiveLastMatchCard extends LitElement {
       </div>
 
       ${dateStr || competition ? html`<div class="lm-meta">${[competition, dateStr].filter(Boolean).join(" · ")}</div>` : ""}
-
-      ${goals.length ? html`
-        <div class="lm-goals">
-          ${goals.map(g => html`<span class="lm-goal">⚽ ${g.player}${g.minute ? html` <em>${g.minute}'</em>` : ""}</span>`)}
-        </div>` : ""}
 
       ${this._hasDetails(match) ? html`
         <div class="lm-actions">
@@ -408,10 +401,7 @@ class SoccerLiveLastMatchCard extends LitElement {
       .lm-score.win { color: var(--cl-text); }
       .lm-sep { font-size: 1.1rem; color: var(--cl-text-2); }
       .lm-meta { text-align: center; font-size: 0.8rem; color: var(--cl-text-2); }
-      .lm-goals { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--cl-divider); }
-      .lm-goal { font-size: 0.82rem; color: var(--cl-text); }
-      .lm-goal em { color: var(--cl-text-2); font-style: normal; }
-      .lm-actions { display: flex; justify-content: center; margin-top: 12px; }
+      .lm-actions { display: flex; justify-content: center; margin-top: 14px; }
       .lm-details-btn {
         border: 0; cursor: pointer; font-weight: 700; font-size: 0.8rem;
         padding: 6px 16px; border-radius: 99px;

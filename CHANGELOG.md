@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.50.10 (2026-08-16)
+
+- Last Match card: remove the goalscorers line from the main view — it read awkwardly, and the details popup already shows the full timeline of goals
+
 ## v3.50.9 (2026-08-14)
 
 - fix: on-demand match-detail loading no longer triggers a Home Assistant WebSocket error ("expected bool for dictionary value @ data['return_response']. Got 1"). The minifier's `booleans_as_integers` optimization was rewriting `return_response: true` to `1`, which HA rejects as a non-boolean; that optimization is now disabled

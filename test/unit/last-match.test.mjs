@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { pickLastMatch, lastMatchGoals } from '../../src/cards/shared-last-match.js';
+import { pickLastMatch } from '../../src/cards/shared-last-match.js';
 
 test('pickLastMatch: prefers a finished match from the primary (detailed) list', () => {
   const attrs = {
@@ -31,16 +31,4 @@ test('pickLastMatch: null when there is no finished match', () => {
   assert.equal(pickLastMatch({ matches: [{ state: 'pre' }], previous_matches: [] }), null);
   assert.equal(pickLastMatch({}), null);
   assert.equal(pickLastMatch(null), null);
-});
-
-test('lastMatchGoals: extracts scorers from key events, empty for compact matches', () => {
-  const match = { key_events: [
-    { type: 'goal', scoring_play: true, athletes: ['Luciano Valente', 'Gjivai Zechiël'], clock: "35'", team: 'Feyenoord' },
-    { type: 'yellow-card', athletes: ['Casper Terho'], clock: "39'" },
-    { type: 'substitution', athletes: ['A', 'B'], clock: "57'" },
-  ] };
-  assert.deepEqual(lastMatchGoals(match), [
-    { player: 'Luciano Valente', minute: '35', team: 'Feyenoord' },
-  ]);
-  assert.deepEqual(lastMatchGoals({}), []);       // compact match, no events
 });
