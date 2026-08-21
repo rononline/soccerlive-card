@@ -6620,7 +6620,10 @@ export function formatMatchDateFull(dateStr, lang) {
   const locale = LOCALE_MAP[lang] || 'en-GB';
   try {
     const datePart = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
-    return `${datePart} ${hh}:${min}`;
+    // Prefix the short weekday (nl → "za", 2 letters) so the day of week is
+    // visible at a glance on badge/date displays.
+    const weekday = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date).replace(/\.$/, '');
+    return `${weekday} ${datePart} ${hh}:${min}`;
   } catch (_) {
     return dateStr;
   }

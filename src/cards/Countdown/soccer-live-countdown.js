@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { t, resolveLang, parseMatchDate } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate, formatMatchDateFull } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderWeatherBadge, weatherBadgeStyles } from "../weather-badge.js";
@@ -345,6 +345,7 @@ class SoccerLiveCountdownCard extends LitElement {
     }
 
     const countdown = this._countdown(match.date);
+    const dateLabel = formatMatchDateFull(match.date, resolveLang(this.hass, this._config)) || match.date || '';
     const lDay = this._t(countdown?.days === 1 ? 'cd.day' : 'cd.days') || (countdown?.days === 1 ? 'day' : 'days');
     const lHrs = this._t('cd.hrs') || 'hrs';
     const lMin = this._t('cd.min') || 'min';
@@ -365,7 +366,7 @@ class SoccerLiveCountdownCard extends LitElement {
         ${!this._config.hide_header ? renderSoccerHeader({
           logo: compLogo || null,
           title: compName,
-          badge: renderSoccerBadge(match.date || '', 'date'),
+          badge: renderSoccerBadge(dateLabel, 'date'),
         }) : ''}
 
         <div class="cd-body">
@@ -378,7 +379,7 @@ class SoccerLiveCountdownCard extends LitElement {
 
           <div class="center">
             ${countdown ? html`
-              ${match.date ? html`<div class="sched-date">${match.date}</div>` : ''}
+              ${dateLabel ? html`<div class="sched-date">${dateLabel}</div>` : ''}
               <div class="countdown">
                 ${countdown.days > 0 ? html`
                   <div class="cd-block"><span class="cd-num">${countdown.days}</span><span class="cd-label">${lDay}</span></div>
@@ -391,7 +392,7 @@ class SoccerLiveCountdownCard extends LitElement {
                 <div class="cd-block"><span class="cd-num">${String(countdown.secs).padStart(2,'0')}</span><span class="cd-label">${lSec}</span></div>
               </div>
             ` : html`
-              ${match.date ? html`<div class="sched-date">${match.date}</div>` : ''}
+              ${dateLabel ? html`<div class="sched-date">${dateLabel}</div>` : ''}
               <div class="vs-text">${this._t('match.vs')}</div>
             `}
           </div>

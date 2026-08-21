@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.51.0 (2026-08-21)
+
+- dates: full date+time badges now show the short weekday first (nl → "za 23-08-2026 16:45") so the day of week is visible at a glance. Applies wherever the full-date formatter is used — Match Center's date badge, the Countdown card's date, and the venue/date meta row in the match popups
+
 ## v3.50.10 (2026-08-16)
 
 - Last Match card: remove the goalscorers line from the main view — it read awkwardly, and the details popup already shows the full timeline of goals

@@ -1,4 +1,5 @@
 import { html, css } from 'lit';
+import { formatMatchDateFull } from '../i18n.js';
 
 /**
  * Shared match meta component: venue row + broadcast/attendance/link chips.
@@ -60,7 +61,7 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
               <circle cx="12" cy="12" r="10"/>
               <polyline points="12 6 12 12 16 14"/>
             </svg>
-            <span>${match.date}</span>
+            <span>${formatMatchDateFull(match.date, lang) || match.date}</span>
           </div>
         ` : ''}
       </div>
