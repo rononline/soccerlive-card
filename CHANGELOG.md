@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.52.0 (2026-08-23)
+
+- Ticker card: add a "Today's matches" option to the Show dropdown (alongside All matches / Live only), filtering the strip to fixtures kicking off today
+
 ## v3.51.0 (2026-08-21)
 
 - dates: full date+time badges now show the short weekday first (nl → "za 23-08-2026 16:45") so the day of week is visible at a glance. Applies wherever the full-date formatter is used — Match Center's date badge, the Countdown card's date, and the venue/date meta row in the match popups

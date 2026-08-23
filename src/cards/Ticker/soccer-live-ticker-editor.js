@@ -71,6 +71,7 @@ class SoccerLiveTickerEditor extends LitElement {
         <label>${this._t('editor.show')}</label>
         <select data-config-value="filter" @change=${this._selectChanged}>
           <option value="" ?selected=${!this._config.filter}>${this._t('editor.all_matches')}</option>
+          <option value="today" ?selected=${this._config.filter === 'today'}>${this._t('editor.today_matches')}</option>
           <option value="live" ?selected=${this._config.filter === 'live'}>${this._t('editor.live_only')}</option>
         </select>
 

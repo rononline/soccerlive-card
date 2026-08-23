@@ -129,7 +129,20 @@ class SoccerLiveTickerCard extends LitElement {
     const sorted = sortMatchesByStateAndDate(matches);
 
     const filter = this._config.filter;
-    let visible = filter === 'live' ? sorted.filter(m => m.state === 'in') : sorted;
+    let visible = sorted;
+    if (filter === 'live') {
+      visible = sorted.filter(m => m.state === 'in');
+    } else if (filter === 'today') {
+      // Compare on the displayed local date (DD-MM-YYYY / the ISO YYYY-MM-DD),
+      // so "today" matches what the card shows without timezone parsing.
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const dmy = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+      const ymd = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      visible = sorted.filter(m =>
+        String(m.date || '').startsWith(dmy) || String(m.date_iso || '').startsWith(ymd)
+      );
+    }
     const compFilter = this._config.competition_filter?.toLowerCase();
     if (compFilter) {
       const filtered = visible.filter(m =>
