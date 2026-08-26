@@ -38,6 +38,16 @@ function _lastName(p) {
   return /^[A-Z]\. /.test(s) ? s.slice(3) : s;
 }
 
+// FotMob-style rating pill: strong green (8+), green (7+), amber (6+), red.
+// Only shown when the provider supplies a numeric rating (mainly finished
+// matches); returns '' otherwise so the dot renders unchanged.
+function _ratingBadge(rating) {
+  const n = parseFloat(rating);
+  if (!Number.isFinite(n)) return '';
+  const bg = n >= 8 ? '#1f9d55' : n >= 7 ? '#4a9e2f' : n >= 6 ? '#c98a00' : '#c0392b';
+  return html`<span class="pit-rating" style="background:${bg}">${n.toFixed(1)}</span>`;
+}
+
 /**
  * Render the starting XI on a vertical pitch, both teams facing each other.
  * Returns a lit template, or null when a pitch cannot be drawn (no lineups,
@@ -76,7 +86,10 @@ export function renderPitch(match, opts = {}) {
 
   const dot = (p, side) => html`
     <div class="pit-player">
-      <div class="pit-dot ${side}${_isGk(p) ? ' gk' : ''}">${p.jersey || ''}</div>
+      <div class="pit-dot-wrap">
+        <div class="pit-dot ${side}${_isGk(p) ? ' gk' : ''}">${p.jersey || ''}</div>
+        ${_ratingBadge(p.rating)}
+      </div>
       <div class="pit-name">${_lastName(p)}</div>
     </div>
   `;
@@ -159,12 +172,20 @@ export const pitchStyles = css`
   .pit-mid { height: 24px; }
   .pit-row { display: flex; justify-content: space-around; align-items: flex-start; }
   .pit-player { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 34px; }
+  .pit-dot-wrap { position: relative; display: inline-flex; }
   .pit-dot {
     width: 30px; height: 30px; border-radius: 50%;
     background: var(--cl-accent, #6366f1);
     display: flex; align-items: center; justify-content: center;
     font-size: 10px; font-weight: 800; color: white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+  .pit-rating {
+    position: absolute; top: -5px; right: -6px;
+    font-size: 8px; font-weight: 800; line-height: 1;
+    color: #fff; border-radius: 4px; padding: 2px 3px;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6);
   }
   .pit-dot.away { background: #374151; }
   .pit-dot.gk { background: #d946ef; }

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.53.0 (2026-08-26)
+
+- Lineup pitch: show each player's match rating as a small colour-graded badge on their shirt (FotMob-style — strong green 8+, green 7+, amber 6+, red below). The badge appears only where the provider supplies a rating (mainly finished matches), so live and upcoming line-ups are unchanged. Applies everywhere the pitch is drawn: the Last Match, Match Center, Team and Matches lineup views
+
 ## v3.52.0 (2026-08-23)
 
 - Ticker card: add a "Today's matches" option to the Show dropdown (alongside All matches / Live only), filtering the strip to fixtures kicking off today
