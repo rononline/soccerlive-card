@@ -75,6 +75,20 @@ export function pickLeagueInfo(leagueList, leagueName) {
   return matched || (list.length === 1 ? list[0] : null);
 }
 
+// Some providers (notably ESPN) prefix a league with a country demonym, e.g.
+// "Dutch Eredivisie", "Spanish LALIGA". Map those to the league's common name.
+// An explicit list (rather than blindly stripping the first word) avoids
+// mangling cup names such as ESPN's "German Cup" into a bare "Cup".
+const COMPETITION_ALIASES = {
+  'dutch eredivisie': 'Eredivisie',
+  'english premier league': 'Premier League',
+  'spanish laliga': 'LALIGA',
+  'german bundesliga': 'Bundesliga',
+  'italian serie a': 'Serie A',
+  'french ligue 1': 'Ligue 1',
+  'portuguese liga portugal': 'Liga Portugal',
+};
+
 export function displayCompetitionName(name, lang = 'en') {
   const raw = String(name || '').trim();
   if (!raw || raw === 'N/A') return '';
@@ -89,6 +103,8 @@ export function displayCompetitionName(name, lang = 'en') {
   if (key === 'friendlies' || key === 'friendly') {
     return FRIENDLY_LABELS[lang] || FRIENDLY_LABELS.en;
   }
+
+  if (COMPETITION_ALIASES[key]) return COMPETITION_ALIASES[key];
 
   return raw;
 }

@@ -84,3 +84,13 @@ test('displayCompetitionName still localises friendlies (Dutch)', () => {
   assert.equal(displayCompetitionName('Friendlies', 'nl'), 'Oefenwedstrijden');
   assert.equal(displayCompetitionName('Eredivisie', 'nl'), 'Eredivisie');
 });
+
+test('displayCompetitionName strips provider country prefixes for known leagues', () => {
+  assert.equal(displayCompetitionName('Dutch Eredivisie'), 'Eredivisie');
+  assert.equal(displayCompetitionName('Dutch Eredivisie', 'nl'), 'Eredivisie');
+  assert.equal(displayCompetitionName('English Premier League'), 'Premier League');
+  // Cup names must not be mangled into a bare "Cup".
+  assert.equal(displayCompetitionName('German Cup'), 'German Cup');
+  // Unknown names pass through unchanged.
+  assert.equal(displayCompetitionName('KNVB Beker'), 'KNVB Beker');
+});

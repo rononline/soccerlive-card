@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.54.0 (2026-08-29)
+
+- Competition labels: show the league's common name when a provider prefixes it with a country demonym (ESPN's "Dutch Eredivisie" now reads "Eredivisie", "English Premier League" → "Premier League", etc.). Uses an explicit alias list so cup names like "German Cup" are left untouched. Applies everywhere the shared competition label is used (Ticker strip and detail, Matches, Match Center, Countdown, …)
+
 ## v3.53.0 (2026-08-26)
 
 - Lineup pitch: show each player's match rating as a small colour-graded badge on their shirt (FotMob-style — strong green 8+, green 7+, amber 6+, red below). The badge appears only where the provider supplies a rating (mainly finished matches), so live and upcoming line-ups are unchanged. Applies everywhere the pitch is drawn: the Last Match, Match Center, Team and Matches lineup views
