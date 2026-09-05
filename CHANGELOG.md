@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.55.0 (2026-09-05)
+
+- Match Center and Matches cards: add a "Hide data by section" option (editor toggle `hide_source_sections`) that removes the per-section source/freshness block from the detail view, for people who don't want it. Off by default, so the block still shows unless you hide it
+
 ## v3.54.0 (2026-08-29)
 
 - Competition labels: show the league's common name when a provider prefixes it with a country demonym (ESPN's "Dutch Eredivisie" now reads "Eredivisie", "English Premier League" → "Premier League", etc.). Uses an explicit alias list so cup names like "German Cup" are left untouched. Applies everywhere the shared competition label is used (Ticker strip and detail, Matches, Match Center, Countdown, …)

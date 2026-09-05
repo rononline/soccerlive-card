@@ -905,7 +905,7 @@ class SoccerLiveMatchesCard extends LitElement {
           ${isLive || isFt ? this._renderPopupStory(m) : ''}
           ${isFt ? this._renderPopupOutcome(m) : ''}
           ${isFt ? this._renderPopupReview(m) : ''}
-          ${renderSourceSections(m, {
+          ${this._config.hide_source_sections === true ? '' : renderSourceSections(m, {
             t: (key, vars) => this._t(key, vars),
             provider: this.hass?.states?.[this._config.entity]?.attributes?.provider,
             updatedAt: this.hass?.states?.[this._config.entity]?.attributes?.last_successful_update,
