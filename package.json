@@ -30,8 +30,8 @@
     "@playwright/test": "1.61.1",
     "acorn": "^8.18.0",
     "terser-webpack-plugin": "^5.6.1",
-    "webpack": "^5.109.2",
-    "webpack-cli": "^7.2.2"
+    "webpack": "^5.110.3",
+    "webpack-cli": "^7.2.3"
   },
   "dependencies": {
     "lit": "^3.3.3"
