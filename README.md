@@ -146,7 +146,8 @@ All cards share these common options:
 | `palette` | appearance-dependent | `purple`, `red-white`, `red-gold`, `blue-red`, `white-gold`, `classic`, `neon`, `gold`, `orange`, `blue`, `black-white`, `team` or `custom` |
 | `hide_header` | `false` | Hide the top bar with competition logo and name |
 | `hide_broadcasts` | `false` | Hide TV/streaming channel chips (ESPN data is US-centric) — applies to Team, Countdown, MatchCenter, Matches |
-| `compact` | `false` | Dense layout: smaller scoreboard, hides form strips and H2H — applies to Team and Countdown |
+| `hide_source_sections` | `false` | Hide the per-section source/freshness block ("Data by section") in the detail view — applies to Match Center (incl. Match Hub) and Matches |
+| `compact` | `false` | Dense layout — on Team/Countdown a smaller scoreboard that hides form strips and H2H; on Matches a dense single-line list per match |
 
 The old single `skin` field remains supported. For example, `skin: auto` maps
 to dark appearance + team palette and `skin: light` maps to light + blue.
