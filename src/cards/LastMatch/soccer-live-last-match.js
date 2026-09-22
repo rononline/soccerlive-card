@@ -12,9 +12,9 @@ import { matchStatRows, translateStatKey } from "../shared-stat-labels.js";
 
 /**
  * Soccer Live Last Match Card
- * Shows the most recent finished match for a team: competition, teams, final
- * score and (when available) the goalscorers, plus a Details button that opens
- * a popup with the full available detail (stats, timeline, lineup, H2H).
+ * Shows the most recent finished match for a team: competition, teams and the
+ * final score, plus a Details button that opens a popup with the full available
+ * detail (stats, timeline with goalscorers, ratings, lineup, H2H).
  */
 class SoccerLiveLastMatchCard extends LitElement {
   static get properties() {

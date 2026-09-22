@@ -30,7 +30,7 @@ appearance; the normal controls remain available afterwards.
 ## ✨ Cards
 
 All cards share the same wrapper — add one **Soccer Live Card** via the HA picker,
-then choose the type in the categorized editor. The picker offers 20 distinct
+then choose the type in the categorized editor. The picker offers 21 distinct
 cards; the old `hub` and `race` identifiers remain supported as compatibility
 aliases, so existing dashboards do not need a migration.
 
@@ -43,7 +43,7 @@ aliases, so existing dashboards do not need a migration.
 | Bracket | `bracket` | Knockout bracket: collapsible list view or tournament tree with trophy and champion banner |
 | Top Scorers | `scorers` | Top scorers list with photo, team logo and goal tally |
 | Countdown | `countdown` | Countdown timer to next match; compact strip when live/finished, optional hide |
-| Last Match | `last-match` | Most recent finished match: competition, teams, final score and goalscorers |
+| Last Match | `last-match` | Most recent finished match: competition, teams and final score; goalscorers, ratings and stats in the detail popup |
 | Mini Standings | `mini-standings` | Compact standings table with configurable rows, groups, zone-colour indicators and team highlight |
 | Multi Team | `multi-team` | Multiple teams' matches in one card |
 | Team Competitions | `team-competitions` | All team competitions with tab selector |
@@ -363,7 +363,7 @@ card_type: last-match
 entity: sensor.soccer_live_next_ned_1_feyenoord_rotterdam
 ```
 
-Shows the team's **most recent finished match** at a glance: competition (with logo), both teams, the final score with the winner emphasised, the date and the goalscorers. It reads the same `team_match` sensor as the Team card — it prefers the just-finished match while the integration still keeps its full detail (so scorers appear), and otherwise falls back to the compact `previous_matches` history (score and teams, without scorers). Useful as a small companion to the Countdown/Team card so a result stays visible after the match rolls out of the "next match" slot.
+Shows the team's **most recent finished match** at a glance: competition (with logo), both teams, the final score with the winner emphasised, and the date. A **Details** button opens a popup with the full available detail — timeline with goalscorers, player ratings, statistics, lineup and H2H. It reads the same `team_match` sensor as the Team card — it prefers the just-finished match while the integration still keeps its full detail (so the popup is fully populated), and otherwise falls back to the compact `previous_matches` history (score and teams). Useful as a small companion to the Countdown/Team card so a result stays visible after the match rolls out of the "next match" slot.
 
 ### 🏆 Mini Standings
 
@@ -648,7 +648,7 @@ Existing `card_type: race` YAML remains supported and renders the same view.
 type: custom:soccer-live-card
 card_type: ticker
 entity: sensor.soccer_live_all_ned_1
-filter: live                  # optional: live / empty for all
+filter: live                  # optional: live / today / empty for all
 competition_filter: "World Cup"  # optional: filter by competition name (case-insensitive substring)
 auto_scroll: true
 scroll_speed: normal          # slow / normal / fast
@@ -737,7 +737,7 @@ elements immediately available, loads editors only when opened, targets the
 evergreen browsers supported by Home Assistant and minifies static Lit CSS
 without rewriting the readable source. Shared popup sections and editor styles
 prevent the distinct cards from carrying their own copies. `npm run build`
-reports both raw and gzip size and enforces a 735 KiB ceiling, with a preferred
+reports both raw and gzip size and enforces a 760 KiB ceiling, with a preferred
 720 KiB target. The current bundle is measured during every release build and
 must remain below that enforced ceiling.
 
