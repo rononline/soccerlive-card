@@ -4,7 +4,9 @@ Beautiful, animated football cards for Home Assistant with multi-language suppor
 
 Companion for the [Soccer Live integration](https://github.com/rononline/soccerlive).
 
-[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rononline) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/rononline)
+[![Buy Me a Coffee at ko-fi.com](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/rononline)
+
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor%20on-GitHub-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rononline)
 
 **[Live preview →](https://rononline.github.io)** — all cards rendered with mock data, no Home Assistant needed.
 
