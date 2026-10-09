@@ -4,6 +4,8 @@ Beautiful, animated football cards for Home Assistant with multi-language suppor
 
 Companion for the [Soccer Live integration](https://github.com/rononline/soccerlive).
 
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor-GitHub-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rononline) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Buy%20me%20a%20coffee-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/rononline)
+
 **[Live preview →](https://rononline.github.io)** — all cards rendered with mock data, no Home Assistant needed.
 
 > Built on ideas from [Calcio Live Card](https://github.com/Bobsilvio/calcio-live-card) by @Bobsilvio
@@ -777,6 +779,15 @@ For maintainers:
 10. In Home Assistant/HACS, refresh the frontend resource and browser cache after updating.
 
 > Tip: batch related changes into one version bump per session rather than bumping for every small fix.
+
+---
+
+## ❤️ Support
+
+Soccer Live is free and open source, maintained in my spare time. If it's useful to you, a small tip helps cover the time spent fixing bugs, answering issues and adding requested features — thank you!
+
+- [GitHub Sponsors](https://github.com/sponsors/rononline)
+- [Ko-fi](https://ko-fi.com/rononline)
 
 ---
 
