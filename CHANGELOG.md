@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.59.2 (2026-10-09)
+
+- Team card accessibility: clickable upcoming-match rows are now keyboard operable (`role="button"`, focusable, Enter/Space opens the details) with a visible focus ring and a screen-reader label, and the match-details popup is announced as a modal dialog (`role="dialog"`, `aria-modal`). No visual change for mouse users
+
 ## v3.59.1 (2026-10-05)
 
 - Matches and Bracket editors: the entity dropdowns filtered sensors by their English entity_id (e.g. `..._all_...`), so localized entity_ids like the German `..._alle_spiele` never appeared and the field stayed empty. They now also match on the `sensor_type` attribute (language-independent), so Soccer Live sensors show up in every language (#28)

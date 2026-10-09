@@ -1,4 +1,4 @@
-import { LitElement, html, css, render } from "lit";
+import { LitElement, html, css, render, nothing } from "lit";
 import { t, resolveLang, parseMatchDate, formatMatchDate, formatDateOnly } from "../../i18n.js";
 import { scoreText } from "../shared-score.js";
 import { skinStyles, applySkin } from "../../skins.js";
@@ -842,7 +842,11 @@ class SoccerLiveTeamCard extends LitElement {
           );
           return html`
             <div class="upcoming-row ${clickable ? 'clickable' : ''}"
-                 @click="${clickable ? () => this.showDetails(m) : null}">
+                 role="${clickable ? 'button' : nothing}"
+                 tabindex="${clickable ? '0' : nothing}"
+                 aria-label="${clickable ? `${m.home_team} – ${m.away_team}` : nothing}"
+                 @click="${clickable ? () => this.showDetails(m) : null}"
+                 @keydown="${clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.showDetails(m); } } : null}">
               <span class="upcoming-date">
                 ${m.date ? m.date.split(' ')[1] || '' : ''}
                 <span class="upcoming-date-day">${this._relativeDate(m.date)}</span>
@@ -1055,7 +1059,7 @@ class SoccerLiveTeamCard extends LitElement {
         class="popup-overlay"
         @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}"
       >
-        <div class="popup-box" @click="${e => e.stopPropagation()}">
+        <div class="popup-box" role="dialog" aria-modal="true" aria-label="${this._t('popup.match_details')}" @click="${e => e.stopPropagation()}">
           <h3 class="popup-title">${this._t('popup.match_details')}</h3>
           <div class="popup-score-row">
             <div class="popup-team-col">
@@ -1815,6 +1819,7 @@ class SoccerLiveTeamCard extends LitElement {
       }
       .upcoming-row.clickable { cursor: pointer; }
       .upcoming-row.clickable:hover { background: var(--cl-card-2); border-radius: 8px; }
+      .upcoming-row.clickable:focus-visible { outline: 2px solid var(--cl-accent, #3b82f6); outline-offset: -2px; border-radius: 8px; }
       .prev-comp-label { color: var(--cl-accent); opacity: 0.75; font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; display: block; max-width: 68px; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; }
       .upl-comp-label { color: var(--cl-text-2); font-size: 8px; letter-spacing: 0.03em; text-transform: uppercase; display: block; max-width: 68px; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; }
       .upl-opp-form { grid-column: 1 / -1; display: flex; gap: 2px; margin-top: -3px; padding-bottom: 2px; }
