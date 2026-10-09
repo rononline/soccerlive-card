@@ -91,6 +91,7 @@ class SoccerLiveMiniStandingsCard extends LitElement {
       .group-btn.active {
         background: var(--cl-accent); border-color: var(--cl-accent); color: #fff;
       }
+      .group-btn:focus-visible { outline: 2px solid var(--cl-accent, #60a5fa); outline-offset: 2px; }
       table { width: 100%; border-collapse: collapse; font-size: 12px; }
       th { color: var(--cl-text-2); font-weight: 600; padding: 2px 4px; text-align: center; font-size: 11px; }
       th.left { text-align: left; }
@@ -168,7 +169,9 @@ class SoccerLiveMiniStandingsCard extends LitElement {
             ${groups.map(g => html`
               <span
                 class="group-btn ${g.name === activeGroup.name ? 'active' : ''}"
-                @click=${() => this._selectGroup(g.name)}>
+                role="button" tabindex="0" aria-pressed="${g.name === activeGroup.name}"
+                @click=${() => this._selectGroup(g.name)}
+                @keydown=${e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._selectGroup(g.name); } }}>
                 ${g.name}
               </span>
             `)}

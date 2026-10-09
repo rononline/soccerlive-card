@@ -43,7 +43,9 @@ class SoccerLiveTickerCard extends LitElement {
       : null;
     return html`
       <div class="tick-item ${isLive ? 'live' : ''} ${isFt ? 'ft' : ''} ${sel ? 'selected' : ''}"
-           @click=${() => this._toggleSel(m)}>
+           role="button" tabindex="0" aria-expanded="${sel ? 'true' : 'false'}"
+           @click=${() => this._toggleSel(m)}
+           @keydown=${e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._toggleSel(m); } }}>
         <div class="tick-team">
           ${m.home_logo ? html`<img class="tick-logo" src="${m.home_logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
           <span class="tick-name">${m.home_team || '?'}</span>
@@ -245,6 +247,7 @@ class SoccerLiveTickerCard extends LitElement {
       }
       .tick-item:hover { border-color: var(--cl-accent, #60a5fa); }
       .tick-item.selected { border-color: var(--cl-accent, #60a5fa); background: rgba(96,165,250,0.08); }
+      .tick-item:focus-visible { outline: 2px solid var(--cl-accent, #60a5fa); outline-offset: 2px; }
       .tick-item.live {
         border-color: rgba(239,68,68,0.5);
         background: rgba(239,68,68,0.07);

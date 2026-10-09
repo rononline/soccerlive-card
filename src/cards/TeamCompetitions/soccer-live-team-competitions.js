@@ -184,9 +184,12 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
         }) : ''}
 
         ${groups.length > 1 ? html`
-          <div class="comp-tabs">
+          <div class="comp-tabs" role="tablist">
             ${groups.map(g => html`
-              <span class="comp-tab ${g.key === active.key ? 'active' : ''}" @click=${() => this._selectComp(g.key)}>
+              <span class="comp-tab ${g.key === active.key ? 'active' : ''}"
+                    role="tab" tabindex="0" aria-selected="${g.key === active.key}"
+                    @click=${() => this._selectComp(g.key)}
+                    @keydown=${e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._selectComp(g.key); } }}>
                 ${g.logo ? html`<img class="tab-logo" src="${g.logo}" alt="" @error=${e => e.target.style.display='none'}>` : ''}
                 ${g.name === 'Other' ? this._t('generic.other') : g.name}
               </span>
@@ -242,6 +245,7 @@ class SoccerLiveTeamCompetitionsCard extends LitElement {
         transition: background 0.15s;
       }
       .comp-tab.active { background: var(--cl-accent); border-color: var(--cl-accent); color: #fff; }
+      .comp-tab:focus-visible { outline: 2px solid var(--cl-accent, #60a5fa); outline-offset: 2px; }
       .tab-logo { width: 14px; height: 14px; object-fit: contain; }
 
       .comp-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }

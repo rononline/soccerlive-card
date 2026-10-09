@@ -84,7 +84,10 @@ class SoccerLiveNewsCard extends LitElement {
         }) : ''}
         <div class="news-list">
           ${articles.map(a => html`
-            <article class="news-item ${this.hideImages || !a.image ? 'no-img' : ''}" @click="${() => this._openLink(a.link)}">
+            <article class="news-item ${this.hideImages || !a.image ? 'no-img' : ''}"
+              role="link" tabindex="0" aria-label="${a.headline}"
+              @click="${() => this._openLink(a.link)}"
+              @keydown=${e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._openLink(a.link); } }}>
               ${!this.hideImages && a.image ? html`
                 <div class="news-img" style="background-image: url('${a.image}');"></div>
               ` : ''}
@@ -153,6 +156,7 @@ class SoccerLiveNewsCard extends LitElement {
       .news-item.no-img {
         grid-template-columns: 1fr;
       }
+      .news-item:focus-visible { outline: 2px solid var(--cl-accent, #60a5fa); outline-offset: 2px; }
       .news-item:hover {
         background: var(--cl-card-2);
         transform: translateX(3px);

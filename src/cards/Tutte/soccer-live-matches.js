@@ -895,7 +895,7 @@ class SoccerLiveMatchesCard extends LitElement {
     const hasEvents = goals.length || yellowCards.length || redCards.length;
     return html`
       <div class="mp-overlay" @click="${e => { if (e.target === e.currentTarget) this.showPopup = false; }}">
-        <div class="mp-box" @click="${e => e.stopPropagation()}">
+        <div class="mp-box" role="dialog" aria-modal="true" aria-label="${this._t('popup.match_details')}" @click="${e => e.stopPropagation()}">
           <h3 class="mp-title">${this._t('popup.match_details')}</h3>
           <div class="mp-score-row">
             <img class="mp-logo" src="${m.home_logo}" alt="" @error="${e => e.target.style.display='none'}">

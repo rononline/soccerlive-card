@@ -201,7 +201,7 @@ class SoccerLiveLastMatchCard extends LitElement {
     const competition = displayCompetitionName(match.league_name, lang);
 
     return html`
-      <div class="lmp-box">
+      <div class="lmp-box" role="dialog" aria-modal="true" aria-label="${this._t("popup.match_details")}">
         <button class="lmp-close" aria-label="${this._t("last_match.close")}" @click=${() => { this._showDetails = false; }}>×</button>
         <div class="lmp-score-row">
           <img class="lmp-logo" src="${match.home_logo}" alt="" @error=${e => e.target.style.display = "none"}>

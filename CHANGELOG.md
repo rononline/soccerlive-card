@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.59.4 (2026-10-09)
+
+- Accessibility across the remaining cards: clickable `<div>`/`<span>` controls are now keyboard operable (Enter/Space) with a visible focus ring — Mini Standings group selector (`aria-pressed`), News items (`role="link"` with the headline as label), Team Competitions tabs (`role="tab"`/`aria-selected` in a `role="tablist"`), and Ticker match rows (`aria-expanded`). The match-details popups on the Matches (Tutte) and Last Match cards are now announced as modal dialogs (`role="dialog"`, `aria-modal`). No visual change for mouse users
+
 ## v3.59.3 (2026-10-09)
 
 - Bracket card accessibility: all interactive elements that were clickable `<div>`/`<span>` elements are now keyboard operable (Enter/Space) with a visible focus ring — the schedule filter chips, tie boxes that jump to the schedule, the collapsible round headers, the 📅 jump-to-schedule buttons, and the bracket/groups/schedule tabs. Tabs expose `role="tab"`/`aria-selected`, collapsible headers expose `aria-expanded`, and icon-only controls got screen-reader labels. No visual change for mouse users
