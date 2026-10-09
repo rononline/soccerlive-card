@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.59.3 (2026-10-09)
+
+- Bracket card accessibility: all interactive elements that were clickable `<div>`/`<span>` elements are now keyboard operable (Enter/Space) with a visible focus ring — the schedule filter chips, tie boxes that jump to the schedule, the collapsible round headers, the 📅 jump-to-schedule buttons, and the bracket/groups/schedule tabs. Tabs expose `role="tab"`/`aria-selected`, collapsible headers expose `aria-expanded`, and icon-only controls got screen-reader labels. No visual change for mouse users
+
 ## v3.59.2 (2026-10-09)
 
 - Team card accessibility: clickable upcoming-match rows are now keyboard operable (`role="button"`, focusable, Enter/Space opens the details) with a visible focus ring and a screen-reader label, and the match-details popup is announced as a modal dialog (`role="dialog"`, `aria-modal`). No visual change for mouse users

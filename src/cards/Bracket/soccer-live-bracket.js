@@ -1,4 +1,4 @@
-import { LitElement, html, svg, css } from "lit";
+import { LitElement, html, svg, css, nothing } from "lit";
 import { t, resolveLang, parseMatchDate } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../shared-header.js';
@@ -171,6 +171,11 @@ class SoccerLiveBracketCard extends LitElement {
     }
   }
 
+  // Keyboard activation for non-button clickable elements (Enter/Space).
+  _kbActivate(e, fn) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
+  }
+
   _roundProgress(round) {
     const total = round.ties.length;
     if (!total) return null;
@@ -301,7 +306,9 @@ class SoccerLiveBracketCard extends LitElement {
             ...(this._myTeam ? [['my-team', this._myTeam, myTeamCount]] : []),
           ].map(([f, label, count]) => html`
             <span class="sched-chip ${effectiveFilter === f ? 'active' : ''} ${!count && f !== 'all' ? 'empty' : ''}"
-                  @click=${() => { this._schedFilter = f; }}>
+                  role="button" tabindex="0" aria-pressed="${effectiveFilter === f}"
+                  @click=${() => { this._schedFilter = f; }}
+                  @keydown=${e => this._kbActivate(e, () => { this._schedFilter = f; })}>
               ${label}${count > 0 ? html`<span class="chip-count">${count}</span>` : ''}
             </span>
           `)}
@@ -469,11 +476,18 @@ class SoccerLiveBracketCard extends LitElement {
     const canNavSched = !!(this._matchesEntity && tieDate);
     return html`
       <div class="mini-tie ${isLive ? 'live' : ''} ${tie.completed ? 'done' : ''} ${isPending ? 'pending' : ''} ${hasMyTeam === true ? 'my-team' : ''} ${hasMyTeam === false ? 'other-team' : ''} ${canNavSched ? 'sched-link' : ''}"
+        role="${canNavSched ? 'button' : nothing}" tabindex="${canNavSched ? '0' : nothing}"
+        aria-label="${canNavSched ? this._t('bracket.view_schedule') : nothing}"
         @click=${canNavSched ? () => {
           this._schedScrollToDate = this._dateKey(tieDate);
           this._schedFilter = 'all';
           this._activeTab = 'schedule';
-        } : null}>
+        } : null}
+        @keydown=${canNavSched ? e => this._kbActivate(e, () => {
+          this._schedScrollToDate = this._dateKey(tieDate);
+          this._schedFilter = 'all';
+          this._activeTab = 'schedule';
+        }) : null}>
         <div class="mini-team ${isAW ? 'winner' : ''} ${isBW ? 'loser' : ''}">
           ${a.logo ? html`<img src="${a.logo}" alt="${a.name}" />` : html`<div class="logo-ph"></div>`}
           <span class="abbr">${abbrA}</span>
@@ -686,7 +700,9 @@ class SoccerLiveBracketCard extends LitElement {
             : '';
           return html`
             <div class="early-round-section ${collapsed ? 'collapsed' : ''}">
-              <div class="early-round-label" @click=${() => this._toggleRound(round)}>
+              <div class="early-round-label" role="button" tabindex="0" aria-expanded="${!collapsed}"
+                   @click=${() => this._toggleRound(round)}
+                   @keydown=${e => this._kbActivate(e, () => this._toggleRound(round))}>
                 <span class="early-round-name">
                   ${this._localizeRoundName(round)}
                   ${dateRange ? html`<span class="early-date-range"> · ${dateRange}</span>` : ''}
@@ -698,12 +714,15 @@ class SoccerLiveBracketCard extends LitElement {
                   </span>
                 ` : ''}
                 ${this._matchesEntity ? html`
-                  <span class="early-sched-btn" title="${this._t('bracket.view_schedule')}" @click=${e => {
+                  <span class="early-sched-btn" role="button" tabindex="0"
+                        title="${this._t('bracket.view_schedule')}" aria-label="${this._t('bracket.view_schedule')}"
+                        @click=${e => {
                     e.stopPropagation();
                     this._schedScrollToDate = roundDates[0] || null;
                     this._schedFilter = 'all';
                     this._activeTab = 'schedule';
-                  }}>📅</span>
+                  }}
+                        @keydown=${e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); this._schedScrollToDate = roundDates[0] || null; this._schedFilter = 'all'; this._activeTab = 'schedule'; } }}>📅</span>
                 ` : ''}
                 <span class="round-chevron">${collapsed ? '›' : '‹' }</span>
               </div>
@@ -804,20 +823,26 @@ class SoccerLiveBracketCard extends LitElement {
         ${this._renderMyNextMatch(scheduleMatches)}
 
         ${(hasGroups || hasSchedule) ? html`
-          <div class="bracket-tabs">
+          <div class="bracket-tabs" role="tablist">
             <span class="bracket-tab ${this._activeTab === 'bracket' ? 'active' : ''}"
-                  @click=${() => { this._activeTab = 'bracket'; }}>
+                  role="tab" tabindex="0" aria-selected="${this._activeTab === 'bracket'}"
+                  @click=${() => { this._activeTab = 'bracket'; }}
+                  @keydown=${e => this._kbActivate(e, () => { this._activeTab = 'bracket'; })}>
               🏆 ${this._t('bracket.tab_bracket')}
             </span>
             ${hasGroups ? html`
               <span class="bracket-tab ${this._activeTab === 'groups' ? 'active' : ''}"
-                    @click=${() => { this._activeTab = 'groups'; }}>
+                    role="tab" tabindex="0" aria-selected="${this._activeTab === 'groups'}"
+                    @click=${() => { this._activeTab = 'groups'; }}
+                    @keydown=${e => this._kbActivate(e, () => { this._activeTab = 'groups'; })}>
                 📊 ${this._t('bracket.tab_groups')}
               </span>
             ` : ''}
             ${hasSchedule ? html`
               <span class="bracket-tab ${this._activeTab === 'schedule' ? 'active' : ''}"
-                    @click=${() => { this._activeTab = 'schedule'; }}>
+                    role="tab" tabindex="0" aria-selected="${this._activeTab === 'schedule'}"
+                    @click=${() => { this._activeTab = 'schedule'; }}
+                    @keydown=${e => this._kbActivate(e, () => { this._activeTab = 'schedule'; })}>
                 📅 ${this._t('bracket.tab_schedule')}
               </span>
             ` : ''}
@@ -838,7 +863,9 @@ class SoccerLiveBracketCard extends LitElement {
                   return html`
                   <div class="round ${collapsed ? 'collapsed' : ''}"
                        style="${this._compact ? 'flex:none;min-width:0;' : ''}">
-                    <div class="round-name" style="cursor:pointer;" @click=${() => this._toggleRound(round)}>
+                    <div class="round-name" style="cursor:pointer;" role="button" tabindex="0" aria-expanded="${!collapsed}"
+                         @click=${() => this._toggleRound(round)}
+                         @keydown=${e => this._kbActivate(e, () => this._toggleRound(round))}>
                       <span class="round-name-en">${this._localizeRoundName(round)}</span>
                       ${(() => { const prog = this._roundProgress(round); return prog && prog.done > 0 ? html`<span class="round-prog-count ${prog.live ? 'live' : ''}">${prog.live ? html`<span class="dot"></span>` : ''}${prog.done}/${prog.total}</span>` : ''; })()}
                       <span class="round-chevron">${collapsed ? '›' : '‹'}</span>
@@ -1087,6 +1114,16 @@ class SoccerLiveBracketCard extends LitElement {
       .tie.other-team { opacity: 0.45; }
       .mini-tie.my-team { border-color: var(--cl-green) !important; box-shadow: 0 0 12px rgba(16,185,129,0.3); }
       .mini-tie.other-team { opacity: 0.38; filter: grayscale(0.3); }
+
+      /* Keyboard focus ring for interactive (non-button) elements */
+      .sched-chip:focus-visible,
+      .mini-tie.sched-link:focus-visible,
+      .early-round-label:focus-visible,
+      .early-sched-btn:focus-visible,
+      .bracket-tab:focus-visible,
+      .round-name:focus-visible {
+        outline: 2px solid var(--cl-accent); outline-offset: 2px; border-radius: 8px;
+      }
 
       /* Tab bar */
       .bracket-tabs {
