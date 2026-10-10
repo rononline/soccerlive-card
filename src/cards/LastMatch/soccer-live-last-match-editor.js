@@ -53,6 +53,27 @@ class SoccerLiveLastMatchEditor extends LitElement {
 
         <h3>${this._t("editor.settings")}</h3>
         <div>
+          <label class="field-label">${this._t('editor.my_team')}</label>
+          <input type="text" placeholder="${this._t('editor.my_team_hint')}"
+            .value=${this._config.my_team || ''}
+            @change=${(e) => setEditorConfigValue(this, 'my_team', e.target.value)} />
+        </div>
+        <div>
+          <label class="field-label">${this._t('editor.group_filter')}</label>
+          <input type="text" .value=${this._config.filter_group || ''}
+            @change=${(e) => setEditorConfigValue(this, 'filter_group', e.target.value)} />
+        </div>
+        <div class="option">
+          <label>${this._t('editor.only_my_group')}</label>
+          <ha-switch .checked=${this._config.only_my_group === true}
+            @change=${(e) => setEditorConfigValue(this, 'only_my_group', e.target.checked)}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.exclude_my_team')}</label>
+          <ha-switch .checked=${this._config.exclude_my_team === true}
+            @change=${(e) => setEditorConfigValue(this, 'exclude_my_team', e.target.checked)}></ha-switch>
+        </div>
+        <div>
           <label class="field-label">${this._t('editor.skin')}</label>
           ${renderSkinControls(this, this._config, (k) => (this._t ? this._t(k) : k))}
         </div>

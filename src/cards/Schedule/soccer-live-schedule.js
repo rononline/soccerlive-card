@@ -5,7 +5,8 @@ import { renderCardError, renderInfoState } from "../card-error.js";
 import { renderLoading } from "../loading-spinner.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
-import { pickNextMatch, nextWhenKind, computeForm, standingsRows, teamMatchesName, matchSideIsTeam } from "../shared-minimal-model.js";
+import { pickNextMatch, pickNextFromMatches, nextWhenKind, computeForm, standingsRows, teamMatchesName, matchSideIsTeam } from "../shared-minimal-model.js";
+import { groupFilterActive, filterByGroup } from "../shared-group-filter.js";
 
 // Text-size presets -> [font-size px, vertical row padding px].
 const TEXT_SIZES = { xs: [11, 3], small: [12.5, 5], normal: [14, 7], large: [16, 9] };
@@ -43,36 +44,6 @@ class SoccerLiveScheduleCard extends LitElement {
     });
   }
 
-  _groupActive() {
-    return Boolean(this._config.filter_group)
-      || this._config.only_my_group === true
-      || this._config.exclude_my_team === true;
-  }
-
-  _filterGroup(matches) {
-    let out = matches;
-    if (this._config.filter_group) {
-      const wanted = String(this._config.filter_group).toLowerCase();
-      out = out.filter(m => String(m.group || "").toLowerCase().includes(wanted));
-    }
-    const myTeam = (this._config.my_team || "").toLowerCase();
-    if (this._config.only_my_group === true && myTeam) {
-      const groups = new Set(
-        out
-          .filter(m => String(m.home_team || "").toLowerCase().includes(myTeam)
-            || String(m.away_team || "").toLowerCase().includes(myTeam))
-          .map(m => String(m.group || "").trim())
-          .filter(Boolean),
-      );
-      if (groups.size) out = out.filter(m => groups.has(String(m.group || "").trim()));
-    }
-    if (this._config.exclude_my_team === true && myTeam) {
-      out = out.filter(m => !(String(m.home_team || "").toLowerCase().includes(myTeam)
-        || String(m.away_team || "").toLowerCase().includes(myTeam)));
-    }
-    return out;
-  }
-
   _rows(attrs) {
     const show = this._config.show || "upcoming"; // upcoming | previous | all
     const up = attrs.upcoming_matches || [];
@@ -80,11 +51,11 @@ class SoccerLiveScheduleCard extends LitElement {
     const all = attrs.matches || [];
     // Group filters need the full match objects (the compact upcoming/previous
     // lists can omit `group`), so source from `matches` when one is active.
-    if (this._groupActive()) {
+    if (groupFilterActive(this._config)) {
       const base = show === "previous" ? all.filter((m) => m.state === "post")
         : show === "all" ? all
         : all.filter((m) => m.state === "pre" || m.state === "in");
-      return this._filterGroup(base);
+      return filterByGroup(base, this._config);
     }
     if (show === "previous") return prev.length ? prev : all.filter((m) => m.state === "post");
     if (show === "all") return all.length ? all : [...prev, ...up];
@@ -140,7 +111,12 @@ class SoccerLiveScheduleCard extends LitElement {
   }
 
   _renderNext(attrs, lang) {
-    const m = pickNextMatch(attrs);
+    // With a group filter, pick the next match from the group-filtered full
+    // list (so e.g. only_my_group + exclude_my_team shows the next match of the
+    // other team in your group); otherwise use the normal live-first pick.
+    const m = groupFilterActive(this._config)
+      ? pickNextFromMatches(filterByGroup(attrs.matches || [], this._config))
+      : pickNextMatch(attrs);
     if (!m) return null;
     const kind = nextWhenKind(m);
     let when;

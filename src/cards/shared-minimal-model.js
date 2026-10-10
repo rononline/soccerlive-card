@@ -12,6 +12,31 @@ export function pickNextMatch(attrs) {
   return up[0] || all.find((m) => m && m.state === "pre") || a.next_match || null;
 }
 
+// Sortable timestamp from either an ISO `date_iso` or the "DD-MM-YYYY HH:MM"
+// display date, so matches from the full and the compact lists compare cleanly.
+function _nextDateKey(match) {
+  const raw = String(match?.date_iso || match?.date || '');
+  const iso = Date.parse(raw);
+  if (!Number.isNaN(iso)) return iso;
+  const m = raw.match(/^(\d{2})[-/](\d{2})[-/](\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+  if (m) return new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime();
+  return Number.POSITIVE_INFINITY; // undated → sort last
+}
+
+/** Pick the featured match from an already group-filtered pool of full match
+ * objects: a live one first, otherwise the earliest upcoming. Used when a group
+ * filter is active, because the compact upcoming/next lists pickNextMatch()
+ * prefers can omit `group`. */
+export function pickNextFromMatches(matches) {
+  const pool = Array.isArray(matches) ? matches : [];
+  const live = pool.find((m) => m && m.state === "in");
+  if (live) return live;
+  const upcoming = pool
+    .filter((m) => m && m.state === "pre")
+    .sort((a, b) => _nextDateKey(a) - _nextDateKey(b));
+  return upcoming[0] || null;
+}
+
 /** How to render a featured match's "when": live score, unknown time, a time,
  * or just a date. */
 export function nextWhenKind(m) {

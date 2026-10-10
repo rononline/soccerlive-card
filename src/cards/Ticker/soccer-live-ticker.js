@@ -6,6 +6,7 @@ import { OfflineCache } from '../offline-cache.js';
 import { renderCardError, renderSyncStatusOrEmpty } from "../card-error.js";
 import { displayCompetitionName } from '../shared-competition.js';
 import { sortMatchesByStateAndDate } from '../shared-match-order.js';
+import { filterByGroup } from '../shared-group-filter.js';
 
 class SoccerLiveTickerCard extends LitElement {
   static get properties() { return { hass: {}, _config: {}, _sel: {} }; }
@@ -132,26 +133,7 @@ class SoccerLiveTickerCard extends LitElement {
 
     // Group filters run on the full set first so a team's not-yet-live fixture
     // still resolves its group, then the live/today filter narrows it.
-    let base = sorted;
-    if (this._config.filter_group) {
-      const wanted = String(this._config.filter_group).toLowerCase();
-      base = base.filter(m => String(m.group || '').toLowerCase().includes(wanted));
-    }
-    const myTeam = (this._config.my_team || '').toLowerCase();
-    if (this._config.only_my_group === true && myTeam) {
-      const groups = new Set(
-        base
-          .filter(m => String(m.home_team || '').toLowerCase().includes(myTeam)
-            || String(m.away_team || '').toLowerCase().includes(myTeam))
-          .map(m => String(m.group || '').trim())
-          .filter(Boolean),
-      );
-      if (groups.size) base = base.filter(m => groups.has(String(m.group || '').trim()));
-    }
-    if (this._config.exclude_my_team === true && myTeam) {
-      base = base.filter(m => !(String(m.home_team || '').toLowerCase().includes(myTeam)
-        || String(m.away_team || '').toLowerCase().includes(myTeam)));
-    }
+    const base = filterByGroup(sorted, this._config);
 
     const filter = this._config.filter;
     let visible = base;

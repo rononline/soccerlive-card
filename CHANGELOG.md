@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.60.0 (2026-10-10)
+
+- Extend the tournament-group filters to two more cards (#25): the **Minimal** card's **Next** variant and the **Last Match** card now honour `filter_group`, `my_team` + `only_my_group`, and `exclude_my_team`. So a single-match card can feature the next kick-off — or the latest result — of the *other* team in your group (e.g. during Belgium–France, the Turkey–Italy card). Both editors expose the new fields. Internally the group-filter logic is now a single shared helper (`shared-group-filter.js`) reused by the Matches, Minimal, Ticker and Last Match cards instead of four copies
+
 ## v3.59.4 (2026-10-09)
 
 - Accessibility across the remaining cards: clickable `<div>`/`<span>` controls are now keyboard operable (Enter/Space) with a visible focus ring — Mini Standings group selector (`aria-pressed`), News items (`role="link"` with the headline as label), Team Competitions tabs (`role="tab"`/`aria-selected` in a `role="tablist"`), and Ticker match rows (`aria-expanded`). The match-details popups on the Matches (Tutte) and Last Match cards are now announced as modal dialogs (`role="dialog"`, `aria-modal`). No visual change for mouse users

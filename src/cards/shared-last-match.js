@@ -29,3 +29,15 @@ export function pickLastMatch(attributes) {
   if (!pool.length) return null;
   return [...pool].sort((a, b) => _dateKey(b) - _dateKey(a))[0];
 }
+
+/**
+ * Return the most recently finished match from an already group-filtered pool
+ * of full match objects, or null. Used when a group filter is active: the pool
+ * must come from the full `matches` list (the compact `previous_matches` list
+ * can omit `group`, so the group filter can't resolve against it).
+ */
+export function pickLastFromMatches(matches) {
+  const pool = (Array.isArray(matches) ? matches : []).filter(m => m && m.state === 'post');
+  if (!pool.length) return null;
+  return [...pool].sort((a, b) => _dateKey(b) - _dateKey(a))[0];
+}
