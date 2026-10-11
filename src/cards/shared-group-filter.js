@@ -53,3 +53,27 @@ export function filterByGroup(matches, config) {
   }
   return out;
 }
+
+// Sensor types that carry a single team's own fixtures only — on these a group
+// filter (especially exclude_my_team) empties the list, because the other teams
+// of the group simply aren't in the feed.
+const TEAM_SENSOR_TYPES = new Set(['team_match', 'team_matches', 'team_matches_mixed']);
+
+/**
+ * Explain why a group filter produced nothing, so a card can show a helpful
+ * hint instead of a bare "no matches". Returns:
+ *   - `'team_sensor'` — the group filter emptied a single-team feed; the fix is
+ *     to point the card at a competition's all-matches sensor.
+ *   - `'no_group'`    — a competition feed, but no match survived the filter
+ *     (wrong group label, or the competition has no group data).
+ *   - `null`          — no group filter active, no source data at all, or the
+ *     filter did leave matches (so emptiness is not the filter's doing).
+ */
+export function groupFilterEmptyReason(rawMatches, config, attrs) {
+  if (!groupFilterActive(config)) return null;
+  const raw = Array.isArray(rawMatches) ? rawMatches : [];
+  if (!raw.length) return null;                        // genuinely no data upstream
+  if (filterByGroup(raw, config).length) return null;  // filter left something
+  const type = String((attrs && attrs.sensor_type) || '');
+  return TEAM_SENSOR_TYPES.has(type) ? 'team_sensor' : 'no_group';
+}

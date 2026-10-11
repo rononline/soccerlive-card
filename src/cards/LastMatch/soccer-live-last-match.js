@@ -6,7 +6,7 @@ import { OfflineCache } from "../offline-cache.js";
 import { displayCompetitionName, resolveCompetitionLogo } from "../shared-competition.js";
 import { scoreText } from "../shared-score.js";
 import { pickLastMatch, pickLastFromMatches } from "../shared-last-match.js";
-import { groupFilterActive, filterByGroup } from "../shared-group-filter.js";
+import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from "../shared-group-filter.js";
 import { renderPopupTimeline, renderPopupLineup, renderPopupSectionStyles } from "../shared-match-sections.js";
 import { pitchStyles } from "../shared-pitch.js";
 import { matchStatRows, translateStatKey } from "../shared-stat-labels.js";
@@ -74,7 +74,15 @@ class SoccerLiveLastMatchCard extends LitElement {
       ? pickLastFromMatches(filterByGroup(attrs.matches || [], this._config))
       : pickLastMatch(attrs);
     if (!match) {
-      return html`<ha-card>${renderInfoState("📅", this._t("last_match.none"), this._t("last_match.none_hint"))}</ha-card>`;
+      // A group filter that emptied the list gets a tailored hint (e.g. "this is
+      // a single-team sensor — use a competition's all-matches sensor") instead
+      // of the generic "no recent match".
+      const reason = groupFilterEmptyReason(attrs.matches, this._config, attrs);
+      const title = reason ? this._t("group_filter.empty_title") : this._t("last_match.none");
+      const hint = reason === "team_sensor" ? this._t("group_filter.hint_team_sensor")
+        : reason === "no_group" ? this._t("group_filter.hint_no_group")
+        : this._t("last_match.none_hint");
+      return html`<ha-card>${renderInfoState("📅", title, hint)}</ha-card>`;
     }
     return html`<ha-card>${this._renderMatch(match)}</ha-card>`;
   }

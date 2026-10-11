@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.60.1 (2026-10-11)
+
+- Group filter: when `only_my_group` / `exclude_my_team` / `filter_group` leaves no matches, the Last Match and Minimal (Next/Fixtures) cards now explain why instead of showing a bare empty state — "this looks like a single-team sensor, point the card at a competition's all-matches sensor" when the feed is a team sensor, or "no match in the selected group" for a competition feed with a wrong/absent group label. Helps when a group filter is pointed at a single-team sensor (#25)
+
 ## v3.60.0 (2026-10-10)
 
 - Extend the tournament-group filters to two more cards (#25): the **Minimal** card's **Next** variant and the **Last Match** card now honour `filter_group`, `my_team` + `only_my_group`, and `exclude_my_team`. So a single-match card can feature the next kick-off — or the latest result — of the *other* team in your group (e.g. during Belgium–France, the Turkey–Italy card). Both editors expose the new fields. Internally the group-filter logic is now a single shared helper (`shared-group-filter.js`) reused by the Matches, Minimal, Ticker and Last Match cards instead of four copies

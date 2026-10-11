@@ -6,7 +6,7 @@ import { renderLoading } from "../loading-spinner.js";
 import { soccerCardShellStyles } from "../card-shell.js";
 import { displayCompetitionName } from "../shared-competition.js";
 import { pickNextMatch, pickNextFromMatches, nextWhenKind, computeForm, standingsRows, teamMatchesName, matchSideIsTeam } from "../shared-minimal-model.js";
-import { groupFilterActive, filterByGroup } from "../shared-group-filter.js";
+import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from "../shared-group-filter.js";
 
 // Text-size presets -> [font-size px, vertical row padding px].
 const TEXT_SIZES = { xs: [11, 3], small: [12.5, 5], normal: [14, 7], large: [16, 9] };
@@ -85,7 +85,19 @@ class SoccerLiveScheduleCard extends LitElement {
       variant === "standings" ? this._renderStandings(attrs, lang) :
       variant === "form" ? this._renderForm(attrs, lang) :
       this._renderFixtures(attrs, lang, showComp);
-    if (body === null) return renderInfoState("📅", this._t("minimal.empty"), "", "");
+    if (body === null) {
+      // On the match-list variants, a group filter that emptied the list gets a
+      // tailored hint (e.g. "this is a single-team sensor") instead of the
+      // generic empty state.
+      const reason = (variant === "fixtures" || variant === "next")
+        ? groupFilterEmptyReason(attrs.matches, this._config, attrs)
+        : null;
+      if (reason) {
+        return renderInfoState("📅", this._t("group_filter.empty_title"),
+          reason === "team_sensor" ? this._t("group_filter.hint_team_sensor") : this._t("group_filter.hint_no_group"), "");
+      }
+      return renderInfoState("📅", this._t("minimal.empty"), "", "");
+    }
 
     const hideHeader = this._config.hide_header === true;
     const noComp = variant === "fixtures" && !showComp;

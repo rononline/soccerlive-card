@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { groupFilterActive, filterByGroup } from '../../src/cards/shared-group-filter.js';
+import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from '../../src/cards/shared-group-filter.js';
 import { pickNextFromMatches } from '../../src/cards/shared-minimal-model.js';
 import { pickLastFromMatches } from '../../src/cards/shared-last-match.js';
 
@@ -82,4 +82,34 @@ test('pickLastFromMatches / pickNextFromMatches: empty pools return null', () =>
   assert.equal(pickLastFromMatches([]), null);
   assert.equal(pickNextFromMatches([]), null);
   assert.equal(pickLastFromMatches(null), null);
+});
+
+test('groupFilterEmptyReason: null when no filter is active', () => {
+  assert.equal(groupFilterEmptyReason(SAMPLE, {}, { sensor_type: 'match_day' }), null);
+});
+
+test('groupFilterEmptyReason: null when the filter still leaves matches', () => {
+  const cfg = { only_my_group: true, exclude_my_team: true, my_team: 'France' };
+  assert.equal(groupFilterEmptyReason(SAMPLE, cfg, { sensor_type: 'match_day' }), null);
+});
+
+test('groupFilterEmptyReason: null when there was no upstream data at all', () => {
+  const cfg = { exclude_my_team: true, my_team: 'France' };
+  assert.equal(groupFilterEmptyReason([], cfg, { sensor_type: 'team_matches' }), null);
+});
+
+test('groupFilterEmptyReason: team_sensor when a single-team feed is emptied', () => {
+  // A France-only feed: exclude_my_team removes everything.
+  const franceOnly = [
+    { home_team: 'France', away_team: 'Belgium', group: 'Group F', state: 'post' },
+    { home_team: 'Italy', away_team: 'France', group: 'Group F', state: 'post' },
+  ];
+  const cfg = { exclude_my_team: true, my_team: 'France' };
+  assert.equal(groupFilterEmptyReason(franceOnly, cfg, { sensor_type: 'team_matches' }), 'team_sensor');
+});
+
+test('groupFilterEmptyReason: no_group when a competition feed yields nothing', () => {
+  // Competition feed, but the requested group label matches no match.
+  const cfg = { filter_group: 'Group Z' };
+  assert.equal(groupFilterEmptyReason(SAMPLE, cfg, { sensor_type: 'match_day' }), 'no_group');
 });
