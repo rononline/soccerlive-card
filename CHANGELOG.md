@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.61.1 (2026-10-11)
+
+- Last Match card: show the faint blurred home/away crests in the background (the same watermark the Countdown and Team cards already have), so the card matches the rest of the set. Rendered behind the content via the shared card-hero helper; absent when the match carries no logos (#25)
+
 ## v3.61.0 (2026-10-11)
 
 - Extend the tournament-group filters to the **Countdown** and **Team** cards (#25): both now honour `filter_group`, `my_team` + `only_my_group`, and `exclude_my_team`, so you can feature the *other* team in your group. The Countdown card then counts down to that team's next kick-off (and shows its live score), and the Team card renders its full detail view (scoreboard, prediction, odds, injuries). When a group filter points at the wrong sensor or an absent group, both cards show the same tailored hint as the other cards instead of a bare empty state

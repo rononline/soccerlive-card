@@ -4,6 +4,7 @@ import { skinStyles, applySkin } from "../../skins.js";
 import { renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { displayCompetitionName, resolveCompetitionLogo } from "../shared-competition.js";
+import { renderCardHero } from "../card-shell.js";
 import { scoreText } from "../shared-score.js";
 import { pickLastMatch, pickLastFromMatches } from "../shared-last-match.js";
 import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from "../shared-group-filter.js";
@@ -84,7 +85,12 @@ class SoccerLiveLastMatchCard extends LitElement {
         : this._t("last_match.none_hint");
       return html`<ha-card>${renderInfoState("📅", title, hint)}</ha-card>`;
     }
-    return html`<ha-card>${this._renderMatch(match)}</ha-card>`;
+    // Faint blurred home/away crests in the background, like the Countdown and
+    // Team cards (renderCardHero draws .bg-logos + the accent gradient).
+    return html`<ha-card>
+      ${renderCardHero(match.home_logo, match.away_logo)}
+      <div class="lm-content">${this._renderMatch(match)}</div>
+    </ha-card>`;
   }
 
   _hasDetails(match) {
@@ -399,7 +405,17 @@ class SoccerLiveLastMatchCard extends LitElement {
   static get styles() {
     return [skinStyles, css`
       :host { display: block; }
-      ha-card { padding: 14px 16px; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
+      ha-card { position: relative; padding: 14px 16px; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
+      /* Faint blurred crests + accent gradient behind the content (renderCardHero). */
+      .bg-logos { position: absolute; inset: 0; display: flex; justify-content: space-between; align-items: center; pointer-events: none; overflow: hidden; z-index: 0; }
+      .bg-logo { width: 60%; height: 140%; display: flex; align-items: center; opacity: 0.08; }
+      .bg-logo.home { justify-content: flex-start; transform: translateX(-30%); }
+      .bg-logo.away { justify-content: flex-end; transform: translateX(30%); }
+      .bg-logo img { width: 100%; object-fit: contain; }
+      .hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; background:
+        radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.18), transparent 55%),
+        radial-gradient(ellipse at 100% 100%, rgba(var(--cl-accent-2-rgb),0.14), transparent 55%); }
+      .lm-content { position: relative; z-index: 1; }
       .lm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
       .lm-comp { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--cl-text-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .lm-comp img { width: 18px; height: 18px; object-fit: contain; }
