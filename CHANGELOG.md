@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.63.1 (2026-10-11)
+
+- Last Match card: added a `compact: true` option (matching the Countdown card) — smaller crests and score, tighter padding, a smaller Details button and venue row, so it takes noticeably less height. Useful next to a compact Countdown card in a horizontal-stack (#25)
+
 ## v3.63.0 (2026-10-11)
 
 - New `fill_height: true` option on the **Last Match** and **Countdown** cards. Off by default (no change to existing dashboards). When set — and the card is placed in a layout that gives it a definite height, i.e. a `horizontal-stack` — the card fills that height, pushing the venue/meta block to the bottom. Put a Last Match and a Countdown card together in one horizontal-stack with `fill_height: true` on both and they render at exactly the same height, regardless of their content (#25)

@@ -93,7 +93,7 @@ class SoccerLiveLastMatchCard extends LitElement {
     }
     // Faint blurred home/away crests in the background, like the Countdown and
     // Team cards (renderCardHero draws .bg-logos + the accent gradient).
-    return html`<ha-card>
+    return html`<ha-card class="${this._config.compact ? "compact" : ""}">
       ${renderCardHero(match.home_logo, match.away_logo)}
       <div class="lm-content">${this._renderMatch(match)}</div>
     </ha-card>`;
@@ -468,6 +468,21 @@ class SoccerLiveLastMatchCard extends LitElement {
         background: var(--cl-accent); color: #fff;
       }
       .lm-details-btn:hover { filter: brightness(1.08); }
+
+      /* Compact mode (compact: true) — denser, shorter, to match the Countdown
+         card's compact layout. */
+      ha-card.compact .top-bar { padding: 9px 14px; }
+      ha-card.compact .comp-icon { width: 20px; height: 20px; }
+      ha-card.compact .lm-body { padding: 10px 14px; }
+      ha-card.compact .lm-score-row { margin: 8px 0 6px; }
+      ha-card.compact .lm-logo { width: 30px; height: 30px; }
+      ha-card.compact .lm-logo.placeholder { font-size: 1.1rem; }
+      ha-card.compact .lm-score { font-size: 1.35rem; }
+      ha-card.compact .lm-team { font-size: 0.85rem; }
+      ha-card.compact .lm-meta { font-size: 0.72rem; }
+      ha-card.compact .smm-venue-row { padding: 7px 0 1px; font-size: 10px; }
+      ha-card.compact .lm-actions { margin-top: 8px; }
+      ha-card.compact .lm-details-btn { padding: 4px 13px; font-size: 0.72rem; }
     `];
   }
 }
