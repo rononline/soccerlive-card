@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.63.0 (2026-10-11)
+
+- New `fill_height: true` option on the **Last Match** and **Countdown** cards. Off by default (no change to existing dashboards). When set — and the card is placed in a layout that gives it a definite height, i.e. a `horizontal-stack` — the card fills that height, pushing the venue/meta block to the bottom. Put a Last Match and a Countdown card together in one horizontal-stack with `fill_height: true` on both and they render at exactly the same height, regardless of their content (#25)
+
 ## v3.62.3 (2026-10-11)
 
 - Last Match card height: the fixed spacer added in v3.62.2 was tuned to a too-tall reference Countdown, so on a real (wider) dashboard the Last Match card ended up ~50px taller than the Countdown instead of matching it. Removed the artificial spacer and trimmed the score-row margins, so the card's natural height lines up with the Countdown card beside it. For an exact match regardless of content, put both cards in a horizontal-stack (which stretches them to equal height) (#25)

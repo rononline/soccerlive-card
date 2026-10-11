@@ -52,6 +52,9 @@ class SoccerLiveCountdownCard extends LitElement {
     this._isLoading = true;
     this._loadingStarted = Date.now();
     this._lastWeatherVenue = null;
+    // Opt-in: fill the available height (for use inside a horizontal-stack, so
+    // it matches a taller sibling card). Off by default.
+    this.toggleAttribute("fill", config.fill_height === true);
   }
 
   connectedCallback() {
@@ -173,6 +176,13 @@ class SoccerLiveCountdownCard extends LitElement {
         overflow: hidden;
       }
       .cd-body { padding: 16px; }
+      /* fill_height (opt-in): fill the container height so, inside a
+         horizontal-stack, the card matches its sibling. The body grows and
+         pushes the venue/broadcast meta to the bottom. */
+      :host([fill]) { height: 100%; }
+      :host([fill]) ha-card { height: 100%; display: flex; flex-direction: column; }
+      :host([fill]) .card-content { flex: 1 1 auto; display: flex; flex-direction: column; }
+      :host([fill]) .cd-body { flex: 1 1 auto; }
       /* .top-bar / .competition / .comp-icon from soccerHeaderStyles */
       /* Compact mode */
       ha-card.compact .cd-body { padding: 10px 14px; }

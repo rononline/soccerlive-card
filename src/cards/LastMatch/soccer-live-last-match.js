@@ -29,6 +29,10 @@ class SoccerLiveLastMatchCard extends LitElement {
     if (!config.entity) throw new Error("Entity required");
     this._config = config;
     applySkin(this, config);
+    // Opt-in: fill the available height (for use inside a horizontal-stack, so
+    // it matches a taller sibling card). Off by default — a plain Sections grid
+    // would otherwise inflate a height:100% card via its getCardSize allocation.
+    this.toggleAttribute("fill", config.fill_height === true);
   }
 
   updated(changed) {
@@ -157,6 +161,8 @@ class SoccerLiveLastMatchCard extends LitElement {
         </div>
 
         ${dateStr ? html`<div class="lm-meta">${dateStr}</div>` : ""}
+
+        <div class="lm-fill-spacer"></div>
 
         ${renderMatchMeta(match, {
           lang,
@@ -420,6 +426,15 @@ class SoccerLiveLastMatchCard extends LitElement {
       :host { display: block; }
       ha-card { position: relative; box-sizing: border-box; padding: 0; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
       .lm-body { padding: 16px; }
+      /* fill_height (opt-in): fill the container height so, inside a
+         horizontal-stack, the card matches its sibling. The fill spacer pushes
+         the venue/Details block to the bottom. Inert (0px) when not filling. */
+      .lm-fill-spacer { height: 0; }
+      :host([fill]) { height: 100%; }
+      :host([fill]) ha-card { height: 100%; display: flex; flex-direction: column; }
+      :host([fill]) .lm-content { flex: 1 1 auto; display: flex; flex-direction: column; }
+      :host([fill]) .lm-body { flex: 1 1 auto; display: flex; flex-direction: column; }
+      :host([fill]) .lm-fill-spacer { flex: 1 1 auto; min-height: 8px; }
       /* Faint blurred crests + accent gradient behind the content (renderCardHero). */
       .bg-logos { position: absolute; inset: 0; display: flex; justify-content: space-between; align-items: center; pointer-events: none; overflow: hidden; z-index: 0; }
       .bg-logo { width: 60%; height: 140%; display: flex; align-items: center; opacity: 0.08; }
