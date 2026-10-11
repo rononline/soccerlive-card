@@ -5,6 +5,8 @@ import { renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
 import { displayCompetitionName, resolveCompetitionLogo } from "../shared-competition.js";
 import { renderCardHero } from "../card-shell.js";
+import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from "../shared-header.js";
+import { renderMatchMeta, matchMetaStyles } from "../shared-match-meta.js";
 import { scoreText } from "../shared-score.js";
 import { pickLastMatch, pickLastFromMatches } from "../shared-last-match.js";
 import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from "../shared-group-filter.js";
@@ -127,38 +129,45 @@ class SoccerLiveLastMatchCard extends LitElement {
       : html`<div class="lm-logo placeholder">⚽</div>`;
 
     return html`
-      <div class="lm-head">
-        <span class="lm-comp">
-          ${leagueLogo ? html`<img src="${leagueLogo}" alt="">` : html`<span>⚽</span>`}
-          ${competition || html`<span>&nbsp;</span>`}
-        </span>
-        <span class="lm-label">${this._t("last_match.label")}</span>
+      ${renderSoccerHeader({
+        logo: leagueLogo,
+        title: competition,
+        badge: renderSoccerBadge(this._t("last_match.label"), "date"),
+      })}
+
+      <div class="lm-body">
+        <div class="lm-score-row">
+          <div class="lm-side home">
+            ${logoEl(match.home_logo)}
+            <span class="lm-team">${(match.home_team || match.home_abbrev) || "?"}</span>
+          </div>
+          <div class="lm-scoreline">
+            <span class="lm-score ${homeWin ? "win" : ""}">${scoreText(match.home_score, "–")}</span>
+            <span class="lm-sep">–</span>
+            <span class="lm-score ${awayWin ? "win" : ""}">${scoreText(match.away_score, "–")}</span>
+          </div>
+          <div class="lm-side away">
+            <span class="lm-team">${(match.away_team || match.away_abbrev) || "?"}</span>
+            ${logoEl(match.away_logo)}
+          </div>
+        </div>
+
+        ${dateStr ? html`<div class="lm-meta">${dateStr}</div>` : ""}
+
+        ${renderMatchMeta(match, {
+          lang,
+          t: (k) => this._t(k),
+          weatherBadge: null,     // finished match — no forecast
+          hideBroadcasts: this._config.hide_broadcasts === true,
+        })}
+
+        ${this._hasDetails(match) ? html`
+          <div class="lm-actions">
+            <button class="lm-details-btn" @click=${() => { this._showDetails = true; }}>
+              ${this._t("last_match.details")} ›
+            </button>
+          </div>` : ""}
       </div>
-
-      <div class="lm-score-row">
-        <div class="lm-side home">
-          ${logoEl(match.home_logo)}
-          <span class="lm-team">${(match.home_team || match.home_abbrev) || "?"}</span>
-        </div>
-        <div class="lm-scoreline">
-          <span class="lm-score ${homeWin ? "win" : ""}">${scoreText(match.home_score, "–")}</span>
-          <span class="lm-sep">–</span>
-          <span class="lm-score ${awayWin ? "win" : ""}">${scoreText(match.away_score, "–")}</span>
-        </div>
-        <div class="lm-side away">
-          <span class="lm-team">${(match.away_team || match.away_abbrev) || "?"}</span>
-          ${logoEl(match.away_logo)}
-        </div>
-      </div>
-
-      ${dateStr || competition ? html`<div class="lm-meta">${[competition, dateStr].filter(Boolean).join(" · ")}</div>` : ""}
-
-      ${this._hasDetails(match) ? html`
-        <div class="lm-actions">
-          <button class="lm-details-btn" @click=${() => { this._showDetails = true; }}>
-            ${this._t("last_match.details")} ›
-          </button>
-        </div>` : ""}
     `;
   }
 
@@ -403,9 +412,10 @@ class SoccerLiveLastMatchCard extends LitElement {
   }
 
   static get styles() {
-    return [skinStyles, css`
+    return [skinStyles, soccerHeaderStyles, matchMetaStyles, css`
       :host { display: block; }
-      ha-card { position: relative; padding: 14px 16px; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
+      ha-card { position: relative; padding: 0; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
+      .lm-body { padding: 16px; }
       /* Faint blurred crests + accent gradient behind the content (renderCardHero). */
       .bg-logos { position: absolute; inset: 0; display: flex; justify-content: space-between; align-items: center; pointer-events: none; overflow: hidden; z-index: 0; }
       .bg-logo { width: 60%; height: 140%; display: flex; align-items: center; opacity: 0.08; }
@@ -416,18 +426,19 @@ class SoccerLiveLastMatchCard extends LitElement {
         radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.18), transparent 55%),
         radial-gradient(ellipse at 100% 100%, rgba(var(--cl-accent-2-rgb),0.14), transparent 55%); }
       .lm-content { position: relative; z-index: 1; }
-      .lm-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-      .lm-comp { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--cl-text-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .lm-comp img { width: 18px; height: 18px; object-fit: contain; }
-      .lm-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cl-accent); white-space: nowrap; }
-      .lm-score-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin: 12px 0 6px; }
-      .lm-side { display: flex; align-items: center; gap: 8px; min-width: 0; }
+      /* Match-meta rows fit inside the card's own padding: separate with a top
+         divider instead of the component's full-width bottom border, and drop
+         the extra horizontal padding (the card already has 16px). */
+      .lm-content .smm-venue-row { padding: 10px 0 2px; border-bottom: 0; border-top: 1px solid var(--cl-divider); margin-top: 10px; }
+      .lm-content .smm-chips { padding: 8px 0 0; border-bottom: 0; }
+      .lm-score-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 4px 0 12px; }
+      .lm-side { display: flex; align-items: center; gap: 10px; min-width: 0; }
       .lm-side.away { justify-content: flex-end; }
-      .lm-logo { width: 34px; height: 34px; object-fit: contain; flex: 0 0 auto; }
-      .lm-logo.placeholder { display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+      .lm-logo { width: 46px; height: 46px; object-fit: contain; flex: 0 0 auto; }
+      .lm-logo.placeholder { display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
       .lm-team { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--cl-text); }
       .lm-scoreline { display: flex; align-items: center; gap: 8px; }
-      .lm-score { font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--cl-text-2); }
+      .lm-score { font-size: 1.9rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--cl-text-2); }
       .lm-score.win { color: var(--cl-text); }
       .lm-sep { font-size: 1.1rem; color: var(--cl-text-2); }
       .lm-meta { text-align: center; font-size: 0.8rem; color: var(--cl-text-2); }

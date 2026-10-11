@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.62.0 (2026-10-11)
+
+- Last Match card — aligned with the Countdown/Team cards so they read as a matched set (#25): the same header (competition logo in the rounded badge + a pill on the right, with a full-width divider), larger team crests, and a venue/attendance meta row. The blurred crest watermark from v3.61.1 stays. Net result: closer in visual detail and height to the Countdown when placed side by side
+
 ## v3.61.1 (2026-10-11)
 
 - Last Match card: show the faint blurred home/away crests in the background (the same watermark the Countdown and Team cards already have), so the card matches the rest of the set. Rendered behind the content via the shared card-hero helper; absent when the match carries no logos (#25)
