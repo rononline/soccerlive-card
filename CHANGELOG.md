@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.62.3 (2026-10-11)
+
+- Last Match card height: the fixed spacer added in v3.62.2 was tuned to a too-tall reference Countdown, so on a real (wider) dashboard the Last Match card ended up ~50px taller than the Countdown instead of matching it. Removed the artificial spacer and trimmed the score-row margins, so the card's natural height lines up with the Countdown card beside it. For an exact match regardless of content, put both cards in a horizontal-stack (which stretches them to equal height) (#25)
+
 ## v3.62.2 (2026-10-11)
 
 - Last Match card height: v3.62.1 made the card fill its container height, which overshot in a Sections dashboard (each card keeps its own height there, so it grew taller than the Countdown instead of matching it). Replaced with a fixed natural height tuned to sit right next to the Countdown card — a Last Match card now renders at ~the same height as the Countdown without stretching to fill a taller cell (#25)
