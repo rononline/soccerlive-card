@@ -1,5 +1,5 @@
 import { LitElement, html, css, render } from "lit";
-import { t, resolveLang, parseMatchDate } from "../../i18n.js";
+import { t, resolveLang, parseMatchDate, formatMatchDateFull } from "../../i18n.js";
 import { skinStyles, applySkin } from "../../skins.js";
 import { renderInfoState, renderSyncStatusOrEmpty } from "../card-error.js";
 import { OfflineCache } from "../offline-cache.js";
@@ -117,7 +117,11 @@ class SoccerLiveLastMatchCard extends LitElement {
     const competition = displayCompetitionName(leagueName, lang);
 
     const dateObj = parseMatchDate(match.date_iso || match.date);
-    const dateStr = dateObj ? dateObj.toLocaleDateString(lang, { day: "numeric", month: "short" }) : "";
+    // Full weekday + date + kick-off time ("za 10-10-2026 18:45"), matching the
+    // Countdown card's date badge; fall back to a short date if the display date
+    // isn't in the expected DD-MM-YYYY HH:MM form.
+    const dateStr = formatMatchDateFull(match.date, lang)
+      || (dateObj ? dateObj.toLocaleDateString(lang, { day: "numeric", month: "short" }) : "");
 
     const homeGoals = Number(match.home_score);
     const awayGoals = Number(match.away_score);
@@ -153,6 +157,8 @@ class SoccerLiveLastMatchCard extends LitElement {
         </div>
 
         ${dateStr ? html`<div class="lm-meta">${dateStr}</div>` : ""}
+
+        <div class="lm-spacer"></div>
 
         ${renderMatchMeta(match, {
           lang,
@@ -413,9 +419,14 @@ class SoccerLiveLastMatchCard extends LitElement {
 
   static get styles() {
     return [skinStyles, soccerHeaderStyles, matchMetaStyles, css`
-      :host { display: block; }
-      ha-card { position: relative; padding: 0; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
-      .lm-body { padding: 16px; }
+      /* Fill the available height so, in a horizontal-stack / grid row that
+         stretches its children, the card matches the taller Countdown card
+         instead of ending early. Harmless when standalone (collapses to content
+         height). The .lm-spacer below distributes the extra space. */
+      :host { display: block; height: 100%; }
+      ha-card { position: relative; height: 100%; box-sizing: border-box; padding: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--cl-bg); color: var(--cl-text); }
+      .lm-body { padding: 16px; flex: 1 1 auto; display: flex; flex-direction: column; }
+      .lm-spacer { flex: 1 1 auto; min-height: 8px; }
       /* Faint blurred crests + accent gradient behind the content (renderCardHero). */
       .bg-logos { position: absolute; inset: 0; display: flex; justify-content: space-between; align-items: center; pointer-events: none; overflow: hidden; z-index: 0; }
       .bg-logo { width: 60%; height: 140%; display: flex; align-items: center; opacity: 0.08; }
@@ -425,11 +436,11 @@ class SoccerLiveLastMatchCard extends LitElement {
       .hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; background:
         radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.18), transparent 55%),
         radial-gradient(ellipse at 100% 100%, rgba(var(--cl-accent-2-rgb),0.14), transparent 55%); }
-      .lm-content { position: relative; z-index: 1; }
+      .lm-content { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; }
       /* Match-meta rows fit inside the card's own padding: separate with a top
          divider instead of the component's full-width bottom border, and drop
          the extra horizontal padding (the card already has 16px). */
-      .lm-content .smm-venue-row { padding: 10px 0 2px; border-bottom: 0; border-top: 1px solid var(--cl-divider); margin-top: 10px; }
+      .lm-content .smm-venue-row { padding: 10px 0 2px; border-bottom: 0; border-top: 1px solid var(--cl-divider); margin-top: 0; }
       .lm-content .smm-chips { padding: 8px 0 0; border-bottom: 0; }
       .lm-score-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 4px 0 12px; }
       .lm-side { display: flex; align-items: center; gap: 10px; min-width: 0; }

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.62.1 (2026-10-11)
+
+- Last Match card: show the full weekday + date + kick-off time ("za 10-10-2026 18:45") instead of just the short date, matching the Countdown card's date format. The card now also fills the available height, so in a horizontal-stack / grid row that stretches its children it ends up the same height as the Countdown card next to it (venue + Details sink to the bottom); unchanged when it stands alone (#25)
+
 ## v3.62.0 (2026-10-11)
 
 - Last Match card — aligned with the Countdown/Team cards so they read as a matched set (#25): the same header (competition logo in the rounded badge + a pill on the right, with a full-width divider), larger team crests, and a venue/attendance meta row. The blurred crest watermark from v3.61.1 stays. Net result: closer in visual detail and height to the Countdown when placed side by side
