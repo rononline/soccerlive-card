@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.62.2 (2026-10-11)
+
+- Last Match card height: v3.62.1 made the card fill its container height, which overshot in a Sections dashboard (each card keeps its own height there, so it grew taller than the Countdown instead of matching it). Replaced with a fixed natural height tuned to sit right next to the Countdown card — a Last Match card now renders at ~the same height as the Countdown without stretching to fill a taller cell (#25)
+
 ## v3.62.1 (2026-10-11)
 
 - Last Match card: show the full weekday + date + kick-off time ("za 10-10-2026 18:45") instead of just the short date, matching the Countdown card's date format. The card now also fills the available height, so in a horizontal-stack / grid row that stretches its children it ends up the same height as the Countdown card next to it (venue + Details sink to the bottom); unchanged when it stands alone (#25)

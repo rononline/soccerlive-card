@@ -419,14 +419,13 @@ class SoccerLiveLastMatchCard extends LitElement {
 
   static get styles() {
     return [skinStyles, soccerHeaderStyles, matchMetaStyles, css`
-      /* Fill the available height so, in a horizontal-stack / grid row that
-         stretches its children, the card matches the taller Countdown card
-         instead of ending early. Harmless when standalone (collapses to content
-         height). The .lm-spacer below distributes the extra space. */
-      :host { display: block; height: 100%; }
-      ha-card { position: relative; height: 100%; box-sizing: border-box; padding: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--cl-bg); color: var(--cl-text); }
-      .lm-body { padding: 16px; flex: 1 1 auto; display: flex; flex-direction: column; }
-      .lm-spacer { flex: 1 1 auto; min-height: 8px; }
+      :host { display: block; }
+      ha-card { position: relative; box-sizing: border-box; padding: 0; overflow: hidden; background: var(--cl-bg); color: var(--cl-text); }
+      .lm-body { padding: 16px; }
+      /* A fixed breathing gap between the match info and the venue/meta block,
+         giving the card a natural height close to the Countdown card without
+         greedily filling a taller container. */
+      .lm-spacer { height: 44px; }
       /* Faint blurred crests + accent gradient behind the content (renderCardHero). */
       .bg-logos { position: absolute; inset: 0; display: flex; justify-content: space-between; align-items: center; pointer-events: none; overflow: hidden; z-index: 0; }
       .bg-logo { width: 60%; height: 140%; display: flex; align-items: center; opacity: 0.08; }
@@ -436,13 +435,13 @@ class SoccerLiveLastMatchCard extends LitElement {
       .hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; background:
         radial-gradient(ellipse at 0% 0%, rgba(var(--cl-accent-rgb),0.18), transparent 55%),
         radial-gradient(ellipse at 100% 100%, rgba(var(--cl-accent-2-rgb),0.14), transparent 55%); }
-      .lm-content { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; }
+      .lm-content { position: relative; z-index: 1; }
       /* Match-meta rows fit inside the card's own padding: separate with a top
          divider instead of the component's full-width bottom border, and drop
          the extra horizontal padding (the card already has 16px). */
       .lm-content .smm-venue-row { padding: 10px 0 2px; border-bottom: 0; border-top: 1px solid var(--cl-divider); margin-top: 0; }
       .lm-content .smm-chips { padding: 8px 0 0; border-bottom: 0; }
-      .lm-score-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 4px 0 12px; }
+      .lm-score-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 18px 0 14px; }
       .lm-side { display: flex; align-items: center; gap: 10px; min-width: 0; }
       .lm-side.away { justify-content: flex-end; }
       .lm-logo { width: 46px; height: 46px; object-fit: contain; flex: 0 0 auto; }
