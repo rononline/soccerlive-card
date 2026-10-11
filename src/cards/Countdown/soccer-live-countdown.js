@@ -10,6 +10,7 @@ import { renderSoccerHeader, renderSoccerBadge, soccerHeaderStyles } from '../sh
 import { renderMatchMeta, matchMetaStyles } from '../shared-match-meta.js';
 import { soccerCardShellStyles, renderCardHero } from "../card-shell.js";
 import { displayCompetitionName, resolveCompetitionLogo } from "../shared-competition.js";
+import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from "../shared-group-filter.js";
 
 /**
  * Soccer Live Countdown Card
@@ -133,6 +134,11 @@ class SoccerLiveCountdownCard extends LitElement {
         (m.competition_name || m.league_name || '').toLowerCase().includes(filter)
       );
       if (filtered.length) matches = filtered;
+    }
+    // Group-stage filtering (point at a competition all_* sensor): count down to
+    // the next kick-off of the other team in your group, etc.
+    if (groupFilterActive(this._config)) {
+      matches = filterByGroup(matches, this._config);
     }
     return matches.find(m => m.state === 'in') ||
            matches.find(m => m.state === 'pre') ||
@@ -302,6 +308,16 @@ class SoccerLiveCountdownCard extends LitElement {
     const attributes = (stateObj && stateObj.state !== 'unavailable') ? stateObj.attributes : this._cachedData;
     const match = this._getNextMatch({ attributes: attributes });
     if (!match) {
+      // When a group filter is what emptied the list, explain that instead of
+      // the generic off-season message (e.g. pointed at a team sensor, or the
+      // competition carries no group data).
+      const reason = groupFilterEmptyReason(attributes?.matches, this._config, attributes);
+      if (reason) {
+        return renderInfoState('📅', this._t('group_filter.empty_title'),
+          reason === 'team_sensor'
+            ? this._t('group_filter.hint_team_sensor')
+            : this._t('group_filter.hint_no_group'));
+      }
       return renderSyncStatusOrEmpty(attributes, (k) => this._t(k),
         () => renderInfoState('📅', this._t('ui.off_season'), this._t('ui.off_season_hint')));
     }

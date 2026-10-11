@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.61.0 (2026-10-11)
+
+- Extend the tournament-group filters to the **Countdown** and **Team** cards (#25): both now honour `filter_group`, `my_team` + `only_my_group`, and `exclude_my_team`, so you can feature the *other* team in your group. The Countdown card then counts down to that team's next kick-off (and shows its live score), and the Team card renders its full detail view (scoreboard, prediction, odds, injuries). When a group filter points at the wrong sensor or an absent group, both cards show the same tailored hint as the other cards instead of a bare empty state
+- Team card: when a group filter features a match that isn't the sensor's own team, the team-bound sections (form trend, previous matches, head-to-head, upcoming list) are hidden — those come from the sensor's tracked team and would otherwise show the wrong team's history next to another team's match. The per-match sections (prediction, odds, injuries, standings) still follow the featured match
+- Both editors gain the Group field and the "Only my team's group" / "Exclude my team's own match" toggles, and their entity dropdowns now also list competition `all_*` sensors (the group only lives on the full match list)
+
 ## v3.60.1 (2026-10-11)
 
 - Group filter: when `only_my_group` / `exclude_my_team` / `filter_group` leaves no matches, the Last Match and Minimal (Next/Fixtures) cards now explain why instead of showing a bare empty state — "this looks like a single-team sensor, point the card at a competition's all-matches sensor" when the feed is a team sensor, or "no match in the selected group" for a competition feed with a wrong/absent group label. Helps when a group filter is pointed at a single-team sensor (#25)

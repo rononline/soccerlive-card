@@ -19,6 +19,7 @@ import { pitchStyles } from '../shared-pitch.js';
 import { matchHasDetails, requestMatchDetails, updatedMatch } from '../shared-detail-loader.js';
 import { claimLiveEvent, liveEventToast } from '../shared-live-event.js';
 import { renderPopupLineup, renderPopupSectionStyles, renderPopupTimeline } from '../shared-match-sections.js';
+import { groupFilterActive, filterByGroup, groupFilterEmptyReason } from '../shared-group-filter.js';
 
 /**
  * Soccer Live Team Card
@@ -577,7 +578,33 @@ class SoccerLiveTeamCard extends LitElement {
       });
     }
 
-    const match = attributes.matches[0];
+    // Group-stage filtering: point the card at a competition's all_* sensor and
+    // feature the other team's match in your group (exclude_my_team), etc. When
+    // the chosen match isn't the sensor's own team, the team-bound sections
+    // (form trend, previous/upcoming, H2H) refer to the wrong team, so they are
+    // suppressed below via `groupFiltered`.
+    let match = attributes.matches[0];
+    let groupFiltered = false;
+    if (groupFilterActive(this._config)) {
+      const filtered = filterByGroup(attributes.matches, this._config);
+      const picked = filtered.find(m => m.state === 'in')
+        || filtered.find(m => m.state === 'pre')
+        || filtered.find(m => m.state === 'post')
+        || filtered[0] || null;
+      if (!picked) {
+        const reason = groupFilterEmptyReason(attributes.matches, this._config, attributes);
+        return html`<ha-card>${renderInfoState('📅', this._t('group_filter.empty_title'),
+          reason === 'team_sensor'
+            ? this._t('group_filter.hint_team_sensor')
+            : this._t('group_filter.hint_no_group'))}</ha-card>`;
+      }
+      match = picked;
+      const sensorTeam = (attributes.team_name || '').toLowerCase();
+      const involvesSensorTeam = !!sensorTeam && (
+        (match.home_team || '').toLowerCase().includes(sensorTeam)
+        || (match.away_team || '').toLowerCase().includes(sensorTeam));
+      groupFiltered = !involvesSensorTeam;
+    }
     const _leagueName = (match.league_name && match.league_name !== 'N/A' ? match.league_name : '') || '';
     // league_info can list several of the team's competitions; pick the one that
     // matches THIS match rather than blindly taking the first entry (which may
@@ -694,10 +721,10 @@ class SoccerLiveTeamCard extends LitElement {
         ${!this.compact && this._config.show_prediction !== false ? this._renderPrediction(match) : ''}
         ${!this.compact && this._config.show_odds !== false ? this._renderOdds(match) : ''}
         ${!this.compact && this._config.show_injuries !== false ? this._renderInjuries(match) : ''}
-        ${!this.compact && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
-        ${!this.compact && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
-        ${!this.compact ? this._renderH2H(match.head_to_head, this.myTeam || attributes.team_name || match.home_team) : ''}
-        ${!this.compact ? this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
+        ${!this.compact && !groupFiltered && this.showFormTrend ? this._renderFormTrend(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
+        ${!this.compact && !groupFiltered && this.showPreviousMatches ? this._renderPreviousMatches(attributes.previous_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
+        ${!this.compact && !groupFiltered ? this._renderH2H(match.head_to_head, this.myTeam || attributes.team_name || match.home_team) : ''}
+        ${!this.compact && !groupFiltered ? this._renderUpcomingList(attributes.upcoming_matches, attributes.matches, this.myTeam || attributes.team_name) : ''}
       </ha-card>
     `;
   }

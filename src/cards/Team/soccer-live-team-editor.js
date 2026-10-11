@@ -99,8 +99,8 @@ class SoccerLiveTeamCardEditor extends LitElement {
     this.entities = Object.keys(this.hass.states)
       .filter((entityId) =>
         entityId.includes('soccerlive_next') || entityId.includes('soccer_live_next') ||
-        entityId.includes('soccerlive_all_mixed') || entityId.includes('soccer_live_all_mixed') ||
-        ['team_match', 'team_matches_mixed'].includes(this.hass.states[entityId]?.attributes?.sensor_type)
+        entityId.includes('soccerlive_all') || entityId.includes('soccer_live_all') ||
+        ['team_match', 'team_matches', 'team_matches_mixed'].includes(this.hass.states[entityId]?.attributes?.sensor_type)
       )
       .sort();
   }
@@ -148,6 +148,22 @@ class SoccerLiveTeamCardEditor extends LitElement {
           <label>${this._t('editor.show_weather')}</label>
           <ha-switch .checked=${this._config.show_weather !== false}
             data-config-value="show_weather" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <h3>${this._t('editor.group_filter')}</h3>
+        <div>
+          <label class="field-label">${this._t('editor.group_filter')}</label>
+          <input type="text" .value=${this._config.filter_group || ''}
+            @change=${(e) => this._fireConfigChanged({...this._config, filter_group: e.target.value})} />
+        </div>
+        <div class="option">
+          <label>${this._t('editor.only_my_group')}</label>
+          <ha-switch .checked=${this._config.only_my_group === true}
+            data-config-value="only_my_group" @change=${this._switchChanged}></ha-switch>
+        </div>
+        <div class="option">
+          <label>${this._t('editor.exclude_my_team')}</label>
+          <ha-switch .checked=${this._config.exclude_my_team === true}
+            data-config-value="exclude_my_team" @change=${this._switchChanged}></ha-switch>
         </div>
         <h3>${this._t('editor.section_prediction')}</h3>
         <div class="option">
