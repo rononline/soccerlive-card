@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.63.2 (2026-10-12)
+
+- Countdown card (compact mode): the broadcast/attendance/link chips now render inside the venue row instead of on a separate row below it, so the weather badge and the broadcast channel share one line when they fit. On a card wide enough for both to fit (roughly ≥480px) this removes a whole row (~34px shorter); on a narrower card the broadcast still wraps to its own line but the card is never taller than before. Lowers the compact Countdown's height when it's the tallest card in a horizontal-stack (#25)
+
 ## v3.63.1 (2026-10-11)
 
 - Last Match card: added a `compact: true` option (matching the Countdown card) — smaller crests and score, tighter padding, a smaller Details button and venue row, so it takes noticeably less height. Useful next to a compact Countdown card in a horizontal-stack (#25)

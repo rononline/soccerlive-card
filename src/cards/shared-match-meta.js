@@ -14,8 +14,10 @@ import { formatMatchDateFull } from '../i18n.js';
  *   @param {any}      opts.weatherBadge    - Pre-rendered weather badge template, or null
  *   @param {boolean}  opts.showDate        - Show date/time in the venue row (default false)
  *   @param {boolean}  opts.hideBroadcasts  - Suppress broadcast chips (default false)
+ *   @param {boolean}  opts.inlineChips     - Render chips inside the venue row instead of a
+ *                                            separate row (one container, saves vertical space)
  */
-export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false, hideBroadcasts = false } = {}) => {
+export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false, hideBroadcasts = false, inlineChips = false } = {}) => {
   if (!match) return html``;
 
   const venue       = match.venue      && match.venue      !== 'N/A' ? match.venue      : '';
@@ -42,70 +44,77 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
 
   const openLink = (url) => url && /^https?:\/\//i.test(url) && window.open(url, '_blank', 'noopener,noreferrer');
 
+  const chipsTpl = hasChips ? html`
+    ${rawBroadcasts.length ? html`
+      <span class="smm-chip broadcast">
+        <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="13" rx="2"/>
+          <polyline points="17 2 12 7 7 2"/>
+        </svg>
+        ${rawBroadcasts.join(' · ')}
+      </span>
+    ` : ''}
+    ${hasAttendance ? html`
+      <span class="smm-chip attendance">
+        <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+          <path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        ${attendance.toLocaleString(lang)} ${t('team.spectators') || ''}
+      </span>
+    ` : ''}
+    ${hasStats ? html`
+      <span class="smm-chip link" title="${t('ui.open_stats') || ''}" @click=${() => openLink(links.stats || links.summary)}>
+        📊 ${t('card.stats') || 'Stats'}
+      </span>
+    ` : ''}
+    ${hasCommentary ? html`
+      <span class="smm-chip link" title="${t('ui.open_commentary') || ''}" @click=${() => openLink(links.commentary || links.summary)}>
+        💬 ${t('card.commentary') || 'Commentary'}
+      </span>
+    ` : ''}
+    ${hasVideo ? html`
+      <span class="smm-chip link" title="${t('ui.open_video') || ''}" @click=${() => openLink(links.video)}>
+        🎬 ${t('card.video') || 'Video'}
+      </span>
+    ` : ''}
+  ` : '';
+
+  const venueTpl = html`
+    ${venueLabel ? html`
+      <div class="smm-venue">
+        <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span title="${neutralSite ? (t('ui.neutral_site') || 'Neutral venue') : ''}">${venueLabel}${neutralSite ? ' ⚖️' : ''}</span>
+      </div>
+    ` : ''}
+    ${weatherBadge ? weatherBadge : ''}
+    ${showDate && match.date ? html`
+      <div class="smm-date">
+        <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>${formatMatchDateFull(match.date, lang) || match.date}</span>
+      </div>
+    ` : ''}
+  `;
+
+  const showVenueRow = venueLabel || weatherBadge || showDate || (inlineChips && hasChips);
+
   return html`
-    ${venueLabel || weatherBadge || showDate ? html`
-      <div class="smm-venue-row">
-        ${venueLabel ? html`
-          <div class="smm-venue">
-            <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            <span title="${neutralSite ? (t('ui.neutral_site') || 'Neutral venue') : ''}">${venueLabel}${neutralSite ? ' ⚖️' : ''}</span>
-          </div>
-        ` : ''}
-        ${weatherBadge ? weatherBadge : ''}
-        ${showDate && match.date ? html`
-          <div class="smm-date">
-            <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            <span>${formatMatchDateFull(match.date, lang) || match.date}</span>
-          </div>
-        ` : ''}
+    ${showVenueRow ? html`
+      <div class="smm-venue-row${inlineChips ? ' smm-inline' : ''}">
+        ${venueTpl}
+        ${inlineChips ? chipsTpl : ''}
       </div>
     ` : ''}
 
-    ${hasChips ? html`
-      <div class="smm-chips">
-        ${rawBroadcasts.length ? html`
-          <span class="smm-chip broadcast">
-            <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="7" width="20" height="13" rx="2"/>
-              <polyline points="17 2 12 7 7 2"/>
-            </svg>
-            ${rawBroadcasts.join(' · ')}
-          </span>
-        ` : ''}
-        ${hasAttendance ? html`
-          <span class="smm-chip attendance">
-            <svg class="smm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-              <path d="M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            ${attendance.toLocaleString(lang)} ${t('team.spectators') || ''}
-          </span>
-        ` : ''}
-        ${hasStats ? html`
-          <span class="smm-chip link" title="${t('ui.open_stats') || ''}" @click=${() => openLink(links.stats || links.summary)}>
-            📊 ${t('card.stats') || 'Stats'}
-          </span>
-        ` : ''}
-        ${hasCommentary ? html`
-          <span class="smm-chip link" title="${t('ui.open_commentary') || ''}" @click=${() => openLink(links.commentary || links.summary)}>
-            💬 ${t('card.commentary') || 'Commentary'}
-          </span>
-        ` : ''}
-        ${hasVideo ? html`
-          <span class="smm-chip link" title="${t('ui.open_video') || ''}" @click=${() => openLink(links.video)}>
-            🎬 ${t('card.video') || 'Video'}
-          </span>
-        ` : ''}
-      </div>
-    ` : ''}
+    ${!inlineChips && hasChips ? html`<div class="smm-chips">${chipsTpl}</div>` : ''}
   `;
 };
 
@@ -119,6 +128,9 @@ export const matchMetaStyles = css`
     font-size: 11px;
     color: var(--cl-text-2, #94a3b8);
     border-bottom: 1px solid var(--cl-divider, rgba(255,255,255,0.06));
+  }
+  .smm-venue-row.smm-inline {
+    row-gap: 6px;
   }
   .smm-venue, .smm-date {
     display: flex;
