@@ -16,8 +16,9 @@ import { formatMatchDateFull } from '../i18n.js';
  *   @param {boolean}  opts.hideBroadcasts  - Suppress broadcast chips (default false)
  *   @param {boolean}  opts.inlineChips     - Render chips inside the venue row instead of a
  *                                            separate row (one container, saves vertical space)
+ *   @param {number}   opts.maxBroadcasts   - Cap the number of broadcast names shown (0 = all)
  */
-export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false, hideBroadcasts = false, inlineChips = false } = {}) => {
+export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge = null, showDate = false, hideBroadcasts = false, inlineChips = false, maxBroadcasts = 0 } = {}) => {
   if (!match) return html``;
 
   const venue       = match.venue      && match.venue      !== 'N/A' ? match.venue      : '';
@@ -25,11 +26,13 @@ export const renderMatchMeta = (match, { lang = 'en', t = k => k, weatherBadge =
   const venueLabel  = venue ? (venueCity ? `${venue}, ${venueCity}` : venue) : '';
   const neutralSite = match.neutral_site || false;
 
-  const rawBroadcasts = hideBroadcasts ? [] : (
+  const allBroadcasts = hideBroadcasts ? [] : (
     Array.isArray(match.broadcasts) && match.broadcasts.length
       ? match.broadcasts
       : (match.broadcast && match.broadcast !== 'N/A' ? [match.broadcast] : [])
   );
+  const cap = Number(maxBroadcasts) > 0 ? Number(maxBroadcasts) : 0;
+  const rawBroadcasts = cap > 0 ? allBroadcasts.slice(0, cap) : allBroadcasts;
 
   const attendance  = parseInt(match.attendance, 10);
   const hasAttendance = !isNaN(attendance) && attendance > 0;

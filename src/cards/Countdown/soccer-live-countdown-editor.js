@@ -50,6 +50,11 @@ class SoccerLiveCountdownEditor extends LitElement {
           <label>${this._t('editor.hide_broadcasts')}</label>
           <ha-switch .checked=${this._config.hide_broadcasts === true} data-config-value="hide_broadcasts" @change=${this._switchChanged}></ha-switch>
         </div>
+        <div>
+          <label class="field-label">${this._t('editor.max_broadcasts')}</label>
+          <input type="number" min="0" placeholder="0" .value=${this._config.max_broadcasts ?? ''}
+            @change=${(e) => setEditorConfigValue(this, 'max_broadcasts', e.target.value === '' ? undefined : Number(e.target.value))} />
+        </div>
         <div class="option">
           <label>${this._t('editor.compact')}</label>
           <ha-switch .checked=${this._config.compact === true} data-config-value="compact" @change=${this._switchChanged}></ha-switch>

@@ -451,6 +451,7 @@ class SoccerLiveCountdownCard extends LitElement {
           weatherBadge: this._weatherBadge || null,
           hideBroadcasts: this._config.hide_broadcasts === true,
           inlineChips: this._config.compact === true,
+          maxBroadcasts: this._config.max_broadcasts,
         })}
         </div>
       </ha-card>

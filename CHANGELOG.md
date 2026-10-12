@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.63.3 (2026-10-12)
+
+- New `max_broadcasts` option on the **Countdown** card (also in its visual editor): caps how many broadcast channel names are shown (0 = all, the default). Set `max_broadcasts: 1` to show just the primary channel instead of a long "Ziggo Sport · Ziggo Sport Kanaal 14" string — short enough to sit on one line next to the weather badge in compact mode on a narrow card, instead of wrapping to a second row (#25)
+
 ## v3.63.2 (2026-10-12)
 
 - Countdown card (compact mode): the broadcast/attendance/link chips now render inside the venue row instead of on a separate row below it, so the weather badge and the broadcast channel share one line when they fit. On a card wide enough for both to fit (roughly ≥480px) this removes a whole row (~34px shorter); on a narrower card the broadcast still wraps to its own line but the card is never taller than before. Lowers the compact Countdown's height when it's the tallest card in a horizontal-stack (#25)
