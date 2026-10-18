@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.63.4 (2026-10-18)
+
+- New **Typography & size** section in every card's visual editor (the shared skin controls): set a custom **font family** — a CSS font stack such as `Roboto, system-ui, sans-serif` — and an overall **card size** (zoom from 85% to 150%). Both apply to all card types and, like appearance and palette, can be set once via the integration's shared card defaults so every card inherits them. Font values are sanitised before being applied inline (#33)
+
 ## v3.63.3 (2026-10-12)
 
 - New `max_broadcasts` option on the **Countdown** card (also in its visual editor): caps how many broadcast channel names are shown (0 = all, the default). Set `max_broadcasts: 1` to show just the primary channel instead of a long "Ziggo Sport · Ziggo Sport Kanaal 14" string — short enough to sit on one line next to the weather badge in compact mode on a narrow card, instead of wrapping to a second row (#25)
