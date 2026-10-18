@@ -1,6 +1,6 @@
 import { css } from "lit";
 import { normalizeCssColor, hexToRgbTriplet, getAutoColors, buildGradient, clampOpacity, normalizeWatermarkSize, sanitizeWatermarkUrl } from "./skin-colors.js";
-import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults } from "./skin-config.js";
+import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults, sanitizeFontFamily, clampCardScale } from "./skin-config.js";
 
 // Two independent axes drive the look:
 //   data-appearance = dark | light | ha  -> neutrals (background, text, surfaces)
@@ -194,8 +194,29 @@ export function applySkin(el, config) {
     el.setAttribute('data-appearance', appearance);
     el.setAttribute('data-palette', palette);
     applyCustomPaletteVars(el, merged, palette);
+    applyLayoutVars(el, merged);
   }
   return { appearance, palette };
+}
+
+// Typography and overall size apply on every palette (not only the custom one).
+// The font-family is set on the host so it cascades into the card's shadow DOM,
+// and an overall zoom on the host scales the whole card — text and layout —
+// uniformly. Both are cleared when unset so a removed option never leaves a
+// stale inline value behind.
+function applyLayoutVars(el, config) {
+  if (!el || !el.style) return;
+  const font = sanitizeFontFamily(config?.font_family);
+  if (font) {
+    el.style.setProperty('--cl-font-family', font);
+    el.style.fontFamily = font;
+  } else {
+    el.style.removeProperty('--cl-font-family');
+    el.style.removeProperty('font-family');
+  }
+  const scale = clampCardScale(config?.card_scale);
+  if (scale !== null && scale !== 1) el.style.zoom = String(scale);
+  else el.style.removeProperty('zoom');
 }
 
 const CUSTOM_COLOR_KEYS = [

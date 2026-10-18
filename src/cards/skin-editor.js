@@ -32,6 +32,8 @@ const ADVANCED_FIELDS = [
 ];
 // Background gradient + crest watermark (a club-branded look).
 const BACKGROUND_KEYS = ['gradient_from', 'gradient_to', 'gradient_angle', 'background_image', 'watermark_opacity', 'watermark_size'];
+// Overall card size (zoom). '' = default (100%).
+const CARD_SCALE_OPTIONS = ['', '0.85', '0.9', '0.95', '1.1', '1.25', '1.5'];
 const RESET_KEYS = [...SIMPLE_FIELDS, ...ADVANCED_FIELDS].map(([k]) => k).concat(BACKGROUND_KEYS);
 
 // WCAG AA: 4.5 for normal text, 3 for large text / UI accents.
@@ -220,6 +222,22 @@ export function renderSkinControls(host, config, t) {
             `;
           })}
         </div>
+      </div>
+      <div class="skin-row">
+        <div class="skin-label">${label('skin.typography')}</div>
+        <label class="skin-bg-field">
+          <span>${label('skin.font_family')}</span>
+          <input type="text" .value=${config?.font_family || ''} placeholder="Roboto, system-ui, sans-serif"
+            @change=${(e) => setOrClear('font_family', e.target.value.trim())}>
+          <span class="skin-hint">${label('skin.font_family_hint')}</span>
+        </label>
+        <label class="skin-bg-field">
+          <span>${label('skin.card_scale')}</span>
+          <select @change=${(e) => setOrClear('card_scale', e.target.value)}>
+            ${CARD_SCALE_OPTIONS.map((s) => html`
+              <option value="${s}" ?selected=${String(config?.card_scale ?? '') === s}>${s === '' ? label('skin.default') : Math.round(Number(s) * 100) + '%'}</option>`)}
+          </select>
+        </label>
       </div>
       ${palette === 'custom' ? html`
         <div>

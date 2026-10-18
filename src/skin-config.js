@@ -121,7 +121,38 @@ export function mergeCardDefaults(config, defaults) {
   const out = { ...cfg };
   if (cfg.appearance == null && !hasSkin && defaults.appearance) out.appearance = defaults.appearance;
   if (cfg.palette == null && !hasSkin && defaults.palette) out.palette = defaults.palette;
+  // Typography and overall size are independent of the appearance/palette axes
+  // (and of the legacy skin), so they inherit from the shared defaults on their
+  // own, with the card's explicit value still winning.
+  if (cfg.font_family == null && defaults.font_family) out.font_family = defaults.font_family;
+  if (cfg.card_scale == null && defaults.card_scale) out.card_scale = defaults.card_scale;
   return out;
+}
+
+/**
+ * Sanitise a user-supplied font-family so it is safe to drop into inline CSS.
+ * Allows letters, digits, spaces, quotes, commas and hyphens — enough for a font
+ * stack like `"Segoe UI", system-ui, sans-serif` — and rejects everything else
+ * (no `;`, braces or `url()`, so no CSS can be injected). Returns '' when the
+ * value is empty or contains any disallowed character.
+ */
+export function sanitizeFontFamily(value) {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed || /[^a-zA-Z0-9 ,"'-]/.test(trimmed)) return '';
+  return trimmed.slice(0, 120);
+}
+
+/**
+ * Clamp an overall card scale (zoom) to a sane range, or null when unset.
+ * Accepts a number or numeric string; values are clamped to 0.5–2.0 and a
+ * non-positive or non-numeric value yields null (treated as "default").
+ */
+export function clampCardScale(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return Math.max(0.5, Math.min(2, n));
 }
 
 /** Effective compact mode: the card's explicit value wins; otherwise inherit
