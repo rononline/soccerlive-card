@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.63.5 (2026-10-19)
+
+- The **Typography & size** section gains two optional pixel fields: **card width** and **max height**. Width pins the card to a fixed width (never wider than its container); max height caps the card's height and scrolls any overflow *inside* the card. This keeps a card's footprint stable while its content grows (for example when a line-up expands), so it no longer pushes surrounding cards around on grid-layout dashboards. Both apply to all card types and inherit from the shared card defaults like the font and size options (#33)
+
 ## v3.63.4 (2026-10-18)
 
 - New **Typography & size** section in every card's visual editor (the shared skin controls): set a custom **font family** — a CSS font stack such as `Roboto, system-ui, sans-serif` — and an overall **card size** (zoom from 85% to 150%). Both apply to all card types and, like appearance and palette, can be set once via the integration's shared card defaults so every card inherits them. Font values are sanitised before being applied inline (#33)
