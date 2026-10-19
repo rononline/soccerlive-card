@@ -10,6 +10,7 @@ import {
   nextRadioIndex,
   sanitizeFontFamily,
   clampCardScale,
+  clampCardPx,
   APPEARANCES,
   PALETTES,
 } from '../../src/skin-config.js';
@@ -60,19 +61,25 @@ test('mergeCardDefaults: inherits per field, not all-or-nothing', () => {
 });
 
 test('mergeCardDefaults: typography and size inherit from shared, card wins', () => {
-  const shared = { font_family: 'Inter, sans-serif', card_scale: '1.1' };
-  // Nothing set on the card -> inherits both.
+  const shared = { font_family: 'Inter, sans-serif', card_scale: '1.1', card_width: 480, card_max_height: 600 };
+  // Nothing set on the card -> inherits all of them.
   const m = mergeCardDefaults({}, shared);
   assert.equal(m.font_family, 'Inter, sans-serif');
   assert.equal(m.card_scale, '1.1');
+  assert.equal(m.card_width, 480);
+  assert.equal(m.card_max_height, 600);
   // The card's own values win.
-  const m2 = mergeCardDefaults({ font_family: 'Roboto, sans-serif', card_scale: '0.9' }, shared);
+  const m2 = mergeCardDefaults({ font_family: 'Roboto, sans-serif', card_scale: '0.9', card_width: 320, card_max_height: 400 }, shared);
   assert.equal(m2.font_family, 'Roboto, sans-serif');
   assert.equal(m2.card_scale, '0.9');
+  assert.equal(m2.card_width, 320);
+  assert.equal(m2.card_max_height, 400);
   // They inherit independently of a legacy skin (unlike appearance/palette).
   const m3 = mergeCardDefaults({ skin: 'blue' }, shared);
   assert.equal(m3.font_family, 'Inter, sans-serif');
   assert.equal(m3.card_scale, '1.1');
+  assert.equal(m3.card_width, 480);
+  assert.equal(m3.card_max_height, 600);
 });
 
 test('sanitizeFontFamily: keeps a valid stack, rejects anything injectable', () => {
@@ -94,6 +101,20 @@ test('clampCardScale: clamps to 0.5–2.0, null when unset or invalid', () => {
   assert.equal(clampCardScale(undefined), null);
   assert.equal(clampCardScale('abc'), null);
   assert.equal(clampCardScale(0), null);
+});
+
+test('clampCardPx: clamps to 100–4000, rounds, null when unset or invalid', () => {
+  assert.equal(clampCardPx(480), 480);
+  assert.equal(clampCardPx('320'), 320);
+  assert.equal(clampCardPx('600px'), 600);  // trailing px ignored
+  assert.equal(clampCardPx(480.6), 481);    // rounded
+  assert.equal(clampCardPx('50'), 100);     // clamped up to min
+  assert.equal(clampCardPx(9999), 4000);    // clamped down to max
+  assert.equal(clampCardPx(''), null);
+  assert.equal(clampCardPx(undefined), null);
+  assert.equal(clampCardPx('abc'), null);
+  assert.equal(clampCardPx(0), null);
+  assert.equal(clampCardPx(-10), null);
 });
 
 test('mergeCardDefaults: card values and legacy skin win over shared', () => {

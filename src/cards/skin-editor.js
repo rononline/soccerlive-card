@@ -238,6 +238,17 @@ export function renderSkinControls(host, config, t) {
               <option value="${s}" ?selected=${String(config?.card_scale ?? '') === s}>${s === '' ? label('skin.default') : Math.round(Number(s) * 100) + '%'}</option>`)}
           </select>
         </label>
+        <label class="skin-bg-field">
+          <span>${label('skin.card_width')}</span>
+          <input type="number" min="100" max="4000" step="10" .value=${config?.card_width ?? ''} placeholder="auto"
+            @change=${(e) => setOrClear('card_width', e.target.value === '' ? '' : Number(e.target.value))}>
+        </label>
+        <label class="skin-bg-field">
+          <span>${label('skin.card_max_height')}</span>
+          <input type="number" min="100" max="4000" step="10" .value=${config?.card_max_height ?? ''} placeholder="auto"
+            @change=${(e) => setOrClear('card_max_height', e.target.value === '' ? '' : Number(e.target.value))}>
+          <span class="skin-hint">${label('skin.card_max_height_hint')}</span>
+        </label>
       </div>
       ${palette === 'custom' ? html`
         <div>

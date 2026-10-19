@@ -55,6 +55,7 @@ const PRESERVED_FIELDS = [
   'chip_color', 'chip_border_color', 'live_color', 'gold_color',
   'gradient_from', 'gradient_to', 'gradient_angle', 'background_image',
   'watermark_opacity', 'watermark_size', 'font_family', 'card_scale',
+  'card_width', 'card_max_height',
 ];
 
 export function applyEditorProfile(config, profile) {

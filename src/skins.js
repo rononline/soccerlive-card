@@ -1,6 +1,6 @@
 import { css } from "lit";
 import { normalizeCssColor, hexToRgbTriplet, getAutoColors, buildGradient, clampOpacity, normalizeWatermarkSize, sanitizeWatermarkUrl } from "./skin-colors.js";
-import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults, sanitizeFontFamily, clampCardScale } from "./skin-config.js";
+import { resolveAppearance, resolvePalette, paletteUsesCustomColors, mergeCardDefaults, sanitizeFontFamily, clampCardScale, clampCardPx } from "./skin-config.js";
 
 // Two independent axes drive the look:
 //   data-appearance = dark | light | ha  -> neutrals (background, text, surfaces)
@@ -217,6 +217,27 @@ function applyLayoutVars(el, config) {
   const scale = clampCardScale(config?.card_scale);
   if (scale !== null && scale !== 1) el.style.zoom = String(scale);
   else el.style.removeProperty('zoom');
+
+  const width = clampCardPx(config?.card_width);
+  if (width !== null) {
+    el.style.width = `${width}px`;
+    el.style.maxWidth = '100%';
+  } else {
+    el.style.removeProperty('width');
+    el.style.removeProperty('max-width');
+  }
+
+  // A capped height keeps the card's footprint stable while its content grows
+  // (e.g. a line-up expanding); the overflow scrolls inside the card instead of
+  // pushing the dashboard layout around.
+  const maxHeight = clampCardPx(config?.card_max_height);
+  if (maxHeight !== null) {
+    el.style.maxHeight = `${maxHeight}px`;
+    el.style.overflow = 'auto';
+  } else {
+    el.style.removeProperty('max-height');
+    el.style.removeProperty('overflow');
+  }
 }
 
 const CUSTOM_COLOR_KEYS = [

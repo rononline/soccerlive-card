@@ -126,6 +126,8 @@ export function mergeCardDefaults(config, defaults) {
   // own, with the card's explicit value still winning.
   if (cfg.font_family == null && defaults.font_family) out.font_family = defaults.font_family;
   if (cfg.card_scale == null && defaults.card_scale) out.card_scale = defaults.card_scale;
+  if (cfg.card_width == null && defaults.card_width) out.card_width = defaults.card_width;
+  if (cfg.card_max_height == null && defaults.card_max_height) out.card_max_height = defaults.card_max_height;
   return out;
 }
 
@@ -153,6 +155,19 @@ export function clampCardScale(value) {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return null;
   return Math.max(0.5, Math.min(2, n));
+}
+
+/**
+ * Clamp a pixel dimension (card width or max-height) to a sane range, or null
+ * when unset. Accepts a number or numeric string (a trailing "px" is ignored),
+ * rounds to a whole pixel and clamps to 100–4000px. A non-positive or
+ * non-numeric value yields null (treated as "unset").
+ */
+export function clampCardPx(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const n = Number(typeof value === 'string' ? value.replace(/px$/i, '').trim() : value);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return Math.round(Math.max(100, Math.min(4000, n)));
 }
 
 /** Effective compact mode: the card's explicit value wins; otherwise inherit
